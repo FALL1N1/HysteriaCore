@@ -22,7 +22,6 @@ struct VoiceChatChannelRequest
 class VoiceChatHandler// : public ACE_Singleton<VoiceChatHandler>
 {
 	VoiceChatClientSocket * m_client;
-    ACE_Mutex m_lock;
 	std::vector<VoiceChatChannelRequest> m_requests;
 	uint32 request_high;
 	uint32 ip;
