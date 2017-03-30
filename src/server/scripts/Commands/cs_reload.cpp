@@ -39,7 +39,6 @@ EndScriptData */
 #include "TicketMgr.h"
 #include "WardenCheckMgr.h"
 #include "WaypointManager.h"
-#include "../Custom/SpellRegulator.h"
 #include "LuaEngine.h"
 
 class reload_commandscript : public CommandScript
@@ -134,7 +133,6 @@ public:
             { "skill_fishing_base_level",     SEC_ADMINISTRATOR, true,  &HandleReloadSkillFishingBaseLevelCommand,      "", NULL },
             { "skinning_loot_template",       SEC_ADMINISTRATOR, true,  &HandleReloadLootTemplatesSkinningCommand,      "", NULL },
             { "smart_scripts",                SEC_ADMINISTRATOR, true,  &HandleReloadSmartScripts,                      "", NULL },
-            { "spell_required",               SEC_ADMINISTRATOR, true,  &HandleReloadSpellRequiredCommand,              "", NULL },
             { "spell_area",                   SEC_ADMINISTRATOR, true,  &HandleReloadSpellAreaCommand,                  "", NULL },
             { "spell_bonus_data",             SEC_ADMINISTRATOR, true,  &HandleReloadSpellBonusesCommand,               "", NULL },
             { "spell_group",                  SEC_ADMINISTRATOR, true,  &HandleReloadSpellGroupsCommand,                "", NULL },
@@ -268,7 +266,6 @@ public:
     {
         HandleReloadSkillDiscoveryTemplateCommand(handler, "a");
         HandleReloadSkillExtraItemTemplateCommand(handler, "a");
-        HandleReloadSpellRequiredCommand(handler, "a");
         HandleReloadSpellAreaCommand(handler, "a");
         HandleReloadSpellGroupsCommand(handler, "a");
         HandleReloadSpellLinkedSpellCommand(handler, "a");
@@ -828,15 +825,6 @@ public:
         sLog->outString("Re-Loading SpellArea Data...");
         sSpellMgr->LoadSpellAreas();
         handler->SendGlobalGMSysMessage("DB table `spell_area` (spell dependences from area/quest/auras state) reloaded.");
-        return true;
-    }
-
-    static bool HandleReloadSpellRequiredCommand(ChatHandler* handler, const char* /*args*/)
-    {
-        sLog->outString("Re-Loading Spell Required Data... ");
-        sSpellMgr->LoadSpellRequired();
-		sSpellRegulator->LoadFromDB();
-        handler->SendGlobalGMSysMessage("DB table `spell_required` and `spellregulator` reloaded.");
         return true;
     }
 

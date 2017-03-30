@@ -86,7 +86,6 @@
 #include "SavingSystem.h"
 #include "AnticheatMgr.h"
 #include "AuctionHouseBot/AuctionHouseBot.h"
-#include "../../scripts/Custom/TemplateNPC/TemplateNPC.h"
 
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -1926,26 +1925,7 @@ void World::SetInitialWorldSettings()
     mgr->LoadChannels();
     mgr = ChannelMgr::forTeam(TEAM_HORDE);
     mgr->LoadChannels();
-    
-    sLog->outString("Loading Template Talents...");
-    sTemplateNpcMgr->LoadTalentsContainer();
-
-    // Load templates for Template NPC #2
-    sLog->outString("Loading Template Glyphs...");
-    sTemplateNpcMgr->LoadGlyphsContainer();
-
-    // Load templates for Template NPC #3
-    sLog->outString("Loading Template Gear for Humans...");
-    sTemplateNpcMgr->LoadHumanGearContainer();
-
-    // Load templates for Template NPC #4
-    sLog->outString("Loading Template Gear for Alliances...");
-    sTemplateNpcMgr->LoadAllianceGearContainer();
-
-    // Load templates for Template NPC #5
-    sLog->outString("Loading Template Gear for Hordes...");
-    sTemplateNpcMgr->LoadHordeGearContainer();
-
+  
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
     sLog->outString();
     sLog->outError("WORLD: World initialized in %u minutes %u seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
