@@ -235,6 +235,8 @@ enum deathsChallenge
     EVENT_DUEL_LOST             = 7, // 7 - 8
 };
 
+// 28406
+#define NPC_DK_INITIATE 28406
 class npc_death_knight_initiate : public CreatureScript
 {
 public:
@@ -247,7 +249,7 @@ public:
         {
             player->CLOSE_GOSSIP_MENU();
 
-            if (player->IsInCombat() || creature->IsInCombat())
+            if (player->IsInCombat() || creature->IsInCombat() || player->IsMounted())
                 return true;
 
             if (creature->AI()->GetData(DATA_IN_PROGRESS))
@@ -360,6 +362,9 @@ public:
             {
                 case EVENT_SPEAK:
                     Talk(SAY_DUEL, ObjectAccessor::GetPlayer(*me, _duelGUID));
+                    me->StopMoving();
+                    if (Player* player = ObjectAccessor::GetPlayer(*me, _duelGUID))
+                        me->SetTarget(player->GetGUID());
                     break;
                 case EVENT_SPEAK+1:
                     Talk(SAY_DUEL+1, ObjectAccessor::GetPlayer(*me, _duelGUID));
@@ -380,6 +385,26 @@ public:
                     return;
                 case EVENT_DUEL_LOST:
                     me->CastSpell(me, 7267, true);
+                    me->SetTarget(0);
+
+                    // get spawn pos
+                    float x, y, z, o; me->GetRespawnPosition(x, y, z, &o);
+
+                    // not sure about coords @todo
+                    if (Creature* newInitiate = me->SummonCreature(NPC_DK_INITIATE, 2400.821533f, -5752.854980f, 153.920349f, TEMPSUMMON_DEAD_DESPAWN))
+                    {
+                        newInitiate->GetMotionMaster()->MovePoint(0, x, y, z, true);
+                        newInitiate->SetOrientation(y);
+                        newInitiate->SetDisplayId(me->GetDisplayId()); // prevent changes
+                        
+                        // if the initiate was from the "moving" ones
+                        if (me->GetDefaultMovementType() == 1)
+                        {
+                            newInitiate->SetDefaultMovementType(RANDOM_MOTION_TYPE);
+                            newInitiate->GetMotionMaster()->MoveRandom(5); // might be at their actual spawn pos?
+                        }
+                    }
+                    me->DespawnOrUnsummon(3000);
                     break;
                 case EVENT_DUEL_LOST+1:
                     EnterEvadeMode();
