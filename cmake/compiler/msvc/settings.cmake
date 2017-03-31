@@ -42,6 +42,10 @@ message(STATUS "MSVC: Disabled NON-SECURE warnings")
 add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
 message(STATUS "MSVC: Disabled POSIX warnings")
 
+#Ignore warnings about INTMAX_MAX
+add_definitions(-D__STDC_LIMIT_MACROS)
+message(STATUS "MSVC: Disabled INTMAX_MAX warnings")
+
 if(NOT WITH_WARNINGS)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4996 /wd4355 /wd4244 /wd4985 /wd4267 /wd4619")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996 /wd4355 /wd4244 /wd4985 /wd4267 /wd4619")
