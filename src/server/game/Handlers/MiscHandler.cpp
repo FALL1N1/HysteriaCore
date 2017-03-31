@@ -376,44 +376,6 @@ void WorldSession::HandleWhoOpcode(WorldPacket& recvData)
         ++displaycount;
     }
 
-    if (sWorld->getBoolConfig(CONFIG_FAKE_WHO_LIST) && displaycount < 49)
-    {
-        //const char fake_players_db = (searchBool ? FAKE_CHAR_ONLINE_SEARCH : FAKE_CHAR_ONLINE);
-        PreparedStatement* fake = CharacterDatabase.GetPreparedStatement(searchBool ? FAKE_CHAR_ONLINE_SEARCH : FAKE_CHAR_ONLINE);
-
-        fake->setUInt32(0, sWorld->getIntConfig(CONFIG_FAKE_WHO_ONLINE_INTERVAL));
-        if (searchBool)
-            fake->setString(1, searchName);
-
-        PreparedQueryResult fakeresult = CharacterDatabase.Query(fake);
-        if (fakeresult)
-        {
-            do
-            {
-                Field *fields = fakeresult->Fetch();
-
-                std::string pname = fields[0].GetString();  // player name
-                std::string gname;                          // guild name
-                uint32 lvl = fields[3].GetUInt32();         // player level
-                uint32 class_ = fields[2].GetUInt32();      // player class
-                uint32 race = fields[1].GetUInt32();        // player race
-                uint32 pzoneid = fields[4].GetUInt32();     // player zone id
-                uint8 gender = fields[5].GetUInt8();        // player gender
-
-                data << pname;                              // player name
-                data << gname;                              // guild name
-                data << uint32(lvl);                        // player level
-                data << uint32(class_);                     // player class
-                data << uint32(race);                       // player race
-                data << uint8(gender);                      // player gender
-                data << uint32(pzoneid);                    // player zone id
-
-                if ((++matchcount) == 49)
-                    break;
-            } while (fakeresult->NextRow());
-        }
-    }
-
     data.put(0, matchcount);
     data.put(4, matchcount);                              // insert right count, count of matches
 
@@ -575,27 +537,6 @@ void WorldSession::HandleAddFriendOpcode(WorldPacket & recv_data)
         return;
 
     ;//sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: %s asked to add friend : '%s'", GetPlayer()->GetName().c_str(), friendName.c_str());
-
-    if (sWorld->getBoolConfig(CONFIG_FAKE_WHO_LIST))
-    {
-        PreparedStatement* fake = CharacterDatabase.GetPreparedStatement(FAKE_CHAR_SEL_RACE_BY_NAME);
-        fake->setString(0, friendName);
-        PreparedQueryResult fakeresult = CharacterDatabase.Query(fake);
-
-        if (fakeresult)
-        {
-            Field* fields = fakeresult->Fetch();
-            TeamId team = Player::TeamIdForRace(fields[0].GetUInt8());
-
-            if (GetPlayer()->GetTeamId() != team)
-                sSocialMgr->SendFriendStatus(_player, FRIEND_ENEMY, false, false);
-            else
-                ChatHandler(_player->GetSession()).PSendSysMessage(LANG_FAKE_NOT_DISTURB);
-
-            return;
-        }
-    }
-
     // xinef: Get Data From global storage
     uint32 guidLow = sWorld->GetGlobalPlayerGUID(friendName);
     if (!guidLow)
@@ -669,20 +610,6 @@ void WorldSession::HandleAddIgnoreOpcode(WorldPacket & recv_data)
         return;
 
     ;//sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: %s asked to Ignore: '%s'",
-
-    if (sWorld->getBoolConfig(CONFIG_FAKE_WHO_LIST))
-    {
-        PreparedStatement* fake = CharacterDatabase.GetPreparedStatement(FAKE_CHAR_SEL_RACE_BY_NAME_IS_ONLINE);
-        fake->setUInt32(0, sWorld->getIntConfig(CONFIG_FAKE_WHO_ONLINE_INTERVAL));
-        fake->setString(1, ignoreName.c_str());
-        PreparedQueryResult fakeresult = CharacterDatabase.Query(fake);
-
-        if (fakeresult)
-        {
-            ChatHandler(_player->GetSession()).PSendSysMessage(LANG_FAKE_NOT_DISTURB);
-            return;
-        }
-    }
 
     uint32 lowGuid = sWorld->GetGlobalPlayerGUID(ignoreName);
     if (!lowGuid)
