@@ -837,11 +837,6 @@ class World
         std::string const& GetRealmName() const { return _realmName; } // pussywizard
         void SetRealmName(std::string name) { _realmName = name; } // pussywizard
 
-        //Guild-Level-System
-        void LoadGuildBonusInfo();
-        uint8 GetReqGuildLevelForBonus(uint8 guildBonus);
-        uint8 SelectReqGuildLevelForBonus(uint8 guildBonus);
-
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters

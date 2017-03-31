@@ -783,16 +783,6 @@ public:
     void SetBankTabText(uint8 tabId, std::string const& text);
 
     void ResetTimes();
-    
-    //Guild-Level-System
-    void LoadLevelInfo();
-    bool HasLevelForBonus(uint8 guildBonus);
-    void GiveXp(uint32 value);
-    void SetLevel(uint8 level, bool byCommand);
-    uint8 GetLevel() const { return m_guild_level; };
-    uint32 GetCurrentXP() const { return m_current_guildXp; };
-    uint32 GetXpForNextLevel() const { return m_xp_for_next_level; };
-
 protected:
     uint32 m_id;
     std::string m_name;

@@ -376,13 +376,6 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo)
                 condMeets = unit->HasAuraType(AuraType(ConditionValue1));
             break;
         }
-        case CONDITION_GUILD_LEVEL:
-        {
-            if (Player* player = object->ToPlayer())
-                if (Guild* guild = player->GetGuild())
-                    condMeets = CompareValues(static_cast<ComparisionType>(ConditionValue2), static_cast<uint32>(guild->GetLevel()), ConditionValue1);
-            break;
-        }
         default:
             condMeets = false;
             break;

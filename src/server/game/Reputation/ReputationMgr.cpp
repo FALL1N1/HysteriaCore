@@ -371,15 +371,6 @@ bool ReputationMgr::SetOneFactionReputation(FactionEntry const* factionEntry, in
             standing += itr->second.Standing + BaseRep;
         }
 
-        //Guild-Level-System (Bonus: Ruf)
-        if (Guild* guild = _player->GetGuild())
-        {
-            if (guild->HasLevelForBonus(GUILD_BONUS_RUF_1))
-                standing += uint32(standing*0.05f);
-            if (guild->HasLevelForBonus(GUILD_BONUS_RUF_2))
-                standing += uint32(standing*0.1f);
-        }
-
         if (standing > Reputation_Cap)
             standing = Reputation_Cap;
         else if (standing < Reputation_Bottom)

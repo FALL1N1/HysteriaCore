@@ -433,9 +433,6 @@ void World::LoadConfigSettings(bool reload)
             return;
         }
 
-        //Guild-Level-System
-        LoadGuildBonusInfo();
-
         sLog->ReloadConfig(); // Reload log levels and filters
     }
 

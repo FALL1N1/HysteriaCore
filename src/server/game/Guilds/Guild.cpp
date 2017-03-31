@@ -1195,9 +1195,6 @@ bool Guild::Create(Player* pLeader, std::string const& name)
     if (ret)
         sScriptMgr->OnGuildCreate(this, pLeader, name);
 
-    //Guild-Level-System
-    LoadLevelInfo();
-
     return ret;
 }
 
@@ -1933,9 +1930,6 @@ bool Guild::LoadFromDB(Field* fields)
         m_bankTabs[i] = new BankTab(m_id, i);
 
     _CreateLogHolders();
-
-    //Guild-Level-System
-    LoadLevelInfo();
 
     return true;
 }
