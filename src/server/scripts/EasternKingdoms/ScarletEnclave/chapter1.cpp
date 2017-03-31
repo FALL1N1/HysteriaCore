@@ -42,6 +42,70 @@ enum eyeOfAcherus
     SPELL_EYE_OF_ACHERUS_VISUAL     = 51892,
 };
 
+enum TheEmblazonedRuneblade
+{
+	SPELL_EMBLAZON_RUNEBLADE = 51769,
+	SPELL_SHADOW_STORM       = 51738,
+
+	NPC_RUNEBLADED_SWORD     = 28476,
+};
+
+class npc_runeforge_trigger : public CreatureScript
+{
+public:
+    npc_runeforge_trigger() : CreatureScript("npc_runeforge_trigger") {}
+
+    struct npc_runeforge_triggerAI : public CreatureAI
+    {
+        npc_runeforge_triggerAI(Creature* creature) : CreatureAI(creature) {}
+
+        void SpellHit(Unit* caster, SpellInfo const* spell)
+        {
+            if (spell->Id == SPELL_EMBLAZON_RUNEBLADE)
+            {
+                if (Player* player = caster->ToPlayer())
+                {
+                    DoCast(me, SPELL_SHADOW_STORM, true);
+                    caster->CastSpell(caster, SPELL_SHADOW_STORM, true);
+                    me->SummonCreature(NPC_RUNEBLADED_SWORD, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 1.25, me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 20 * IN_MILLISECONDS);
+                }
+            }
+        }
+
+        void UpdateAI(uint32 diff) { }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_runeforge_triggerAI(creature);
+    }
+};
+
+class npc_runebladed_sword : public CreatureScript
+{
+public:
+    npc_runebladed_sword() : CreatureScript("npc_runebladed_sword") {}
+
+    struct npc_runebladed_swordAI : public CreatureAI
+    {
+        npc_runebladed_swordAI(Creature* creature) : CreatureAI(creature) {}
+
+        void Reset()
+        {
+            DoCast(me, SPELL_SHADOW_STORM, true);
+            me->SetCanFly(true);
+            me->GetMotionMaster()->MoveRotate(200000, ROTATE_DIRECTION_RIGHT);
+        }
+
+        void UpdateAI(uint32 diff) { }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_runebladed_swordAI(creature);
+    }
+};
+
 class npc_eye_of_acherus : public CreatureScript
 {
 public:
@@ -1157,4 +1221,8 @@ void AddSC_the_scarlet_enclave_c1()
     new npc_scarlet_miner();
     new npc_scarlet_miner_cart();
     new go_inconspicuous_mine_car();
+
+    // firefly
+    new npc_runeforge_trigger();
+    new npc_runebladed_sword();
 }
