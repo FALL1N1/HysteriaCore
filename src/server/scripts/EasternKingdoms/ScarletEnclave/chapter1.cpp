@@ -171,6 +171,7 @@ public:
                     path.push_back(G3D::Vector3(me->GetPositionX()-40.0f, me->GetPositionY(), me->GetPositionZ()+10.0f));
                     path.push_back(G3D::Vector3(1768.0f, -5876.0f, 153.0f));
                     me->GetMotionMaster()->MoveSplinePath(&path);
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NON_ATTACKABLE);
                     break;
                 }
                 case EVENT_REGAIN_CONTROL:
@@ -178,6 +179,7 @@ public:
                     {
                         SetControl(player, true);
                         Talk(EYE_TEXT_CONTROL, player);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NON_ATTACKABLE);
                     }
                     break;
             }
