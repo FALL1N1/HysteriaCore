@@ -1228,6 +1228,117 @@ public:
 
 };
 
+enum Talk_Citizen
+{
+    TALK_CIT_AGGRESSIVE = 0,
+    TALK_CIT_COWER      = 1,
+    TALK_CIT_DEATH      = 2,
+};
+
+enum Talk_Peasant
+{
+    TALK_PEASANT = 0,
+};
+
+enum Npcs_Citizen
+{
+    NPC_PEASANT = 28557,
+    NPC_CIT_1 = 28577,
+    NPC_CIT_2 = 28576,
+};
+
+enum Events_Citizen
+{
+    EVENT_RANDOM_DESTINY = 1,
+    EVENT_COWER_CAST,
+};
+
+enum Spells_Citizen
+{
+    SPELL_CORNERED_AND_ENRAGED = 52262,
+    SPELL_CITIZEN_COWER = 52384,
+};
+
+class npc_citizen_of_havenshire : public CreatureScript
+{
+public:
+    npc_citizen_of_havenshire() : CreatureScript("npc_citizen_of_havenshire") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_citizen_of_havenshireAI(creature);
+    }
+
+    struct npc_citizen_of_havenshireAI : public ScriptedAI
+    {
+        npc_citizen_of_havenshireAI(Creature* creature) : ScriptedAI(creature) { }
+        EventMap events;
+        int8 event_chance;
+
+        void Reset()
+        {
+            events.Reset();
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+            me->RemoveAura(SPELL_CORNERED_AND_ENRAGED);
+        }
+
+        void EnterCombat(Unit* /*who*/)
+        {
+            if (me->GetEntry() == NPC_PEASANT)
+            {
+                Talk(TALK_PEASANT);
+                events.ScheduleEvent(EVENT_COWER_CAST, 1);
+                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+            }
+            else
+                events.ScheduleEvent(EVENT_RANDOM_DESTINY, 1);
+        }
+
+        void JustDied(Unit* /* killer */)
+        {
+            if (me->GetEntry() == NPC_PEASANT)
+                Talk(Talk_Peasant::TALK_PEASANT);
+            else
+                Talk(Talk_Citizen::TALK_CIT_DEATH);
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            if (!UpdateVictim())
+                return;
+
+            events.Update(diff);
+
+            while (uint32 eventId = events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_COWER_CAST:
+                        DoCast(SPELL_CITIZEN_COWER);
+                            events.ScheduleEvent(EVENT_COWER_CAST, 4000);
+                            me->SetAttackTime(BASE_ATTACK, 30000);
+                            me->SetAttackTime(RANGED_ATTACK, 30000);
+                            break;
+                    case EVENT_RANDOM_DESTINY:
+                        event_chance = RAND(1, 2);
+                        if (me->GetEntry() == NPC_PEASANT)
+                            event_chance = 0;
+
+                        if (event_chance == 1)
+                        {
+                                Talk(TALK_CIT_AGGRESSIVE);
+                                DoCast(SPELL_CORNERED_AND_ENRAGED);
+                        }
+                        else // passive
+                            events.ScheduleEvent(EVENT_COWER_CAST, 1000);
+                        break;
+                }
+            }
+            DoMeleeAttackIfReady();
+        }
+    };
+};
+
 void AddSC_the_scarlet_enclave_c1()
 {
     // Ours
@@ -1252,4 +1363,5 @@ void AddSC_the_scarlet_enclave_c1()
     // firefly
     new npc_runeforge_trigger();
     new npc_runebladed_sword();
+    new npc_citizen_of_havenshire();
 }
