@@ -1288,7 +1288,6 @@ public:
             {
                 Talk(TALK_PEASANT);
                 events.ScheduleEvent(EVENT_COWER_CAST, 1);
-                //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
             }
             else
                 events.ScheduleEvent(EVENT_RANDOM_DESTINY, 1);
@@ -1329,7 +1328,7 @@ public:
                                 Talk(TALK_CIT_AGGRESSIVE);
                                 DoCast(SPELL_CORNERED_AND_ENRAGED);
                         }
-                        else // passive
+                        else
                             events.ScheduleEvent(EVENT_COWER_CAST, 1000);
                         break;
                 }
