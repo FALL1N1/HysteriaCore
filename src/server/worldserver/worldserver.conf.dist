@@ -1527,6 +1527,102 @@ Warden.ClientCheckFailAction = 2
 #                     0     - (Permanent ban)
 
 Warden.BanDuration = 259200
+#
+# PASSIVE AND ACTIVE ANTICHEAT SETTINGS
+#
+#    Anticheat.skipgmlvl
+#		 Description: Enable Passive and Active anticheat for certain account levels
+#        8 - Enabled to all types of accounts (default)
+#		 1 - Enabled only for player accounts, moderators and above can pass all of checks
+#        0 - Disabled
+
+Anticheat.skipgmlvl = 1
+
+#
+# ACTIVE ANTICHEAT SETTINGS
+#
+#    MovementChecker.EnableMask
+#		 Description: Mask of which detections are enabled
+#
+#        FLY_HACK_DETECTION              = 1
+#        TELE_HACK_DETECTION             = 2
+#        JUMP_HACK_DETECTION             = 4
+#        HOVER_HACK_DETECTION            = 8
+#        WATERWALK_HACK_DETECTION        = 16
+#        SPEED_HACK_DETECTION            = 32
+#        CLIMB_HACK_DETECTION            = 64
+#
+#        Default:     0
+
+MovementChecker.EnableMask = 0
+
+#
+# PASSIVE ANTICHEAT SETTINGS
+#
+#     Anticheat.Enable
+#        Description: Enables or disables the Anticheat System functionality
+#        Default:     1 - (Enabled)
+#                     0 - (Disabled)
+
+Anticheat.Enable = 1
+
+#     Anticheat.ReportsForIngameWarnings
+#        Description: How many reports the player must have to notify to GameMasters ingame when he generates a new report.
+#        Default:     70
+
+Anticheat.ReportsForIngameWarnings = 70
+
+#     Anticheat.DetectionsEnabled
+#        Description: It represents which detections are enabled.
+#
+#        SPEED_HACK_DETECTION            = 1
+#        FLY_HACK_DETECTION              = 2
+#        WALK_WATER_HACK_DETECTION       = 4
+#        JUMP_HACK_DETECTION             = 8
+#        TELEPORT_PLANE_HACK_DETECTION   = 16
+#        CLIMB_HACK_DETECTION            = 32
+#
+#        Default:     31
+
+Anticheat.DetectionsEnabled = 63
+
+#     Anticheat.MaxReportsForDailyReport
+#        Description: How many reports must the player have to make a report that it is in DB for a day (not only during the player's session).
+#        Default:     70
+
+Anticheat.MaxReportsForDailyReport = 70
+
+#
+#     Anticheat.ReportsForAction
+#        Description: How many reports must the player have before taking action against them.
+#        Default:     30
+
+Anticheat.ReportsForAction = 30
+
+#
+#    Anticheat.Action
+#        Description: Action being taken if a player exceeds the amount of hack reports allowed.
+#        Default:     0 - (Disabled, Logging only)
+#                     1 - (Kick)
+#                     2 - (Ban)
+
+Anticheat.Action = 1
+
+#
+#     Anticheat.AnnounceAction
+#         Description: Announce when a player is kicked or banned by the passive anticheat.
+#         Default:     0 - (Disabled, Don't announce)
+#                      1 - (Enabled)
+
+Anticheat.AnnounceAction = 1
+
+#
+#    Anticheat.BanDuration
+#        Description: Time (in seconds) an account will be banned if Anticheat.Action = 2
+#        Default:     86400 - (24 hours)
+#                     0     - (Permanent ban)
+
+Anticheat.BanDuration = 86400
 
 #
 ###################################################################################################

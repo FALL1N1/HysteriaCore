@@ -327,9 +327,10 @@ bool PlayerMovementChecker::isZCoordOk()
 {
     if(!(sWorld->getIntConfig(CONFIG_MOVEMENT_CHECKS_MASK) & HACK_TYPE_CLIMB))
         return true;
-    /* NEEDS REWRITE */
-    /*
-    if(_hasFlyingFlags || _justTurn || _player->isInFlight() || (_movementInfo->flags & (MOVEMENTFLAG_SWIMMING|MOVEMENTFLAG_ONTRANSPORT))
+
+    /* NEEDS REWRITE? */
+    
+    if(_hasFlyingFlags || _justTurn || _player->IsInFlight() || (_movementInfo->flags & (MOVEMENTFLAG_SWIMMING|MOVEMENTFLAG_ONTRANSPORT))
      || !isInAir())
         return true;
 
@@ -351,8 +352,8 @@ bool PlayerMovementChecker::isZCoordOk()
         SendGMWarning(HACK_TYPE_CLIMB);
         return false;
     }
-    */
-    return true;
+    
+    //return true;
 }
 
 bool PlayerMovementChecker::isInAir()
