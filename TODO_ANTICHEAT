@@ -5,11 +5,13 @@
 [x] NO CLIP
 [x] WPE / Packet Inject
 [x] Opcode Flood
+[x] Addon: Teleport back the user to latest safe position if he used cheats.
+[x] Addon: Block completely flying hack.
+[x] NO FALLING
+[x] SLOW FALLING
 
--- needs testing
+-- not done yet
 [] LOW GRAVITY
-[] NO FALLING
-[] SLOW FALLING
 [] WATERWALKING
 [] WALL CLIMBING
 [] TRACKING (could be undetectable? / sending tracking flags if not hunter?)

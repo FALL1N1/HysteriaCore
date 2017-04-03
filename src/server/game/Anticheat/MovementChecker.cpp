@@ -1,4 +1,4 @@
-#include "MovementChecker.h"
+﻿#include "MovementChecker.h"
 #include "Unit.h"
 #include "Creature.h"
 #include "World.h"
@@ -353,7 +353,7 @@ bool PlayerMovementChecker::isZCoordOk()
         return false;
     }
     
-    //return true;
+    return true;
 }
 
 bool PlayerMovementChecker::isInAir()
