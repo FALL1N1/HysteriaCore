@@ -23,7 +23,7 @@
 #include "GroupReference.h"
 #include "MapReference.h"
 #include "InstanceSaveMgr.h"
-
+#include "MovementChecker.h"
 #include "Item.h"
 #include "PetDefines.h"
 #include "QuestDef.h"
@@ -2555,7 +2555,7 @@ class Player : public Unit, public GridObject<Player>
         float GetAverageItemLevel();
         float GetAverageItemLevelForDF();
         bool isDebugAreaTriggers;
-
+        PlayerMovementChecker* GetMovementChecker() { return moveChecker; }
         void ClearWhisperWhiteList() { WhisperList.clear(); }
         void AddWhisperWhiteList(uint64 guid) { WhisperList.push_back(guid); }
         bool IsInWhisperWhiteList(uint64 guid);
@@ -2909,7 +2909,7 @@ class Player : public Unit, public GridObject<Player>
         DeclinedName *m_declinedname;
         Runes *m_runes;
         EquipmentSets m_EquipmentSets;
-
+        PlayerMovementChecker *moveChecker;
         bool CanAlwaysSee(WorldObject const* obj) const;
 
         bool IsAlwaysDetectableFor(WorldObject const* seer) const;
