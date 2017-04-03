@@ -1296,9 +1296,9 @@ public:
         void JustDied(Unit* /* killer */)
         {
             if (me->GetEntry() == NPC_PEASANT)
-                Talk(Talk_Peasant::TALK_PEASANT);
+                Talk(TALK_PEASANT);
             else
-                Talk(Talk_Citizen::TALK_CIT_DEATH);
+                Talk(TALK_CIT_DEATH);
         }
 
         void UpdateAI(uint32 diff)
