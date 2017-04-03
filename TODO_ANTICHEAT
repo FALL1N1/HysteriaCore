@@ -1,0 +1,15 @@
+[x] SPEED
+[x] FLYING
+[x] SWIM SPEED
+[x] MULTIJUMP
+[x] NO CLIP
+[x] WPE / Packet Inject
+[x] Opcode Flood
+
+-- needs testing
+[] LOW GRAVITY
+[] NO FALLING
+[] SLOW FALLING
+[] WATERWALKING
+[] WALL CLIMBING
+[] TRACKING (could be undetectable? / sending tracking flags if not hunter?)

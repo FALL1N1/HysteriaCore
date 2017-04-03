@@ -3,6 +3,7 @@
 #include "MapManager.h"
 #include "Language.h"
 #include "AccountMgr.h"
+#include "MovementChecker.h"
 
 #define CLIMB_ANGLE 1.9f
 
@@ -116,6 +117,10 @@ void AnticheatMgr::StartHackDetection(Player* player, MovementInfo movementInfo,
         m_Players[key].SetLastOpcode(opcode);
         return;
     }
+
+    // @todo
+    if(PlayerMovementChecker* pmc = player->GetMovementChecker())
+        pmc->prepare(&movementInfo, opcode);
 
     SpeedHackDetection(player,movementInfo);
     FlyHackDetection(player,movementInfo);
