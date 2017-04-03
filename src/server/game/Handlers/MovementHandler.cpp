@@ -461,11 +461,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 /////////////////////////////////////////////////////////
     // begin anti cheat
     bool check_passed = true;
-    sLog->outString("AC2-%s > time: %d fall-time: %d | xyzo: %f, %f, %fo(%f) flags[%X] opcode[%s] | transport (xyzo): %f, %f, %fo(%f)",
-        plrMover->GetName(), movementInfo.time, movementInfo.fallTime, movementInfo.pos.m_positionX, movementInfo.pos.m_positionY, movementInfo.pos.m_positionZ, movementInfo.pos.m_orientation,
-        movementInfo.flags, LookupOpcodeName(opcode), movementInfo.transport.pos.m_positionX, movementInfo.transport.pos.m_positionY, movementInfo.transport.pos.m_positionZ, movementInfo.transport.pos.m_orientation);
-    sLog->outString("AC2-%s Transport > GUID: (low)%d - (high)%d",
-        plrMover->GetName(), GUID_LOPART(movementInfo.transport.guid), GUID_HIPART(movementInfo.transport.guid));
+    //sLog->outString("AC2-%s > time: %d fall-time: %d | xyzo: %f, %f, %fo(%f) flags[%X] opcode[%s] | transport (xyzo): %f, %f, %fo(%f)", plrMover->GetName(), movementInfo.time, movementInfo.fallTime, movementInfo.pos.m_positionX, movementInfo.pos.m_positionY, movementInfo.pos.m_positionZ, movementInfo.pos.m_orientation, movementInfo.flags, LookupOpcodeName(opcode), movementInfo.transport.pos.m_positionX, movementInfo.transport.pos.m_positionY, movementInfo.transport.pos.m_positionZ, movementInfo.transport.pos.m_orientation);
+    //sLog->outString("AC2-%s Transport > GUID: (low)%d - (high)%d", plrMover->GetName(), GUID_LOPART(movementInfo.transport.guid), GUID_HIPART(movementInfo.transport.guid));
 
     if (plrMover)
     {
@@ -499,7 +496,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
             const int32 sync_time = plrMover->m_anti_DeltaClientTime - plrMover->m_anti_DeltaServerTime;
  
-            sLog->outString("AC2-%s Time > cClientTimeDelta: %d, cServerTime: %d | deltaC: %d - deltaS: %d | SyncTime: %d", plrMover->GetName(), cClientTimeDelta, cServerTime, plrMover->m_anti_DeltaClientTime, plrMover->m_anti_DeltaServerTime, sync_time);
+            //sLog->outString("AC2-%s Time > cClientTimeDelta: %d, cServerTime: %d | deltaC: %d - deltaS: %d | SyncTime: %d", plrMover->GetName(), cClientTimeDelta, cServerTime, plrMover->m_anti_DeltaClientTime, plrMover->m_anti_DeltaServerTime, sync_time);
 
             // mistiming checks
             const int32 GetMistimingDelta = abs(int32(World::GetMistimingDelta()));
@@ -631,7 +628,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                             // don't process new jump packet
                             check_passed = false;
 
-                            sLog->outString("AC2-%s, Multijump exception.", plrMover->GetName().c_str(), JumpHeight, plrMover->m_anti_Last_VSpeed);
+                            //sLog->outString("AC2-%s, Multijump exception.", plrMover->GetName().c_str(), JumpHeight, plrMover->m_anti_Last_VSpeed);
 
 
                             // Tell the player "Sure, you can fly!"
@@ -664,12 +661,12 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // speed and teleport hack checks
                 if (real_delta > allowed_delta)
                 {
-
+                    // debug line
                     if (real_delta < 4900.0f)
                     {
-                        sLog->outString("AC2-%s, speed exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plrMover->GetName().c_str(), real_delta, allowed_delta, current_speed, plrMover->m_anti_Last_HSpeed, time_delta);
+                        //sLog->outString("AC2-%s, speed exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plrMover->GetName().c_str(), real_delta, allowed_delta, current_speed, plrMover->m_anti_Last_HSpeed, time_delta);
                     } else {
-                        sLog->outString("AC2-%s, teleport exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plrMover->GetName().c_str(), real_delta, allowed_delta, current_speed, plrMover->m_anti_Last_HSpeed, time_delta);
+                        //sLog->outString("AC2-%s, teleport exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plrMover->GetName().c_str(), real_delta, allowed_delta, current_speed, plrMover->m_anti_Last_HSpeed, time_delta);
                     }
 
                     check_passed = false;
@@ -677,26 +674,12 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
                 if (delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f)
-                {
-                    #ifdef ANTICHEAT_EXCEPTION_INFO
-                    //TC_LOG_WARN("cheat", "AC2-%s, mountain exception | tg_z=%f", plrMover->GetName().c_str(), tg_z);
-                    #endif
                     check_passed = false;
-                }
 				
                 // Fly hack checks
                 if (no_fly_auras && !no_fly_flags)
                 {
-                    #ifdef ANTICHEAT_EXCEPTION_INFO // Aura numbers: 201, 206, 207, 208, 209, 211
-                    //TC_LOG_WARN("cheat", "AC2-%s, flight exception. {SPELL_AURA_FLY=[%X]} {SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED=[%X]} {SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED=[%X]} {SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS=[%X]} {SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK=[%X]} {plrMover->GetVehicle()=[%X]}",
-                        plrMover->GetName().c_str(),
-    					 //Last Updated By ShopWoW.ir                    
-						 plrMover->HasAuraType(SPELL_AURA_FLY), plrMover->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED),
-                        plrMover->HasAuraType(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED), plrMover->HasAuraType(SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS),
-                        plrMover->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK), plrMover->GetVehicle();
-                    #endif
                     check_passed = false;
-
                     // Tell the player "Sure, you can fly!"
                     {
                         WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
@@ -711,16 +694,11 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         data << uint32(0);
                         SendPacket(&data);
                     }
-                    //plrMover->FallGround(2);
                 }
 
                 // Waterwalk checks
                 if (no_waterwalk_auras && !no_waterwalk_flags)
                 {
-                    #ifdef ANTICHEAT_EXCEPTION_INFO
-                    //TC_LOG_WARN("cheat", "AC2-%s, waterwalk exception. [%X]{SPELL_AURA_WATER_WALK=[%X]}",
-                    //    plrMover->GetName().c_str(), movementInfo.flags, plrMover->HasAuraType(SPELL_AURA_WATER_WALK));
-                    #endif
                     check_passed = false;
                     // Tell the player "Sure, you can fly!"
                     {
