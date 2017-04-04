@@ -86,20 +86,6 @@ void LoginDatabaseConnection::DoPrepareStatements()
     PrepareStatement(LOGIN_SEL_REALMLIST_SECURITY_LEVEL, "SELECT allowedSecurityLevel from realmlist WHERE id = ?", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_DEL_ACCOUNT, "DELETE FROM account WHERE id = ?", CONNECTION_ASYNC);
     PrepareStatement(LOGIN_SEL_AUTOBROADCAST, "SELECT id, weight, text FROM autobroadcast WHERE realmid = ? OR realmid = -1", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_ACC_CONTR_ID, "SELECT accountID FROM account_control WHERE accountID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_ACTIP, "SELECT act_ip FROM account_control WHERE accountID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_LASTIP, "SELECT last_ip_1 FROM account_control WHERE accountID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_LASTIP, "SELECT last_ip_2 FROM account_control WHERE accountID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_INS_IPCHECK, "INSERT INTO account_control (accountID, act_ip) VALUES (?, ?)", CONNECTION_ASYNC);
-	PrepareStatement(LOGIN_UPD_IPCHECK, "UPDATE account_control SET act_ip = ? , last_ip_1 = ? , last_ip_2 = ? WHERE accountID = ?", CONNECTION_ASYNC);
-	PrepareStatement(LOGIN_SEL_MULITPLEACC, "SELECT allow_multiple_accounts FROM multiple_account WHERE IP = ?", CONNECTION_SYNCH); 
-	PrepareStatement(LOGIN_SEL_DOUPLE_IP_CHECK, "SELECT accountID FROM account_control WHERE accountID != ? AND (act_ip = ? OR last_ip_1 = ? OR last_ip_2 = ?)", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_CHECK_GM, "SELECT gmlevel FROM account_access WHERE id = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_REP_MULTIPLEACC, "REPLACE INTO multiple_account (IP, allow_multiple_accounts) VALUES (?, ?)", CONNECTION_ASYNC);
-	PrepareStatement(LOGIN_SEL_ACC_GRP_ID, "SELECT accountGroupID FROM account_group WHERE accountID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_ACCGRPNUM, "SELECT MAX(accountGroupEntry) FROM account_group WHERE accountGroupID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_ALL_WITH_ACCGRPID, "SELECT accountID FROM account_group WHERE accountGroupID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_NAME_BY_ID, "SELECT username FROM account WHERE id = ?", CONNECTION_SYNCH);
 
     // firefly
     PrepareStatement(LOGIN_UPD_UPTIME_PLAYERS, "UPDATE uptime SET uptime = ?, maxplayers = ? WHERE realmid = ? AND starttime = ?", CONNECTION_ASYNC);

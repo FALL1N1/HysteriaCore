@@ -1755,10 +1755,10 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
             pItem->SetUInt32Value(ITEM_FIELD_CREATOR, player->GetGUIDLow());
 
         // send info to the client
-        player->SendNewItem(pItem, addNumber, true, SelfCast);
+        player->SendNewItem(pItem, num_to_add, true, bgType == 0);
 
         // we succeeded in creating at least one item, so a levelup is possible
-        if (SelfCast)
+        if (bgType == 0)
             player->UpdateCraftSkill(m_spellInfo->Id);
     }
 }
