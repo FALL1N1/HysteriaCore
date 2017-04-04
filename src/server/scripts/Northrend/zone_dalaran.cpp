@@ -265,8 +265,23 @@ public:
         return new npc_shandy_dalaranAI(creature);
     }
 };
+
 enum ArchmageLandalockQuests
 {
+    // Pre 3.3.x
+    QUEST_PROOF_OF_DEMISE_INGVAR            = 13245,
+    QUEST_PROOF_OF_DEMISE_KERISTRASZA       = 13246,
+    QUEST_PROOF_OF_DEMISE_EREGOS            = 13247,
+    QUEST_PROOF_OF_DEMISE_YMIRON            = 13248,
+    QUEST_PROOF_OF_DEMISE_THARON_JA         = 13249,
+    QUEST_PROOF_OF_DEMISE_GAL_DARAH         = 13250,
+    QUEST_PROOF_OF_DEMISE_MAL_GANIS         = 13251,
+    QUEST_PROOF_OF_DEMISE_SJONNIR           = 13252,
+    QUEST_PROOF_OF_DEMISE_LOKEN             = 13253,
+    QUEST_PROOF_OF_DEMISE_ANUB_ARAK         = 13254,
+    QUEST_PROOF_OF_DEMISE_HERALD_VOLAZJ     = 13255,
+    QUEST_PROOF_OF_DEMISE_CYANIGOSA         = 13256,
+    // Post 3.3.x
     QUEST_SARTHARION_MUST_DIE               = 24579,
     QUEST_ANUBREKHAN_MUST_DIE               = 24580,
     QUEST_NOTH_THE_PLAGUEBINGER_MUST_DIE    = 24581,
@@ -283,6 +298,20 @@ enum ArchmageLandalockQuests
 
 enum ArchmageLandalockImages
 {
+    // Pre 3.3.x
+    NPC_INGVAR_IMAGE                    = 31584,
+    NPC_KERISTRASZA_IMAGE               = 31618,
+    NPC_EREGOS_IMAGE                    = 31619,
+    NPC_YMIRON_IMAGE                    = 31620,
+    NPC_THARON_JA_IMAGE                 = 31621,
+    NPC_GAL_DARAH_IMAGE                 = 31622,
+    NPC_MAL_GANIS_IMAGE                 = 31623,
+    NPC_SJONNIR_IMAGE                   = 31624,
+    NPC_LOKEN_IMAGE                     = 31625,
+    NPC_ANUB_ARAK_IMAGE                 = 31626,
+    NPC_HERALD_VOLAZJ_IMAGE             = 31627,
+    NPC_CYANIGOSA_IMAGE                 = 31629,
+    // Post 3.3.x
     NPC_SARTHARION_IMAGE                = 37849,
     NPC_ANUBREKHAN_IMAGE                = 37850,
     NPC_NOTH_THE_PLAGUEBINGER_IMAGE     = 37851,
@@ -321,6 +350,32 @@ class npc_archmage_landalock : public CreatureScript
             {
                 switch (QuestId)
                 {
+                    // Pre 3.3.x
+                    case QUEST_PROOF_OF_DEMISE_INGVAR:
+                        return NPC_INGVAR_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_KERISTRASZA:
+                        return NPC_KERISTRASZA_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_EREGOS:
+                        return NPC_EREGOS_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_YMIRON:
+                        return NPC_YMIRON_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_THARON_JA:
+                        return NPC_THARON_JA_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_GAL_DARAH:
+                        return NPC_GAL_DARAH_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_MAL_GANIS:
+                        return NPC_MAL_GANIS_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_SJONNIR:
+                        return NPC_SJONNIR_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_LOKEN:
+                        return NPC_LOKEN_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_ANUB_ARAK:
+                        return NPC_ANUB_ARAK_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_HERALD_VOLAZJ:
+                        return NPC_HERALD_VOLAZJ_IMAGE;
+                    case QUEST_PROOF_OF_DEMISE_CYANIGOSA:
+                        return NPC_CYANIGOSA_IMAGE;
+                    // Post 3.3.x
                     case QUEST_SARTHARION_MUST_DIE:
                         return NPC_SARTHARION_IMAGE;
                     case QUEST_ANUBREKHAN_MUST_DIE:
@@ -351,7 +406,7 @@ class npc_archmage_landalock : public CreatureScript
             void JustSummoned(Creature* image)
             {
                 // xinef: screams like a baby
-                if (image->GetEntry() != NPC_ANUBREKHAN_IMAGE)
+                if (image->GetEntry() != NPC_ANUBREKHAN_IMAGE && image->GetEntry() != NPC_ANUB_ARAK_IMAGE)
                     image->SetUnitMovementFlags(MOVEMENTFLAG_RIGHT);
                 _summonGUID = image->GetGUID();
             }
@@ -369,7 +424,7 @@ class npc_archmage_landalock : public CreatureScript
                     {
                         uint32 questId = i->second;
                         Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
-                        if (!quest || !quest->IsWeekly())
+                        if (!quest || !quest->IsDailyOrWeekly())
                             continue;
 
                         uint32 newEntry = GetImageEntry(questId);
@@ -378,9 +433,11 @@ class npc_archmage_landalock : public CreatureScript
                             if (Creature* image = ObjectAccessor::GetCreature(*me, _summonGUID))
                                 image->DespawnOrUnsummon();
 
-                            float z = 653.622f;
-                            if (newEntry == NPC_MALYGOS_IMAGE || newEntry == NPC_RAZORSCALE_IMAGE || newEntry == NPC_SARTHARION_IMAGE)
-                                z += 3.0f;
+							float z = 652.633f;
+							if (newEntry == NPC_MALYGOS_IMAGE || newEntry == NPC_RAZORSCALE_IMAGE || newEntry == NPC_SARTHARION_IMAGE
+                                || newEntry == NPC_KERISTRASZA_IMAGE || newEntry == NPC_EREGOS_IMAGE || newEntry == NPC_CYANIGOSA_IMAGE)
+								z += 4.0f;
+
                             me->SummonCreature(newEntry, 5703.077f, 583.9757f, z, 3.926991f);
                         }
                     }
@@ -601,6 +658,97 @@ class npc_minigob_manabonk : public CreatureScript
     }
 };
 
+enum ArchmageTimearQuests
+{
+    QUEST_TIMEAR_FORESEES_CONSTRUCTS        = 13240,
+    QUEST_TIMEAR_FORESEES_BERSERKERS        = 13241,
+    QUEST_TIMEAR_FORESEES_AGENTS            = 13243,
+    QUEST_TIMEAR_FORESEES_VANGUARDS         = 13244,
+};
+
+enum ArchmageTimearImages
+{
+    NPC_CONSTRUCT_IMAGE                 = 31631,
+    NPC_BERSERKER_IMAGE                 = 31632,
+    NPC_AGENTS_IMAGE                    = 31633,
+    NPC_VANGUARDS_IMAGE                 = 31634,
+};
+
+class npc_archmage_timear : public CreatureScript
+{
+	public:
+		npc_archmage_timear() : CreatureScript("npc_archmage_timear")
+		{
+		}
+
+		CreatureAI* GetAI(Creature* creature) const
+		{
+			return new npc_archmage_timearAI(creature);
+		}
+
+		struct npc_archmage_timearAI : public ScriptedAI
+		{
+			npc_archmage_timearAI(Creature* creature) : ScriptedAI(creature)
+			{
+				_switchImageTimer = MINUTE*IN_MILLISECONDS;
+				_summonGUID = 0;
+			}
+
+			uint32 GetImageEntry(uint32 QuestId)
+			{
+				switch (QuestId)
+				{
+                    case QUEST_TIMEAR_FORESEES_CONSTRUCTS:
+                        return NPC_CONSTRUCT_IMAGE;
+                    case QUEST_TIMEAR_FORESEES_BERSERKERS:
+                        return NPC_BERSERKER_IMAGE;
+                    case QUEST_TIMEAR_FORESEES_AGENTS:
+                        return NPC_AGENTS_IMAGE;
+					default: //case QUEST_TIMEAR_FORESEES_VANGUARDS:
+						return NPC_VANGUARDS_IMAGE;
+				}
+			}
+
+			void JustSummoned(Creature* image)
+			{
+				if (image->GetEntry() != NPC_ANUBREKHAN_IMAGE)
+					image->SetUnitMovementFlags(MOVEMENTFLAG_RIGHT);
+				_summonGUID = image->GetGUID();
+			}
+
+			void UpdateAI(uint32 diff)
+			{
+				ScriptedAI::UpdateAI(diff);
+
+				_switchImageTimer += diff;
+				if (_switchImageTimer > MINUTE*IN_MILLISECONDS)
+				{
+					_switchImageTimer = 0;
+					QuestRelationBounds objectQR = sObjectMgr->GetCreatureQuestRelationBounds(me->GetEntry());
+					for (QuestRelations::const_iterator i = objectQR.first; i != objectQR.second; ++i)
+					{
+						uint32 questId = i->second;
+						Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+						if (!quest || !quest->IsDaily())
+							continue;
+
+						uint32 newEntry = GetImageEntry(questId);
+						if (GUID_ENPART(_summonGUID) != newEntry)
+						{
+							if (Creature* image = ObjectAccessor::GetCreature(*me, _summonGUID))
+								image->DespawnOrUnsummon();
+
+							me->SummonCreature(newEntry, 5771.16f, 529.4f, 652.633f, 3.926991f);
+						}
+					}
+				}
+			}
+		private:
+			uint32 _switchImageTimer;
+			uint64 _summonGUID;
+		};
+};
+
 void AddSC_dalaran()
 {
     // our
@@ -612,4 +760,7 @@ void AddSC_dalaran()
     // theirs
     new npc_mageguard_dalaran();
     new npc_minigob_manabonk();
+    
+    // firefly
+    new npc_archmage_timear();
 }

@@ -141,8 +141,12 @@ uint32 LootStore::LoadLootTable()
     // Clearing store (for reloading case)
     Clear();
 
-    //                                                  0     1            2               3         4         5             6
-    QueryResult result = WorldDatabase.PQuery("SELECT entry, item, ChanceOrQuestChance, lootmode, groupid, mincountOrRef, maxcount FROM %s", GetName());
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                        0     1            2               3         4         5                 6
+    QueryResult result = WorldDatabase.PQuery("SELECT loot.entry, item, ChanceOrQuestChance, lootmode, groupid, mincountOrRef, loot.maxcount FROM %s loot "
+            "LEFT OUTER JOIN item_template item ON item.entry = loot.item "
+            "WHERE IF(item.entry IS NULL OR mincountOrRef < 0, 1 = 1, item.AddedInBuild <= '%u')"
+            , GetName(), currentBuild);
 
     if (!result)
         return 0;

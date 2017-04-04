@@ -22,6 +22,7 @@
 #include "Log.h"
 #include "MapManager.h"
 #include "Transport.h"
+#include "World.h"
 
 ////////////////////////////////////////////////////////////
 // template class ActivePoolData
@@ -602,8 +603,12 @@ void PoolMgr::LoadFromDB()
     {
         uint32 oldMSTime = getMSTime();
 
-        //                                                 1       2         3
-        QueryResult result = WorldDatabase.Query("SELECT guid, pool_entry, chance FROM pool_creature");
+        uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+        //                                                              1       2         3
+        QueryResult result = WorldDatabase.PQuery("SELECT pool_creature.guid, pool_entry, chance FROM pool_creature "
+        "LEFT OUTER JOIN creature ON creature.guid = pool_creature.guid "
+        "LEFT OUTER JOIN creature_template ON creature_template.entry = creature.id "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
         if (!result)
         {
@@ -815,6 +820,7 @@ void PoolMgr::LoadFromDB()
         uint32 oldMSTime = getMSTime();
 
         PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_QUEST_POOLS);
+        stmt->setUInt32(0, sWorld->getIntConfig(CONFIG_CURRENT_BUILD));
         PreparedQueryResult result = WorldDatabase.Query(stmt);
 
         if (!result)

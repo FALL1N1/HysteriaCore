@@ -105,8 +105,13 @@ void LFGMgr::LoadRewards()
         delete itr->second;
     RewardMapStore.clear();
 
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
     // ORDER BY is very important for GetRandomDungeonReward!
-    QueryResult result = WorldDatabase.Query("SELECT dungeonId, maxLevel, firstQuestId, otherQuestId FROM lfg_dungeon_rewards ORDER BY dungeonId, maxLevel ASC");
+    QueryResult result = WorldDatabase.PQuery("SELECT dungeonId, lfg_dungeon_rewards.maxLevel, firstQuestId, otherQuestId FROM lfg_dungeon_rewards "
+    "LEFT OUTER JOIN quest_template qt1 ON qt1.Id = lfg_dungeon_rewards.firstQuestId  "
+    "LEFT OUTER JOIN quest_template qt2 ON qt2.Id = lfg_dungeon_rewards.otherQuestId "
+    "WHERE qt1.AddedInBuild <= '%u' AND IF(qt2.Id IS NOT NULL, qt2.AddedInBuild <= '%u', 1 = 1) "
+    "ORDER BY dungeonId, maxLevel ASC", currentBuild, currentBuild);
 
     if (!result)
     {

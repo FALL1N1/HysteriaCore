@@ -1483,6 +1483,15 @@ AccountInstancesPerHour = 5
 BirthdayTime = 1222964635
 
 #
+#   CurrentBuild
+#        Description: Client build number of currently supported patch. Used to filter out currently not supported spawns. For example: 3.3.5a is 12340.
+#        Default:     12340
+#
+#
+
+CurrentBuild = 12340
+
+#
 ###################################################################################################
 
 ###################################################################################################

@@ -414,7 +414,7 @@ void ObjectMgr::LoadCreatureTemplates()
                                              "InhabitType, HoverHeight, Health_mod, Mana_mod, Armor_mod, RacialLeader, questItem1, questItem2, questItem3, questItem4, questItem5, "
     //                                            79           80           81                83           84
                                              " questItem6, movementId, RegenHealth, mechanic_immune_mask, flags_extra, ScriptName "
-                                             "FROM creature_template;");
+                                             "FROM creature_template ");
 
     if (!result)
     {
@@ -544,8 +544,11 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6
-    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, auras FROM creature_template_addon");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                                  0       1       2      3       4       5      6
+    QueryResult result = WorldDatabase.PQuery("SELECT creature_template.entry, path_id, mount, bytes1, bytes2, emote, auras FROM creature_template_addon "
+    "LEFT OUTER JOIN creature_template ON creature_template.entry = creature_template_addon.entry "
+    "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -956,8 +959,12 @@ void ObjectMgr::LoadCreatureAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6
-    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, auras FROM creature_addon");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                                 0       1       2      3       4       5      6
+    QueryResult result = WorldDatabase.PQuery("SELECT creature_addon.guid, path_id, mount, bytes1, bytes2, emote, auras FROM creature_addon "
+    "LEFT OUTER JOIN creature ON creature.guid = creature_addon.guid "
+    "LEFT OUTER JOIN creature_template ON creature_template.entry = creature.id "
+    "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -1035,8 +1042,12 @@ void ObjectMgr::LoadGameObjectAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0     1                 2
-    QueryResult result = WorldDatabase.Query("SELECT guid, invisibilityType, invisibilityValue FROM gameobject_addon");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                                  0     1                 2
+    QueryResult result = WorldDatabase.PQuery("SELECT gameobject_addon.guid, invisibilityType, invisibilityValue FROM gameobject_addon "
+        "LEFT OUTER JOIN gameobject ON gameobject.guid = gameobject_addon.guid "
+        "LEFT OUTER JOIN gameobject_template ON gameobject_template.entry = gameobject.id "
+        "WHERE gameobject_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -1141,8 +1152,11 @@ void ObjectMgr::LoadEquipmentTemplates()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                 0     1       2           3           4
-    QueryResult result = WorldDatabase.Query("SELECT entry, id, itemEntry1, itemEntry2, itemEntry3 FROM creature_equip_template");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                                          0     1       2           3           4
+    QueryResult result = WorldDatabase.PQuery("SELECT creature_equip_template.entry, id, itemEntry1, itemEntry2, itemEntry3 FROM creature_equip_template "
+    "LEFT OUTER JOIN creature_template ON creature_template.entry = creature_equip_template.entry "
+    "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -1337,9 +1351,16 @@ void ObjectMgr::LoadLinkedRespawn()
 {
     uint32 oldMSTime = getMSTime();
 
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
     _linkedRespawnStore.clear();
-    //                                                 0        1          2
-    QueryResult result = WorldDatabase.Query("SELECT guid, linkedGuid, linkType FROM linked_respawn ORDER BY guid ASC");
+    //                                                    0           1             2
+    QueryResult result = WorldDatabase.PQuery("SELECT lr.guid, lr.linkedGuid, lr.linkType FROM linked_respawn lr "
+    "LEFT OUTER JOIN creature cg ON cg.guid = lr.guid "
+    "LEFT OUTER JOIN creature_template ctg ON ctg.entry = cg.id "
+    "LEFT OUTER JOIN creature clg ON clg.guid = lr.linkedGuid "
+    "LEFT OUTER JOIN creature_template ctlg ON ctlg.entry = clg.id "
+    "WHERE ctg.`AddedInBuild` <= '%u' AND ctlg.`AddedInBuild` <= '%u' "
+    "ORDER BY guid ASC", currentBuild, currentBuild);
 
     if (!result)
     {
@@ -1570,8 +1591,11 @@ void ObjectMgr::LoadTempSummons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0           1             2        3      4           5           6           7            8           9
-    QueryResult result = WorldDatabase.Query("SELECT summonerId, summonerType, groupId, entry, position_x, position_y, position_z, orientation, summonType, summonTime FROM creature_summon_groups");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                  0           1             2                               3      4           5           6           7            8           9
+    QueryResult result = WorldDatabase.PQuery("SELECT summonerId, summonerType, groupId, creature_summon_groups.entry, position_x, position_y, position_z, orientation, summonType, summonTime FROM creature_summon_groups "
+        "LEFT OUTER JOIN creature_template ON creature_template.entry = creature_summon_groups.entry "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -1656,13 +1680,17 @@ void ObjectMgr::LoadCreatures()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                               0              1   2    3        4             5           6           7           8            9              10
-    QueryResult result = WorldDatabase.Query("SELECT creature.guid, id, map, modelid, equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, spawndist, "
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+
+    //                                                 0              1   2    3        4             5           6           7           8            9              10
+    QueryResult result = WorldDatabase.PQuery("SELECT creature.guid, id, map, modelid, equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, spawndist, "
     //   11               12         13       14            15         16         17          18          19                20                   21
-        "currentwaypoint, curhealth, curmana, MovementType, spawnMask, phaseMask, eventEntry, pool_entry, creature.npcflag, creature.unit_flags, creature.dynamicflags "
+        "currentwaypoint, curhealth, curmana, creature.MovementType, spawnMask, phaseMask, eventEntry, pool_entry, creature.npcflag, creature.unit_flags, creature.dynamicflags "
         "FROM creature "
+        "LEFT OUTER JOIN creature_template ON creature.id = creature_template.entry "
         "LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid "
-        "LEFT OUTER JOIN pool_creature ON creature.guid = pool_creature.guid");
+        "LEFT OUTER JOIN pool_creature ON creature.guid = pool_creature.guid "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -1972,12 +2000,16 @@ void ObjectMgr::LoadGameobjects()
 
     uint32 count = 0;
 
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
     //                                                0                1   2    3           4           5           6
-    QueryResult result = WorldDatabase.Query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, "
+    QueryResult result = WorldDatabase.PQuery("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, "
     //   7          8          9          10         11             12            13     14         15         16          17
         "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, phaseMask, eventEntry, pool_entry "
-        "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid "
-        "LEFT OUTER JOIN pool_gameobject ON gameobject.guid = pool_gameobject.guid");
+        "FROM gameobject "
+        "LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid "
+        "LEFT OUTER JOIN pool_gameobject ON gameobject.guid = pool_gameobject.guid "
+        "LEFT OUTER JOIN gameobject_template ON gameobject_template.entry = gameobject.id "
+        "WHERE gameobject_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -2988,8 +3020,11 @@ void ObjectMgr::LoadVehicleTemplateAccessories()
 
     uint32 count = 0;
 
-    //                                                  0             1              2          3           4             5
-    QueryResult result = WorldDatabase.Query("SELECT `entry`, `accessory_entry`, `seat_id`, `minion`, `summontype`, `summontimer` FROM `vehicle_template_accessory`");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                                            0             1              2          3           4             5
+    QueryResult result = WorldDatabase.PQuery("SELECT vehicle_template_accessory.`entry`, `accessory_entry`, `seat_id`, `minion`, `summontype`, `summontimer` FROM `vehicle_template_accessory`"
+        "LEFT OUTER JOIN creature_template ON creature_template.entry = vehicle_template_accessory.entry "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -3086,8 +3121,11 @@ void ObjectMgr::LoadPetLevelInfo()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                 0               1      2   3     4    5    6    7     8    9
-    QueryResult result = WorldDatabase.Query("SELECT creature_entry, level, hp, mana, str, agi, sta, inte, spi, armor FROM pet_levelstats");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                 0                   1      2   3     4    5    6    7     8        9
+    QueryResult result = WorldDatabase.PQuery("SELECT creature_entry, pls.level, hp, mana, str, agi, sta, inte, spi, pls.armor FROM pet_levelstats pls "
+        "LEFT OUTER JOIN creature_template ON creature_template.entry = pls.creature_entry "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -3858,7 +3896,7 @@ void ObjectMgr::LoadQuests()
     _questTemplates.clear();
 
     mExclusiveQuestGroups.clear();
-
+    
     QueryResult result = WorldDatabase.Query("SELECT "
         //0     1      2        3        4           5       6            7             8              9               10             11                 12
         "Id, Method, Level, MinLevel, MaxLevel, ZoneOrSort, Type, SuggestedPlayers, LimitTime, RequiredClasses, RequiredRaces, RequiredSkillId, RequiredSkillPoints, "
@@ -3890,7 +3928,7 @@ void ObjectMgr::LoadQuests()
         "Unknown0, ObjectiveText1, ObjectiveText2, ObjectiveText3, ObjectiveText4, DetailsEmote1, DetailsEmote2, DetailsEmote3, DetailsEmote4, DetailsEmoteDelay1, DetailsEmoteDelay2, DetailsEmoteDelay3, DetailsEmoteDelay4, "
         //     130                 131               132               133                 134                 135                136                      137                       138                    139                140
         "EmoteOnIncomplete, EmoteOnComplete, OfferRewardEmote1, OfferRewardEmote2, OfferRewardEmote3, OfferRewardEmote4, OfferRewardEmoteDelay1, OfferRewardEmoteDelay2, OfferRewardEmoteDelay3, OfferRewardEmoteDelay4, VerifiedBuild"
-        " FROM quest_template");
+        " FROM quest_template ");
     if (!result)
     {
         sLog->outErrorDb(">> Loaded 0 quests definitions. DB table `quest_template` is empty.");
@@ -5241,8 +5279,12 @@ void ObjectMgr::LoadInstanceEncounters()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                 0         1            2                3
-    QueryResult result = WorldDatabase.Query("SELECT entry, creditType, creditEntry, lastEncounterDungeon FROM instance_encounters");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    //                                                                      0         1            2                3
+    QueryResult result = WorldDatabase.PQuery("SELECT instance_encounters.entry, creditType, creditEntry, lastEncounterDungeon FROM instance_encounters "
+    "LEFT OUTER JOIN creature_template ON creature_template.entry = creditEntry "
+    "WHERE creature_template.AddedInBuild <= '%u' OR creditType != 0 ", currentBuild);
+
     if (!result)
     {
         sLog->outErrorDb(">> Loaded 0 instance encounters, table is empty!");
@@ -6552,7 +6594,7 @@ void ObjectMgr::LoadGameObjectTemplate()
                                              "questItem4, questItem5, questItem6, data0, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, "
     //                                          29      30      31      32      33      34      35      36      37      38      39      40        41
                                              "data13, data14, data15, data16, data17, data18, data19, data20, data21, data22, data23, AIName, ScriptName "
-                                             "FROM gameobject_template");
+                                             "FROM gameobject_template ");
 
     if (!result)
     {
@@ -6986,11 +7028,14 @@ void ObjectMgr::LoadReputationOnKill()
 
     uint32 count = 0;
 
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
     //                                                0            1                     2
-    QueryResult result = WorldDatabase.Query("SELECT creature_id, RewOnKillRepFaction1, RewOnKillRepFaction2, "
+    QueryResult result = WorldDatabase.PQuery("SELECT creature_id, RewOnKillRepFaction1, RewOnKillRepFaction2, "
     //   3             4             5                   6             7             8                   9
         "IsTeamAward1, MaxStanding1, RewOnKillRepValue1, IsTeamAward2, MaxStanding2, RewOnKillRepValue2, TeamDependent "
-        "FROM creature_onkill_reputation");
+        "FROM creature_onkill_reputation "
+        "LEFT OUTER JOIN creature_template ON creature_template.entry = creature_onkill_reputation.creature_id "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -7219,8 +7264,12 @@ void ObjectMgr::LoadQuestPOI()
 
     uint32 count = 0;
 
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
     //                                               0        1   2         3      4               5        6     7
-    QueryResult result = WorldDatabase.Query("SELECT questId, id, objIndex, mapid, WorldMapAreaId, FloorId, unk3, unk4 FROM quest_poi order by questId");
+    QueryResult result = WorldDatabase.PQuery("SELECT questId, quest_poi.id, objIndex, mapid, WorldMapAreaId, FloorId, unk3, unk4 FROM quest_poi "
+    "LEFT OUTER JOIN quest_template ON quest_template.Id = quest_poi.questId "
+    "WHERE quest_template.AddedInBuild <= '%u' "
+    "order by questId", currentBuild);
 
     if (!result)
     {
@@ -7396,8 +7445,17 @@ void ObjectMgr::LoadQuestRelationsHelper(QuestRelations& map, std::string const&
     map.clear();                                            // need for reload case
 
     uint32 count = 0;
+    
+    std::string templateTable = (table.c_str() == "gameobject_queststarter" || table.c_str() == "gameobject_questender") ? "gameobject_template" : "creature_template";
 
-    QueryResult result = WorldDatabase.PQuery("SELECT id, quest, pool_entry FROM %s qr LEFT JOIN pool_quest pq ON qr.quest = pq.entry", table.c_str());
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+
+    QueryResult result = WorldDatabase.PQuery("SELECT qr.id, quest, pool_entry FROM %s qr "
+        "LEFT JOIN pool_quest pq ON qr.quest = pq.entry "
+        "LEFT OUTER JOIN quest_template qt ON qt.Id = qr.quest "
+        "LEFT OUTER JOIN %s template ON template.entry = qr.id "
+        "WHERE qt.AddedInBuild <= '%u' AND template.AddedInBuild <= '%u'"
+        , table.c_str(), templateTable.c_str(), currentBuild, currentBuild);
 
     if (!result)
     {
@@ -8236,8 +8294,11 @@ void ObjectMgr::LoadMailLevelRewards()
 
     _mailLevelRewardStore.clear();                           // for reload case
 
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
     //                                                 0        1             2            3
-    QueryResult result = WorldDatabase.Query("SELECT level, raceMask, mailTemplateId, senderEntry FROM mail_level_reward");
+    QueryResult result = WorldDatabase.PQuery("SELECT level, raceMask, mailTemplateId, senderEntry FROM mail_level_reward "
+        "LEFT OUTER JOIN creature_template ON creature_template.entry = mail_level_reward.senderEntry "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -8376,9 +8437,12 @@ void ObjectMgr::LoadTrainerSpell()
     // For reload case
     _cacheTrainerSpellStore.clear();
 
-    QueryResult result = WorldDatabase.Query("SELECT b.entry, a.spell, a.spellcost, a.reqskill, a.reqskillvalue, a.reqlevel FROM npc_trainer AS a "
-                                             "INNER JOIN npc_trainer AS b ON a.entry = -(b.spell) "
-                                             "UNION SELECT * FROM npc_trainer WHERE spell > 0");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    QueryResult result = WorldDatabase.PQuery("SELECT npc_trainer.* FROM (SELECT b.entry, a.spell, a.spellcost, a.reqskill, a.reqskillvalue, a.reqlevel FROM npc_trainer AS a "
+                                             "INNER JOIN npc_trainer AS b ON a.entry = -(b.spell)  "
+                                             "UNION SELECT * FROM npc_trainer WHERE spell > 0) npc_trainer "
+                                             "LEFT OUTER JOIN creature_template ON creature_template.entry = npc_trainer.entry "
+        "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
     if (!result)
     {
@@ -8460,7 +8524,13 @@ void ObjectMgr::LoadVendors()
 
     std::set<uint32> skip_vendors;
 
-    QueryResult result = WorldDatabase.Query("SELECT entry, item, maxcount, incrtime, ExtendedCost FROM npc_vendor ORDER BY entry, slot ASC");
+    uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
+    QueryResult result = WorldDatabase.PQuery("SELECT npc_vendor.entry, npc_vendor.item, npc_vendor.maxcount, npc_vendor.incrtime, npc_vendor.ExtendedCost FROM npc_vendor "
+    "LEFT OUTER JOIN creature_template ON creature_template.entry = npc_vendor.entry "
+    "LEFT OUTER JOIN item_template ON item_template.entry = npc_vendor.item "
+    "WHERE creature_template.AddedInBuild <= '%u' AND item_template.AddedInBuild <= '%u' "
+    "ORDER BY entry, slot ASC ", currentBuild, currentBuild);
+
     if (!result)
     {
         sLog->outString();
