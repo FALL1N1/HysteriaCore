@@ -137,6 +137,8 @@ public:
         uint8 addValue;
         bool bKorG;
         bool spawned;
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        uint32 respawnTimer = preNerf ? 30000 : 20000;
 
         void UpdateAI(uint32 diff)
         {
@@ -155,22 +157,22 @@ public:
                     if (Creature *c = DoSummon(RAND(NPC_PORTAL_GUARDIAN, NPC_PORTAL_KEEPER), me, 2.0f, 0, TEMPSUMMON_DEAD_DESPAWN))
                         me->CastSpell(c, SPELL_PORTAL_CHANNEL, false);
                     events.PopEvent();
-                    events.RescheduleEvent(EVENT_SUMMON_KEEPER_TRASH, 20000);
+                    events.RescheduleEvent(EVENT_SUMMON_KEEPER_TRASH, respawnTimer);
                     break;
                 case EVENT_SUMMON_KEEPER_TRASH:
                     for (uint8 i=0; i<3+addValue; ++i)
                     {
                         uint32 entry = RAND(NPC_AZURE_INVADER_1, NPC_AZURE_INVADER_2, NPC_AZURE_SPELLBREAKER_1, NPC_AZURE_SPELLBREAKER_2, NPC_AZURE_MAGE_SLAYER_1, NPC_AZURE_MAGE_SLAYER_2, NPC_AZURE_BINDER_1, NPC_AZURE_BINDER_2);
-                        DoSummon(entry, me, 2.0f, 20000, TEMPSUMMON_DEAD_DESPAWN);
+                        DoSummon(entry, me, 2.0f, respawnTimer, TEMPSUMMON_DEAD_DESPAWN);
                     }
-                    events.RepeatEvent(20000);
+                    events.RepeatEvent(respawnTimer);
                     break;
                 case EVENT_SUMMON_ELITES:
                     spawned = true;
                     for (uint8 i=0; i<2+addValue; ++i)
                     {
                         uint32 entry = RAND(NPC_AZURE_CAPTAIN, NPC_AZURE_RAIDER, NPC_AZURE_STALKER, NPC_AZURE_SORCEROR);
-                        DoSummon(entry, me, 2.0f, 20000, TEMPSUMMON_DEAD_DESPAWN);
+                        DoSummon(entry, me, 2.0f, respawnTimer, TEMPSUMMON_DEAD_DESPAWN);
                     }
                     me->SetVisible(false);
                     events.PopEvent();

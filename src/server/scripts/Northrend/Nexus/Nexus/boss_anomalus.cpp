@@ -69,11 +69,14 @@ class boss_anomalus : public CreatureScript
             }
 
             bool achievement;
+            uint8 riftCount;
+            bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
 
             void Reset()
             {
                 BossAI::Reset();
                 achievement = true;
+                riftCount = 0;
                 me->CastSpell(me, SPELL_CLOSE_RIFTS, true);
             }
 
@@ -88,6 +91,8 @@ class boss_anomalus : public CreatureScript
             {
                 if (type == me->GetEntry())
                 {
+                    if (preNerf)
+                        events.ScheduleEvent(EVENT_ANOMALUS_HEALTH, 1000);
                     me->RemoveAura(SPELL_RIFT_SHIELD);
                     me->InterruptNonMeleeSpells(false);
                     achievement = false;
@@ -130,18 +135,33 @@ class boss_anomalus : public CreatureScript
                 switch (events.ExecuteEvent())
                 {
                     case EVENT_ANOMALUS_HEALTH:
-                        if (me->HealthBelowPct(51))
                         {
-                            Talk(SAY_RIFT);
-                            Talk(EMOTE_RIFT);
-                            
-                            me->CastSpell(me, SPELL_CREATE_RIFT, false);
-                            me->CastSpell(me, SPELL_RIFT_SHIELD, true);
-                            me->m_Events.AddEvent(new ChargeRifts(me), me->m_Events.CalculateTime(1000));
-                            events.DelayEvents(46000);
-                            break;
+                            bool healthCheck = false;
+                            // 3.3.2 Anomalus will now use the Create Rift ability only once, down from 3 times.
+                            if (preNerf)
+                            {
+                                healthCheck = (me->HealthBelowPct(75) && riftCount == 0) || 
+                                    (me->HealthBelowPct(50) && riftCount == 1) || 
+                                    (me->HealthBelowPct(25) && riftCount == 2);
+                            } 
+                            else
+                            {
+                                healthCheck = (me->HealthBelowPct(50) && riftCount == 0);
+                            }
+
+						    if (healthCheck)
+						    {
+                                riftCount++;
+							    Talk(SAY_RIFT);
+							    Talk(EMOTE_RIFT);
+							    me->CastSpell(me, SPELL_CREATE_RIFT, false);
+							    me->CastSpell(me, SPELL_RIFT_SHIELD, true);
+							    me->m_Events.AddEvent(new ChargeRifts(me), me->m_Events.CalculateTime(1000));
+							    events.DelayEvents(46000);
+							    break;
+						    }
+						    events.ScheduleEvent(EVENT_ANOMALUS_HEALTH, 1000);
                         }
-                        events.ScheduleEvent(EVENT_ANOMALUS_HEALTH, 1000);
                         break;
                     case EVENT_ANOMALUS_SPARK:
                         me->CastSpell(me->GetVictim(), SPELL_SPARK, false);

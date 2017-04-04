@@ -116,6 +116,7 @@ public:
         SummonList summons;
         uint64 GraufGUID;
         bool SecondPhase, EventStarted;
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
 
         void Reset()
         {
@@ -278,6 +279,8 @@ public:
         SummonList summons;
         uint8 currentPos;
         uint8 AchievementHitCount;
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        uint8 harpoonReqCount = preNerf ? 5 : 3;
 
         void Reset()
         {
@@ -304,7 +307,7 @@ public:
             else if (param == ACTION_MYGIRL_ACHIEVEMENT)
             {
                 AchievementHitCount++;
-                if (AchievementHitCount >= 3 && m_pInstance)
+                if (AchievementHitCount >= harpoonReqCount && m_pInstance)
                     m_pInstance->SetData(DATA_SKADI_ACHIEVEMENT, true);
                     
             }
@@ -489,6 +492,9 @@ class go_harpoon_canon : public GameObjectScript
 { 
 public: 
     go_harpoon_canon() : GameObjectScript("go_harpoon_canon") { } 
+    
+    bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+    uint8 harpoonReqCount = preNerf ? 5 : 3;
 
     bool OnGossipHello(Player* pPlayer, GameObject* pGO)
     {
@@ -501,7 +507,7 @@ public:
 
                 if (Creature *grauf = ObjectAccessor::GetCreature(*pPlayer, m_pInstance->GetData64(DATA_GRAUF)))
                 {
-                    if (count >= 3)
+                    if (count >= harpoonReqCount)
                     {
                         m_pInstance->SetData(SKADI_IN_RANGE, 0);
                         grauf->AI()->DoAction(ACTION_REMOVE_SKADI);

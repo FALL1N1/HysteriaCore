@@ -110,6 +110,8 @@ public:
         EventMap events;
         EventMap events2;
         SummonList summons;
+        uint8 ritualCount;
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
 
         void Reset()
         {
@@ -343,6 +345,9 @@ public:
                     AttackStart(me->GetVictim());
                     me->GetMotionMaster()->MoveFall(0, true);
                     summons.DespawnAll();
+                    
+                    if (preNerf)
+                        events.ScheduleEvent(EVENT_SORROWGRAVE_RITUAL, 25000);
                     break;
             }
 

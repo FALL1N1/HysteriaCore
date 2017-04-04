@@ -74,6 +74,8 @@ public:
         EventMap events;
         InstanceScript *pInstance;
         SummonList summons;
+        uint8 guardianCount;
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
 
         void SummonHelpers(bool swarm)
         {
@@ -123,6 +125,7 @@ public:
         {
             if (param == ACTION_GUARDIAN_DIED)
             {
+                events.ScheduleEvent(EVENT_CHECK_HEALTH, 1000);
                 if (pInstance)
                     pInstance->SetData(DATA_NADOX_ACHIEVEMENT, false);
             }
@@ -154,6 +157,7 @@ public:
         {
             events.Reset();
             summons.DespawnAll();
+            guardianCount = 0;
             
             me->MonsterYell("Master, is my service complete?", LANG_UNIVERSAL, 0);
              me->PlayDirectSound(SOUND_DEATH);
@@ -198,8 +202,22 @@ public:
                 case EVENT_CHECK_HEALTH:
                 {
                     events.RepeatEvent(1000);
-                    if (HealthBelowPct(50))
+                    bool healthCheck = false;
+                    // 3.3.2 Anomalus will now use the Create Rift ability only once, down from 3 times.
+                    if (preNerf)
                     {
+                        healthCheck = (me->HealthBelowPct(75) && guardianCount == 0) ||
+                            (me->HealthBelowPct(50) && guardianCount == 1) ||
+                            (me->HealthBelowPct(25) && guardianCount == 2);
+                    }
+                    else
+                    {
+                        healthCheck = (me->HealthBelowPct(51) && guardianCount == 0);
+                    }
+
+                    if (healthCheck)
+                    {
+                        guardianCount++;
                         events.CancelEvent(EVENT_CHECK_HEALTH);
                         events.ScheduleEvent(EVENT_SUMMON_GUARD, 100);
                     }

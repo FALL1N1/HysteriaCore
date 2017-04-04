@@ -82,6 +82,7 @@ public:
         EventMap events;
         SummonList summons;
         bool bAchiev;
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
 
         void Reset()
         {
@@ -205,7 +206,14 @@ public:
                         me->setAttackTimer(BASE_ATTACK, 2500);
                         Talk(EMOTE_MIRRORED_SOUL);
                     }
-                    events.RepeatEvent(urand(20000,30000));
+                    if (preNerf)
+                    {
+                        events.RepeatEvent(urand(15000, 25000));
+                    }
+                    else
+                    {
+                        events.RepeatEvent(urand(20000, 30000));
+                    }
                     break;
                 case EVENT_SPELL_WELL_OF_SOULS:
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
