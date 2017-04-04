@@ -2,16 +2,19 @@
 [x] FLYING
 [x] SWIM SPEED
 [x] MULTIJUMP
-[x] NO CLIP
 [x] WPE / Packet Inject
 [x] Opcode Flood
 [x] Addon: Teleport back the user to latest safe position if he used cheats.
 [x] Addon: Block completely flying hack.
 [x] NO FALLING
 [x] SLOW FALLING
+[x] LOW GRAVITY
+[x] WATERWALKING
+[x] WALL CLIMBING
+
 
 -- not done yet
-[] LOW GRAVITY
-[] WATERWALKING
-[] WALL CLIMBING
+[] NO CLIP
+[] freeze z coord
 [] TRACKING (could be undetectable? / sending tracking flags if not hunter?)
+[] faction

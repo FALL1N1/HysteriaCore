@@ -658,6 +658,34 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         plrMover->m_anti_JumpCount = 0;
                 }
 
+                // firefly custom fly / under map checks
+                if (plrMover && (no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false) && plrMover->GetSession()->GetSecurity() > 0)
+                {
+                    float playerZ = plrMover->GetPositionZ();
+                    float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
+
+                    if (fabs(playerZ - mapZ) < 7.0f) // fly hack
+                    {
+
+                        WorldPacket set_fly(SMSG_MOVE_SET_CAN_FLY, 12);
+                        set_fly << uint64(plrMover->GetGUID());
+                        set_fly << uint32(0);
+                        SendPacket(&set_fly);
+
+                        WorldPacket unset_fly(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                        unset_fly << uint64(plrMover->GetGUID());
+                        unset_fly << uint32(0);
+                        SendPacket(&unset_fly);
+                        check_passed = false;
+                    }
+
+                    if (fabs(playerZ - mapZ) < -2.0f) // fell underground
+                    {
+                        plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
+                    }
+
+                }
+
                 // speed and teleport hack checks
                 if (real_delta > allowed_delta)
                 {
