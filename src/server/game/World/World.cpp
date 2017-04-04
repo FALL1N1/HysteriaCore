@@ -86,6 +86,7 @@
 #include "SavingSystem.h"
 #include "AnticheatMgr.h"
 #include "AuctionHouseBot/AuctionHouseBot.h"
+#include "CharacterMgr.h"
 
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -1086,7 +1087,7 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_CHATFLOOD_MESSAGE_DELAY] = sConfigMgr->GetIntDefault("ChatFlood.MessageDelay", 1);
     m_int_configs[CONFIG_CHATFLOOD_MUTE_TIME]     = sConfigMgr->GetIntDefault("ChatFlood.MuteTime", 10);
 
-    m_int_configs[CONFIG_EVENT_ANNOUNCE] = sConfigMgr->GetIntDefault("Event.Announce", 0);
+    m_bool_configs[CONFIG_EVENT_ANNOUNCE] = sConfigMgr->GetBoolDefault("Event.Announce", false);
 
     m_float_configs[CONFIG_CREATURE_FAMILY_FLEE_ASSISTANCE_RADIUS] = sConfigMgr->GetFloatDefault("CreatureFamilyFleeAssistanceRadius", 30.0f);
     m_float_configs[CONFIG_CREATURE_FAMILY_ASSISTANCE_RADIUS] = sConfigMgr->GetFloatDefault("CreatureFamilyAssistanceRadius", 10.0f);
@@ -1690,6 +1691,9 @@ void World::SetInitialWorldSettings()
 
     sLog->outString("Loading Pet Name Parts...");
     sObjectMgr->LoadPetNames();
+    
+    sLog->outString("Loading Character Templates...");
+    sCharacterMgr->LoadFromDB();
 
     CharacterDatabaseCleaner::CleanDatabase();
 
@@ -1713,6 +1717,9 @@ void World::SetInitialWorldSettings()
 
     sLog->outString("Loading Skill Extra Item Table...");
     LoadSkillExtraItemTable();
+    
+    sLog->outString("server.loading", "Loading Skill Perfection Data Table...");
+    LoadSkillPerfectItemTable();
 
     sLog->outString("Loading Skill Fishing base level requirements...");
     sObjectMgr->LoadFishingBaseSkillLevel();

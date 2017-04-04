@@ -31,6 +31,7 @@ EndScriptData */
 #include "ReputationMgr.h"
 #include "ScriptMgr.h"
 #include "SpellInfo.h"
+#include "../../game/Character/CharacterMgr.h"
 
 class lookup_commandscript : public CommandScript
 {
@@ -71,6 +72,7 @@ public:
             { "tele",           SEC_GAMEMASTER,      true,  &HandleLookupTeleCommand,            "", NULL },
             { "title",          SEC_GAMEMASTER,     true,  &HandleLookupTitleCommand,           "", NULL },
             { "map",            SEC_ADMINISTRATOR,  true,  &HandleLookupMapCommand,             "", NULL },
+            { "char_template",  SEC_ADMINISTRATOR,  true,  &HandleLookupCharacterTemplateCommand, "", NULL },
             { NULL,             0,                  false, NULL,                                "", NULL }
         };
 
@@ -1321,6 +1323,57 @@ public:
 
         return true;
     }
+
+    static bool HandleLookupCharacterTemplateCommand(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        std::string namePart = args;
+        std::wstring wNamePart;
+
+        // converting string that we try to find to lower case
+        if (!Utf8toWStr(namePart, wNamePart))
+            return false;
+
+        wstrToLower(wNamePart);
+
+        bool found = false;
+        uint32 count = 0;
+        uint32 maxResults = sWorld->getIntConfig(CONFIG_MAX_RESULTS_LOOKUP_COMMANDS);
+
+        // Search in `character_template`
+        CharacterTemplateStore const* its = sCharacterMgr->GetCharacterTemplateStore();
+        for (CharacterTemplateStore::const_iterator itr = its->begin(); itr != its->end(); ++itr)
+        {
+            std::string name = itr->second.name;
+            if (name.empty())
+                continue;
+
+            if (Utf8FitTo(name, wNamePart))
+            {
+                if (maxResults && count++ == maxResults)
+                {
+                    handler->PSendSysMessage(LANG_COMMAND_LOOKUP_MAX_RESULTS, maxResults);
+                    return true;
+                }
+
+                if (handler->GetSession())
+                    handler->PSendSysMessage(LANG_ITEM_LIST_CHAT, itr->second.id, itr->second.id, name.c_str());
+                else
+                    handler->PSendSysMessage(LANG_ITEM_LIST_CONSOLE, itr->second.id, name.c_str());
+
+                if (!found)
+                    found = true;
+            }
+        }
+
+        if (!found)
+            handler->SendSysMessage(LANG_COMMAND_NOITEMFOUND);
+
+        return true;
+    }
+
 };
 
 void AddSC_lookup_commandscript()

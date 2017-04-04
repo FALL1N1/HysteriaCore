@@ -1108,6 +1108,17 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         pCurrChar->CheckAllAchievementCriteria();
     }
 
+    if (pCurrChar->HasAtLoginFlag(AT_LOGIN_APPLY_TEMPLATE))
+    {
+        pCurrChar->RemoveAtLoginFlag(AT_LOGIN_APPLY_TEMPLATE, true);
+        pCurrChar->UpdateSkillsToMaxSkillsForLevel();
+        pCurrChar->SetFullHealth();
+        if (pCurrChar->getPowerType() == POWER_MANA)
+        {
+            pCurrChar->SetPower(POWER_MANA, pCurrChar->GetMaxPower(POWER_MANA));
+        }
+    }
+
     // show time before shutdown if shutdown planned.
     if (sWorld->IsShuttingDown())
         sWorld->ShutdownMsg(true, pCurrChar);

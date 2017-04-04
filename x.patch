@@ -1,0 +1,113 @@
+From fffefd59fa278b52a1a427479ba0a83024678356 Mon Sep 17 00:00:00 2001
+From: Lukasz Kolasa <maczugapl@gmail.com>
+Date: Fri, 2 Sep 2016 19:03:25 +0200
+Subject: [PATCH] Fix Northshire Abbey wolves aggression - they shouldn't
+ chain-aggro there. But they are still allowed to do this outside. Also merge
+ TC change: Fix aggression checks when testing player pets vs neutral
+ creatures. Pets will no longer be able to attack unattackable creatures in
+ some situations.
+
+---
+ src/server/game/AI/CreatureAI.cpp      | 12 +++++++---
+ src/server/game/Entities/Unit/Unit.cpp | 44 +++++++++++++++-------------------
+ 2 files changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/src/server/game/AI/CreatureAI.cpp b/src/server/game/AI/CreatureAI.cpp
+index 226fd70..b165afc 100644
+--- a/src/server/game/AI/CreatureAI.cpp
++++ b/src/server/game/AI/CreatureAI.cpp
+@@ -128,14 +128,20 @@ void CreatureAI::MoveInLineOfSight(Unit* who)
+     if (me->GetVictim())
+         return;
+ 
++    if (me->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET) // non-combat pets should just stand there and look good;)
++        return;
++
++    // Northshire Abbey - wolves fix. They can call assistance only outside the starting zone.
++    if (me->ToUnit()->getLevel() < 5 && me->GetAreaId() == 9)
++        return;
++
+ 	// pussywizard: civilian, non-combat pet or any other NOT HOSTILE TO ANYONE (!)
+ 	if (me->IsMoveInLineOfSightDisabled())
+-		if (me->GetCreatureType() == CREATURE_TYPE_NON_COMBAT_PET ||      // nothing more to do, return
+-			!who->IsInCombat() ||                                         // if not in combat, nothing more to do
++		if (!who->IsInCombat() ||                                         // if not in combat, nothing more to do
+ 			!me->IsWithinDist(who, ATTACK_DISTANCE))                      // if in combat and in dist - neutral to all can actually assist other creatures
+ 			return;
+ 
+-    if (me->CanStartAttack(who))
++    if (me->HasReactState(REACT_AGGRESSIVE) && me->CanStartAttack(who))
+         AttackStart(who);
+ }
+ 
+diff --git a/src/server/game/Entities/Unit/Unit.cpp b/src/server/game/Entities/Unit/Unit.cpp
+index bc67453..d561aad 100644
+--- a/src/server/game/Entities/Unit/Unit.cpp
++++ b/src/server/game/Entities/Unit/Unit.cpp
+@@ -12595,34 +12595,31 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell, Wo
+ 
+     // PvP, PvC, CvP case
+     // can't attack friendly targets
+-	ReputationRank repThisToTarget = GetReactionTo(target);
+-	ReputationRank repTargetToThis;
+-
+-    if (repThisToTarget > REP_NEUTRAL
+-        || (repTargetToThis = target->GetReactionTo(this)) > REP_NEUTRAL)
++    if (GetReactionTo(target) > REP_NEUTRAL
++        || (target->GetReactionTo(this)) > REP_NEUTRAL)
+         return false;
+ 
++
++    Player const* playerAffectingAttacker = HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) ? GetAffectingPlayer() : nullptr;
++    Player const* playerAffectingTarget = target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) ? target->GetAffectingPlayer() : nullptr;
++
+     // Not all neutral creatures can be attacked (even some unfriendly faction does not react aggresive to you, like Sporaggar)
+-    if (repThisToTarget == REP_NEUTRAL &&
+-        repTargetToThis <= REP_NEUTRAL)
++    if (
++        (playerAffectingAttacker && !playerAffectingTarget) ||
++        (!playerAffectingAttacker && playerAffectingTarget)
++        )
+     {
+-        Player* owner = GetAffectingPlayer();
+-        const Unit *const thisUnit = owner ? owner : this;
+-        if  (!(target->GetTypeId() == TYPEID_PLAYER && thisUnit->GetTypeId() == TYPEID_PLAYER) &&
+-            !(target->GetTypeId() == TYPEID_UNIT && thisUnit->GetTypeId() == TYPEID_UNIT))
+-        {
+-            Player const* player = target->GetTypeId() == TYPEID_PLAYER ? target->ToPlayer() : thisUnit->ToPlayer();
+-            Unit const* creature = target->GetTypeId() == TYPEID_UNIT ? target : thisUnit;
++        Player const* player = playerAffectingAttacker ? playerAffectingAttacker : playerAffectingTarget;
++        Unit const* creature = playerAffectingAttacker ? target : this;
+ 
+-            if (FactionTemplateEntry const* factionTemplate = creature->GetFactionTemplateEntry())
+-            {
+-                if (!(player->GetReputationMgr().GetForcedRankIfAny(factionTemplate)))
+-                    if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(factionTemplate->faction))
+-                        if (FactionState const* repState = player->GetReputationMgr().GetState(factionEntry))
+-                            if (!(repState->Flags & FACTION_FLAG_AT_WAR))
+-                                return false;
++        if (FactionTemplateEntry const* factionTemplate = creature->GetFactionTemplateEntry())
++        {
++            if (!(player->GetReputationMgr().GetForcedRankIfAny(factionTemplate)))
++                if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(factionTemplate->faction))
++                    if (FactionState const* repState = player->GetReputationMgr().GetState(factionEntry))
++                        if (!(repState->Flags & FACTION_FLAG_AT_WAR))
++                            return false;
+ 
+-            }
+         }
+     }
+ 
+@@ -12630,9 +12627,6 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell, Wo
+     if (creatureAttacker && creatureAttacker->GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_PARTY_MEMBER)
+         return false;
+ 
+-    Player const* playerAffectingAttacker = HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) ? GetAffectingPlayer() : NULL;
+-    Player const* playerAffectingTarget = target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) ? target->GetAffectingPlayer() : NULL;
+-
+     // check duel - before sanctuary checks
+     if (playerAffectingAttacker && playerAffectingTarget)
+         if (playerAffectingAttacker->duel && playerAffectingAttacker->duel->opponent == playerAffectingTarget && playerAffectingAttacker->duel->startTime != 0)
+-- 
+2.5.2.windows.1
+

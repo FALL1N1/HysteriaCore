@@ -1653,84 +1653,95 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
 
     Player* player = unitTarget->ToPlayer();
 
-    ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(itemId);
+    uint32 newitemid = itemId;
+    ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(newitemid);
     if (!pProto)
     {
         player->SendEquipError(EQUIP_ERR_ITEM_NOT_FOUND, NULL, NULL);
         return;
     }
 
-    uint32 addNumber = damage;
-
     // bg reward have some special in code work
-    bool SelfCast = true;
+    uint32 bgType = 0;
     switch (m_spellInfo->Id)
     {
         case SPELL_AV_MARK_WINNER:
         case SPELL_AV_MARK_LOSER:
+            bgType = BATTLEGROUND_AV;
+            break;
         case SPELL_WS_MARK_WINNER:
         case SPELL_WS_MARK_LOSER:
+            bgType = BATTLEGROUND_WS;
+            break;
         case SPELL_AB_MARK_WINNER:
         case SPELL_AB_MARK_LOSER:
-            SelfCast = true;
+            bgType = BATTLEGROUND_AB;
             break;
-        case SPELL_WG_MARK_WINNER:
-            if (player->HasAura(55629 /*SPELL_LIEUTENANT*/))
-                addNumber = 3;
-            else if (player->HasAura(33280 /*SPELL_CORPORAL*/))
-                addNumber = 2;
-            else
-                addNumber = 1;
-            SelfCast = true;
+        default:
             break;
     }
 
-    if (addNumber < 1)
-        addNumber = 1;
-    if (addNumber > pProto->GetMaxStackSize())
-        addNumber = pProto->GetMaxStackSize();
+    uint32 num_to_add = damage;
 
-    // init items_count to 1, since 1 item will be created regardless of specialization
-    int32 itemsCount = 1;
+    if (num_to_add < 1)
+        num_to_add = 1;
+    if (num_to_add > pProto->GetMaxStackSize())
+        num_to_add = pProto->GetMaxStackSize();
+
+    /* == gem perfection handling == */
+    // the chance of getting a perfect result
+    float perfectCreateChance = 0.0f;
+    // the resulting perfect item if successful
+    uint32 perfectItemType = itemId;
+    // get perfection capability and chance
+    if (CanCreatePerfectItem(player, m_spellInfo->Id, perfectCreateChance, perfectItemType))
+        if (roll_chance_f(perfectCreateChance)) // if the roll succeeds...
+            newitemid = perfectItemType;        // the perfect item replaces the regular one
+
+                                                /* == gem perfection handling over == */
+
+
+                                                /* == profession specialization handling == */
+
+                                                // init items_count to 1, since 1 item will be created regardless of specialization
+    int items_count = 1;
+    // the chance to create additional items
     float additionalCreateChance = 0.0f;
-    int32 newMaxOrEntry = 0;
+    // the maximum number of created additional items
+    uint8 additionalMaxNum = 0;
     // get the chance and maximum number for creating extra items
-    if (canCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, newMaxOrEntry))
-    {
-        if (newMaxOrEntry > 0)
-        {
-            // roll with this chance till we roll not to create or we create the max num
-            while (roll_chance_f(additionalCreateChance) && itemsCount <= newMaxOrEntry)
-                ++itemsCount;
-        }
-        else if (roll_chance_f(additionalCreateChance))   // if the roll succeeds...
-            itemId = uint32(-newMaxOrEntry);        // the perfect item replaces the regular one
-    }
+    if (CanCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, additionalMaxNum))
+        // roll with this chance till we roll not to create or we create the max num
+        while (roll_chance_f(additionalCreateChance) && items_count <= additionalMaxNum)
+            ++items_count;
 
     // really will be created more items
-    addNumber *= itemsCount;
+    num_to_add *= items_count;
+
+    /* == profession specialization handling over == */
+
 
     // can the player store the new item?
     ItemPosCountVec dest;
     uint32 no_space = 0;
-    InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, addNumber, &no_space);
+    InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, newitemid, num_to_add, &no_space);
     if (msg != EQUIP_ERR_OK)
     {
         // convert to possible store amount
         if (msg == EQUIP_ERR_INVENTORY_FULL || msg == EQUIP_ERR_CANT_CARRY_MORE_OF_THIS)
-            addNumber -= no_space;
+            num_to_add -= no_space;
         else
         {
             // if not created by another reason from full inventory or unique items amount limitation
-            player->SendEquipError(msg, NULL, NULL, itemId);
+            player->SendEquipError(msg, NULL, NULL, newitemid);
             return;
         }
     }
 
-    if (addNumber)
+    if (num_to_add)
     {
         // create the new item and store it
-        Item* pItem = player->StoreNewItem(dest, itemId, true, Item::GenerateItemRandomPropertyId(itemId));
+        Item* pItem = player->StoreNewItem(dest, newitemid, true, Item::GenerateItemRandomPropertyId(newitemid));
 
         // was it successful? return error if not
         if (!pItem)

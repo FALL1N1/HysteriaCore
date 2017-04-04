@@ -29,6 +29,7 @@ EndScriptData */
 #include "Player.h"
 #include "ReputationMgr.h"
 #include "ScriptMgr.h"
+#include "../../game/Character/CharacterMgr.h"
 
 class character_commandscript : public CommandScript
 {
@@ -53,6 +54,7 @@ public:
             { "rename",         SEC_GAMEMASTER,     true,  &HandleCharacterRenameCommand,          "", NULL },
             { "reputation",     SEC_GAMEMASTER,     true,  &HandleCharacterReputationCommand,      "", NULL },
             { "titles",         SEC_GAMEMASTER,     true,  &HandleCharacterTitlesCommand,          "", NULL },
+            { "template",       SEC_ADMINISTRATOR,  true,  &HandleCharacterTemplateCommand,        "", NULL },
             { NULL,             0,                  false, NULL,                                   "", NULL }
         };
 
@@ -592,6 +594,128 @@ public:
                 return false;
         }
 
+        return true;
+    }
+
+    static bool HandleCharacterTemplateCommand(ChatHandler* handler, char const* args)
+    {
+        char* nameStr;
+        char* templateStr;
+        handler->extractOptFirstArg((char*)args, &nameStr, &templateStr);
+
+        Player* target;
+        uint64 targetGuid;
+        std::string targetName;
+
+        if (templateStr == nullptr || nameStr == nullptr)
+            return false;
+
+        if (!handler->extractPlayerTarget(nameStr, &target, &targetGuid, &targetName))
+            return false;
+
+        if (target)
+        {
+            handler->PSendSysMessage("Player must be offline!");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 targetGuidLow = GUID_LOPART(targetGuid);
+
+        uint32 templateId = atoi(templateStr);
+        CharacterTemplate const* charTemplate = sCharacterMgr->GetCharacterTemplate(templateId);
+
+        // Transaction for templates
+        SQLTransaction trans = CharacterDatabase.BeginTransaction();
+
+        // Define sender of stuff
+        MailSender sender(MAIL_NORMAL, handler->GetSession() ? handler->GetSession()->GetPlayer()->GetGUIDLow() : 0, MAIL_STATIONERY_GM);
+        const std::string title = "Character template";
+
+        // Add level
+        uint32 oldlevel = Player::GetLevelFromStorage(targetGuid);
+        uint32 newlevel = charTemplate->level;
+        HandleCharacterLevel(target, targetGuid, oldlevel, newlevel, handler);
+
+        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_ADD_AT_LOGIN_FLAG);
+        stmt->setUInt16(0, uint16(AT_LOGIN_CHECK_ACHIEVS | AT_LOGIN_RESET_TALENTS | AT_LOGIN_RESET_PET_TALENTS | AT_LOGIN_APPLY_TEMPLATE));
+        stmt->setUInt32(1, GUID_LOPART(targetGuid));
+        CharacterDatabase.Execute(stmt);
+
+        // Modify Money
+        uint32 money = charTemplate->money;
+        if (money > 0)
+        {
+            MailDraft(title, "There is your money!")
+                .AddMoney(money)
+                .SendMailTo(trans, MailReceiver(target, targetGuidLow), sender);
+        }
+
+        // Items
+        typedef std::pair<uint32, uint32> ItemPair;
+        typedef std::list< ItemPair > ItemPairs;
+        ItemPairs items;
+
+        CharacterTemplateItemStore itemStore = sCharacterMgr->GetCharacterTemplateItems(templateId);
+        for (CharacterTemplateItemStore::const_iterator itr = itemStore.begin(); itr != itemStore.end(); ++itr)
+        {
+            ItemTemplate const* itemProto = sObjectMgr->GetItemTemplate((*itr)->itemId);
+
+            uint32 itemCount = (*itr)->count;
+            while (itemCount > itemProto->GetMaxStackSize())
+            {
+                items.push_back(ItemPair((*itr)->itemId, itemProto->GetMaxStackSize()));
+                itemCount -= itemProto->GetMaxStackSize();
+            }
+
+            items.push_back(ItemPair((*itr)->itemId, itemCount));
+        }
+
+        MailDraft draft(title, "Items for ordered template");
+
+        uint8 mailItemCount = 0;
+        for (ItemPairs::const_iterator itr = items.begin(); itr != items.end(); ++itr)
+        {
+            if (Item* item = Item::CreateItem(itr->first, itr->second, handler->GetSession() ? handler->GetSession()->GetPlayer() : 0))
+            {
+                item->SaveToDB(trans);                               // save for prevent lost at next mail load, if send fail then item will deleted
+                draft.AddItem(item);
+
+                if (++mailItemCount == MAX_MAIL_ITEMS)
+                {
+                    draft.SendMailTo(trans, MailReceiver(target, targetGuidLow), sender);
+                    MailDraft draft(title, "Items for ordered template");
+                    mailItemCount = 0;
+                }
+            }
+        }
+
+        if (mailItemCount != 0)
+        {
+            draft.SendMailTo(trans, MailReceiver(target, targetGuidLow), sender);
+        }
+
+        // Spells
+        CharacterTemplateSpellStore spellStore = sCharacterMgr->GetCharacterTemplateSpells(templateId);
+
+        for (CharacterTemplateSpellStore::const_iterator itr = spellStore.begin(); itr != spellStore.end(); ++itr)
+        {
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_SPELL_BY_SPELL);
+            stmt->setUInt32(0, targetGuidLow);
+            stmt->setUInt32(1, (*itr)->spellId);
+            trans->Append(stmt);
+
+            stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_SPELL);
+            stmt->setUInt32(0, targetGuidLow);
+            stmt->setUInt32(1, (*itr)->spellId);
+            stmt->setUInt8(2, 255);
+            trans->Append(stmt);
+        }
+
+        // Submit the transaction
+        CharacterDatabase.CommitTransaction(trans);
+
+        handler->PSendSysMessage("Template '%s' applied!", charTemplate->name);
         return true;
     }
 };
