@@ -536,6 +536,19 @@ enum WorldStates
     WS_MONTHLY_QUEST_RESET_TIME = 20007,                     // Next monthly reset time
 };
 
+enum ContentPatches
+{
+    PATCH_30X   = 9551,  // Patch 3.0.9
+    PATCH_31X   = 9947,  // Patch 3.1.3
+    PATCH_320   = 10314, // Patch 3.2.0
+    PATCH_322   = 10505, // Patch 3.2.2
+    PATCH_330   = 11159, // Patch 3.3.0
+    PATCH_333   = 11723, // Patch 3.3.3
+    PATCH_335   = 12340, // Patch 3.3.5
+    PATCH_MIN   = PATCH_30X,
+    PATCH_MAX   = PATCH_335
+};
+
 /// Storage class for commands issued for delayed execution
 struct CliCommandHolder
 {
@@ -847,6 +860,7 @@ class World
 
         std::string const& GetRealmName() const { return _realmName; } // pussywizard
         void SetRealmName(std::string name) { _realmName = name; } // pussywizard
+        bool IsInCurrentContent(ContentPatches patchSince = PATCH_MIN, ContentPatches patchTo = PATCH_MAX) const;
 
     protected:
         void _UpdateGameTime();

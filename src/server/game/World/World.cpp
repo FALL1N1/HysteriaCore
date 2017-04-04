@@ -2617,6 +2617,11 @@ bool World::RemoveBanCharacter(std::string const& name)
     return true;
 }
 
+bool World::IsInCurrentContent(ContentPatches patchSince, ContentPatches patchTo) const
+{
+    return getIntConfig(CONFIG_CURRENT_BUILD) >= uint32(patchSince) && getIntConfig(CONFIG_CURRENT_BUILD) <= uint32(patchTo);
+}
+
 /// Update the game time
 void World::_UpdateGameTime()
 {
