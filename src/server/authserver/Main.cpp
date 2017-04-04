@@ -251,8 +251,12 @@ extern int main(int argc, char** argv)
 #endif
 
     // maximum counter for next ping
-    uint32 numLoops = (sConfigMgr->GetIntDefault("MaxPingTime", 30) * (MINUTE * 1000000 / 100000));
-    uint32 loopCounter = 0;
+    uint32 pingLoops = (sConfigMgr->GetIntDefault("MaxPingTime", 60) * (MINUTE * 1000000 / 100000));
+    uint32 pingLoopCounter = 0;
+
+    // maximum counter for ban cleaning
+    uint32 banLoops = (sConfigMgr->GetIntDefault("BanExpiryCheckInterval", 1) * (MINUTE * 1000000 / 100000));
+    uint32 banLoopCounter = 0;
 
     // possibly enable db logging; avoid massive startup spam by doing it here.
     if (sConfigMgr->GetBoolDefault("EnableLogDB", false))
@@ -270,11 +274,19 @@ extern int main(int argc, char** argv)
         if (ACE_Reactor::instance()->run_reactor_event_loop(interval) == -1)
             break;
 
-        if ((++loopCounter) == numLoops)
+        if ((++pingLoopCounter) == pingLoops)
         {
-            loopCounter = 0;
+            pingLoopCounter = 0;
             sLog->outDetail("Ping MySQL to keep connection alive");
             LoginDatabase.KeepAlive();
+        }
+
+        if ((++banLoopCounter) == banLoops)
+        {
+            banLoopCounter = 0;
+            sLog->outDetail("Removing expired bans");
+            LoginDatabase.Execute(LoginDatabase.GetPreparedStatement(LOGIN_DEL_EXPIRED_IP_BANS));
+            LoginDatabase.Execute(LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPIRED_ACCOUNT_BANS));
         }
     }
 

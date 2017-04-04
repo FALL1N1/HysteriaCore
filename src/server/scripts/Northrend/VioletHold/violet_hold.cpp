@@ -10,6 +10,7 @@ REWRITTEN FROM SCRATCH BY PUSSYWIZARD, IT OWNS NOW!
 #include "PassiveAI.h"
 #include "SpellScript.h"
 #include "Player.h"
+#include "World.h"
 
 /***********
 ** DEFENSE SYSTEM CRYSTAL
@@ -128,6 +129,8 @@ public:
                 else
                     events.RescheduleEvent(EVENT_SUMMON_SABOTEOUR, 3000);
             }
+            preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
+            respawnTimer = preNerf ? 30000 : 20000;
         }
 
         InstanceScript *pInstance;
@@ -137,8 +140,8 @@ public:
         uint8 addValue;
         bool bKorG;
         bool spawned;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
-        uint32 respawnTimer = preNerf ? 30000 : 20000;
+        bool preNerf;
+        uint32 respawnTimer;
 
         void UpdateAI(uint32 diff)
         {

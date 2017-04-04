@@ -147,6 +147,9 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
         player->SendTransferAborted(mapid, TRANSFER_ABORT_DIFFICULTY, requestedDifficulty);
         return false;
     }
+    
+    if (player->GetSession() != nullptr)
+        return true;
 
     //Bypass checks for GMs
     if (player->IsGameMaster())

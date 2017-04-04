@@ -5,7 +5,7 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ahnkahet.h"
-
+#include "World.h"
 
 enum Yells
 {
@@ -78,6 +78,7 @@ public:
         boss_jedoga_shadowseekerAI(Creature* c) : ScriptedAI(c), summons(me)
         {
             pInstance = c->GetInstanceScript();
+            preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         }
 
         InstanceScript* pInstance;
@@ -88,7 +89,7 @@ public:
         uint32 introCheck;
         bool isFlying;
         bool startFly;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
+        bool preNerf;
 
         void JustSummoned(Creature *cr) { summons.Summon(cr); }
         void MoveInLineOfSight(Unit *) { }

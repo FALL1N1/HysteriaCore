@@ -274,7 +274,9 @@ class AchievementMgr
         void SendAllAchievementData() const;
         void SendRespondInspectAchievements(Player* player) const;
         bool HasAchieved(uint32 achievementId) const;
-        Player* GetPlayer() const { return m_player; }
+        uint32 CalculateAchievementPoints() const;
+
+    Player* GetPlayer() const { return m_player; }
         void UpdateTimedAchievements(uint32 timeDiff);
         void StartTimedAchievement(AchievementCriteriaTimedTypes type, uint32 entry, uint32 timeLost = 0);
         void RemoveTimedAchievement(AchievementCriteriaTimedTypes type, uint32 entry);   // used for quest and scripted timed achievements

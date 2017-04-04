@@ -2283,6 +2283,16 @@ bool AchievementMgr::HasAchieved(uint32 achievementId) const
     return m_completedAchievements.find(achievementId) != m_completedAchievements.end();
 }
 
+uint32 AchievementMgr::CalculateAchievementPoints() const
+{
+    uint32 points = 0;
+    for (CompletedAchievementMap::const_iterator iter = m_completedAchievements.begin(); iter != m_completedAchievements.end(); ++iter)
+        if (AchievementEntry const* pAchievement = sAchievementStore.LookupEntry(iter->first))
+            points += pAchievement->points;
+
+    return points;
+}
+
 bool AchievementMgr::CanUpdateCriteria(AchievementCriteriaEntry const* criteria, AchievementEntry const* achievement)
 {
     if (DisableMgr::IsDisabledFor(DISABLE_TYPE_ACHIEVEMENT_CRITERIA, criteria->ID, NULL))

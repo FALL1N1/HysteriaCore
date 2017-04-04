@@ -7,6 +7,7 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 #include "ahnkahet.h"
 #include "SpellAuras.h"
 #include "SpellScript.h"
+#include "World.h"
 
 enum misc
 {
@@ -69,13 +70,14 @@ public:
         boss_elder_nadoxAI(Creature *c) : ScriptedAI(c), summons(me)
         {
             pInstance = c->GetInstanceScript();
+            preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         }
 
         EventMap events;
         InstanceScript *pInstance;
         SummonList summons;
         uint8 guardianCount;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
+        bool preNerf;
 
         void SummonHelpers(bool swarm)
         {

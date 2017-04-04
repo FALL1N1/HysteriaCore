@@ -9,6 +9,7 @@ REWRITTEN FROM SCRATCH BY PUSSYWIZARD, IT OWNS NOW!
 #include "SpellScript.h"
 #include "SpellAuraEffects.h"
 #include "Player.h"
+#include "World.h"
 
 enum eTexts
 {
@@ -76,13 +77,14 @@ public:
         boss_devourer_of_soulsAI(Creature* creature) : ScriptedAI(creature), summons(me)
         {
             pInstance = creature->GetInstanceScript();
+            preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         }
 
         InstanceScript* pInstance;
         EventMap events;
         SummonList summons;
         bool bAchiev;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
+        bool preNerf;
 
         void Reset()
         {

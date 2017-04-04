@@ -231,6 +231,13 @@ WrongPass.BanTime = 600
 WrongPass.BanType = 0
 
 #
+#    BanExpiryCheckInterval
+#        Description: Time (in minutes) between checks for expired bans
+#        Default:     1
+
+BanExpiryCheckInterval = 1
+
+#
 ###################################################################################################
 
 ###################################################################################################

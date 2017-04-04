@@ -394,9 +394,6 @@ bool AuthSocket::_HandleLogonChallenge()
     pkt << uint8(AUTH_LOGON_CHALLENGE);
     pkt << uint8(0x00);
 
-    // Verify that this IP is not in the ip_banned table
-    LoginDatabase.Execute(LoginDatabase.GetPreparedStatement(LOGIN_DEL_EXPIRED_IP_BANS));
-
     std::string const& ip_address = socket().getRemoteAddress();
     PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_IP_BANNED);
     stmt->setString(0, ip_address);
@@ -439,9 +436,6 @@ bool AuthSocket::_HandleLogonChallenge()
 
             if (!locked)
             {
-                //set expired bans to inactive
-                LoginDatabase.DirectExecute(LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPIRED_ACCOUNT_BANS));
-
                 // If the account is banned, reject the logon attempt
                 stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_BANNED);
                 stmt->setUInt32(0, fields[1].GetUInt32());

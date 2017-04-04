@@ -102,6 +102,7 @@ public:
             instance = creature->GetInstanceScript();
             Started = false;
             ArthasGUID = 0;
+            preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         }
 
         uint64 ArthasGUID;
@@ -111,7 +112,7 @@ public:
         EventMap events2;
         SummonList summons;
         uint8 ritualCount;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
+        bool preNerf;
 
         void Reset()
         {
