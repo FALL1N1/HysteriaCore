@@ -149,7 +149,7 @@ public:
 
             uint8 rnd = urand(0, summons.size()-1);
             uint8 loop = 0;
-            Creature *summon = nullptr;
+            Creature *summon = NULL;
             for (std::list<uint64>::iterator i = summons.begin(); i != summons.end();)
             {
                 summon = ObjectAccessor::GetCreature(*me, *i);

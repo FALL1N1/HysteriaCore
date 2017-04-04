@@ -148,7 +148,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
         return false;
     }
     
-    if (player->GetSession() != nullptr)
+    if (player->GetSession() != NULL)
         return true;
 
     //Bypass checks for GMs

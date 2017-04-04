@@ -1692,9 +1692,6 @@ void World::SetInitialWorldSettings()
     sLog->outString("Loading Pet Name Parts...");
     sObjectMgr->LoadPetNames();
     
-    sLog->outString("Loading Character Templates...");
-    sCharacterMgr->LoadFromDB();
-
     CharacterDatabaseCleaner::CleanDatabase();
 
     sLog->outString("Loading the max pet number...");
