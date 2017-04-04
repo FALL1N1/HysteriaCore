@@ -1860,11 +1860,13 @@ void World::SetInitialWorldSettings()
     m_gameTime = time(NULL);
     m_startTime = m_gameTime;
 
-
+    LoginDatabase.PExecute("INSERT INTO uptime (realmid, starttime, uptime, revision) VALUES(%u, %u, 0, '%s')", realmID, uint32(m_startTime), _REVISION);       // One-time query
 
     m_timers[WUPDATE_WEATHERS].SetInterval(1*IN_MILLISECONDS);
     m_timers[WUPDATE_AUCTIONS].SetInterval(MINUTE*IN_MILLISECONDS);
     m_timers[WUPDATE_AUCTIONS].SetCurrent(MINUTE*IN_MILLISECONDS);
+
+    m_timers[WUPDATE_UPTIME].SetInterval(m_int_configs[CONFIG_UPTIME_UPDATE]*MINUTE*IN_MILLISECONDS); //Update "uptime" table based on configuration entry in minutes.
 
     m_timers[WUPDATE_CORPSES].SetInterval(20 * MINUTE * IN_MILLISECONDS);
                                                             //erase corpses every 20 minutes
@@ -2157,6 +2159,24 @@ void World::Update(uint32 diff)
     {
         m_timers[WUPDATE_WEATHERS].Reset();
         WeatherMgr::Update(uint32(m_timers[WUPDATE_WEATHERS].GetInterval()));
+    }
+
+    /// <li> Update uptime table
+    if (m_timers[WUPDATE_UPTIME].Passed())
+    {
+        uint32 tmpDiff = uint32(m_gameTime - m_startTime);
+        uint32 maxOnlinePlayers = GetMaxPlayerCount();
+
+        m_timers[WUPDATE_UPTIME].Reset();
+
+        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_UPTIME_PLAYERS);
+
+        stmt->setUInt32(0, tmpDiff);
+        stmt->setUInt16(1, uint16(maxOnlinePlayers));
+        stmt->setUInt32(2, realmID);
+        stmt->setUInt32(3, uint32(m_startTime));
+
+        LoginDatabase.Execute(stmt);
     }
 
     sLFGMgr->Update(diff, 0); // pussywizard: remove obsolete stuff before finding compatibility during map update

@@ -100,6 +100,7 @@ void LoginDatabaseConnection::DoPrepareStatements()
 	PrepareStatement(LOGIN_SEL_ACCGRPNUM, "SELECT MAX(accountGroupEntry) FROM account_group WHERE accountGroupID = ?", CONNECTION_SYNCH);
 	PrepareStatement(LOGIN_SEL_ALL_WITH_ACCGRPID, "SELECT accountID FROM account_group WHERE accountGroupID = ?", CONNECTION_SYNCH);
 	PrepareStatement(LOGIN_SEL_NAME_BY_ID, "SELECT username FROM account WHERE id = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_SEL_STARTERPACKAGE, "SELECT GotStarterPackage FROM starterpackage WHERE accountID = ?", CONNECTION_SYNCH);
-	PrepareStatement(LOGIN_INS_STARTERPACKAGE, "INSERT INTO starterpackage (accountID, GotStarterPackage) VALUES(?, ?)", CONNECTION_ASYNC);
+
+    // firefly
+    PrepareStatement(LOGIN_UPD_UPTIME_PLAYERS, "UPDATE uptime SET uptime = ?, maxplayers = ? WHERE realmid = ? AND starttime = ?", CONNECTION_ASYNC);
 }
