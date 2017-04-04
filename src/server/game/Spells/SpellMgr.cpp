@@ -1112,6 +1112,9 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
             if (!player)
                 return false;
 
+            if (!sWorld->IsInCurrentContent(PATCH_332))
+                return false;
+
             if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId()))
                 return bf->IsWarTime();
             break;

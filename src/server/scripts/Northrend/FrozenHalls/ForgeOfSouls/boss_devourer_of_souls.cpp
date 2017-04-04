@@ -82,7 +82,7 @@ public:
         EventMap events;
         SummonList summons;
         bool bAchiev;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
 
         void Reset()
         {

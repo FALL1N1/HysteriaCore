@@ -111,7 +111,7 @@ public:
         EventMap events2;
         SummonList summons;
         uint8 ritualCount;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
 
         void Reset()
         {

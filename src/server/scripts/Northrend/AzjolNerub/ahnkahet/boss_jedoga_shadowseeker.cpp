@@ -88,7 +88,7 @@ public:
         uint32 introCheck;
         bool isFlying;
         bool startFly;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
 
         void JustSummoned(Creature *cr) { summons.Summon(cr); }
         void MoveInLineOfSight(Unit *) { }

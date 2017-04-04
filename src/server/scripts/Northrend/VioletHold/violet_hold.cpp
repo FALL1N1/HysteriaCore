@@ -137,7 +137,7 @@ public:
         uint8 addValue;
         bool bKorG;
         bool spawned;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         uint32 respawnTimer = preNerf ? 30000 : 20000;
 
         void UpdateAI(uint32 diff)

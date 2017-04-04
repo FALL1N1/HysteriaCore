@@ -75,7 +75,7 @@ public:
         InstanceScript *pInstance;
         SummonList summons;
         uint8 guardianCount;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
 
         void SummonHelpers(bool swarm)
         {
@@ -203,7 +203,7 @@ public:
                 {
                     events.RepeatEvent(1000);
                     bool healthCheck = false;
-                    // 3.3.2 Anomalus will now use the Create Rift ability only once, down from 3 times.
+
                     if (preNerf)
                     {
                         healthCheck = (me->HealthBelowPct(75) && guardianCount == 0) ||

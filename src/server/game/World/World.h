@@ -543,6 +543,7 @@ enum ContentPatches
     PATCH_320   = 10314, // Patch 3.2.0
     PATCH_322   = 10505, // Patch 3.2.2
     PATCH_330   = 11159, // Patch 3.3.0
+    PATCH_332   = 11599, // Patch 3.3.2
     PATCH_333   = 11723, // Patch 3.3.3
     PATCH_335   = 12340, // Patch 3.3.5
     PATCH_MIN   = PATCH_30X,

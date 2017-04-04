@@ -70,7 +70,7 @@ class boss_anomalus : public CreatureScript
 
             bool achievement;
             uint8 riftCount;
-            bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+            bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
 
             void Reset()
             {
@@ -137,7 +137,7 @@ class boss_anomalus : public CreatureScript
                     case EVENT_ANOMALUS_HEALTH:
                         {
                             bool healthCheck = false;
-                            // 3.3.2 Anomalus will now use the Create Rift ability only once, down from 3 times.
+
                             if (preNerf)
                             {
                                 healthCheck = (me->HealthBelowPct(75) && riftCount == 0) || 

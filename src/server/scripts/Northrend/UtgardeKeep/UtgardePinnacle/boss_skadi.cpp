@@ -116,7 +116,7 @@ public:
         SummonList summons;
         uint64 GraufGUID;
         bool SecondPhase, EventStarted;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
 
         void Reset()
         {
@@ -279,7 +279,7 @@ public:
         SummonList summons;
         uint8 currentPos;
         uint8 AchievementHitCount;
-        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+        bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         uint8 harpoonReqCount = preNerf ? 5 : 3;
 
         void Reset()
@@ -493,7 +493,7 @@ class go_harpoon_canon : public GameObjectScript
 public: 
     go_harpoon_canon() : GameObjectScript("go_harpoon_canon") { } 
     
-    bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_333);
+    bool preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
     uint8 harpoonReqCount = preNerf ? 5 : 3;
 
     bool OnGossipHello(Player* pPlayer, GameObject* pGO)
