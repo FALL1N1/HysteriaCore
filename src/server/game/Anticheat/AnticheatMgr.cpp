@@ -118,10 +118,6 @@ void AnticheatMgr::StartHackDetection(Player* player, MovementInfo movementInfo,
         return;
     }
 
-    // @todo
-    if(PlayerMovementChecker* pmc = player->GetMovementChecker())
-        pmc->prepare(&movementInfo, opcode);
-
     SpeedHackDetection(player,movementInfo);
     FlyHackDetection(player,movementInfo);
     WalkOnWaterHackDetection(player,movementInfo);
