@@ -595,10 +595,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 const float JumpHeight = plrMover->m_anti_JumpBaseZ - movementInfo.pos.GetPositionZ();
                 if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed)
                 {
-
-                    //sLog->outString("AC2-%s, AntiGravity exception. JumpHeight = %f, Allowed Vertical Speed = %f",
-                    //plrMover->GetName().c_str(), JumpHeight, plrMover->m_anti_Last_VSpeed);
-
                     check_passed = false;
 
                     // Tell the player "Sure, you can fly!"
@@ -615,7 +611,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         data << uint32(0);
                         SendPacket(&data);
                     }
-                    //plrMover->FallGround(2);
                 }
 
                 // multi jump checks
@@ -627,9 +622,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         {
                             // don't process new jump packet
                             check_passed = false;
-
-                            //sLog->outString("AC2-%s, Multijump exception.", plrMover->GetName().c_str(), JumpHeight, plrMover->m_anti_Last_VSpeed);
-
 
                             // Tell the player "Sure, you can fly!"
                             {
@@ -663,7 +655,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 {
                     float playerZ = plrMover->GetPositionZ();
                     float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
-
                     if (fabs(playerZ - mapZ) < 7.0f) // fly hack
                     {
 
@@ -680,25 +671,13 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     }
 
                     if (fabs(playerZ - mapZ) < -2.0f) // fell underground
-                    {
                         plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
-                    }
 
                 }
 
                 // speed and teleport hack checks
                 if (real_delta > allowed_delta)
-                {
-                    // debug line
-                    if (real_delta < 4900.0f)
-                    {
-                        //sLog->outString("AC2-%s, speed exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plrMover->GetName().c_str(), real_delta, allowed_delta, current_speed, plrMover->m_anti_Last_HSpeed, time_delta);
-                    } else {
-                        //sLog->outString("AC2-%s, teleport exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plrMover->GetName().c_str(), real_delta, allowed_delta, current_speed, plrMover->m_anti_Last_HSpeed, time_delta);
-                    }
-
                     check_passed = false;
-                }
 
                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
                 if (delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f)
@@ -753,15 +732,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         plane_z = (plane_z < -500.0f) ? 0.0f : plane_z; // check holes in height map
                         if (plane_z > 0.1f || plane_z < -0.1f)
                         {
-                            #ifdef ANTICHEAT_DEBUG
-                            TC_LOG_WARN("cheat", "AC2-%s, teleport to plane exception. plane_z: %f", plrMover->GetName(), plane_z);
-                            #endif
-                            #ifdef ANTICHEAT_EXCEPTION_INFO
-                            if (plrMover->m_anti_TeleToPlane_Count > World::GetTeleportToPlaneAlarms())
-                            {
-                                //TC_LOG_WARN("cheat", "AC2-%s, teleport to plane exception. Exception count: %d", plrMover->GetName().c_str(), plrMover->m_anti_TeleToPlane_Count);
-                            }
-                            #endif
                             ++(plrMover->m_anti_TeleToPlane_Count);
                             check_passed = false;
                         }
