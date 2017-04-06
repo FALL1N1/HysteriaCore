@@ -11,8 +11,10 @@
 [x] LOW GRAVITY
 [x] WATERWALKING
 [x] WALL CLIMBING
-[x] freeze z coord
-[x] faction
+[x] Freeze z coord
+[x] Faction Hack
+[x] Authserver packet flood - preventing players from logging in
+[x] Authserver password exploit (they could login with anyone's account)
 
 -- not done yet
 [] NO CLIP -- i don't think this could be handled trough the server as we can't check wmo/m2 objects, can we?
