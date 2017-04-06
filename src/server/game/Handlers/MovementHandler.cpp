@@ -659,7 +659,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     if (absolute_pos >= 3.0f)
                         ++(plrMover->m_anti_FreezeZ_Count);
 
-                    if (plrMover->m_anti_FreezeZ_Count >= 99999) // 10 ok?
+                    if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so 15 should be ok i guess?
                         plrMover->GetSession()->KickPlayer();
                 }
 
@@ -680,6 +680,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         unset_fly << uint64(plrMover->GetGUID());
                         unset_fly << uint32(0);
                         SendPacket(&unset_fly);
+
                         check_passed = false;
                     }
 
