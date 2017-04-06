@@ -651,25 +651,20 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
 
                 // firefly: "Freeze Z coord check"
-                if (plrMover && (no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false))
+                if (plrMover && !plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater())
                 {
-                    sLog->outString("Freeze Z check begin!"); // debug
                     float playerZ = plrMover->GetPositionZ();
                     float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
-
-                    if (playerZ != mapZ)
-                    {
+                    float absolute_pos = fabs(playerZ - mapZ);
+                    if (absolute_pos >= 3.0f)
                         ++(plrMover->m_anti_FreezeZ_Count);
-                        sLog->outString("Freeze Z check failed, adding player to counter %u / 100", plrMover->m_anti_FreezeZ_Count);
-                    }
 
-                    if (plrMover->m_anti_FreezeZ_Count >= 100)
+                    if (plrMover->m_anti_FreezeZ_Count >= 99999) // 10 ok?
                         plrMover->GetSession()->KickPlayer();
-
                 }
 
                 // firefly: custom fly / under map checks
-                if (plrMover && (no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false) && plrMover->GetSession()->GetSecurity() > 0)
+                if (plrMover && (no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false))
                 {
                     float playerZ = plrMover->GetPositionZ();
                     float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
