@@ -1226,6 +1226,13 @@ void GameObject::Use(Unit* user)
     if (HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE))
         return;
 
+    // prevent faction change hacks to allow gameobject interaction
+    if (user->ToCreature() && HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE))
+    {
+        sLog->outString("AC: POSSIBLE HACK ATTEMPT ON GAMEOBJECT INTERACTION, FACTION HACK");
+        return;
+    }
+
     // by default spell caster is user
     Unit* spellCaster = user;
     uint32 spellId = 0;

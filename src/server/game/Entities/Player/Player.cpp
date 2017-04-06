@@ -815,6 +815,7 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
 
     m_anti_TeleToPlane_Count = 0;        // Teleport To Plane alarm counter
 
+    m_anti_FreezeZ_Count = 0;            // Firefly: Freeze Z coord alarm counter
     m_anti_AlarmCount = 0;               // alarm counter
 
     m_anti_JumpCount = 0;                // Jump already began, anti air jump check

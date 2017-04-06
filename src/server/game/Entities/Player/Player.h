@@ -2895,6 +2895,7 @@ class Player : public Unit, public GridObject<Player>
 
         uint32 m_anti_TeleToPlane_Count;        // Teleport To Plane alarm counter
 
+        uint32 m_anti_FreezeZ_Count;            // Firefly: Freeze Z coord alarm counter
         uint64 m_anti_AlarmCount;               // alarm counter
 
         uint16 m_anti_JumpCount;                // Jump already began, anti air jump check
