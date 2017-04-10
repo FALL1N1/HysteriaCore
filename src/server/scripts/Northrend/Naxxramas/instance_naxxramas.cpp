@@ -310,7 +310,7 @@ public:
                     break;
                 case GO_KELTHUZAD_GATE:
                     _kelthuzadgateGUID = pGo->GetGUID();
-                    break;
+                break;
                 case GO_SAPPHIRON_GATE:
                     _sapphironGateGUID = pGo->GetGUID();
                     if (Encounters[EVENT_SAPPHIRON] == DONE)

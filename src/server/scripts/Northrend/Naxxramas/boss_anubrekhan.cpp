@@ -15,27 +15,26 @@ enum Says
 
 enum Spells
 {
-    SPELL_IMPALE_10                    = 28783,
-    SPELL_IMPALE_25                    = 56090,
-    SPELL_LOCUST_SWARM_10            = 28785,
-    SPELL_LOCUST_SWARM_25            = 54021,
+    SPELL_IMPALE_10                 = 28783,
+    SPELL_IMPALE_25                 = 56090,
+    SPELL_LOCUST_SWARM_10           = 28785,
+    SPELL_LOCUST_SWARM_25           = 54021,
     SPELL_SUMMON_CORPSE_SCRABS_5    = 29105,
-    SPELL_SUMMON_CORPSE_SCRABS_10    = 28864,
-    SPELL_BERSERK                    = 26662,
+    SPELL_SUMMON_CORPSE_SCRABS_10   = 28864,
+    SPELL_BERSERK                   = 26662,
 };
 
 enum Events
 {
-    EVENT_SPELL_IMPALE                = 1,
+    EVENT_SPELL_IMPALE              = 1,
     EVENT_SPELL_LOCUST_SWARM        = 2,
-    EVENT_SPELL_BERSERK                = 3,
-    EVENT_FIRST_SPAWN               = 4,
+    EVENT_SPELL_BERSERK             = 3,
 };
 
 enum Misc
 {
-    NPC_CORPSE_SCARAB                = 16698,
-    NPC_CRYPT_GUARD                    = 16573,
+    NPC_CORPSE_SCARAB               = 16698,
+    NPC_CRYPT_GUARD                 = 16573,
 
     ACHIEV_TIMED_START_EVENT        = 9891,
 };
@@ -65,15 +64,18 @@ public:
 
         void SummonCryptGuards()
         {
-            me->SummonCreature(NPC_CRYPT_GUARD, 3308.590f, -3466.29f, 287.16f, M_PI, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
-            if (IsHeroic())
-                me->SummonCreature(NPC_CRYPT_GUARD, 3308.590f, -3486.29f, 287.16f, M_PI, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
+            if (Is25ManRaid())
+            {
+                me->SummonCreature(NPC_CRYPT_GUARD, 3299.825f, -3502.27f, 287.16f, M_PI, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
+                me->SummonCreature(NPC_CRYPT_GUARD, 3299.087f, -3450.93f, 287.16f, M_PI, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 60000);
+            }
         }
 
         void Reset() 
         {
             events.Reset();
             summons.DespawnAll();
+            SummonCryptGuards();
 
             if (pInstance)
             {
@@ -142,7 +144,6 @@ public:
             }
 
             events.ScheduleEvent(EVENT_SPELL_IMPALE, 15000);
-            events.ScheduleEvent(EVENT_FIRST_SPAWN, 20000);
             events.ScheduleEvent(EVENT_SPELL_LOCUST_SWARM, 70000+urand(0,50000));
             events.ScheduleEvent(EVENT_SPELL_BERSERK, 600000);
             
@@ -188,11 +189,6 @@ public:
                     me->CastSpell(me, SPELL_BERSERK, true);
                     events.PopEvent();
                     break;
-                case EVENT_FIRST_SPAWN:
-                    me->GetNearPosition(pos, 10.0f, rand_norm() * 2 * M_PI);
-                    me->SummonCreature(NPC_CRYPT_GUARD, pos);
-                    events.CancelEvent(EVENT_FIRST_SPAWN);
-                    break;
             }
 
             DoMeleeAttackIfReady();
@@ -204,3 +200,4 @@ void AddSC_boss_anubrekhan()
 {
     new boss_anubrekhan();
 }
+

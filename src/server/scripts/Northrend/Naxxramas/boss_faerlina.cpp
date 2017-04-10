@@ -17,26 +17,26 @@ enum Yells
 
 enum Spells
 {
-    SPELL_POISON_BOLT_VOLLEY_10            = 28796,
-    SPELL_POISON_BOLT_VOLLEY_25            = 54098,
-    SPELL_RAIN_OF_FIRE_10                = 28794,
-    SPELL_RAIN_OF_FIRE_25                = 54099,
-    SPELL_FRENZY_10                        = 28798,
-    SPELL_FRENZY_25                        = 54100,
+    SPELL_POISON_BOLT_VOLLEY_10         = 28796,
+    SPELL_POISON_BOLT_VOLLEY_25         = 54098,
+    SPELL_RAIN_OF_FIRE_10               = 28794,
+    SPELL_RAIN_OF_FIRE_25               = 54099,
+    SPELL_FRENZY_10                     = 28798,
+    SPELL_FRENZY_25                     = 54100,
     SPELL_WIDOWS_EMBRACE                = 28732,
 };
 
 enum Events
 {
-    EVENT_SPELL_POISON_BOLT                = 1,
+    EVENT_SPELL_POISON_BOLT             = 1,
     EVENT_SPELL_RAIN_OF_FIRE            = 2,
-    EVENT_SPELL_FRENZY                    = 3,
+    EVENT_SPELL_FRENZY                  = 3,
 };
 
 enum Misc
 {
     NPC_NAXXRAMAS_WORSHIPPER            = 16506,
-    NPC_NAXXRAMAS_FOLLOWER                = 16505,
+    NPC_NAXXRAMAS_FOLLOWER              = 16505,
 };
 
 class boss_faerlina : public CreatureScript

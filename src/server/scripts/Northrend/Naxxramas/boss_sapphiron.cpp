@@ -19,21 +19,21 @@ enum Yells
 enum Spells
 {
     // Fight
-    SPELL_FROST_AURA_10                = 28531,
-    SPELL_FROST_AURA_25                = 55799,
+    SPELL_FROST_AURA_10             = 28531,
+    SPELL_FROST_AURA_25             = 55799,
     SPELL_CLEAVE                    = 19983,
-    SPELL_TAIL_SWEEP_10                = 55697,
-    SPELL_TAIL_SWEEP_25                = 55696,
-    SPELL_SUMMON_BLIZZARD            = 28560,
-    SPELL_LIFE_DRAIN_10                = 28542,
-    SPELL_LIFE_DRAIN_25                = 55665,
-    SPELL_BERSERK                    = 26662,
+    SPELL_TAIL_SWEEP_10             = 55697,
+    SPELL_TAIL_SWEEP_25             = 55696,
+    SPELL_SUMMON_BLIZZARD           = 28560,
+    SPELL_LIFE_DRAIN_10             = 28542,
+    SPELL_LIFE_DRAIN_25             = 55665,
+    SPELL_BERSERK                   = 26662,
 
     // Ice block
-    SPELL_ICEBOLT_CAST                = 28526,
-    SPELL_ICEBOLT_TRIGGER            = 28522,
-    SPELL_FROST_MISSILE                = 30101,
-    SPELL_FROST_EXPLOSION            = 28524,
+    SPELL_ICEBOLT_CAST              = 28526,
+    SPELL_ICEBOLT_TRIGGER           = 28522,
+    SPELL_FROST_MISSILE             = 30101,
+    SPELL_FROST_EXPLOSION           = 28524,
 
     // Visuals
     SPELL_SAPPHIRON_DIES            = 29357,
@@ -50,21 +50,21 @@ enum Misc
 
 enum Events
 {
-    //EVENT_SAPPHIRON_BIRTH            = 1,
-    EVENT_BERSERK                    = 2,
-    EVENT_SPELL_CLEAVE                = 3,
-    EVENT_SPELL_TAIL_SWEEP            = 4,
-    EVENT_SPELL_LIFE_DRAIN            = 5,
+    //EVENT_SAPPHIRON_BIRTH         = 1,
+    EVENT_BERSERK                   = 2,
+    EVENT_SPELL_CLEAVE              = 3,
+    EVENT_SPELL_TAIL_SWEEP          = 4,
+    EVENT_SPELL_LIFE_DRAIN          = 5,
     EVENT_SPELL_BLIZZARD            = 6,
-    EVENT_FLIGHT_START                = 7,
+    EVENT_FLIGHT_START              = 7,
     EVENT_FLIGHT_LIFTOFF            = 8,
     EVENT_FLIGHT_ICEBOLT            = 9,
-    EVENT_FLIGHT_BREATH                = 10,
+    EVENT_FLIGHT_BREATH             = 10,
     EVENT_FLIGHT_SPELL_EXPLOSION    = 11,
-    EVENT_FLIGHT_START_LAND            = 12,
-    EVENT_LAND                        = 13,
+    EVENT_FLIGHT_START_LAND         = 12,
+    EVENT_LAND                      = 13,
     EVENT_GROUND                    = 14,
-    EVENT_HUNDRED_CLUB                = 15,
+    EVENT_HUNDRED_CLUB              = 15,
 };
 
 class boss_sapphiron : public CreatureScript

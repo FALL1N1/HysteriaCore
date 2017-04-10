@@ -10,28 +10,28 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 enum Spells
 {
-    SPELL_POISON_CLOUD                        = 28240,
+    SPELL_POISON_CLOUD                      = 28240,
     SPELL_MUTATING_INJECTION                = 28169,
     SPELL_SLIME_SPRAY_10                    = 28157,
     SPELL_SLIME_SPRAY_25                    = 54364,
-    SPELL_POISON_CLOUD_DAMAGE_AURA_10        = 28158,
-    SPELL_POISON_CLOUD_DAMAGE_AURA_25        = 54362,
-    SPELL_BERSERK                            = 26662,
+    SPELL_POISON_CLOUD_DAMAGE_AURA_10       = 28158,
+    SPELL_POISON_CLOUD_DAMAGE_AURA_25       = 54362,
+    SPELL_BERSERK                           = 26662,
 
-    SPELL_BOMBARD_SLIME                        = 28280, // Spawn slime when hit by slime spray
+    SPELL_BOMBARD_SLIME                     = 28280, // Spawn slime when hit by slime spray
 };
 
 enum Events
 {
-    EVENT_SPELL_BERSERK                        = 1,
+    EVENT_SPELL_BERSERK                     = 1,
     EVENT_SPELL_POISON_CLOUD                = 2,
-    EVENT_SPELL_SLIME_SPRAY                    = 3,
-    EVENT_SPELL_MUTATING_INJECTION            = 4,
+    EVENT_SPELL_SLIME_SPRAY                 = 3,
+    EVENT_SPELL_MUTATING_INJECTION          = 4,
 };
 
 enum Misc
 {
-    NPC_FALLOUT_SLIME                        = 16290,
+    NPC_FALLOUT_SLIME                       = 16290,
     NPC_SEWAGE_SLIME                        = 16375,
 };
 

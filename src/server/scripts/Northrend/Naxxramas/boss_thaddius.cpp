@@ -31,57 +31,57 @@ enum Says
 
 enum Spells
 {
-    SPELL_MAGNETIC_PULL                    = 28337,
-    SPELL_TESLA_SHOCK                    = 28099,
+    SPELL_MAGNETIC_PULL                 = 28337,
+    SPELL_TESLA_SHOCK                   = 28099,
 
     // Stalagg
     SPELL_POWER_SURGE_10                = 54529,
     SPELL_POWER_SURGE_25                = 28134,
-    SPELL_STALAGG_CHAIN                    = 28096,
+    SPELL_STALAGG_CHAIN                 = 28096,
 
     // Feugen
-    SPELL_STATIC_FIELD_10                = 28135,
-    SPELL_STATIC_FIELD_25                = 54528,
-    SPELL_FEUGEN_CHAIN                    = 28111,
+    SPELL_STATIC_FIELD_10               = 28135,
+    SPELL_STATIC_FIELD_25               = 54528,
+    SPELL_FEUGEN_CHAIN                  = 28111,
 
     // Thaddius
     SPELL_POLARITY_SHIFT                = 28089,
     SPELL_BALL_LIGHTNING                = 28299,
     SPELL_CHAIN_LIGHTNING_10            = 28167,
     SPELL_CHAIN_LIGHTNING_25            = 54531,
-    SPELL_BERSERK                        = 27680,
+    SPELL_BERSERK                       = 27680,
 
-    SPELL_THADDIUS_VISUAL_LIGHTNING        = 28136,
-    SPELL_THADDIUS_SPAWN_STUN            = 28160,
+    SPELL_THADDIUS_VISUAL_LIGHTNING     = 28136,
+    SPELL_THADDIUS_SPAWN_STUN           = 28160,
 
-    SPELL_POSITIVE_CHARGE                = 28062,
-    SPELL_POSITIVE_CHARGE_STACK            = 29659,
-    SPELL_NEGATIVE_CHARGE                = 28085,
-    SPELL_NEGATIVE_CHARGE_STACK            = 29660,
-    SPELL_POSITIVE_POLARITY                = 28059,
-    SPELL_NEGATIVE_POLARITY                = 28084,
+    SPELL_POSITIVE_CHARGE               = 28062,
+    SPELL_POSITIVE_CHARGE_STACK         = 29659,
+    SPELL_NEGATIVE_CHARGE               = 28085,
+    SPELL_NEGATIVE_CHARGE_STACK         = 29660,
+    SPELL_POSITIVE_POLARITY             = 28059,
+    SPELL_NEGATIVE_POLARITY             = 28084,
 };
 
 enum Events
 {
-    EVENT_MINION_SPELL_POWER_SURGE        = 1,
+    EVENT_MINION_SPELL_POWER_SURGE      = 1,
     EVENT_MINION_SPELL_MAGNETIC_PULL    = 2,
-    EVENT_MINION_CHECK_DISTANCE            = 3,
-    EVENT_MINION_SPELL_STATIC_FIELD        = 4,
+    EVENT_MINION_CHECK_DISTANCE         = 3,
+    EVENT_MINION_SPELL_STATIC_FIELD     = 4,
 
     EVENT_THADDIUS_START                = 10,
     EVENT_THADDIUS_SPELL_CHAIN_LIGHTNING= 11,
     EVENT_THADDIUS_SPELL_BERSERK        = 12,
-    EVENT_THADDIUS_POLARITY_SHIFT        = 13,
-    EVENT_THADDIUS_START_2                = 14,
+    EVENT_THADDIUS_POLARITY_SHIFT       = 13,
+    EVENT_THADDIUS_START_2              = 14,
 };
 
 enum Misc
 {
     ACTION_MAGNETIC_PULL                = 1,
-    ACTION_SUMMON_DIED                    = 2,
-    ACTION_RESTORE                        = 3,
-    NPC_TESLA_COIL                        = 16218,           //the coils (emotes "Tesla Coil overloads!")
+    ACTION_SUMMON_DIED                  = 2,
+    ACTION_RESTORE                      = 3,
+    NPC_TESLA_COIL                      = 16218,           //the coils (emotes "Tesla Coil overloads!")
 };
 
 class boss_thaddius : public CreatureScript

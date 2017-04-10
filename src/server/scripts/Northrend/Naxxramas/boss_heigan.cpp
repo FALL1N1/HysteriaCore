@@ -17,19 +17,19 @@ enum Says
 
 enum Spells
 {
-    SPELL_SPELL_DISRUPTION            = 29310,
-    SPELL_DECREPIT_FEVER_10            = 29998,
-    SPELL_DECREPIT_FEVER_25            = 55011,
-    SPELL_PLAGUE_CLOUD                = 29350,
+    SPELL_SPELL_DISRUPTION          = 29310,
+    SPELL_DECREPIT_FEVER_10         = 29998,
+    SPELL_DECREPIT_FEVER_25         = 55011,
+    SPELL_PLAGUE_CLOUD              = 29350,
 };
 
 enum Events
 {
     EVENT_SPELL_SPELL_DISRUPTION    = 1,
-    EVENT_SPELL_DECEPIT_FEVER        = 2,
-    EVENT_ERUPT_SECTION                = 3,
-    EVENT_SWITCH_PHASE                = 4,
-    EVENT_SAFETY_DANCE                = 5,
+    EVENT_SPELL_DECEPIT_FEVER       = 2,
+    EVENT_ERUPT_SECTION             = 3,
+    EVENT_SWITCH_PHASE              = 4,
+    EVENT_SAFETY_DANCE              = 5,
 };
 
 enum Misc

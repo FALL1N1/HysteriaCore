@@ -8,21 +8,21 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 enum Spells
 {
-    SPELL_NECROTIC_AURA                            = 55593,
-    SPELL_SUMMON_SPORE                            = 29234,
-    SPELL_DEATHBLOOM_10                            = 29865,
-    SPELL_DEATHBLOOM_25                            = 55053,
+    SPELL_NECROTIC_AURA                         = 55593,
+    SPELL_SUMMON_SPORE                          = 29234,
+    SPELL_DEATHBLOOM_10                         = 29865,
+    SPELL_DEATHBLOOM_25                         = 55053,
     SPELL_INEVITABLE_DOOM_10                    = 29204,
     SPELL_INEVITABLE_DOOM_25                    = 55052,
-    SPELL_BERSERK                                = 26662,
+    SPELL_BERSERK                               = 26662,
 };
 
 enum Events
 {
-    EVENT_SPELL_NECROTIC_AURA                    = 1,
-    EVENT_SPELL_DEATHBLOOM                        = 2,
-    EVENT_SPELL_INEVITABLE_DOOM                    = 3,
-    EVENT_SPELL_BERSERK                            = 4,
+    EVENT_SPELL_NECROTIC_AURA                   = 1,
+    EVENT_SPELL_DEATHBLOOM                      = 2,
+    EVENT_SPELL_INEVITABLE_DOOM                 = 3,
+    EVENT_SPELL_BERSERK                         = 4,
 };
 
 enum Texts

@@ -11,32 +11,32 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 enum Spells
 {
-    SPELL_BERSERK                        = 26662,
+    SPELL_BERSERK                       = 26662,
 
     // Marks
-    SPELL_MARK_OF_KORTHAZZ                = 28832,
-    SPELL_MARK_OF_BLAUMEUX                = 28833,
-    SPELL_MARK_OF_RIVENDARE                = 28834,
+    SPELL_MARK_OF_KORTHAZZ              = 28832,
+    SPELL_MARK_OF_BLAUMEUX              = 28833,
+    SPELL_MARK_OF_RIVENDARE             = 28834,
     SPELL_MARK_OF_ZELIEK                = 28835,
-    SPELL_MARK_DAMAGE                    = 28836,
+    SPELL_MARK_DAMAGE                   = 28836,
 
     // Korth'azz
     SPELL_KORTHAZZ_METEOR_10            = 28884,
     SPELL_KORTHAZZ_METEOR_25            = 57467,
 
     // Blaumeux
-    SPELL_BLAUMEUX_SHADOW_BOLT_10        = 57374,
-    SPELL_BLAUMEUX_SHADOW_BOLT_25        = 57464,
-    SPELL_BLAUMEUX_VOID_ZONE_10            = 28863,
-    SPELL_BLAUMEUX_VOID_ZONE_25            = 57463,
-    SPELL_BLAUMEUX_UNYIELDING_PAIN        = 57381,
+    SPELL_BLAUMEUX_SHADOW_BOLT_10       = 57374,
+    SPELL_BLAUMEUX_SHADOW_BOLT_25       = 57464,
+    SPELL_BLAUMEUX_VOID_ZONE_10         = 28863,
+    SPELL_BLAUMEUX_VOID_ZONE_25         = 57463,
+    SPELL_BLAUMEUX_UNYIELDING_PAIN      = 57381,
 
     // Zeliek
-    SPELL_ZELIEK_HOLY_WRATH_10            = 28883,
-    SPELL_ZELIEK_HOLY_WRATH_25            = 57466,
-    SPELL_ZELIEK_HOLY_BOLT_10            = 57376,
-    SPELL_ZELIEK_HOLY_BOLT_25            = 57465,
-    SPELL_ZELIEK_CONDEMNATION            = 57377,
+    SPELL_ZELIEK_HOLY_WRATH_10          = 28883,
+    SPELL_ZELIEK_HOLY_WRATH_25          = 57466,
+    SPELL_ZELIEK_HOLY_BOLT_10           = 57376,
+    SPELL_ZELIEK_HOLY_BOLT_25           = 57465,
+    SPELL_ZELIEK_CONDEMNATION           = 57377,
 
     // Rivendare
     SPELL_RIVENDARE_UNHOLY_SHADOW_10    = 28882,
@@ -45,25 +45,25 @@ enum Spells
 
 enum Events
 {
-    EVENT_SPELL_MARK_CAST                = 1,
-    EVENT_SPELL_PRIMARY                    = 2,
-    EVENT_SPELL_SECONDARY                = 3,
-    EVENT_SPELL_PUNISH                    = 4,
-    EVENT_BERSERK                        = 5,
+    EVENT_SPELL_MARK_CAST               = 1,
+    EVENT_SPELL_PRIMARY                 = 2,
+    EVENT_SPELL_SECONDARY               = 3,
+    EVENT_SPELL_PUNISH                  = 4,
+    EVENT_BERSERK                       = 5,
 };
 
 enum Misc
 {
     // Movement
-    MOVE_PHASE_NONE                        = 0,
-    MOVE_PHASE_STARTED                    = 1,
-    MOVE_PHASE_FINISHED                    = 2,
+    MOVE_PHASE_NONE                     = 0,
+    MOVE_PHASE_STARTED                  = 1,
+    MOVE_PHASE_FINISHED                 = 2,
 
     // Horseman
-    HORSEMAN_ZELIEK                        = 0,
-    HORSEMAN_BLAUMEUX                    = 1,
-    HORSEMAN_RIVENDARE                    = 2,
-    HORSEMAN_KORTHAZZ                    = 3,
+    HORSEMAN_ZELIEK                     = 0,
+    HORSEMAN_BLAUMEUX                   = 1,
+    HORSEMAN_RIVENDARE                  = 2,
+    HORSEMAN_KORTHAZZ                   = 3,
 };
 
 enum FourHorsemen

@@ -9,31 +9,31 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 enum Spells
 {
-    SPELL_WEB_WRAP                        = 28622,
-    SPELL_WEB_SPRAY_10                    = 29484,
-    SPELL_WEB_SPRAY_25                    = 54125,
-    SPELL_POISON_SHOCK_10                = 28741,
-    SPELL_POISON_SHOCK_25                = 54122,
+    SPELL_WEB_WRAP                      = 28622,
+    SPELL_WEB_SPRAY_10                  = 29484,
+    SPELL_WEB_SPRAY_25                  = 54125,
+    SPELL_POISON_SHOCK_10               = 28741,
+    SPELL_POISON_SHOCK_25               = 54122,
     SPELL_NECROTIC_POISON_10            = 54121,
     SPELL_NECROTIC_POISON_25            = 28776,
-    SPELL_FRENZY_10                        = 54123,
-    SPELL_FRENZY_25                        = 54124,
+    SPELL_FRENZY_10                     = 54123,
+    SPELL_FRENZY_25                     = 54124,
 };
 
 enum Events
 {
-    EVENT_SPELL_WEB_SPRAY                = 1,
+    EVENT_SPELL_WEB_SPRAY               = 1,
     EVENT_SPELL_POISON_SHOCK            = 2,
-    EVENT_SPELL_NECROTIC_POISON            = 3,
-    EVENT_WEB_WRAP                        = 4,
-    EVENT_HEALTH_CHECK                    = 5,
+    EVENT_SPELL_NECROTIC_POISON         = 3,
+    EVENT_WEB_WRAP                      = 4,
+    EVENT_HEALTH_CHECK                  = 5,
     EVENT_SUMMON_SPIDERLINGS            = 6,
 };
 
 enum Misc
 {
     NPC_WEB_WRAP                        = 16486,
-    NPC_MAEXXNA_SPIDERLING                = 17055,
+    NPC_MAEXXNA_SPIDERLING              = 17055,
 };
 
 const Position PosWrap[3] =

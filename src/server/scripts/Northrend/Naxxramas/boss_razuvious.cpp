@@ -8,46 +8,46 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 enum Sounds
 {
-    SOUND_AGGRO_1                    = 8852,
-    SOUND_AGGRO_2                    = 8853,
-    SOUND_AGGRO_3                    = 8854,
-    SOUND_SLAY                        = 8861,
-    SOUND_COMMAND_1                    = 8855,
-    SOUND_COMMAND_2                    = 8856,
-    SOUND_COMMAND_3                    = 8858,
-    SOUND_COMMAND_4                    = 8859,
-    SOUND_COMMAND_5                    = 8861,
-    SOUND_DEATH                        = 8860,
+    SOUND_AGGRO_1                   = 8852,
+    SOUND_AGGRO_2                   = 8853,
+    SOUND_AGGRO_3                   = 8854,
+    SOUND_SLAY                      = 8861,
+    SOUND_COMMAND_1                 = 8855,
+    SOUND_COMMAND_2                 = 8856,
+    SOUND_COMMAND_3                 = 8858,
+    SOUND_COMMAND_4                 = 8859,
+    SOUND_COMMAND_5                 = 8861,
+    SOUND_DEATH                     = 8860,
 };
 
 enum Spells
 {
     SPELL_UNBALANCING_STRIKE        = 26613,
-    SPELL_DISRUPTING_SHOUT_10        = 29107, 
-    SPELL_DISRUPTING_SHOUT_25        = 55543,
-    SPELL_JAGGED_KNIFE                = 55550,
-    SPELL_HOPELESS                    = 29125,
+    SPELL_DISRUPTING_SHOUT_10       = 29107, 
+    SPELL_DISRUPTING_SHOUT_25       = 55543,
+    SPELL_JAGGED_KNIFE              = 55550,
+    SPELL_HOPELESS                  = 29125,
 
-    SPELL_BONE_BARRIER                = 29061,
-    SPELL_BLOOD_STRIKE                = 61696, 
+    SPELL_BONE_BARRIER              = 29061,
+    SPELL_BLOOD_STRIKE              = 61696, 
 };
 
 
 enum Events
 {
-    EVENT_SPELL_UNBALANCING_STRIKE    = 1,
+    EVENT_SPELL_UNBALANCING_STRIKE  = 1,
     EVENT_SPELL_DISRUPTING_SHOUT    = 2,
     EVENT_SPELL_JAGGED_KNIFE        = 3,
-    EVENT_PLAY_COMMAND                = 4,
+    EVENT_PLAY_COMMAND              = 4,
 
-    EVENT_MINION_BLOOD_STRIKE        = 10,
-    EVENT_MINION_BONE_BARRIER        = 11,
+    EVENT_MINION_BLOOD_STRIKE       = 10,
+    EVENT_MINION_BONE_BARRIER       = 11,
 };
 
 enum Misc
 {
-    NPC_DEATH_KNIGHT_UNDERSTUDY        = 16803,
-    NPC_RAZUVIOUS                    = 16061,
+    NPC_DEATH_KNIGHT_UNDERSTUDY     = 16803,
+    NPC_RAZUVIOUS                   = 16061,
 };
 
 class boss_razuvious : public CreatureScript

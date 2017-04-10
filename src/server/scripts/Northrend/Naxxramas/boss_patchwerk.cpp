@@ -17,19 +17,19 @@ enum Yells
 
 enum Spells
 {
-    SPELL_HATEFUL_STRIKE_10            = 41926,
-    SPELL_HATEFUL_STRIKE_25            = 59192,
+    SPELL_HATEFUL_STRIKE_10         = 41926,
+    SPELL_HATEFUL_STRIKE_25         = 59192,
     SPELL_FRENZY                    = 28131,
-    SPELL_BERSERK                    = 26662,
+    SPELL_BERSERK                   = 26662,
     SPELL_SLIME_BOLT                = 32309,
 };
 
 enum Events
 {
-    EVENT_HEALTH_CHECK                = 1,
-    EVENT_SPELL_HATEFUL_STRIKE        = 2,
-    EVENT_SPELL_SLIME_BOLT            = 3,
-    EVENT_SPELL_BERSERK                = 4,
+    EVENT_HEALTH_CHECK              = 1,
+    EVENT_SPELL_HATEFUL_STRIKE      = 2,
+    EVENT_SPELL_SLIME_BOLT          = 3,
+    EVENT_SPELL_BERSERK             = 4,
 };
 
 enum Misc

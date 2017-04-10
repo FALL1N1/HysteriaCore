@@ -24,34 +24,34 @@ enum Yells
 
 enum Spells
 {
-    SPELL_FROST_BOLT_SINGLE_10                = 28478,
-    SPELL_FROST_BOLT_SINGLE_25                = 55802,
-    SPELL_FROST_BOLT_MULTI_10                = 28479,
-    SPELL_FROST_BOLT_MULTI_25                = 55807,
-    SPELL_SHADOW_FISURE                        = 27810,
+    SPELL_FROST_BOLT_SINGLE_10              = 28478,
+    SPELL_FROST_BOLT_SINGLE_25              = 55802,
+    SPELL_FROST_BOLT_MULTI_10               = 28479,
+    SPELL_FROST_BOLT_MULTI_25               = 55807,
+    SPELL_SHADOW_FISURE                     = 27810,
     SPELL_VOID_BLAST                        = 27812,
-    SPELL_DETONATE_MANA                        = 27819,
+    SPELL_DETONATE_MANA                     = 27819,
     SPELL_MANA_DETONATION_DAMAGE            = 27820,
-    SPELL_FROST_BLAST                        = 27808,
-    SPELL_CHAINS_OF_KELTHUZAD                = 28410, //28408 script effect
-    SPELL_BERSERK                            = 28498,
+    SPELL_FROST_BLAST                       = 27808,
+    SPELL_CHAINS_OF_KELTHUZAD               = 28410, //28408 script effect
+    SPELL_BERSERK                           = 28498,
 
     // Minions
     SPELL_FRENZY                            = 28468,
-    SPELL_MORTAL_WOUND                        = 28467,
-    SPELL_BLOOD_TAP                            = 28470,
+    SPELL_MORTAL_WOUND                      = 28467,
+    SPELL_BLOOD_TAP                         = 28470,
 };
 
 enum Misc
 {
     NPC_SOLDIER_OF_THE_FROZEN_WASTES        = 16427,
-    NPC_UNSTOPPABLE_ABOMINATION                = 16428,
-    NPC_SOUL_WEAVER                            = 16429,
+    NPC_UNSTOPPABLE_ABOMINATION             = 16428,
+    NPC_SOUL_WEAVER                         = 16429,
     NPC_GUARDIAN_OF_ICECROWN                = 16441,
 
-    ACTION_CALL_HELP_ON                        = 1,
+    ACTION_CALL_HELP_ON                     = 1,
     ACTION_CALL_HELP_OFF                    = 2,
-    ACTION_SECOND_PHASE                        = 3,
+    ACTION_SECOND_PHASE                     = 3,
 };
 
 enum Event
@@ -61,20 +61,20 @@ enum Event
     EVENT_SUMMON_UNSTOPPABLE_ABOMINATION    = 2,
     EVENT_SUMMON_SOUL_WEAVER                = 3,
     EVENT_START_SECOND_PHASE                = 4,
-    EVENT_SPELL_FROST_BOLT_SINGLE            = 5,
+    EVENT_SPELL_FROST_BOLT_SINGLE           = 5,
     EVENT_SPELL_FROST_BOLT_MULTI            = 6,
-    EVENT_SPELL_DETONATE_MANA                = 7,
-    EVENT_SECOND_PHASE_HEALTH_CHECK            = 8,
-    EVENT_THIRD_PHASE_LICH_KING_SAY            = 9,
-    EVENT_SPELL_SHADOW_FISSURE                = 10,
-    EVENT_SPELL_FROST_BLAST                    = 11,
-    EVENT_SPELL_CHAINS                        = 12,
-    EVENT_SUMMON_GUARDIAN_OF_ICECROWN        = 13,
-    EVENT_FLOOR_CHANGE                        = 14,
+    EVENT_SPELL_DETONATE_MANA               = 7,
+    EVENT_SECOND_PHASE_HEALTH_CHECK         = 8,
+    EVENT_THIRD_PHASE_LICH_KING_SAY         = 9,
+    EVENT_SPELL_SHADOW_FISSURE              = 10,
+    EVENT_SPELL_FROST_BLAST                 = 11,
+    EVENT_SPELL_CHAINS                      = 12,
+    EVENT_SUMMON_GUARDIAN_OF_ICECROWN       = 13,
+    EVENT_FLOOR_CHANGE                      = 14,
 
     // Minions
-    EVENT_MINION_SPELL_FRENZY                = 100,
-    EVENT_MINION_SPELL_MORTAL_WOUND            = 101,
+    EVENT_MINION_SPELL_FRENZY               = 100,
+    EVENT_MINION_SPELL_MORTAL_WOUND         = 101,
     EVENT_MINION_SPELL_BLOOD_TAP            = 102,
 };
 
@@ -175,6 +175,8 @@ public:
                     go->SetPhaseMask(1, true);
                     go->SetGoState(GO_STATE_READY);
                 }
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_KELTHUZAD_GATE)))
+                    go->SetGoState(GO_STATE_ACTIVE);
             }
         }
 
@@ -234,6 +236,8 @@ public:
                     go->SetGoState(GO_STATE_ACTIVE);
                 }
             }
+            if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_KELTHUZAD_GATE)))
+                go->SetGoState(GO_STATE_READY);
         }
 
         void JustSummoned(Creature* cr) { summons.Summon(cr); }

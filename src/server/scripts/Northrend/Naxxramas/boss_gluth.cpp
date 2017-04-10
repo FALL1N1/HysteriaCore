@@ -10,29 +10,29 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 enum Spells
 {
-    SPELL_MORTAL_WOUND                    = 25646,
-    SPELL_ENRAGE_10                        = 28371,
-    SPELL_ENRAGE_25                        = 54427,
-    SPELL_DECIMATE_10                    = 28374,
-    SPELL_DECIMATE_25                    = 54426,
-    SPELL_BERSERK                        = 26662,
+    SPELL_MORTAL_WOUND                  = 25646,
+    SPELL_ENRAGE_10                     = 28371,
+    SPELL_ENRAGE_25                     = 54427,
+    SPELL_DECIMATE_10                   = 28374,
+    SPELL_DECIMATE_25                   = 54426,
+    SPELL_BERSERK                       = 26662,
     SPELL_INFECTED_WOUND                = 29306,
-    SPELL_CHOW_SEARCHER                    = 28404,
+    SPELL_CHOW_SEARCHER                 = 28404,
 };
 
 enum Events
 {
     EVENT_SPELL_MORTAL_WOUND            = 1,
-    EVENT_SPELL_ENRAGE                    = 2,
+    EVENT_SPELL_ENRAGE                  = 2,
     EVENT_SPELL_DECIMATE                = 3,
-    EVENT_SPELL_BERSERK                    = 4,
-    EVENT_SUMMON_ZOMBIE                    = 5,
+    EVENT_SPELL_BERSERK                 = 4,
+    EVENT_SUMMON_ZOMBIE                 = 5,
     EVENT_CAN_EAT_ZOMBIE                = 6,
 };
 
 enum Misc
 {
-    NPC_ZOMBIE_CHOW                        = 16360,
+    NPC_ZOMBIE_CHOW                     = 16360,
 };
 
 const Position zombiePos[3] =

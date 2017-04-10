@@ -16,31 +16,31 @@ enum Says
 
 enum Spells
 {
-    SPELL_CURSE_OF_THE_PLAGUEBRINGER_10        = 29213,
-    SPELL_CURSE_OF_THE_PLAGUEBRINGER_25        = 54835,
+    SPELL_CURSE_OF_THE_PLAGUEBRINGER_10     = 29213,
+    SPELL_CURSE_OF_THE_PLAGUEBRINGER_25     = 54835,
     SPELL_CRIPPLE_10                        = 29212,
     SPELL_CRIPPLE_25                        = 54814,
-    SPELL_SUMMON_PLAGUED_WARRIORS            = 29237,
-    SPELL_TELEPORT                            = 29216,
-    SPELL_BLINK                                = 29208,
+    SPELL_SUMMON_PLAGUED_WARRIORS           = 29237,
+    SPELL_TELEPORT                          = 29216,
+    SPELL_BLINK                             = 29208,
 };
 
 enum Events
 {
-    EVENT_SPELL_CURSE                        = 1,
-    EVENT_SPELL_CRIPPLE                        = 2,
-    EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE    = 3,
-    EVENT_MOVE_TO_BALCONY                    = 4,
-    EVENT_SPELL_BLINK                        = 5,
+    EVENT_SPELL_CURSE                       = 1,
+    EVENT_SPELL_CRIPPLE                     = 2,
+    EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE   = 3,
+    EVENT_MOVE_TO_BALCONY                   = 4,
+    EVENT_SPELL_BLINK                       = 5,
     EVENT_MOVE_TO_GROUND                    = 6,
-    EVENT_SUMMON_PLAGUED_WARRIOR_REAL        = 7,
-    EVENT_BALCONY_SUMMON_ANNOUNCE            = 8,
-    EVENT_BALCONY_SUMMON_REAL                = 9,
+    EVENT_SUMMON_PLAGUED_WARRIOR_REAL       = 7,
+    EVENT_BALCONY_SUMMON_ANNOUNCE           = 8,
+    EVENT_BALCONY_SUMMON_REAL               = 9,
 };
 
 enum Misc
 {
-    NPC_PLAGUED_WARRIOR                        = 16984,
+    NPC_PLAGUED_WARRIOR                     = 16984,
     NPC_PLAGUED_CHAMPION                    = 16983,
     NPC_PLAGUED_GUARDIAN                    = 16981,
 };
@@ -68,7 +68,7 @@ public:
 
     struct boss_nothAI : public ScriptedAI
     {
-		boss_nothAI(Creature *c) : ScriptedAI(c), summons(me), justBlinked(false)
+        boss_nothAI(Creature *c) : ScriptedAI(c), summons(me)
         {
             pInstance = me->GetInstanceScript();
         }
@@ -76,17 +76,16 @@ public:
         InstanceScript* pInstance;
         EventMap events;
         SummonList summons;
-        uint8 totalPhase;
-		bool justBlinked;
 
         void StartGroundPhase()
         {
             me->SetReactState(REACT_AGGRESSIVE);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DISABLE_MOVE);
             me->SetControlled(false, UNIT_STATE_ROOT);
+            events.SetPhase(0);
 
             events.Reset();
-            events.ScheduleEvent(EVENT_MOVE_TO_BALCONY, (totalPhase < 2 ? 110000 : (110000 / totalPhase)));
+            events.ScheduleEvent(EVENT_MOVE_TO_BALCONY, 110000);
             events.ScheduleEvent(EVENT_SPELL_CURSE, 15000);
             events.ScheduleEvent(EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE, 25000);
             if (Is25ManRaid())
@@ -97,8 +96,9 @@ public:
         {
             me->SetReactState(REACT_PASSIVE);
             me->AttackStop();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE |UNIT_FLAG_DISABLE_MOVE);
+            me->SetControlled(true, UNIT_STATE_ROOT);
+            events.SetPhase(1);
             events.Reset();
             events.ScheduleEvent(EVENT_BALCONY_SUMMON_ANNOUNCE, 4000);
             events.ScheduleEvent(EVENT_MOVE_TO_GROUND, 70000);
@@ -127,8 +127,7 @@ public:
             summons.DespawnAll();
             me->SetControlled(false, UNIT_STATE_ROOT);
             me->SetReactState(REACT_AGGRESSIVE);
-            totalPhase = 0;
-			justBlinked = false;
+            events.SetPhase(0);
 
             if (pInstance)
                 pInstance->SetData(EVENT_NOTH, NOT_STARTED);
@@ -160,7 +159,6 @@ public:
             Talk(SAY_DEATH);
             if (pInstance)
                 pInstance->SetData(EVENT_NOTH, DONE);
-			me->NearTeleportTo(nothPosition.GetPositionX(), nothPosition.GetPositionY(), nothPosition.GetPositionZ(), nothPosition.GetOrientation(), true);
         }
 
         void KilledUnit(Unit* who)
@@ -191,6 +189,7 @@ public:
             {
                 // GROUND
                 case EVENT_SPELL_CURSE:
+                    if (events.GetPhaseMask() == 0)
                     me->CastCustomSpell(RAID_MODE(SPELL_CURSE_OF_THE_PLAGUEBRINGER_10, SPELL_CURSE_OF_THE_PLAGUEBRINGER_25), SPELLVALUE_MAX_TARGETS, RAID_MODE(3, 10), me, false);
                     events.RepeatEvent(25000);
                     break;
@@ -216,7 +215,6 @@ public:
                     me->MonsterTextEmote("%s blinks away!", 0, true);
                     me->CastSpell(me, RAID_MODE(SPELL_CRIPPLE_10, SPELL_CRIPPLE_25), false);
                     me->CastSpell(me, SPELL_BLINK, true);
-					justBlinked = true;
                     events.RepeatEvent(30000);
                     break;
                 // BALCONY
@@ -227,9 +225,9 @@ public:
                     break;
                 case EVENT_BALCONY_SUMMON_REAL:
                     me->CastSpell(me, SPELL_SUMMON_PLAGUED_WARRIORS, true); // visual only
-                    if (totalPhase == 0)
+                    if (events.GetPhaseMask() == 0)
                         SummonHelper(NPC_PLAGUED_CHAMPION, RAID_MODE(2,4));
-                    else if (totalPhase == 1)
+                    else if (events.GetPhaseMask() == 1)
                     {
                         SummonHelper(NPC_PLAGUED_CHAMPION, RAID_MODE(1,2));
                         SummonHelper(NPC_PLAGUED_GUARDIAN, RAID_MODE(1,2));
@@ -240,26 +238,13 @@ public:
                     break;
                 case EVENT_MOVE_TO_GROUND:
                     me->MonsterTextEmote("%s teleports back into the battle!", 0, true);
-                    totalPhase++;
                     StartGroundPhase();
                     me->NearTeleportTo(nothPosition.GetPositionX(), nothPosition.GetPositionY(), nothPosition.GetPositionZ(), nothPosition.GetOrientation(), true);
-                    events.PopEvent();
                     break;
             }
 
-			if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
-			{
-				/* workaround for movechase breaking after blinking
-				without this noth would just stand there unless his current target moves */
-				if (justBlinked && me->GetVictim() && !me->IsWithinMeleeRange(me->GetVictim()))
-				{
-					me->GetMotionMaster()->Clear();
-					me->GetMotionMaster()->MoveChase(me->GetVictim());
-					justBlinked = false;
-				}
-				else
-					DoMeleeAttackIfReady();
-			}
+            if (me->HasReactState(REACT_AGGRESSIVE))
+                DoMeleeAttackIfReady();
         }
     };    
 };

@@ -19,40 +19,40 @@ enum Yells
 
 enum Spells
 {
-    SPELL_HARVEST_SOUL                = 28679,
+    SPELL_HARVEST_SOUL              = 28679,
     SPELL_SHADOW_BOLT_10            = 29317,
     SPELL_SHADOW_BOLT_25            = 56405,
-    SPELL_INFORM_LIVING_TRAINEE        = 27892,
-    SPELL_INFORM_LIVING_KNIGHT        = 27928,
-    SPELL_INFORM_LIVING_RIDER        = 27935,
-    SPELL_INFORM_DEAD_TRAINEE        = 27915,
+    SPELL_INFORM_LIVING_TRAINEE     = 27892,
+    SPELL_INFORM_LIVING_KNIGHT      = 27928,
+    SPELL_INFORM_LIVING_RIDER       = 27935,
+    SPELL_INFORM_DEAD_TRAINEE       = 27915,
     SPELL_INFORM_DEAD_KNIGHT        = 27931,
-    SPELL_INFORM_DEAD_RIDER            = 27937,
+    SPELL_INFORM_DEAD_RIDER         = 27937,
 
-    SPELL_SHADOW_MARK                = 27825
+    SPELL_SHADOW_MARK               = 27825
 };
 
 enum Misc
 {
-    NPC_LIVING_TRAINEE                = 16124,
-    NPC_LIVING_KNIGHT                = 16125,
+    NPC_LIVING_TRAINEE              = 16124,
+    NPC_LIVING_KNIGHT               = 16125,
     NPC_LIVING_RIDER                = 16126,
     NPC_DEAD_TRAINEE                = 16127,
-    NPC_DEAD_KNIGHT                    = 16148,
-    NPC_DEAD_HORSE                    = 16149,
-    NPC_DEAD_RIDER                    = 16150,
+    NPC_DEAD_KNIGHT                 = 16148,
+    NPC_DEAD_HORSE                  = 16149,
+    NPC_DEAD_RIDER                  = 16150,
 
     ACTION_GATE_OPEN                = 1,
 };
 
 enum Events
 {
-    EVENT_SUMMON_ADDS                = 1,
+    EVENT_SUMMON_ADDS               = 1,
     EVENT_SPELL_HARVEST_SOUL        = 2,
-    EVENT_SPELL_SHADOW_BOLT            = 3,
-    EVENT_TELEPORT                    = 4,
-    EVENT_CHECK_HEALTH                = 5,
-    EVENT_CHECK_PLAYERS                = 6,
+    EVENT_SPELL_SHADOW_BOLT         = 3,
+    EVENT_TELEPORT                  = 4,
+    EVENT_CHECK_HEALTH              = 5,
+    EVENT_CHECK_PLAYERS             = 6,
 };
 
 const uint32 gothikWaves[24][2] =
@@ -60,24 +60,24 @@ const uint32 gothikWaves[24][2] =
     {NPC_LIVING_TRAINEE,    20000},
     {NPC_LIVING_TRAINEE,    20000},
     {NPC_LIVING_TRAINEE,    10000},
-    {NPC_LIVING_KNIGHT,        10000},
+    {NPC_LIVING_KNIGHT,     10000},
     {NPC_LIVING_TRAINEE,    15000},
-    {NPC_LIVING_KNIGHT,        10000},
+    {NPC_LIVING_KNIGHT,     10000},
     {NPC_LIVING_TRAINEE,    15000},
     {NPC_LIVING_TRAINEE,    0},
-    {NPC_LIVING_KNIGHT,        10000},
-    {NPC_LIVING_RIDER,        10000},
+    {NPC_LIVING_KNIGHT,     10000},
+    {NPC_LIVING_RIDER,      10000},
     {NPC_LIVING_TRAINEE,    5000},
-    {NPC_LIVING_KNIGHT,        15000},
-    {NPC_LIVING_RIDER,        0},
+    {NPC_LIVING_KNIGHT,     15000},
+    {NPC_LIVING_RIDER,      0},
     {NPC_LIVING_TRAINEE,    10000},
-    {NPC_LIVING_KNIGHT,        10000},
+    {NPC_LIVING_KNIGHT,     10000},
     {NPC_LIVING_TRAINEE,    10000},
-    {NPC_LIVING_RIDER,        5000},
-    {NPC_LIVING_KNIGHT,        5000},
+    {NPC_LIVING_RIDER,      5000},
+    {NPC_LIVING_KNIGHT,     5000},
     {NPC_LIVING_TRAINEE,    20000},
-    {NPC_LIVING_RIDER,        0},
-    {NPC_LIVING_KNIGHT,        0},
+    {NPC_LIVING_RIDER,      0},
+    {NPC_LIVING_KNIGHT,     0},
     {NPC_LIVING_TRAINEE,    15000},
     {NPC_LIVING_TRAINEE,    29000},
     {0, 0}
