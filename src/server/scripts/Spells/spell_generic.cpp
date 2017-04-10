@@ -4875,6 +4875,86 @@ public:
     }
 };
 
+// Blade Warding - 64440
+class spell_gen_blade_warding : public SpellScriptLoader
+{
+public:
+    spell_gen_blade_warding() : SpellScriptLoader("spell_gen_blade_warding") { }
+
+    class spell_gen_blade_warding_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_gen_blade_warding_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/)
+        {
+            if (!sSpellMgr->GetSpellInfo(64442))
+                return false;
+            return true;
+        }
+
+        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        {
+            PreventDefaultAction();
+
+            Unit* caster = eventInfo.GetActionTarget();
+            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(64442);
+
+            uint8 stacks = GetStackAmount();
+            int32 bp = 0;
+
+            for (uint8 i = 0; i < stacks; ++i)
+                bp += spellInfo->Effects[EFFECT_0].CalcValue(caster);
+
+            caster->CastCustomSpell(64442, SPELLVALUE_BASE_POINT0, bp, eventInfo.GetActor(), TRIGGERED_FULL_MASK, nullptr, aurEff);
+        }
+
+        void Register()
+        {
+            OnEffectProc += AuraEffectProcFn(spell_gen_blade_warding_AuraScript::HandleProc, EFFECT_1, SPELL_AURA_PROC_TRIGGER_SPELL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_gen_blade_warding_AuraScript();
+    }
+};
+
+// 6870 31399 Moss Covered Feet
+class spell_gen_moss_covered_feet : public SpellScriptLoader
+{
+public:
+    spell_gen_moss_covered_feet() : SpellScriptLoader("spell_gen_moss_covered_feet") { }
+
+    class spell_gen_moss_covered_feet_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_gen_moss_covered_feet_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(6869))
+                return false;
+            return true;
+        }
+
+        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        {
+            PreventDefaultAction();
+            eventInfo.GetActionTarget()->CastSpell((Unit*)nullptr, 6869, true, nullptr, aurEff);
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(spell_gen_moss_covered_feet_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_gen_moss_covered_feet_AuraScript();
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     // ours:
@@ -5000,4 +5080,8 @@ void AddSC_generic_spell_scripts()
     new spell_gen_eject_all_passengers();
     new spell_gen_eject_passenger();
     new spell_onslaught_horse_deliver();
+    
+    // firefly
+    new spell_gen_blade_warding();
+    new spell_gen_moss_covered_feet();
 }
