@@ -68,3 +68,5 @@ INSERT INTO `spell_linked_spell` (`spell_trigger`, `spell_effect`, `type`, `comm
 INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) VALUES
  (135921, 17645, 532, 1, 1, 11686, 0, -10935.6, -2043.06, 324.012, 2.17745, 604800, 0, 0, 42, 0, 0, 0, 0, 0);
 
+-- bloodlord mandokir
+UPDATE `creature_text` SET `text` = "$N! I'm watching you!" WHERE `entry` = "11382" AND `groupid` = "2";
