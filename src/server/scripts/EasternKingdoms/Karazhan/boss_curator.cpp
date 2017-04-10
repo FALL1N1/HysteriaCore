@@ -20,17 +20,17 @@ enum Curator
     SPELL_ARCANE_INFUSION           = 30403,
     SPELL_ASTRAL_DECONSTRUCTION     = 30407,
 
-    SPELL_SUMMON_ASTRAL_FLARE1        = 30236,
-    SPELL_SUMMON_ASTRAL_FLARE2        = 30239,
-    SPELL_SUMMON_ASTRAL_FLARE3        = 30240,
-    SPELL_SUMMON_ASTRAL_FLARE4        = 30241,
+    SPELL_SUMMON_ASTRAL_FLARE1      = 30236,
+    SPELL_SUMMON_ASTRAL_FLARE2      = 30239,
+    SPELL_SUMMON_ASTRAL_FLARE3      = 30240,
+    SPELL_SUMMON_ASTRAL_FLARE4      = 30241,
 
-    EVENT_KILL_TALK                    = 1,
+    EVENT_KILL_TALK                 = 1,
     EVENT_SPELL_HATEFUL_BOLT        = 2,
-    EVENT_SPELL_EVOCATION            = 3,
+    EVENT_SPELL_EVOCATION           = 3,
     EVENT_SPELL_ASTRAL_FLARE        = 4,
-    EVENT_SPELL_BERSERK                = 5,
-    EVENT_CHECK_HEALTH                = 6
+    EVENT_SPELL_BERSERK             = 5,
+    EVENT_CHECK_HEALTH              = 6
 };
 
 class boss_curator : public CreatureScript
@@ -40,7 +40,7 @@ class boss_curator : public CreatureScript
 
         struct boss_curatorAI : public BossAI
         {
-            boss_curatorAI(Creature* creature) : BossAI(creature, TYPE_CURATOR) { }
+            boss_curatorAI(Creature* creature) : BossAI(creature, DATA_CURATOR) { }
 
             void Reset()
             {
@@ -75,6 +75,7 @@ class boss_curator : public CreatureScript
                 events.ScheduleEvent(EVENT_SPELL_ASTRAL_FLARE, 6000);
                 events.ScheduleEvent(EVENT_SPELL_BERSERK, 600000);
                 events.ScheduleEvent(EVENT_CHECK_HEALTH, 1000);
+                DoZoneInCombat();
             }
 
             void JustSummoned(Creature* summon)

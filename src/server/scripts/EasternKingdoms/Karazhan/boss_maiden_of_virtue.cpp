@@ -8,22 +8,22 @@ REWRITTEN BY XINEF
 
 enum MaidenOfVirtue
 {
-    SAY_AGGRO                    = 0,
+    SAY_AGGRO                   = 0,
     SAY_SLAY                    = 1,
-    SAY_REPENTANCE                = 2,
-    SAY_DEATH                    = 3,
+    SAY_REPENTANCE              = 2,
+    SAY_DEATH                   = 3,
 
     SPELL_REPENTANCE            = 29511,
-    SPELL_HOLY_FIRE                = 29522,
+    SPELL_HOLY_FIRE             = 29522,
     SPELL_HOLY_WRATH            = 32445,
-    SPELL_HOLY_GROUND            = 29523,
-    SPELL_BERSERK                = 26662,
+    SPELL_HOLY_GROUND           = 29523,
+    SPELL_BERSERK               = 26662,
 
-    EVENT_SPELL_REPENTANCE        = 1,
-    EVENT_SPELL_HOLY_FIRE        = 2,
-    EVENT_SPELL_HOLY_WRATH        = 3,
-    EVENT_SPELL_ENRAGE            = 4,
-    EVENT_KILL_TALK                = 5
+    EVENT_SPELL_REPENTANCE      = 1,
+    EVENT_SPELL_HOLY_FIRE       = 2,
+    EVENT_SPELL_HOLY_WRATH      = 3,
+    EVENT_SPELL_ENRAGE          = 4,
+    EVENT_KILL_TALK             = 5
 };
 
 class boss_maiden_of_virtue : public CreatureScript
@@ -33,7 +33,7 @@ class boss_maiden_of_virtue : public CreatureScript
 
         struct boss_maiden_of_virtueAI : public BossAI
         {
-            boss_maiden_of_virtueAI(Creature* creature) : BossAI(creature, TYPE_MAIDEN) { }
+            boss_maiden_of_virtueAI(Creature* creature) : BossAI(creature, DATA_MAIDEN) { }
 
             void Reset()
             {
@@ -65,6 +65,7 @@ class boss_maiden_of_virtue : public CreatureScript
                 events.ScheduleEvent(EVENT_SPELL_HOLY_FIRE, 8000);
                 events.ScheduleEvent(EVENT_SPELL_HOLY_WRATH, 15000);
                 events.ScheduleEvent(EVENT_SPELL_ENRAGE, 600000);
+                DoZoneInCombat();
             }
 
             void UpdateAI(uint32 diff)
