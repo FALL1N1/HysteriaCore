@@ -880,6 +880,9 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
     // Can be summon and guardian
     if (GetEntry() == NPC_RISEN_GHOUL)
     {
+        // should be 100% on creation
+        SetPower(POWER_ENERGY, GetMaxPower(POWER_ENERGY));
+        
         // xinef: fixes orc death knight command racial
         if (m_owner->getRace() == RACE_ORC)
             CastSpell(this, SPELL_ORC_RACIAL_COMMAND, true, NULL, NULL, m_owner->GetGUID());

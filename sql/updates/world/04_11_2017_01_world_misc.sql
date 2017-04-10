@@ -70,3 +70,12 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`
 
 -- bloodlord mandokir
 UPDATE `creature_text` SET `text` = "$N! I'm watching you!" WHERE `entry` = "11382" AND `groupid` = "2";
+
+-- image of drakuru
+insert into `creature_queststarter` values (26500, 12238);
+
+-- Dream Vision make it trigger
+UPDATE `creature_template` SET `flags_extra`='128'WHERE (`entry`='7863');
+
+-- Eye of Kilrogg (Summon) apply stealth aura
+UPDATE `creature_template_addon` SET `auras`='2585' WHERE (`entry`='4277');

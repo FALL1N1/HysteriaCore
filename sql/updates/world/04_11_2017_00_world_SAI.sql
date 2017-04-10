@@ -104,3 +104,25 @@ DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId`=15 AND `SourceGroup`=5
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
 (15,5743,0,0,9,7482,0,0,0,'',"Display gossip option when on Elven Legends A quest"),
 (15,5743,1,0,9,7481,0,0,0,'',"Display gossip option when on Elven Legends H quest");
+
+-- Winterfin Oracle
+SET @ENTRY := 25216;
+UPDATE `creature_template` SET `AIName`='SmartAI' WHERE `entry`=@ENTRY;
+DELETE FROM `smart_scripts` WHERE `source_type`=0 AND `entryorguid`=@ENTRY;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@ENTRY,0,0,0,0,0,100,0,0,0,3400,4700,11,9532,64,0,0,0,0,2,0,0,0,0,0,0,0,'Cast bolt'),
+(@ENTRY,0,1,2,2,0,100,1,0,15,0,0,25,0,0,0,0,0,0,1,0,0,0,0,0,0,0,'Flee at 15% HP'),
+(@ENTRY,0,2,0,61,0,100,1,0,15,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,'Say Text at 15% HP'),
+(@ENTRY,0,3,0,9,0,100,0,0,5,12300,19800,11,50272,0,0,0,0,0,1,0,0,0,0,0,0,0,'Cast Unstable Magic on Close');
+-- NPC talk text insert
+SET @ENTRY := 25216;
+DELETE FROM `creature_text` WHERE `entry`=@ENTRY;
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`language`,`probability`,`emote`,`duration`,`sound`,`comment`) VALUES
+(@ENTRY,0,0, '%s attempts to run away in fear!',16,0,100,0,0,0, 'combat Flee');
+
+-- ahn'kahet - plague walker
+DELETE FROM smart_scripts WHERE entryorguid = 30283;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(30283, 0, 0, 0, 0, 0, 100, 2, 0, 0, 0, 0, 11, 56709, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Plague Walker - Combat - Cast \'Aura of Lost Hope\' (Phase 1) (No Repeat) (Dungeon)'),
+(30283, 0, 1, 0, 0, 0, 100, 4, 0, 0, 0, 0, 11, 61459, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Plague Walker - On Respawn - Cast \'Aura of Lost Hope\' (Phase 1) (No Repeat) (Dungeon)'),
+(30283, 0, 2, 0, 0, 0, 100, 6, 7000, 11000, 120000, 130000, 11, 56707, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 'Plague Walker - In Combat - Cast \'Contagion of Rot\' (Phase 1) (No Repeat) (Dungeon)');
