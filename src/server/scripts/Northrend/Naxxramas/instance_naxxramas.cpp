@@ -69,6 +69,7 @@ public:
             _thaddiusGateGUID = 0;
             _horsemanGateGUID = 0;
             _kelthuzadfloorGUID = 0;
+            _kelthuzadgateGUID = 0;
             _sapphironGateGUID = 0;
             _horsemanPortalGUID = 0;
             _loathebPortalGUID = 0;
@@ -100,6 +101,9 @@ public:
             sapphironAchievement = true;
             heiganAchievement = true;
             immortalAchievement = 1;
+
+            // Timers
+            screamsTimer = 2 * MINUTE * IN_MILLISECONDS;
         }
 
         uint32 Encounters[MAX_ENCOUNTERS];
@@ -122,6 +126,7 @@ public:
         uint64 _gothikExitGateGUID;
         uint64 _horsemanGateGUID;
         uint64 _kelthuzadfloorGUID;
+        uint64 _kelthuzadgateGUID;
         uint64 _sapphironGateGUID;
         uint64 _horsemanPortalGUID;
         uint64 _loathebPortalGUID;
@@ -153,6 +158,9 @@ public:
         bool sapphironAchievement;
         bool heiganAchievement;
         uint32 immortalAchievement;
+
+        // Timers
+        uint32 screamsTimer;
 
         void HeiganEruptSections(uint32 section)
         {
@@ -299,6 +307,9 @@ public:
                     break;
                 case GO_KELTHUZAD_FLOOR:
                     _kelthuzadfloorGUID = pGo->GetGUID();
+                    break;
+                case GO_KELTHUZAD_GATE:
+                    _kelthuzadgateGUID = pGo->GetGUID();
                     break;
                 case GO_SAPPHIRON_GATE:
                     _sapphironGateGUID = pGo->GetGUID();
@@ -631,6 +642,16 @@ public:
 				Access_To_Frostwyrmlair = true;
 			}
 			else Access_To_Frostwyrmlair = false;
+            if (screamsTimer && Encounters[EVENT_THADDIUS] != DONE)
+            {
+                if (screamsTimer <= diff)
+                {
+                    instance->PlayDirectSoundToMap(SOUND_SCREAM + urand(0, 3));
+                    screamsTimer = (2 * MINUTE + urand(0, 30)) * IN_MILLISECONDS;
+                }
+                else
+                    screamsTimer -= diff;
+            }
 
             if (_speakTimer)
             {
@@ -693,6 +714,8 @@ public:
                     return _gothikExitGateGUID;
                 case DATA_KELTHUZAD_FLOOR:
                     return _kelthuzadfloorGUID;
+                case DATA_KELTHUZAD_GATE:
+                    return _kelthuzadgateGUID;
 
                 // NPCs
                 case DATA_THADDIUS_BOSS:
