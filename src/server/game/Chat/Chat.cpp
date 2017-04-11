@@ -327,7 +327,7 @@ bool ChatHandler::ExecuteCommandInTable(ChatCommand* table, const char* text, st
         // select subcommand from child commands list
         if (table[i].ChildCommands != NULL)
         {
-            if (!ExecuteCommandInTable(table[i].ChildCommands, text, fullcmd.c_str()))
+            if (!ExecuteCommandInTable(table[i].ChildCommands, text, fullcmd)) // might need to convert it to char
             {
                 if (text && text[0] != '\0')
                     SendSysMessage(LANG_NO_SUBCMD);
