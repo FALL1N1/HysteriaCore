@@ -84,9 +84,9 @@ public:
         // firefly custom begin
         ChatCommand static fireflyCommandTable[] =
         {
-            { "firefly damage",   SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,   "", NULL },
-            { "firefly maxlevel", SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel, "", NULL },
-            { "firefly minlevel", SEC_ADMINISTRATOR, false, &HandleFireFlyMinLevel, "", NULL },
+            { "damage",   SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,   "", NULL },
+            { "maxlevel", SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel, "", NULL },
+            { "minlevel", SEC_ADMINISTRATOR, false, &HandleFireFlyMinLevel, "", NULL },
             { NULL,                               0, false, NULL,                   "", NULL }
         };
         //firefly custom end
