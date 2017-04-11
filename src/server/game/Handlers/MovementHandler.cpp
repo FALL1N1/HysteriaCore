@@ -655,19 +655,19 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: "Freeze Z coord check"
                 if (plrMover)
-                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() )
+                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling())
                     {
-                        //sLog->outString("     111      ");
-                        //sLog->outString("AreaID: %u", plrMover->GetAreaId());
+                        //sLog->outString("      111     ");
                         float playerZ = plrMover->GetPositionZ();
-                        float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
-                        if(plrMover->GetAreaId() == 4234)
-                            mapZ = 245.01f;
-                        float absolute_pos = fabs(playerZ - mapZ);
-                        if (absolute_pos >= 3.0f)
-                            ++(plrMover->m_anti_FreezeZ_Count);
+                        float floorZ = plrMover->GetMap()->GetHeight(plrMover->GetPhaseMask(), plrMover->GetPositionX(), plrMover->GetPositionY(), plrMover->GetPositionZ());
+                        float absolute_pos = fabs(playerZ - floorZ);
 
-                        if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so 15 should be ok i guess?
+                        if (absolute_pos >= 4.0f) // 4 could be less?
+                        {
+                            ++(plrMover->m_anti_FreezeZ_Count);
+                            sLog->outString("[FreezeZ Failed] AreaID: %u | playerZ: %f | mapZ: %f | absolute_pos: %f", plrMover->GetAreaId(), playerZ, floorZ, absolute_pos);
+                        }
+                        if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
                             plrMover->GetSession()->KickPlayer();
                     }
 
@@ -677,8 +677,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     {
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
-                        float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
-                        if (fabs(playerZ - mapZ) < 7.0f) // fly hack
+                        float floorZ = plrMover->GetMap()->GetHeight(plrMover->GetPhaseMask(), plrMover->GetPositionX(), plrMover->GetPositionY(), plrMover->GetPositionZ());
+                        if (fabs(playerZ - floorZ) < 7.0f) // fly hack
                         {
                             //sLog->outString("fabs: %f mapZ: %f",fabs(playerZ - mapZ), mapZ);
                             WorldPacket set_fly(SMSG_MOVE_SET_CAN_FLY, 12);
