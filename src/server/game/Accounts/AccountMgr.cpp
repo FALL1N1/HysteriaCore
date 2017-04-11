@@ -300,3 +300,8 @@ bool AccountMgr::IsConsoleAccount(uint32 gmlevel)
 {
     return gmlevel == SEC_CONSOLE;
 }
+
+bool AccountMgr::IsPremiumAccount(uint64 guid)
+{
+        return false;
+}
