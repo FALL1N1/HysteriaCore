@@ -13,9 +13,9 @@ class disable_commandscript : public CommandScript
 public:
     disable_commandscript() : CommandScript("disable_commandscript") { }
 
-    std::vector<ChatCommand> GetCommands() const override
+   ChatCommand* GetCommands() const
     {
-        static std::vector<ChatCommand> removeDisableCommandTable =
+        static ChatCommand removeDisableCommandTable[] =
         {
             { "spell",                SEC_ADMINISTRATOR,    true, &HandleRemoveDisableSpellCommand,               "" },
             { "quest",                SEC_ADMINISTRATOR,    true, &HandleRemoveDisableQuestCommand,               "" },
@@ -24,7 +24,8 @@ public:
             { "outdoorpvp",           SEC_ADMINISTRATOR,    true, &HandleRemoveDisableOutdoorPvPCommand,          "" },
             { "vmap",                 SEC_ADMINISTRATOR,    true, &HandleRemoveDisableVmapCommand,                "" },
         };
-        static std::vector<ChatCommand> addDisableCommandTable =
+
+        static ChatCommand addDisableCommandTable[] =
         {
             { "spell",                SEC_ADMINISTRATOR,    true, &HandleAddDisableSpellCommand,                  "" },
             { "quest",                SEC_ADMINISTRATOR,    true, &HandleAddDisableQuestCommand,                  "" },
@@ -33,15 +34,18 @@ public:
             { "outdoorpvp",           SEC_ADMINISTRATOR,    true, &HandleAddDisableOutdoorPvPCommand,             "" },
             { "vmap",                 SEC_ADMINISTRATOR,    true, &HandleAddDisableVmapCommand,                   "" },
         };
-        static std::vector<ChatCommand> disableCommandTable =
+
+        static ChatCommand disableCommandTable[] =
         {
             { "add",    SEC_ADMINISTRATOR,  true, NULL, "", addDisableCommandTable },
             { "remove", SEC_ADMINISTRATOR,  true, NULL, "", removeDisableCommandTable },
         };
-        static std::vector<ChatCommand> commandTable =
+
+        static ChatCommand commandTable[] =
         {
             { "disable", SEC_ADMINISTRATOR, false, NULL, "", disableCommandTable },
         };
+
         return commandTable;
     }
 

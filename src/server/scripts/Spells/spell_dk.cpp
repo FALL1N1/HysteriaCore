@@ -1330,6 +1330,7 @@ public:
 
 private:
     uint64 _casterGUID;
+    bool _allowGhoul;
 };
 
 // 49158 - Corpse Explosion (51325, 51326, 51327, 51328)

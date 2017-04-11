@@ -3890,6 +3890,9 @@ bool Player::_addSpell(uint32 spellId, uint8 addSpecMask, bool temporary)
     if (itr != m_spells.end() && itr->second->State == PLAYERSPELL_TEMPORARY)
         return false;
 
+    if (spellId == 20154)
+        return false;
+
     // xinef: send packet so client can properly recognize this new spell
     // xinef: ignore passive spells and spells with learn effect
     // xinef: send spells with no aura effects (ie dual wield)
