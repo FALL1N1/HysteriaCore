@@ -81,12 +81,20 @@ public:
             { "queue",  SEC_ADMINISTRATOR,                  true, &HandleArenaQueueCommand,             "", NULL },
             { NULL,                    0,                   false, NULL,                                "", NULL }
         };
+        // firefly custom begin
+        ChatCommand static fireflyCommandTable[] =
+        {
+            { "firefly damage",   SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,   "", NULL },
+            { "firefly maxlevel", SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel, "", NULL },
+            { "firefly minlevel", SEC_ADMINISTRATOR, false, &HandleFireFlyMinLevel, "", NULL },
+            { NULL,                               0, false, NULL,                   "", NULL }
+        };
+        //firefly custom end
+
         static ChatCommand commandTable[] =
         {
             // firefly custom begin
-            { "firefly damage",     SEC_ADMINISTRATOR,      false, &HandleFireFlyDamage,                "", NULL },
-            { "firefly maxlevel",   SEC_ADMINISTRATOR,      false, &HandleFireFlyMaxLevel,              "", NULL },
-            { "firefly minlevel",   SEC_ADMINISTRATOR,      false, &HandleFireFlyMinLevel,              "", NULL },
+            { "firefly",            SEC_ADMINISTRATOR,      true,  NULL,                               "", fireflyCommandTable },
             // firefly custom end
             { "arena",              SEC_ADMINISTRATOR,      true,  NULL,                                "", arenaCommandTable },
             { "fake",               SEC_ADMINISTRATOR,      true,  NULL,                                "", fakeCommandTable },
