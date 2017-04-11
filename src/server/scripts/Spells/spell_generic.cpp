@@ -4905,7 +4905,7 @@ public:
             for (uint8 i = 0; i < stacks; ++i)
                 bp += spellInfo->Effects[EFFECT_0].CalcValue(caster);
 
-            caster->CastCustomSpell(64442, SPELLVALUE_BASE_POINT0, bp, eventInfo.GetActor(), TRIGGERED_FULL_MASK, nullptr, aurEff);
+            caster->CastCustomSpell(64442, SPELLVALUE_BASE_POINT0, bp, eventInfo.GetActor(), TRIGGERED_FULL_MASK, NULL, aurEff);
         }
 
         void Register()
@@ -4930,7 +4930,7 @@ public:
     {
         PrepareAuraScript(spell_gen_moss_covered_feet_AuraScript);
 
-        bool Validate(SpellInfo const* /*spellInfo*/) override
+        bool Validate(SpellInfo const* /*spellInfo*/)
         {
             if (!sSpellMgr->GetSpellInfo(6869))
                 return false;
@@ -4940,16 +4940,16 @@ public:
         void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
         {
             PreventDefaultAction();
-            eventInfo.GetActionTarget()->CastSpell((Unit*)nullptr, 6869, true, nullptr, aurEff);
+            eventInfo.GetActionTarget()->CastSpell((Unit*)NULL, 6869, true, NULL, aurEff);
         }
 
-        void Register() override
+        void Register()
         {
             OnEffectProc += AuraEffectProcFn(spell_gen_moss_covered_feet_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
         }
     };
 
-    AuraScript* GetAuraScript() const override
+    AuraScript* GetAuraScript() const
     {
         return new spell_gen_moss_covered_feet_AuraScript();
     }

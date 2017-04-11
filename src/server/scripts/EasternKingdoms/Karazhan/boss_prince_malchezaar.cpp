@@ -175,7 +175,7 @@ class boss_malchezaar : public CreatureScript
 public:
     boss_malchezaar() : CreatureScript("boss_malchezaar") { }
 
-    CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const
     {
         return GetInstanceAI<boss_malchezaarAI>(creature);
     }
@@ -226,18 +226,18 @@ public:
             me->SetCanDualWield(false);
         }
 
-        void Reset() override
+        void Reset()
         {
             Initialize();
             
         }
 
-        void KilledUnit(Unit* /*victim*/) override
+        void KilledUnit(Unit* /*victim*/)
         {
             Talk(SAY_SLAY);
         }
 
-        void JustDied(Unit* /*killer*/) override
+        void JustDied(Unit* /*killer*/)
         {
             Talk(SAY_DEATH);
             instance->HandleGameObject(instance->GetData64(DATA_GO_NETHER_DOOR), true);
@@ -248,7 +248,7 @@ public:
             
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void EnterCombat(Unit* /*who*/)
         {
             Talk(SAY_AGGRO);
             DoZoneInCombat();
@@ -362,7 +362,7 @@ public:
             AmplifyDamageTimer = urand(20000, 30000);
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff)
         {
             if (!UpdateVictim())
                 return;
@@ -467,7 +467,7 @@ class prince_axes : public CreatureScript
 public:
     prince_axes() : CreatureScript("prince_axes") { }
 
-    CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const
     {
         return GetInstanceAI<prince_axesAI>(creature);
     }
@@ -496,7 +496,7 @@ public:
         {
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void EnterCombat(Unit* /*who*/)
         {
             DoZoneInCombat();
         }
@@ -512,7 +512,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff)
         {
             if (!UpdateVictim())
                 return;

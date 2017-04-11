@@ -532,6 +532,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
             const uint32 curDest = plrMover->m_taxi.GetTaxiDestination(); // check taxi flight
             if (!curDest)
             {
+                //sLog->outString("     work      ");
                 UnitMoveType move_type;
 
                 // calculating section
@@ -595,6 +596,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 const float JumpHeight = plrMover->m_anti_JumpBaseZ - movementInfo.pos.GetPositionZ();
                 if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed)
                 {
+                    //sLog->outString("     555      ");
                     check_passed = false;
 
                     // Tell the player "Sure, you can fly!"
@@ -616,6 +618,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // multi jump checks
                 if (opcode == MSG_MOVE_JUMP)
                 {
+                    //sLog->outString("     444      ");
                     if (no_fly_auras && no_swim_water)
                     {
                         if (plrMover->m_anti_JumpCount >= 1)
@@ -652,10 +655,14 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: "Freeze Z coord check"
                 if (plrMover)
-                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() || plrMover->GetAreaId() != 4234)
+                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() )
                     {
+                        //sLog->outString("     111      ");
+                        //sLog->outString("AreaID: %u", plrMover->GetAreaId());
                         float playerZ = plrMover->GetPositionZ();
                         float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
+                        if(plrMover->GetAreaId() == 4234)
+                            mapZ = 245.01f;
                         float absolute_pos = fabs(playerZ - mapZ);
                         if (absolute_pos >= 3.0f)
                             ++(plrMover->m_anti_FreezeZ_Count);
@@ -666,13 +673,14 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: custom fly / under map checks
                 if (plrMover)
-                    if ((no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false) || plrMover->GetAreaId() != 4234)
+                    if ((no_fly_auras && !no_fly_flags) && !plrMover->IsFalling())
                     {
+                        //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
                         float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
                         if (fabs(playerZ - mapZ) < 7.0f) // fly hack
                         {
-
+                            //sLog->outString("fabs: %f mapZ: %f",fabs(playerZ - mapZ), mapZ);
                             WorldPacket set_fly(SMSG_MOVE_SET_CAN_FLY, 12);
                             set_fly << uint64(plrMover->GetGUID());
                             set_fly << uint32(0);
@@ -686,8 +694,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                             check_passed = false;
                         }
 
-                        if (fabs(playerZ - mapZ) < -2.0f) // fell underground
-                            plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
+                        //if (fabs(playerZ - mapZ) < -2.0f) // fell underground
+                            //plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
 
                     }
 
@@ -702,6 +710,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // Fly hack checks
                 if (no_fly_auras && !no_fly_flags)
                 {
+                    //sLog->outString("     333      ");
                     check_passed = false;
                     // Tell the player "Sure, you can fly!"
                     {

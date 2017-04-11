@@ -18,7 +18,7 @@ class instance_karazhan : public InstanceMapScript
 public:
     instance_karazhan() : InstanceMapScript("instance_karazhan", 532) { }
 
-    InstanceScript* GetInstanceScript(InstanceMap* map) const override
+    InstanceScript* GetInstanceScript(InstanceMap* map) const
     {
         return new instance_karazhan_InstanceMapScript(map);
     }
@@ -35,7 +35,7 @@ public:
             OptionalBossCount = 0;
         }
 
-        void OnCreatureCreate(Creature* creature) override
+        void OnCreatureCreate(Creature* creature)
         {
             switch (creature->GetEntry())
             {
@@ -55,7 +55,7 @@ public:
             }
         }
 
-        void OnUnitDeath(Unit* unit) override
+        void OnUnitDeath(Unit* unit)
         {
             Creature* creature = unit->ToCreature();
             if (!creature)
@@ -96,7 +96,7 @@ public:
             }
         }
 
-        void SetData(uint32 type, uint32 data) override
+        void SetData(uint32 type, uint32 data)
         {
             switch (type)
             {
@@ -109,7 +109,7 @@ public:
             }
         }
 
-        bool SetBossState(uint32 type, EncounterState state) override
+        bool SetBossState(uint32 type, EncounterState state)
         {
             if (!InstanceScript::SetBossState(type, state))
                 return false;
@@ -138,7 +138,7 @@ public:
         }
 
 
-        void OnGameObjectCreate(GameObject* go) override
+        void OnGameObjectCreate(GameObject* go)
         {
             switch (go->GetEntry())
             {
@@ -212,7 +212,7 @@ public:
             }
         }
 
-        uint32 GetData(uint32 type) const override
+        uint32 GetData(uint32 type) const
         {
             switch (type)
             {
