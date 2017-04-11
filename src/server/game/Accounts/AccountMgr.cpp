@@ -300,12 +300,3 @@ bool AccountMgr::IsConsoleAccount(uint32 gmlevel)
 {
     return gmlevel == SEC_CONSOLE;
 }
-
-bool AccountMgr::IsPremiumAccount(uint64 guid)
-{
-    QueryResult premresult = LoginDatabase.PQuery("SELECT 1 FROM account_premium WHERE id = '%u' AND active = 1", guid);
-    if (premresult) // if account premium
-        return true;
-    else
-        return false;
-}

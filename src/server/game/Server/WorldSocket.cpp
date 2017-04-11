@@ -888,12 +888,6 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         sLog->outError("WorldSocket::HandleAuthSession: Sent Auth Response (Account banned).");
         return -1;
     }
-    
-    QueryResult premresult = LoginDatabase.PQuery ("SELECT * FROM account_premium WHERE id = '%u'", id);
-    if (premresult) // if account premium
-    {
-        isPremium = true;
-    }
 
     // Check locked state for server
     AccountTypes allowedAccountType = sWorld->GetPlayerSecurityLimit();

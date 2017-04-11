@@ -983,7 +983,7 @@ class WorldSession
         bool _skipQueue;
         uint32 _accountId;
         uint8 m_expansion;
-        bool _ispremium;
+        bool _ispremium = false;
 
         typedef std::list<AddonInfo> AddonsList;
 
