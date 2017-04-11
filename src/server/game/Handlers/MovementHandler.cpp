@@ -651,43 +651,45 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
 
                 // firefly: "Freeze Z coord check"
-                if (plrMover && !plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater())
-                {
-                    float playerZ = plrMover->GetPositionZ();
-                    float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
-                    float absolute_pos = fabs(playerZ - mapZ);
-                    if (absolute_pos >= 3.0f)
-                        ++(plrMover->m_anti_FreezeZ_Count);
-
-                    if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so 15 should be ok i guess?
-                        plrMover->GetSession()->KickPlayer();
-                }
-
-                // firefly: custom fly / under map checks
-                if (plrMover && (no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false))
-                {
-                    float playerZ = plrMover->GetPositionZ();
-                    float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
-                    if (fabs(playerZ - mapZ) < 7.0f) // fly hack
+                if (plrMover)
+                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() || plrMover->GetAreaId() != 4234)
                     {
+                        float playerZ = plrMover->GetPositionZ();
+                        float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
+                        float absolute_pos = fabs(playerZ - mapZ);
+                        if (absolute_pos >= 3.0f)
+                            ++(plrMover->m_anti_FreezeZ_Count);
 
-                        WorldPacket set_fly(SMSG_MOVE_SET_CAN_FLY, 12);
-                        set_fly << uint64(plrMover->GetGUID());
-                        set_fly << uint32(0);
-                        SendPacket(&set_fly);
-
-                        WorldPacket unset_fly(SMSG_MOVE_UNSET_CAN_FLY, 12);
-                        unset_fly << uint64(plrMover->GetGUID());
-                        unset_fly << uint32(0);
-                        SendPacket(&unset_fly);
-
-                        check_passed = false;
+                        if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so 15 should be ok i guess?
+                            plrMover->GetSession()->KickPlayer();
                     }
 
-                    if (fabs(playerZ - mapZ) < -2.0f) // fell underground
-                        plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
+                // firefly: custom fly / under map checks
+                if (plrMover)
+                    if ((no_fly_auras && !no_fly_flags) && plrMover->IsInWater(false) || plrMover->GetAreaId() != 4234)
+                    {
+                        float playerZ = plrMover->GetPositionZ();
+                        float mapZ = plrMover->GetMap()->GetHeight(plrMover->GetPositionX(), plrMover->GetPositionY(), MAX_HEIGHT, true);
+                        if (fabs(playerZ - mapZ) < 7.0f) // fly hack
+                        {
 
-                }
+                            WorldPacket set_fly(SMSG_MOVE_SET_CAN_FLY, 12);
+                            set_fly << uint64(plrMover->GetGUID());
+                            set_fly << uint32(0);
+                            SendPacket(&set_fly);
+
+                            WorldPacket unset_fly(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                            unset_fly << uint64(plrMover->GetGUID());
+                            unset_fly << uint32(0);
+                            SendPacket(&unset_fly);
+
+                            check_passed = false;
+                        }
+
+                        if (fabs(playerZ - mapZ) < -2.0f) // fell underground
+                            plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
+
+                    }
 
                 // speed and teleport hack checks
                 if (real_delta > allowed_delta)
