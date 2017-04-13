@@ -3422,9 +3422,32 @@ bool Unit::isInAccessiblePlaceFor(Creature const* c) const
 	}
 
 	if (IsInWater())
-		return IsUnderWater() ? c->CanSwim() : (c->CanSwim() || c->CanFly());
+		return c->CanSwim();
+	else if (IsFlying())
+		return c->CanFly() || c->GetDistance(this) <= c->GetObjectSize() + CONTACT_DISTANCE;
+	else if (c->CanFly())
+		return true;
+	else if (c->GetTransport())
+		return true;
+	else if (c->CanWalk())
+	{
+		if (c->GetDistance(this) <= c->GetObjectSize() + CONTACT_DISTANCE)
+			return true;
+
+		else if (MMAP::MMapFactory::IsPathfindingEnabled(GetMap()))
+		{
+			PathGenerator path(c);
+
+			float x, y, z;
+			GetPosition(x, y, z);
+
+			return path.CalculatePath(x, y, z) && !(path.GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE));
+		}
+		else
+			return true;
+	}
 	else
-		return c->CanWalk() || c->CanFly() || (c->CanSwim() && IsInWater(true));
+		return false;
 }
 
 void Unit::UpdateEnvironmentIfNeeded(const uint8 option)
@@ -18914,7 +18937,7 @@ void Unit::SetInFront(WorldObject const* target)
 void Unit::SetFacingTo(float ori)
 {
 	Movement::MoveSplineInit init(this);
-	init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZ(), false);
+	init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZ());
 	if (HasUnitMovementFlag(MOVEMENTFLAG_ONTRANSPORT) && GetTransGUID())
 		init.DisableTransportPathTransformations(); // It makes no sense to target global orientation
 	init.SetFacing(ori);
