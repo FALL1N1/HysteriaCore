@@ -661,12 +661,12 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         float playerZ = plrMover->GetPositionZ();
                         float floorZ = plrMover->GetMap()->GetHeight(plrMover->GetPhaseMask(), plrMover->GetPositionX(), plrMover->GetPositionY(), plrMover->GetPositionZ());
                         float absolute_pos = fabs(playerZ - floorZ);
-
-                        if (absolute_pos >= 4.0f) // 4 could be less?
-                        {
-                            ++(plrMover->m_anti_FreezeZ_Count);
-                            sLog->outString("[FreezeZ Failed] AreaID: %u | playerZ: %f | mapZ: %f | absolute_pos: %f", plrMover->GetAreaId(), playerZ, floorZ, absolute_pos);
-                        }
+                        if (floorZ < -1000)
+                            if (absolute_pos >= 4.0f) // 4 could be less?
+                            {
+                                ++(plrMover->m_anti_FreezeZ_Count);
+                                sLog->outString("[FreezeZ Failed] AreaID: %u | playerZ: %f | mapZ: %f | absolute_pos: %f", plrMover->GetAreaId(), playerZ, floorZ, absolute_pos);
+                            }
                         if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
                             plrMover->GetSession()->KickPlayer();
                     }
