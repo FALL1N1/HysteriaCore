@@ -678,6 +678,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
                         float floorZ = plrMover->GetMap()->GetHeight(plrMover->GetPhaseMask(), plrMover->GetPositionX(), plrMover->GetPositionY(), plrMover->GetPositionZ());
+                        if (floorZ < -1000)
                         if (fabs(playerZ - floorZ) < 7.0f) // fly hack
                         {
                             //sLog->outString("fabs: %f mapZ: %f",fabs(playerZ - mapZ), mapZ);
