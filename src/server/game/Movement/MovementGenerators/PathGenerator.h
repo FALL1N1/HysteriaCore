@@ -39,7 +39,7 @@ class Unit;
 #define ALLOWED_DIST_FROM_POLY      2.5f
 #define ADDED_Z_FOR_POLY_LOOKUP     0.3f
 #define DISALLOW_TIME_AFTER_FAIL    3 // secs
-#define MAX_FIXABLE_Z_ERROR         7.0f
+#define MAX_FIXABLE_Z_ERROR         12.0f
 
 #define VERTEX_SIZE       3
 #define INVALID_POLYREF   0
@@ -118,8 +118,6 @@ class PathGenerator
         dtNavMeshQuery const* _navMeshQuery;    // the nav mesh query used to find the path
 
         dtQueryFilter _filter;  // use single filter for all movements, update it when needed
-        
-        PathGenerator* _complementPath;
 
         void SetStartPosition(G3D::Vector3 const& point) { _startPosition = point; }
         void SetEndPosition(G3D::Vector3 const& point) { _actualEndPosition = point; _endPosition = point; }

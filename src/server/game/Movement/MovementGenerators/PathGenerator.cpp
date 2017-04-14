@@ -29,7 +29,7 @@ PathGenerator::PathGenerator(const Unit* owner) :
     _polyLength(0), _type(PATHFIND_BLANK), _useStraightPath(false),
     _forceDestination(false), _pointPathLimit(MAX_POINT_PATH_LENGTH),
     _endPosition(G3D::Vector3::zero()), _sourceUnit(owner), _navMesh(NULL),
-    _navMeshQuery(NULL), _complementPath(NULL)
+    _navMeshQuery(NULL)
 {
     memset(_pathPolyRefs, 0, sizeof(_pathPolyRefs));
 
@@ -48,7 +48,6 @@ PathGenerator::PathGenerator(const Unit* owner) :
 
 PathGenerator::~PathGenerator()
 {
-    delete _complementPath;
 }
 
 bool PathGenerator::CalculatePath(float destX, float destY, float destZ, bool forceDest)
@@ -635,28 +634,16 @@ void PathGenerator::BuildPointPath(const float *startPoint, const float *endPoin
     dtStatus dtResult = DT_FAILURE;
     if (_useStraightPath)
     {
-        pointCount = 1;
-        memcpy(&pathPoints[VERTEX_SIZE * 0], startPoint, sizeof(float) * 3); // first point
-        dtResult = DT_SUCCESS;
-        // path has to be split into polygons with dist SMOOTH_PATH_STEP_SIZE between them
-        G3D::Vector3 startVec = G3D::Vector3(startPoint[0], startPoint[1], startPoint[2]);
-        G3D::Vector3 endVec = G3D::Vector3(endPoint[0], endPoint[1], endPoint[2]);
-        G3D::Vector3 diffVec = (endVec - startVec);
-        G3D::Vector3 prevVec = startVec;
-        float len = diffVec.length();
-        diffVec *= SMOOTH_PATH_STEP_SIZE / len;
-        while (len > SMOOTH_PATH_STEP_SIZE)
-        {
-            len -= SMOOTH_PATH_STEP_SIZE;
-            prevVec += diffVec;
-            pathPoints[VERTEX_SIZE * pointCount + 0] = prevVec.x;
-            pathPoints[VERTEX_SIZE * pointCount + 1] = prevVec.y;
-            pathPoints[VERTEX_SIZE * pointCount + 2] = prevVec.z;
-            ++pointCount;
-        }
-
-        memcpy(&pathPoints[VERTEX_SIZE * pointCount], endPoint, sizeof(float) * 3); // last point
-        ++pointCount;
+        dtResult = _navMeshQuery->findStraightPath(
+                startPoint,         // start position
+                endPoint,           // end position
+                _pathPolyRefs,     // current path
+                _polyLength,       // lenth of current path
+                pathPoints,         // [out] path corner points
+                NULL,               // [out] flags
+                NULL,               // [out] shortened path
+                (int*)&pointCount,
+                _pointPathLimit);   // maximum number of points/polygons to use
     }
     else
     {
@@ -693,71 +680,21 @@ void PathGenerator::BuildPointPath(const float *startPoint, const float *endPoin
     // first point is always our current location - we need the next one
     SetActualEndPosition(_pathPoints[pointCount-1]);
 
-    if (_forceDestination && (!(_type & PATHFIND_NORMAL) || !InRange(GetEndPosition(), GetActualEndPosition(), 1.0f, 1.0f)))
+    if (_forceDestination && (!(_type & PATHFIND_NORMAL) || !InRange(GetEndPosition(), GetActualEndPosition(), 0.75f, 0.75f)))
     {
-        SetActualEndPosition(GetEndPosition());
-
-        if (_type & PATHFIND_INCOMPLETE)
+        // we may want to keep partial subpath
+        if (Dist3DSqr(GetActualEndPosition(), GetEndPosition()) < 0.33f * Dist3DSqr(GetStartPosition(), GetEndPosition()))
         {
-            ++pointCount;
-            _pathPoints.resize(pointCount);
-            _pathPoints[pointCount - 1] = GetEndPosition();
+            SetActualEndPosition(GetEndPosition());
+            _pathPoints[_pathPoints.size()-1] = GetEndPosition();
         }
         else
+        {
+            SetActualEndPosition(GetEndPosition());
             BuildShortcut();
+        }
 
         _type = PathType(PATHFIND_NORMAL | PATHFIND_NOT_USING_PATH);
-    }
-    
-    if (!_forceDestination && (_type & PATHFIND_INCOMPLETE))
-    {
-        if (int(32 - GetEndPosition().x / SIZE_OF_GRIDS) != int(32 - GetStartPosition().x / SIZE_OF_GRIDS) || int(32 - GetEndPosition().y / SIZE_OF_GRIDS) != int(32 - GetStartPosition().y / SIZE_OF_GRIDS))
-        {
-            float endMidTileX = (32 - int(32 - GetEndPosition().x / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-            float endMidTileY = (32 - int(32 - GetEndPosition().y / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-
-            float startMidTileX = (32 - int(32 - GetStartPosition().x / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-            float startMidTileY = (32 - int(32 - GetStartPosition().y / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-
-            float dx = endMidTileX - startMidTileX;
-            float dy = endMidTileY - startMidTileY;
-            float angle = atan2(dy, dx);
-            angle = (angle >= 0) ? angle : 2 * M_PI + angle;
-
-            Position startPos;
-            startPos.Relocate(GetActualEndPosition().x, GetActualEndPosition().y, GetActualEndPosition().z);
-
-            if (_sourceUnit->GetTypeId() == TYPEID_UNIT)
-                if(Creature* creature = (Creature*)_sourceUnit)
-                    creature->MovePositionToFirstCollision(startPos, 1.0f, angle - creature->GetOrientation());
-
-            float startX, startY, startZ;
-            startX = startPos.GetPositionX();
-            startY = startPos.GetPositionY();
-            startZ = startPos.GetPositionZ();
-
-            if (!_complementPath)
-                _complementPath = new PathGenerator(_sourceUnit);
-            //_complementPath->SetAntiLoop();
-            _complementPath->SetPathLengthLimit((_pointPathLimit - pointCount) * SMOOTH_PATH_STEP_SIZE);
-            bool result = _complementPath->CalculatePath(GetEndPosition().x, GetEndPosition().y, GetEndPosition().z); // , false, startX, startY, startZ);
-            if (result && (_complementPath->GetPathType() & PATHFIND_NORMAL))
-            {
-                Movement::PointsArray pathPoints = _complementPath->GetPath();
-
-                uint32 i = pointCount, j = 1;
-
-                pointCount += pathPoints.size() - 1;
-                _pathPoints.resize(pointCount);
-
-                for (; i < pointCount; ++i, ++j)
-                    _pathPoints[i] = pathPoints[j];
-
-                _type = _complementPath->GetPathType();
-
-                SetActualEndPosition(_complementPath->GetActualEndPosition());
-            }
-        }
     }
 }
 
