@@ -326,7 +326,7 @@ Unit* Minion::GetOwner() const
 
 bool Minion::IsGuardianPet() const
 { 
-    return IsPet() || (m_Properties && m_Properties->Category == SUMMON_CATEGORY_PET && (m_Properties->Id != 89 || m_Properties->Id != 11859));
+    return IsPet() || (m_Properties && m_Properties->Category == SUMMON_CATEGORY_PET);
 }
 
 void Minion::setDeathState(DeathState s, bool despawn)
