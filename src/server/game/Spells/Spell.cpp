@@ -5525,6 +5525,14 @@ SpellCastResult Spell::CheckCast(bool strict)
             return SPELL_FAILED_LINE_OF_SIGHT;
     }
 
+    // firefly: small hack for mages in the nexus, if player is not in los they should interrupt frostbolt 
+    // (we can't code it properly as they are SAI based)
+    if (m_caster->GetTypeId() != TYPEID_PLAYER && m_caster->GetVictim())
+    {
+        if (m_spellInfo->Id == 12737 && !m_caster->IsWithinLOS(m_caster->GetVictim()->GetPositionX(), m_caster->GetVictim()->GetPositionY(), m_caster->GetVictim()->GetPositionZ()))
+            return SPELL_FAILED_LINE_OF_SIGHT;
+    }
+
     // check pet presence
     for (int j = 0; j < MAX_SPELL_EFFECTS; ++j)
     {
