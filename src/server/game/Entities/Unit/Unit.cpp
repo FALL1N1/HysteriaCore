@@ -9688,6 +9688,13 @@ Unit* Unit::GetCharm() const
 	return NULL;
 }
 
+bool IsInfernalOrDoomguard(Minion *minion)
+{
+    if (minion->GetEntry() == 89 || minion->GetEntry() == 11859)
+        return true;
+    else return false;
+}
+
 void Unit::SetMinion(Minion *minion, bool apply)
 {
 	;//sLog->outDebug(LOG_FILTER_UNITS, "SetMinion %u for %u, apply %u", minion->GetEntry(), GetEntry(), apply);
@@ -9711,7 +9718,8 @@ void Unit::SetMinion(Minion *minion, bool apply)
 		}
 
 		// Can only have one pet. If a new one is summoned, dismiss the old one.
-		if (minion->IsGuardianPet())
+        // firefly: exception is Infernal and Doomguard
+        if (minion->IsGuardianPet() && !IsInfernalOrDoomguard(minion))
 		{
 			if (Guardian* oldPet = GetGuardianPet())
 			{
@@ -9733,7 +9741,7 @@ void Unit::SetMinion(Minion *minion, bool apply)
 			}
 		}
 
-		if (minion->HasUnitTypeMask(UNIT_MASK_CONTROLABLE_GUARDIAN))
+        if (minion->HasUnitTypeMask(UNIT_MASK_CONTROLABLE_GUARDIAN) && !IsInfernalOrDoomguard(minion))
 		{
 			if (AddUInt64Value(UNIT_FIELD_SUMMON, minion->GetGUID()))
 			{
@@ -9782,7 +9790,7 @@ void Unit::SetMinion(Minion *minion, bool apply)
 				SetCritterGUID(0);
 		}
 
-		if (minion->IsGuardianPet())
+        if (minion->IsGuardianPet() && !IsInfernalOrDoomguard(minion))
 		{
 			if (GetPetGUID() == minion->GetGUID())
 				SetPetGUID(0);
@@ -9814,7 +9822,7 @@ void Unit::SetMinion(Minion *minion, bool apply)
 
 		//if (minion->HasUnitTypeMask(UNIT_MASK_GUARDIAN))
 		{
-			if (RemoveUInt64Value(UNIT_FIELD_SUMMON, minion->GetGUID()))
+            if (RemoveUInt64Value(UNIT_FIELD_SUMMON, minion->GetGUID()) && !IsInfernalOrDoomguard(minion))
 			{
 				// Check if there is another minion
 				for (ControlSet::iterator itr = m_Controlled.begin(); itr != m_Controlled.end(); ++itr)
