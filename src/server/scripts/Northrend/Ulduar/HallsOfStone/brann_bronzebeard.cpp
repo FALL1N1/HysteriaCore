@@ -10,30 +10,31 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 #include "SpellScript.h"
 #include "Player.h"
 
-#define GOSSIP_ITEM_1        "Brann, it would be our honor!"
-#define GOSSIP_ITEM_2        "Let's move Brann, enough of the history lessons!"
-#define GOSSIP_ITEM_3        "We dont have time for this right now, we have to keep going."
-#define TEXT_ID_START        13100
-#define YELL_AGGRO            "You be dead soon enough!"
+#define GOSSIP_ITEM_1       "Brann, it would be our honor!"
+#define GOSSIP_ITEM_2       "Let's move Brann, enough of the history lessons!"
+#define GOSSIP_ITEM_3       "We dont have time for this right now, we have to keep going."
+#define GOSSIP_ITEM_4       "We're with you Brann! Open it!"
+#define TEXT_ID_START       13100
+#define YELL_AGGRO          "You be dead soon enough!"
 
 enum NPCs
 {
-    NPC_DARK_RUNE_PROTECTOR            = 27983,
-    NPC_DARK_RUNE_STORMCALLER        = 27984,
+    NPC_DARK_RUNE_PROTECTOR         = 27983,
+    NPC_DARK_RUNE_STORMCALLER       = 27984,
     NPC_IRON_GOLEM_CUSTODIAN        = 27985,
-    NPC_DARK_MATTER_TRIGGER            = 28237,
+    NPC_DARK_MATTER_TRIGGER         = 28237,
     NPC_SEARING_GAZE_TRIGGER        = 28265,
 };
 
 enum Misc
 {
     // BRANN EVENT
-    SPELL_GLARE_OF_THE_TRIBUNAL        = 50988,
-    SPELL_GLARE_OF_THE_TRIBUNAL_H    = 59870,
+    SPELL_GLARE_OF_THE_TRIBUNAL     = 50988,
+    SPELL_GLARE_OF_THE_TRIBUNAL_H   = 59870,
     SPELL_DARK_MATTER_VISUAL        = 51001,
-    SPELL_DARK_MATTER                = 51012,
-    SPELL_DARK_MATTER_H                = 59868,
-    SPELL_SEARING_GAZE                = 51136,
+    SPELL_DARK_MATTER               = 51012,
+    SPELL_DARK_MATTER_H             = 59868,
+    SPELL_SEARING_GAZE              = 51136,
     SPELL_SEARING_GAZE_H            = 59867,
 
     // DARK RUNE PROTECTOR
@@ -41,24 +42,25 @@ enum Misc
     SPELL_DRP_CLEAVE                = 42724,
 
     // DARK RUNE STORMCALLER
-    SPELL_DRS_LIGHTING_BOLT            = 12167,
-    SPELL_DRS_LIGHTING_BOLT_H        = 59863,
-    SPELL_DRS_SHADOW_WORD_PAIN        = 15654,
+    SPELL_DRS_LIGHTING_BOLT         = 12167,
+    SPELL_DRS_LIGHTING_BOLT_H       = 59863,
+    SPELL_DRS_SHADOW_WORD_PAIN      = 15654,
     SPELL_DRS_SHADOW_WORD_PAIN_H    = 59864,
 
     // IRON GOLEM CUSTODIAN
-    SPELL_IGC_CRUSH_ARMOR            = 33661,
-    SPELL_IGC_GROUND_SMASH            = 12734,
+    SPELL_IGC_CRUSH_ARMOR           = 33661,
+    SPELL_IGC_GROUND_SMASH          = 12734,
     SPELL_IGC_GROUND_SMASH_H        = 59865,
 
     // ACTIONS
-    ACTION_START_EVENT                = 0,
-    ACTION_START_TRIBUNAL            = 1,
+    ACTION_START_EVENT              = 0,
+    ACTION_START_TRIBUNAL           = 1,
     ACTION_GO_TO_SJONNIR            = 2,
-    ACTION_START_SJONNIR_FIGHT        = 3,
-    ACTION_SJONNIR_DEAD                = 4,
-    ACTION_ENTEREVADEMODE            = 5,
-    ACTION_WIPE_START                = 6,
+    ACTION_START_SJONNIR_FIGHT      = 3,
+    ACTION_SJONNIR_DEAD             = 4,
+    ACTION_ENTEREVADEMODE           = 5,
+    ACTION_WIPE_START               = 6,
+    ACTION_OPEN_DOOR                =7,
 
     // QUESTS
     QUEST_HALLS_OF_STONE            = 13207,
@@ -67,16 +69,16 @@ enum Misc
 enum events
 {
     // BRANN
-    EVENT_KADDRAK_HEAD            = 1,
-    EVENT_MARNAK_HEAD            = 2,
-    EVENT_ABEDNEUM_HEAD            = 3,
-    EVENT_SUMMON_MONSTERS        = 4,
-    EVENT_TRIBUNAL_END            = 5,
-    EVENT_GO_TO_SJONNIR            = 6,
-    EVENT_END                    = 7,
+    EVENT_KADDRAK_HEAD          = 1,
+    EVENT_MARNAK_HEAD           = 2,
+    EVENT_ABEDNEUM_HEAD         = 3,
+    EVENT_SUMMON_MONSTERS       = 4,
+    EVENT_TRIBUNAL_END          = 5,
+    EVENT_GO_TO_SJONNIR         = 6,
+    EVENT_END                   = 7,
     EVENT_KADDRAK_VISUAL        = 8,
-    EVENT_MARNAK_VISUAL            = 9,
-    EVENT_ABEDNEUM_VISUAL        = 10,
+    EVENT_MARNAK_VISUAL         = 9,
+    EVENT_ABEDNEUM_VISUAL       = 10,
     EVENT_KADDRAK_SWITCH_EYE    = 11,
 
     // DARK RUNE PROTECTOR
@@ -85,11 +87,11 @@ enum events
 
     // DARK RUNE STORMCALLER
     EVENT_DRS_LIGHTNING_BOLD    = 20,
-    EVENT_DRS_SHADOW_WORD_PAIN    = 21,
+    EVENT_DRS_SHADOW_WORD_PAIN  = 21,
 
     // IRON GOLEM CUSTODIAN
-    EVENT_IGC_CRUSH                = 30,
-    EVENT_IGC_GROUND_SMASH        = 31,
+    EVENT_IGC_CRUSH             = 30,
+    EVENT_IGC_GROUND_SMASH      = 31,
 };
 
 struct Yells
@@ -171,6 +173,9 @@ public:
             case 4:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
                 break;
+            case 5:
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                break;
             default: break;
             }
 
@@ -199,6 +204,10 @@ public:
                 break;
             case GOSSIP_ACTION_INFO_DEF+4:
                 pCreature->AI()->DoAction(ACTION_WIPE_START);
+                player->CLOSE_GOSSIP_MENU();
+                break;
+            case GOSSIP_ACTION_INFO_DEF+5:
+                pCreature->AI()->DoAction(ACTION_OPEN_DOOR);
                 player->CLOSE_GOSSIP_MENU();
                 break;
             }
@@ -360,6 +369,12 @@ public:
                     ResetEvent();
                     me->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
                     break;
+                case ACTION_OPEN_DOOR:
+                    if (GameObject *door = ObjectAccessor::GetGameObject(*me, pInstance->GetData64(GO_SJONNIR_DOOR)))
+                        door->SetGoState(GO_STATE_ACTIVE);
+                    SetEscortPaused(false);
+                    me->RemoveAura(58506);
+                    break;
             }
         }
 
@@ -504,6 +519,9 @@ public:
                 }
                 case EVENT_GO_TO_SJONNIR:
                 {
+
+                    if (GameObject *door = ObjectAccessor::GetGameObject(*me, pInstance->GetData64(GO_SJONNIR_DOOR)))
+                        door->SetGoState(GO_STATE_ACTIVE);
                     SetEscortPaused(false);
                     ResetEvent();
                     me->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
@@ -633,12 +651,15 @@ void brann_bronzebeard::brann_bronzebeardAI::WaypointReached(uint32 id)
             break;
         // Before Sjonnir's door
         case 27:
+            SetEscortPaused(true);
             if(pInstance)
             {
-                if (GameObject *door = ObjectAccessor::GetGameObject(*me, pInstance->GetData64(GO_SJONNIR_DOOR)))
-                    door->SetGoState(GO_STATE_ACTIVE);
+                pInstance->SetData(BRANN_BRONZEBEARD, 5);
+                me->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
                 if (Creature *cr = ObjectAccessor::GetCreature(*me, pInstance->GetData64(NPC_SJONNIR)))
                     cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->SetOrientation(3.132660f);
+                DoCast(me, 58506, false);
             }
             break;
         case 28:
@@ -646,6 +667,7 @@ void brann_bronzebeard::brann_bronzebeardAI::WaypointReached(uint32 id)
             break;
         case 29:
             SetEscortPaused(true);
+            me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
             if (pInstance)
                 if (GameObject *console = ObjectAccessor::GetGameObject(*me, pInstance->GetData64(GO_SJONNIR_CONSOLE)))
                     console->SetGoState(GO_STATE_ACTIVE);
