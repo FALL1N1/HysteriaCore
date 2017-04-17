@@ -151,18 +151,18 @@ class boss_anomalus : public CreatureScript
                                 healthCheck = (me->HealthBelowPct(50) && riftCount == 0);
                             }
 
-						    if (healthCheck)
-						    {
+                            if (healthCheck)
+                            {
                                 riftCount++;
-							    Talk(SAY_RIFT);
-							    Talk(EMOTE_RIFT);
-							    me->CastSpell(me, SPELL_CREATE_RIFT, false);
-							    me->CastSpell(me, SPELL_RIFT_SHIELD, true);
-							    me->m_Events.AddEvent(new ChargeRifts(me), me->m_Events.CalculateTime(1000));
-							    events.DelayEvents(46000);
-							    break;
-						    }
-						    events.ScheduleEvent(EVENT_ANOMALUS_HEALTH, 1000);
+                                Talk(SAY_RIFT);
+                                Talk(EMOTE_RIFT);
+                                me->CastSpell(me, SPELL_CREATE_RIFT, false);
+                                me->CastSpell(me, SPELL_RIFT_SHIELD, true);
+                                me->m_Events.AddEvent(new ChargeRifts(me), me->m_Events.CalculateTime(1000));
+                                events.DelayEvents(46000);
+                                break;
+                            }
+                            events.ScheduleEvent(EVENT_ANOMALUS_HEALTH, 1000);
                         }
                         break;
                     case EVENT_ANOMALUS_SPARK:

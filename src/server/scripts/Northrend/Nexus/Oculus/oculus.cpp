@@ -268,9 +268,9 @@ public:
                                     if (spell)
                                         me->CastSpell(summoner, spell, true);
                                     me->SetCanFly(true);
-									me->SetSpeed(MOVE_FLIGHT, 3.0f, true);
-									me->SetSpeed(MOVE_RUN, 1.4f, true);
-									me->SetSpeed(MOVE_WALK, 1.2f, true);
+                                    me->SetSpeed(MOVE_FLIGHT, 3.0f, true);
+                                    me->SetSpeed(MOVE_RUN, 1.4f, true);
+                                    me->SetSpeed(MOVE_WALK, 1.2f, true);
                                 }
                             }
                     }

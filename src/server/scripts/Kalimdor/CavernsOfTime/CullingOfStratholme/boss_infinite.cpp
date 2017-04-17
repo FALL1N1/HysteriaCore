@@ -65,11 +65,11 @@ public:
 
         void EnterCombat(Unit* who)
         {
-			if (who->IsPet())
-				return;
+            if (who->IsPet())
+                return;
 
-			if (me->GetVictim()->IsPet())
-				return;
+            if (me->GetVictim()->IsPet())
+                return;
 
             me->InterruptNonMeleeSpells(false);
             events.ScheduleEvent(EVENT_SPELL_VOID_STRIKE, 8000);

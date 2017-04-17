@@ -13,39 +13,39 @@
 class VoiceChatClientSocket;
 struct VoiceChatChannelRequest
 {
-	std::string channel_name;
-	uint32 team;
-	uint32 id;
-	uint32 groupid;
+    std::string channel_name;
+    uint32 team;
+    uint32 id;
+    uint32 groupid;
 };
 
 class VoiceChatHandler// : public ACE_Singleton<VoiceChatHandler>
 {
-	VoiceChatClientSocket * m_client;
-	std::vector<VoiceChatChannelRequest> m_requests;
-	uint32 request_high;
-	uint32 ip;
-	uint16 port;
-	time_t next_connect;
-	bool enabled;
-	std::string ip_s;
+    VoiceChatClientSocket * m_client;
+    std::vector<VoiceChatChannelRequest> m_requests;
+    uint32 request_high;
+    uint32 ip;
+    uint16 port;
+    time_t next_connect;
+    bool enabled;
+    std::string ip_s;
 public:
-	VoiceChatHandler();
-	void Startup();
-	void Update();
-	void SocketDisconnected();
-	void OnRead(const uint8 * bytes, uint32 len);
+    VoiceChatHandler();
+    void Startup();
+    void Update();
+    void SocketDisconnected();
+    void OnRead(const uint8 * bytes, uint32 len);
 
-	uint32 GetVoiceServerIP() { return ip; }
-	uint16 GetVoiceServerPort() { return port; }
-	void CreateVoiceChannel(Channel * chn);
-	void DestroyVoiceChannel(Channel * chn);
-	bool CanCreateVoiceChannel(Channel * chn);
-	bool CanUseVoiceChat();
+    uint32 GetVoiceServerIP() { return ip; }
+    uint16 GetVoiceServerPort() { return port; }
+    void CreateVoiceChannel(Channel * chn);
+    void DestroyVoiceChannel(Channel * chn);
+    bool CanCreateVoiceChannel(Channel * chn);
+    bool CanUseVoiceChat();
 
-	void CreateGroupChannel(Group * pGroup);
+    void CreateGroupChannel(Group * pGroup);
 };
 
 #define sVoiceChatHandler VoiceChatHandler::getSingleton()
 
-#endif		// _VOICECHATHANDLER_H
+#endif        // _VOICECHATHANDLER_H

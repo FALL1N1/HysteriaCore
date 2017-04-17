@@ -985,12 +985,12 @@ void Spell::SelectImplicitChannelTargets(SpellEffIndex effIndex, SpellImplicitTa
         return;
     }
 
-	Spell* channeledSpell = m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL);
-	if (!channeledSpell)
-	{
-		sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Spell::SelectImplicitChannelTargets: cannot find channel spell for spell ID %u, effect %u", m_spellInfo->Id, effIndex);
-		return;
-	}
+    Spell* channeledSpell = m_originalCaster->GetCurrentSpell(CURRENT_CHANNELED_SPELL);
+    if (!channeledSpell)
+    {
+        sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "Spell::SelectImplicitChannelTargets: cannot find channel spell for spell ID %u, effect %u", m_spellInfo->Id, effIndex);
+        return;
+    }
 
     switch (targetType.GetTarget())
     {
@@ -1006,19 +1006,19 @@ void Spell::SelectImplicitChannelTargets(SpellEffIndex effIndex, SpellImplicitTa
             break;
         }
         case TARGET_DEST_CHANNEL_TARGET:
-			if (channeledSpell->m_targets.HasDst())
-				m_targets.SetDst(channeledSpell->m_targets);
-			else if (WorldObject* target = ObjectAccessor::GetWorldObject(*m_caster, m_originalCaster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT)))
-			{
-				CallScriptObjectTargetSelectHandlers(target, effIndex, targetType);
-				if (target)
-					m_targets.SetDst(*target);
-			}
+            if (channeledSpell->m_targets.HasDst())
+                m_targets.SetDst(channeledSpell->m_targets);
+            else if (WorldObject* target = ObjectAccessor::GetWorldObject(*m_caster, m_originalCaster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT)))
+            {
+                CallScriptObjectTargetSelectHandlers(target, effIndex, targetType);
+                if (target)
+                    m_targets.SetDst(*target);
+            }
             else //if (!m_targets.HasDst())
                 ;//sLog->outDebug(LOG_FILTER_SPELLS_AURAS, "SPELL: cannot find channel spell destination for spell ID %u, effect %u", m_spellInfo->Id, effIndex);
             break;
         case TARGET_DEST_CHANNEL_CASTER:
-			m_targets.SetDst(*channeledSpell->GetCaster());
+            m_targets.SetDst(*channeledSpell->GetCaster());
             break;
         default:
             ASSERT(false && "Spell::SelectImplicitChannelTargets: received not implemented target type");

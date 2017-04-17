@@ -688,11 +688,11 @@ class ObjectMgr
         typedef std::map<uint32, uint32> CharacterConversionMap;
         
         static void AddLocaleString(std::string const& s, LocaleConstant locale, StringVector& data);
-		static inline void GetLocaleString(StringVector const& data, LocaleConstant localeConstant, std::string& value)
-		{
-			if (data.size() > size_t(localeConstant) && !data[localeConstant].empty())
-				value = data[localeConstant];
-		}
+        static inline void GetLocaleString(StringVector const& data, LocaleConstant localeConstant, std::string& value)
+        {
+            if (data.size() > size_t(localeConstant) && !data[localeConstant].empty())
+                value = data[localeConstant];
+        }
 
         GameObjectTemplate const* GetGameObjectTemplate(uint32 entry);
         bool IsGameObjectStaticTransport(uint32 entry);

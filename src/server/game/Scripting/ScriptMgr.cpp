@@ -182,7 +182,7 @@ void ScriptMgr::Initialize()
     FillSpellSummary();
     AddScripts();
     
-	/* Eluna [Lua Engine] */
+    /* Eluna [Lua Engine] */
     #ifdef ELUNA
         sEluna->StartEluna(false);
     #endif

@@ -252,7 +252,7 @@ bool QuestChatLink::ValidateName(char* buffer, const char* context)
                     break;
                 }
     if (!res)
-		sLog->outString("ChatHandler::isValidChatMessage('%s'): linked quest (id: %u) title wasn't found in any localization", context, _quest->GetQuestId());
+        sLog->outString("ChatHandler::isValidChatMessage('%s'): linked quest (id: %u) title wasn't found in any localization", context, _quest->GetQuestId());
     return res;
 }
 
@@ -323,7 +323,7 @@ bool SpellChatLink::ValidateName(char* buffer, const char* context)
         if (*_spell->SpellName[i] && strcmp(_spell->SpellName[i], buffer) == 0)
             return true;
 
-	sLog->outString("ChatHandler::isValidChatMessage('%s'): linked spell (id: %u) name wasn't found in any localization", context, _spell->Id);
+    sLog->outString("ChatHandler::isValidChatMessage('%s'): linked spell (id: %u) name wasn't found in any localization", context, _spell->Id);
     return false;
 }
 
@@ -380,7 +380,7 @@ bool AchievementChatLink::ValidateName(char* buffer, const char* context)
         if (*_achievement->name[i] && strcmp(_achievement->name[i], buffer) == 0)
             return true;
 
-	sLog->outString("ChatHandler::isValidChatMessage('%s'): linked achievement (id: %u) name wasn't found in any localization", context, _achievement->ID);
+    sLog->outString("ChatHandler::isValidChatMessage('%s'): linked achievement (id: %u) name wasn't found in any localization", context, _achievement->ID);
     return false;
 }
 

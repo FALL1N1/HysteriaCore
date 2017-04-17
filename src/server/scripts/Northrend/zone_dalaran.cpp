@@ -433,10 +433,10 @@ class npc_archmage_landalock : public CreatureScript
                             if (Creature* image = ObjectAccessor::GetCreature(*me, _summonGUID))
                                 image->DespawnOrUnsummon();
 
-							float z = 652.633f;
-							if (newEntry == NPC_MALYGOS_IMAGE || newEntry == NPC_RAZORSCALE_IMAGE || newEntry == NPC_SARTHARION_IMAGE
+                            float z = 652.633f;
+                            if (newEntry == NPC_MALYGOS_IMAGE || newEntry == NPC_RAZORSCALE_IMAGE || newEntry == NPC_SARTHARION_IMAGE
                                 || newEntry == NPC_KERISTRASZA_IMAGE || newEntry == NPC_EREGOS_IMAGE || newEntry == NPC_CYANIGOSA_IMAGE)
-								z += 4.0f;
+                                z += 4.0f;
 
                             me->SummonCreature(newEntry, 5703.077f, 583.9757f, z, 3.926991f);
                         }
@@ -676,77 +676,77 @@ enum ArchmageTimearImages
 
 class npc_archmage_timear : public CreatureScript
 {
-	public:
-		npc_archmage_timear() : CreatureScript("npc_archmage_timear")
-		{
-		}
+    public:
+        npc_archmage_timear() : CreatureScript("npc_archmage_timear")
+        {
+        }
 
-		CreatureAI* GetAI(Creature* creature) const
-		{
-			return new npc_archmage_timearAI(creature);
-		}
+        CreatureAI* GetAI(Creature* creature) const
+        {
+            return new npc_archmage_timearAI(creature);
+        }
 
-		struct npc_archmage_timearAI : public ScriptedAI
-		{
-			npc_archmage_timearAI(Creature* creature) : ScriptedAI(creature)
-			{
-				_switchImageTimer = MINUTE*IN_MILLISECONDS;
-				_summonGUID = 0;
-			}
+        struct npc_archmage_timearAI : public ScriptedAI
+        {
+            npc_archmage_timearAI(Creature* creature) : ScriptedAI(creature)
+            {
+                _switchImageTimer = MINUTE*IN_MILLISECONDS;
+                _summonGUID = 0;
+            }
 
-			uint32 GetImageEntry(uint32 QuestId)
-			{
-				switch (QuestId)
-				{
+            uint32 GetImageEntry(uint32 QuestId)
+            {
+                switch (QuestId)
+                {
                     case QUEST_TIMEAR_FORESEES_CONSTRUCTS:
                         return NPC_CONSTRUCT_IMAGE;
                     case QUEST_TIMEAR_FORESEES_BERSERKERS:
                         return NPC_BERSERKER_IMAGE;
                     case QUEST_TIMEAR_FORESEES_AGENTS:
                         return NPC_AGENTS_IMAGE;
-					default: //case QUEST_TIMEAR_FORESEES_VANGUARDS:
-						return NPC_VANGUARDS_IMAGE;
-				}
-			}
+                    default: //case QUEST_TIMEAR_FORESEES_VANGUARDS:
+                        return NPC_VANGUARDS_IMAGE;
+                }
+            }
 
-			void JustSummoned(Creature* image)
-			{
-				if (image->GetEntry() != NPC_ANUBREKHAN_IMAGE)
-					image->SetUnitMovementFlags(MOVEMENTFLAG_RIGHT);
-				_summonGUID = image->GetGUID();
-			}
+            void JustSummoned(Creature* image)
+            {
+                if (image->GetEntry() != NPC_ANUBREKHAN_IMAGE)
+                    image->SetUnitMovementFlags(MOVEMENTFLAG_RIGHT);
+                _summonGUID = image->GetGUID();
+            }
 
-			void UpdateAI(uint32 diff)
-			{
-				ScriptedAI::UpdateAI(diff);
+            void UpdateAI(uint32 diff)
+            {
+                ScriptedAI::UpdateAI(diff);
 
-				_switchImageTimer += diff;
-				if (_switchImageTimer > MINUTE*IN_MILLISECONDS)
-				{
-					_switchImageTimer = 0;
-					QuestRelationBounds objectQR = sObjectMgr->GetCreatureQuestRelationBounds(me->GetEntry());
-					for (QuestRelations::const_iterator i = objectQR.first; i != objectQR.second; ++i)
-					{
-						uint32 questId = i->second;
-						Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
-						if (!quest || !quest->IsDaily())
-							continue;
+                _switchImageTimer += diff;
+                if (_switchImageTimer > MINUTE*IN_MILLISECONDS)
+                {
+                    _switchImageTimer = 0;
+                    QuestRelationBounds objectQR = sObjectMgr->GetCreatureQuestRelationBounds(me->GetEntry());
+                    for (QuestRelations::const_iterator i = objectQR.first; i != objectQR.second; ++i)
+                    {
+                        uint32 questId = i->second;
+                        Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+                        if (!quest || !quest->IsDaily())
+                            continue;
 
-						uint32 newEntry = GetImageEntry(questId);
-						if (GUID_ENPART(_summonGUID) != newEntry)
-						{
-							if (Creature* image = ObjectAccessor::GetCreature(*me, _summonGUID))
-								image->DespawnOrUnsummon();
+                        uint32 newEntry = GetImageEntry(questId);
+                        if (GUID_ENPART(_summonGUID) != newEntry)
+                        {
+                            if (Creature* image = ObjectAccessor::GetCreature(*me, _summonGUID))
+                                image->DespawnOrUnsummon();
 
-							me->SummonCreature(newEntry, 5771.16f, 529.4f, 652.633f, 3.926991f);
-						}
-					}
-				}
-			}
-		private:
-			uint32 _switchImageTimer;
-			uint64 _summonGUID;
-		};
+                            me->SummonCreature(newEntry, 5771.16f, 529.4f, 652.633f, 3.926991f);
+                        }
+                    }
+                }
+            }
+        private:
+            uint32 _switchImageTimer;
+            uint64 _summonGUID;
+        };
 };
 
 void AddSC_dalaran()

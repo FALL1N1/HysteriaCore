@@ -414,7 +414,7 @@ public:
 
                     Flying = true;
                 } else 
-					FlyTimer -= diff;
+                    FlyTimer -= diff;
             }
         }
     };

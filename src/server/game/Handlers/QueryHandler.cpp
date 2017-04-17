@@ -133,9 +133,9 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket & recvData)
         data << float(ci->ModHealth);                       // dmg/hp modifier
         data << float(ci->ModMana);                         // dmg/mana modifier
         data << uint8(ci->RacialLeader);
-		for (uint32 i = 0; i < MAX_CREATURE_QUEST_ITEMS; ++i)
-			data << uint32(ci->questItems[i]);              // itemId[6], quest drop
-		data << uint32(ci->movementId);                     // CreatureMovementInfo.dbc
+        for (uint32 i = 0; i < MAX_CREATURE_QUEST_ITEMS; ++i)
+            data << uint32(ci->questItems[i]);              // itemId[6], quest drop
+        data << uint32(ci->movementId);                     // CreatureMovementInfo.dbc
 
         SendPacket(&data);
     }
@@ -150,52 +150,52 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket & recvData)
 /// Only _static_ data is sent in this packet !!!
 void WorldSession::HandleGameObjectQueryOpcode(WorldPacket & recvData)
 {
-	uint32 entry;
-	recvData >> entry;
-	uint64 guid;
-	recvData >> guid;
+    uint32 entry;
+    recvData >> entry;
+    uint64 guid;
+    recvData >> guid;
 
-	const GameObjectTemplate* info = sObjectMgr->GetGameObjectTemplate(entry);
-	if (info)
-	{
-		std::string Name;
-		std::string IconName;
-		std::string CastBarCaption;
+    const GameObjectTemplate* info = sObjectMgr->GetGameObjectTemplate(entry);
+    if (info)
+    {
+        std::string Name;
+        std::string IconName;
+        std::string CastBarCaption;
 
-		Name = info->name;
-		IconName = info->IconName;
-		CastBarCaption = info->castBarCaption;
+        Name = info->name;
+        IconName = info->IconName;
+        CastBarCaption = info->castBarCaption;
 
-		LocaleConstant localeConstant = GetSessionDbLocaleIndex();
-		if (localeConstant >= LOCALE_enUS)
-			if (GameObjectLocale const* gameObjectLocale = sObjectMgr->GetGameObjectLocale(entry))
-			{
-				ObjectMgr::GetLocaleString(gameObjectLocale->Name, localeConstant, Name);
-				ObjectMgr::GetLocaleString(gameObjectLocale->CastBarCaption, localeConstant, CastBarCaption);
-			}
+        LocaleConstant localeConstant = GetSessionDbLocaleIndex();
+        if (localeConstant >= LOCALE_enUS)
+            if (GameObjectLocale const* gameObjectLocale = sObjectMgr->GetGameObjectLocale(entry))
+            {
+                ObjectMgr::GetLocaleString(gameObjectLocale->Name, localeConstant, Name);
+                ObjectMgr::GetLocaleString(gameObjectLocale->CastBarCaption, localeConstant, CastBarCaption);
+            }
 
-		WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 150);
-		data << uint32(entry);
-		data << uint32(info->type);
-		data << uint32(info->displayId);
-		data << Name;
-		data << uint8(0) << uint8(0) << uint8(0);           // name2, name3, name4
-		data << IconName;                                   // 2.0.3, string. Icon name to use instead of default icon for go's (ex: "Attack" makes sword)
-		data << CastBarCaption;                             // 2.0.3, string. Text will appear in Cast Bar when using GO (ex: "Collecting")
-		data << info->unk1;                                 // 2.0.3, string
-		data.append(info->raw.data, MAX_GAMEOBJECT_DATA);
-		data << float(info->size);                          // go size
-		for (uint32 i = 0; i < MAX_GAMEOBJECT_QUEST_ITEMS; ++i)
-			data << uint32(info->questItems[i]);              // itemId[6], quest drop
+        WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 150);
+        data << uint32(entry);
+        data << uint32(info->type);
+        data << uint32(info->displayId);
+        data << Name;
+        data << uint8(0) << uint8(0) << uint8(0);           // name2, name3, name4
+        data << IconName;                                   // 2.0.3, string. Icon name to use instead of default icon for go's (ex: "Attack" makes sword)
+        data << CastBarCaption;                             // 2.0.3, string. Text will appear in Cast Bar when using GO (ex: "Collecting")
+        data << info->unk1;                                 // 2.0.3, string
+        data.append(info->raw.data, MAX_GAMEOBJECT_DATA);
+        data << float(info->size);                          // go size
+        for (uint32 i = 0; i < MAX_GAMEOBJECT_QUEST_ITEMS; ++i)
+            data << uint32(info->questItems[i]);              // itemId[6], quest drop
 
-		SendPacket(&data);
-	}
-	else
-	{
-		WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 4);
-		data << uint32(entry | 0x80000000);
-		SendPacket(&data);
-	}
+        SendPacket(&data);
+    }
+    else
+    {
+        WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 4);
+        data << uint32(entry | 0x80000000);
+        SendPacket(&data);
+    }
 }
 
 void WorldSession::HandleCorpseQueryOpcode(WorldPacket & /*recvData*/)
@@ -286,7 +286,7 @@ void WorldSession::HandleNpcTextQueryOpcode(WorldPacket & recvData)
 
         for (uint8 i = 0; i < MAX_GOSSIP_TEXT_OPTIONS; ++i)
         {
-			text0[i] = gossip->Options[i].Text_0;
+            text0[i] = gossip->Options[i].Text_0;
             text1[i] = gossip->Options[i].Text_1;
 
             if (locale != DEFAULT_LOCALE)

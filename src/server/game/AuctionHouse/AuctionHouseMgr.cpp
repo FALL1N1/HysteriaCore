@@ -512,8 +512,8 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
 {
     uint32 itrcounter = 0;
 
-	LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
-	int locdbc_idx = player->GetSession()->GetSessionDbcLocale();
+    LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+    int locdbc_idx = player->GetSession()->GetSessionDbcLocale();
 
     // pussywizard: optimization, this is a simplified case
     if (itemClass == 0xffffffff && itemSubClass == 0xffffffff && inventoryType == 0xffffffff && quality == 0xffffffff && levelmin == 0x00 && levelmax == 0x00 && usable == 0x00 && wsearchedname.empty())
@@ -610,15 +610,15 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
 
                 if (propRefID < 0)
                 {
-					const ItemRandomSuffixEntry* itemRandEntry = sItemRandomSuffixStore.LookupEntry(-item->GetItemRandomPropertyId());
-					if (itemRandEntry)
-						suffix = itemRandEntry->nameSuffix;
+                    const ItemRandomSuffixEntry* itemRandEntry = sItemRandomSuffixStore.LookupEntry(-item->GetItemRandomPropertyId());
+                    if (itemRandEntry)
+                        suffix = itemRandEntry->nameSuffix;
                 }
                 else
                 {
-					const ItemRandomPropertiesEntry* itemRandEntry = sItemRandomPropertiesStore.LookupEntry(item->GetItemRandomPropertyId());
-					if (itemRandEntry)
-						suffix = itemRandEntry->nameSuffix;
+                    const ItemRandomPropertiesEntry* itemRandEntry = sItemRandomPropertiesStore.LookupEntry(item->GetItemRandomPropertyId());
+                    if (itemRandEntry)
+                        suffix = itemRandEntry->nameSuffix;
                 }
 
                 // dbc local name
@@ -645,7 +645,7 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
         ++totalcount;
     }
 
-	return true;
+    return true;
 }
 
 //this function inserts to WorldPacket auction's data

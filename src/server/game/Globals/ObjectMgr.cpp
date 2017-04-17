@@ -5790,7 +5790,7 @@ uint32 ObjectMgr::GetNearestTaxiNode(float x, float y, float z, uint32 mapid, ui
 
     // movement anticheat fix
     if (dist > 3600) id = 0;
-    // movement anticheat fix	
+    // movement anticheat fix    
 
     return id;
 }

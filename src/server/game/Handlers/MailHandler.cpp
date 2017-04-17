@@ -100,9 +100,9 @@ void WorldSession::HandleSendMail(WorldPacket & recvData)
 
     Player* player = _player;
 
-	uint32 plr_guild = 0;
-	if (player->GetGuildId())
-		plr_guild = player->GetGuildId();
+    uint32 plr_guild = 0;
+    if (player->GetGuildId())
+        plr_guild = player->GetGuildId();
 
     if (player->getLevel() < sWorld->getIntConfig(CONFIG_MAIL_LEVEL_REQ))
     {
@@ -151,14 +151,14 @@ void WorldSession::HandleSendMail(WorldPacket & recvData)
 
     uint32 rc_teamId = TEAM_NEUTRAL;
     uint16 mails_count = 0;                                  //do not allow to send to one player more than 100 mails
-	uint32 rc_guild = 0;
+    uint32 rc_guild = 0;
 
     if (receive)
     {
         rc_teamId = receive->GetTeamId();
         mails_count = receive->GetMailSize();
-		if (receive->GetGuildId())
-			rc_guild = receive->GetGuildId();
+        if (receive->GetGuildId())
+            rc_guild = receive->GetGuildId();
     }
     else
     {
@@ -286,15 +286,15 @@ void WorldSession::HandleSendMail(WorldPacket & recvData)
             }
 
             // if item send to character at another account, then apply item delivery delay
-			if (rc_guild != 0 && plr_guild != 0)
-			{
-				if (plr_guild == rc_guild)
-				{
-					needItemDelay = false;
-				}else needItemDelay = GetAccountId() != rc_account;
-			}else needItemDelay = GetAccountId() != rc_account;
+            if (rc_guild != 0 && plr_guild != 0)
+            {
+                if (plr_guild == rc_guild)
+                {
+                    needItemDelay = false;
+                }else needItemDelay = GetAccountId() != rc_account;
+            }else needItemDelay = GetAccountId() != rc_account;
 
-			
+            
         }
 
         if( money >= 10*GOLD )

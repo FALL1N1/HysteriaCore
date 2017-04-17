@@ -50,10 +50,10 @@ struct PageTextLocale
 
 struct NpcTextLocale
 {
-	NpcTextLocale() { }
+    NpcTextLocale() { }
 
-	StringVector Text_0[MAX_GOSSIP_TEXT_OPTIONS];
-	StringVector Text_1[MAX_GOSSIP_TEXT_OPTIONS];
+    StringVector Text_0[MAX_GOSSIP_TEXT_OPTIONS];
+    StringVector Text_1[MAX_GOSSIP_TEXT_OPTIONS];
 };
 #endif
 

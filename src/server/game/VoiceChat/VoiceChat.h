@@ -12,9 +12,9 @@
 #include <assert.h>
 
 #ifdef WIN32
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-	#include <winsock2.h>
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
+    #include <winsock2.h>
 #else
 #include <sys/time.h>
 #include <sys/types.h>
@@ -38,19 +38,19 @@ typedef unsigned int uint32;
 
 struct VoiceChatChannelMember
 {
-	struct sockaddr_in address;
-	uint8 encryption_key[16];
-	uint8 initialized;
+    struct sockaddr_in address;
+    uint8 encryption_key[16];
+    uint8 initialized;
 };
 
 struct VoiceChatChannel
 {
-	uint32 channel_id;
-	uint32 member_count;
-	uint32 member_slots;
-	struct VoiceChatChannelMember * members;
-	struct VoiceChatChannel * next;
-	struct VoiceChatChannel * prev;
+    uint32 channel_id;
+    uint32 member_count;
+    uint32 member_slots;
+    struct VoiceChatChannelMember * members;
+    struct VoiceChatChannel * next;
+    struct VoiceChatChannel * prev;
 };
 
 struct VoiceChatChannel * GetChannel(uint16 channel_id);
@@ -65,11 +65,11 @@ int GenerateChannelId();
 
 struct WoWServer
 {
-	struct VoiceChatChannel channels[1000];
-	struct sockaddr_in address;
-	int fd;
-	struct WoWServer * next;
-	struct WoWServer * prev;
+    struct VoiceChatChannel channels[1000];
+    struct sockaddr_in address;
+    int fd;
+    struct WoWServer * next;
+    struct WoWServer * prev;
 };
 
 extern struct VoiceChatChannel * m_channelBegin;

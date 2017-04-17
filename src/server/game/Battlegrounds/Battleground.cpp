@@ -307,7 +307,7 @@ inline void Battleground::_CheckSafePositions(uint32 diff)
         float x, y, z, o;
         for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
         {
-			itr->second->GetPosition(&pos);
+            itr->second->GetPosition(&pos);
             GetTeamStartLoc(itr->second->GetBgTeamId(), x, y, z, o);
             if (pos.GetExactDistSq(x, y, z) > maxDist)
             {
@@ -625,7 +625,7 @@ void Battleground::SendPacketToAll(WorldPacket* packet)
 void Battleground::SendPacketToTeam(TeamId teamId, WorldPacket* packet, Player* sender, bool self)
 {
     for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-		if (itr->second->GetBgTeamId() == teamId && (self || sender != itr->second))
+        if (itr->second->GetBgTeamId() == teamId && (self || sender != itr->second))
             itr->second->GetSession()->SendPacket(packet);
 }
 
@@ -727,15 +727,15 @@ void Battleground::UpdateWorldStateForPlayer(uint32 Field, uint32 Value, Player*
 
 void Battleground::EndBattleground(TeamId winnerTeamId)
 {
-	// xinef: if this is true, it means that endbattleground is called second time
-	// skip to avoid double rating reduce / add
-	// can bug out due to multithreading ?
-	// set as fast as possible
-	if (GetStatus() == STATUS_WAIT_LEAVE)
-		return;
-	uint32 startDelay = StartDelayTimes[BG_STARTING_EVENT_FIRST]; // = BG_START_DELAY_1M = 60000 for all arenas
-	bool bValidArena = isArena() && isRated() && GetStatus() == STATUS_IN_PROGRESS && GetStartTime() >= startDelay+15000; // pussywizard: only if arena lasted at least 15 secs
-	SetStatus(STATUS_WAIT_LEAVE);
+    // xinef: if this is true, it means that endbattleground is called second time
+    // skip to avoid double rating reduce / add
+    // can bug out due to multithreading ?
+    // set as fast as possible
+    if (GetStatus() == STATUS_WAIT_LEAVE)
+        return;
+    uint32 startDelay = StartDelayTimes[BG_STARTING_EVENT_FIRST]; // = BG_START_DELAY_1M = 60000 for all arenas
+    bool bValidArena = isArena() && isRated() && GetStatus() == STATUS_IN_PROGRESS && GetStartTime() >= startDelay+15000; // pussywizard: only if arena lasted at least 15 secs
+    SetStatus(STATUS_WAIT_LEAVE);
 
     ArenaTeam* winnerArenaTeam = NULL;
     ArenaTeam* loserArenaTeam = NULL;
@@ -1023,7 +1023,7 @@ void Battleground::BlockMovement(Player* player)
 
 void Battleground::RemovePlayerAtLeave(Player* player)
 {
-	TeamId teamId = player->GetBgTeamId();
+    TeamId teamId = player->GetBgTeamId();
 
     // check if the player was a participant of the match, or only entered through gm command
     bool participant = false;

@@ -232,7 +232,7 @@ class spell_pal_sacred_shield_base : public SpellScriptLoader
 
                     if (sWorld->IsInCurrentContent(PATCH_332))
                     {
-					    // Xinef: removed divine guardian because it will affect triggered spell with increased amount
+                        // Xinef: removed divine guardian because it will affect triggered spell with increased amount
                         // Arena - Dampening
                         if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_ARENA_DAMPENING, EFFECT_0))
                             AddPct(amount, dampening->GetAmount());

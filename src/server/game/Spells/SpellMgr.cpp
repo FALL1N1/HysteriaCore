@@ -3310,7 +3310,7 @@ void SpellMgr::LoadDbcDataCorrections()
         case 36384: // Skartax Purple Beam
             spellInfo->MaxAffectedTargets = 2;
             break;
-		case 28542: // Life Drain - Sapphiron
+        case 28542: // Life Drain - Sapphiron
         case 37790: // Spread Shot
         case 54172: // Divine Storm (heal)
         case 66588: // Flaming Spear
@@ -3321,7 +3321,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->MaxAffectedTargets = 4;
             break;
         case 38296: // Spitfire Totem
-		case 55665: // Life Drain - Sapphiron (H)
+        case 55665: // Life Drain - Sapphiron (H)
             spellInfo->MaxAffectedTargets = 5;
             break;
         case 40827: // Sinful Beam

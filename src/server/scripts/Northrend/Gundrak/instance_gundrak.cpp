@@ -232,6 +232,10 @@ class instance_gundrak : public InstanceMapScript
         };
 };
 
+// retarded sunwell devs removed main cpp file with creature scripts 
+// and coded everything in "RetardAI" so we have to handle this here
+// Drakkari Rhino (29931)
+
 void AddSC_instance_gundrak()
 {
     new instance_gundrak();

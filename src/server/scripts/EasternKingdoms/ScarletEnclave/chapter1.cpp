@@ -44,10 +44,10 @@ enum eyeOfAcherus
 
 enum TheEmblazonedRuneblade
 {
-	SPELL_EMBLAZON_RUNEBLADE = 51769,
-	SPELL_SHADOW_STORM       = 51738,
+    SPELL_EMBLAZON_RUNEBLADE = 51769,
+    SPELL_SHADOW_STORM       = 51738,
 
-	NPC_RUNEBLADED_SWORD     = 28476,
+    NPC_RUNEBLADED_SWORD     = 28476,
 };
 
 class npc_runeforge_trigger : public CreatureScript

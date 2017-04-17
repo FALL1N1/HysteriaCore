@@ -201,19 +201,19 @@ bool BattlefieldWG::Update(uint32 diff)
     else
         m_saveTimer -= diff;
 
-	// Update Tenacity
-	if (IsWarTime())
-	{
-		if (m_tenacityUpdateTimer <= diff)
-		{
-			m_tenacityUpdateTimer = 10000;
-			if (!m_updateTenacityList.empty())
-				UpdateTenacity();
-			m_updateTenacityList.clear();
-		}
-		else
-			m_tenacityUpdateTimer -= diff;
-	}
+    // Update Tenacity
+    if (IsWarTime())
+    {
+        if (m_tenacityUpdateTimer <= diff)
+        {
+            m_tenacityUpdateTimer = 10000;
+            if (!m_updateTenacityList.empty())
+                UpdateTenacity();
+            m_updateTenacityList.clear();
+        }
+        else
+            m_tenacityUpdateTimer -= diff;
+    }
 
     return m_return;
 }
@@ -1087,21 +1087,21 @@ void BattlefieldWG::UpdateTenacity()
             newStack = int32((1.0f - ((float)alliancePlayers / hordePlayers)) * 4.0f);  // negative, should cast on horde
     }
 
-	// Return if no change in stack and apply tenacity to new player
+    // Return if no change in stack and apply tenacity to new player
     if (newStack == m_tenacityStack)
-	{
-		for (GuidSet::const_iterator itr = m_updateTenacityList.begin(); itr != m_updateTenacityList.end(); ++itr)
-			if (Player* newPlayer = ObjectAccessor::FindPlayer(*itr))
-				if ((newPlayer->GetTeamId() == TEAM_ALLIANCE && m_tenacityStack > 0) || (newPlayer->GetTeamId() == TEAM_HORDE && m_tenacityStack < 0))
-				{
-					newStack = std::min(abs(newStack), 20);
-					uint32 buff_honor = GetHonorBuff(newStack);
-					newPlayer->SetAuraStack(SPELL_TENACITY, newPlayer, newStack);
-					if (buff_honor)
-						newPlayer->CastSpell(newPlayer, buff_honor, true);
-				}
+    {
+        for (GuidSet::const_iterator itr = m_updateTenacityList.begin(); itr != m_updateTenacityList.end(); ++itr)
+            if (Player* newPlayer = ObjectAccessor::FindPlayer(*itr))
+                if ((newPlayer->GetTeamId() == TEAM_ALLIANCE && m_tenacityStack > 0) || (newPlayer->GetTeamId() == TEAM_HORDE && m_tenacityStack < 0))
+                {
+                    newStack = std::min(abs(newStack), 20);
+                    uint32 buff_honor = GetHonorBuff(newStack);
+                    newPlayer->SetAuraStack(SPELL_TENACITY, newPlayer, newStack);
+                    if (buff_honor)
+                        newPlayer->CastSpell(newPlayer, buff_honor, true);
+                }
         return;
-	}
+    }
 
     if (m_tenacityStack != 0)
     {
@@ -1111,7 +1111,7 @@ void BattlefieldWG::UpdateTenacity()
             team = TEAM_HORDE;
     }
 
-	m_tenacityStack = newStack;
+    m_tenacityStack = newStack;
     // Remove old buff
     if (team != TEAM_NEUTRAL)
     {
@@ -1128,24 +1128,24 @@ void BattlefieldWG::UpdateTenacity()
     if (newStack)
     {
         team = newStack > 0 ? TEAM_ALLIANCE : TEAM_HORDE;
-		newStack = std::min(abs(newStack), 20);
+        newStack = std::min(abs(newStack), 20);
         uint32 buff_honor = GetHonorBuff(newStack);
 
         for (GuidSet::const_iterator itr = m_PlayersInWar[team].begin(); itr != m_PlayersInWar[team].end(); ++itr)
             if (Player* player = ObjectAccessor::FindPlayer(*itr))
-			{
+            {
                 player->SetAuraStack(SPELL_TENACITY, player, newStack);
-				if (buff_honor)
-					player->CastSpell(player, buff_honor, true);
-			}
+                if (buff_honor)
+                    player->CastSpell(player, buff_honor, true);
+            }
 
         for (GuidSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
             if (Unit* unit = ObjectAccessor::FindUnit(*itr))
-			{
+            {
                 unit->SetAuraStack(SPELL_TENACITY_VEHICLE, unit, newStack);
-				if (buff_honor)
-					unit->CastSpell(unit, buff_honor, true);
-			}
+                if (buff_honor)
+                    unit->CastSpell(unit, buff_honor, true);
+            }
     }
 }
 

@@ -14,11 +14,11 @@ VoiceChatClientSocket::VoiceChatClientSocket(uint32 fd) : Socket(fd, 250000, 250
 
 void VoiceChatClientSocket::OnDisconnect()
 {
-	sVoiceChatHandler.SocketDisconnected();
+    sVoiceChatHandler.SocketDisconnected();
 }
 
 void VoiceChatClientSocket::OnRead()
 {
-	sVoiceChatHandler.OnRead(GetReadBuffer(0), GetReadBufferSize());
+    sVoiceChatHandler.OnRead(GetReadBuffer(0), GetReadBufferSize());
 }
 */

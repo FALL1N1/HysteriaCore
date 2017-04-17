@@ -634,14 +634,14 @@ public:
 
         void Update(uint32 diff)
         {
-			if (Encounters[EVENT_THADDIUS] == DONE &&
-				Encounters[EVENT_LOATHEB] == DONE &&
-				Encounters[EVENT_MAEXXNA] == DONE &&
-				Encounters[EVENT_HORSEMAN] == DONE)
-			{
-				Access_To_Frostwyrmlair = true;
-			}
-			else Access_To_Frostwyrmlair = false;
+            if (Encounters[EVENT_THADDIUS] == DONE &&
+                Encounters[EVENT_LOATHEB] == DONE &&
+                Encounters[EVENT_MAEXXNA] == DONE &&
+                Encounters[EVENT_HORSEMAN] == DONE)
+            {
+                Access_To_Frostwyrmlair = true;
+            }
+            else Access_To_Frostwyrmlair = false;
             if (screamsTimer && Encounters[EVENT_THADDIUS] != DONE)
             {
                 if (screamsTimer <= diff)
@@ -839,26 +839,26 @@ class AreaTrigger_at_naxx_teleport_sal : public AreaTriggerScript
 {
 public:
 
-	AreaTrigger_at_naxx_teleport_sal() : AreaTriggerScript("at_naxx_teleport_sal") { }
+    AreaTrigger_at_naxx_teleport_sal() : AreaTriggerScript("at_naxx_teleport_sal") { }
 
-	bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/)
-	{
-		if (player->IsAlive() && !player->IsInCombat())
-		{
-			if (InstanceScript* instance = player->GetInstanceScript())
-				if (Access_To_Frostwyrmlair == true)
-				{
-					player->TeleportTo(533, 3500.87f, -5339.03f, 145.00f, 1.34f); // db info from trigger
-					return true;
-				}
-		}
-		return false;
-	}
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/)
+    {
+        if (player->IsAlive() && !player->IsInCombat())
+        {
+            if (InstanceScript* instance = player->GetInstanceScript())
+                if (Access_To_Frostwyrmlair == true)
+                {
+                    player->TeleportTo(533, 3500.87f, -5339.03f, 145.00f, 1.34f); // db info from trigger
+                    return true;
+                }
+        }
+        return false;
+    }
 };
 
 void AddSC_instance_naxxramas()
 {
     new instance_naxxramas();
     new boss_naxxramas_misc();
-	new AreaTrigger_at_naxx_teleport_sal();
+    new AreaTrigger_at_naxx_teleport_sal();
 }

@@ -12,10 +12,10 @@
 class VoiceChatClientSocket : public Socket
 {
 public:
-	VoiceChatClientSocket(uint32 fd);
-	void OnDisconnect();
-	void OnRead();
+    VoiceChatClientSocket(uint32 fd);
+    void OnDisconnect();
+    void OnRead();
 };
 */
-#endif		// _VOICECHATCLIENTSOCKET_H
+#endif        // _VOICECHATCLIENTSOCKET_H
 

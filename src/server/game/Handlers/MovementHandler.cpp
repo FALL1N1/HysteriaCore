@@ -707,7 +707,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
                 if (delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f)
                     check_passed = false;
-				
+                
                 // Fly hack checks
                 if (no_fly_auras && !no_fly_flags)
                 {
@@ -784,23 +784,23 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
         if (mover->GetVehicle())
         {
             mover->SetOrientation(movementInfo.pos.GetOrientation());
-		    mover->UpdatePosition(movementInfo.pos);
+            mover->UpdatePosition(movementInfo.pos);
             return;
         }
 
-	    // pussywizard: previously always mover->UpdatePosition(movementInfo.pos);
-	    if (movementInfo.flags & MOVEMENTFLAG_ONTRANSPORT && mover->GetTransport())
-	    {
-		    float x, y, z, o;
-		    movementInfo.transport.pos.GetPosition(x, y, z, o);
-		    mover->GetTransport()->CalculatePassengerPosition(x, y, z, &o);
-		    mover->UpdatePosition(x, y, z, o);
-	    }
-	    else
-		    mover->UpdatePosition(movementInfo.pos);
+        // pussywizard: previously always mover->UpdatePosition(movementInfo.pos);
+        if (movementInfo.flags & MOVEMENTFLAG_ONTRANSPORT && mover->GetTransport())
+        {
+            float x, y, z, o;
+            movementInfo.transport.pos.GetPosition(x, y, z, o);
+            mover->GetTransport()->CalculatePassengerPosition(x, y, z, &o);
+            mover->UpdatePosition(x, y, z, o);
+        }
+        else
+            mover->UpdatePosition(movementInfo.pos);
 
-	    // fall damage generation (ignore in flight case that can be triggered also at lags in moment teleportation to another map).
-	    // Xinef: moved it here, previously StopMoving function called when player died relocated him to last saved coordinates (which were in air)
+        // fall damage generation (ignore in flight case that can be triggered also at lags in moment teleportation to another map).
+        // Xinef: moved it here, previously StopMoving function called when player died relocated him to last saved coordinates (which were in air)
         if (opcode == MSG_MOVE_FALL_LAND && plrMover && !plrMover->IsInFlight() && (!plrMover->GetTransport() || plrMover->GetTransport()->IsStaticTransport()))
         {
             // movement anticheat
@@ -809,9 +809,9 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
             if (!vehMover)
                 plrMover->HandleFall(movementInfo);
         }
-	    // Xinef: interrupt parachutes upon falling or landing in water
-	    if (opcode == MSG_MOVE_FALL_LAND || opcode == MSG_MOVE_START_SWIM)
-		    mover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_LANDING); // Parachutes
+        // Xinef: interrupt parachutes upon falling or landing in water
+        if (opcode == MSG_MOVE_FALL_LAND || opcode == MSG_MOVE_START_SWIM)
+            mover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_LANDING); // Parachutes
         
         if (plrMover && !vehMover)                               // nothing is charmed, or player charmed
         {
@@ -1009,13 +1009,13 @@ void WorldSession::HandleMoveKnockBackAck(WorldPacket & recvData)
     movementInfo.guid = guid;
     ReadMovementInfo(recvData, &movementInfo);
 
-	
+    
     // Save movement flags
     _player->SetUnitMovementFlags(movementInfo.flags);
     #ifdef ANTICHEAT_DEBUG
     //TC_LOG_WARN("cheat", "%s CMSG_MOVE_KNOCK_BACK_ACK: time: %d, fall time: %d | xyzo: %f,%f,%fo(%f) flags[%X] Vspeed: %f, Hspeed: %f", GetPlayer()->GetName(), movementInfo.time, movementInfo.fallTime, movementInfo.pos.m_positionX, movementInfo.pos.m_positionY, movementInfo.pos.m_positionZ, movementInfo.pos.m_orientation, movementInfo.flags, movementInfo.jump.zspeed, movementInfo.jump.xyspeed);
     #endif
-	
+    
     _player->m_mover->m_movementInfo = movementInfo;
 
     _player->m_anti_Last_HSpeed = movementInfo.jump.xyspeed;
@@ -1023,7 +1023,7 @@ void WorldSession::HandleMoveKnockBackAck(WorldPacket & recvData)
 
     const uint32 dt = (_player->m_anti_Last_VSpeed < 0) ? int(ceil(_player->m_anti_Last_VSpeed/-25)*1000) : int(ceil(_player->m_anti_Last_VSpeed/25)*1000);
     _player->m_anti_LastSpeedChangeTime = movementInfo.time + dt + 1000;
-	
+    
     WorldPacket data(MSG_MOVE_KNOCK_BACK, 66);
     data.appendPackGUID(guid);
     _player->m_mover->BuildMovementPacket(&data);

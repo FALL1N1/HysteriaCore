@@ -660,7 +660,7 @@ void World::LoadConfigSettings(bool reload)
     {
         sLog->outError("Anticheat.Movement.m_MistimingAlarms (%d) must be <= 500. Using 500 instead.", m_MistimingAlarms);
         m_MistimingAlarms = 500;
-    }	
+    }    
     ///- Read other configuration items from the config file
 
     m_bool_configs[CONFIG_DURABILITY_LOSS_IN_PVP] = sConfigMgr->GetBoolDefault("DurabilityLoss.InPvP", false);
