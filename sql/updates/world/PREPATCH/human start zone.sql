@@ -17,3 +17,6 @@ DELETE FROM `smart_scripts` WHERE  `entryorguid` in(69,299);
 --(69, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 11, 71764, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Diseased Timber Wolf - On Respawn - Cast Diseased'),
 --(299, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 11, 71764, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'Diseased Young Wolf - On Respawn - Cast Diseased');
 
+-- before 3.3 they are aggressive, after - passive
+-- faction 7
+UPDATE `creature_template` SET `faction`=16 WHERE  `entry` in(38,103);
