@@ -36,7 +36,7 @@ void HomeMovementGenerator<Creature>::DoFinalize(Creature* owner)
         // Xinef: npc run by default
         //owner->SetWalk(true);
         owner->LoadCreaturesAddon(true);
-        owner->SetSpawnHealth();
+        owner->SetHealth(owner->GetMaxHealth());
         owner->AI()->JustReachedHome();
     }
     owner->m_targetsNotAcceptable.clear();

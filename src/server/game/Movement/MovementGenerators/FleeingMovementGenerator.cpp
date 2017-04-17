@@ -47,7 +47,8 @@ void FleeingMovementGenerator<T>::_setTargetLocation(T* owner)
 
     owner->AddUnitState(UNIT_STATE_FLEEING_MOVE);
     
-    Position mypos = owner->GetPosition();
+    Position mypos;
+    owner->GetPosition(&mypos);
     bool isInLOS = VMAP::VMapFactory::createOrGetVMapManager()->isInLineOfSight(owner->GetMapId(),
         mypos.m_positionX,
         mypos.m_positionY,
