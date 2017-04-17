@@ -2288,7 +2288,18 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                         }
                         else
                             (*itr)->ToCreature()->SetHomePosition((*itr)->GetPositionX(), (*itr)->GetPositionY(), (*itr)->GetPositionZ(), (*itr)->GetOrientation());
-                        
+                        // @hackfix
+                        // these need special handling in SAI but i don't think it's implemented 
+                        // on set home position - restore health
+                        switch ((*itr)->ToCreature()->GetEntry())
+                        {
+                            case 7604:
+                            case 7606:
+                            case 7605:
+                            case 7608:
+                                (*itr)->ToCreature()->SetHealth((*itr)->ToCreature()->GetMaxHealth());
+                            break;
+                        }
                     }
                 delete targets;
             }
@@ -2302,6 +2313,18 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 }
                 else
                     me->SetHomePosition(e.target.x, e.target.y, e.target.z, e.target.o);
+                // @hackfix
+                // these need special handling in SAI but i don't think it's implemented 
+                // on set home position - restore health
+                switch (me->GetEntry())
+                {
+                    case 7604:
+                    case 7606:
+                    case 7605:
+                    case 7608:
+                        me->SetHealth(me->GetMaxHealth());
+                        break;
+                }
             }
             break;
         }
