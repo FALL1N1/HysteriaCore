@@ -5,6 +5,7 @@ REWRITTEN BY XINEF
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "gundrak.h"
+#include "MoveSplineInit.h"
 
 DoorData const doorData[] =
 {
@@ -91,6 +92,15 @@ class instance_gundrak : public InstanceMapScript
                     case GO_GUNDRAK_BRIDGE:
                         _bridgeGUIDs[5] = gameobject->GetGUID();
                         gameobject->SetGoState(GO_STATE_READY);
+                        if (Creature* firstRhino = gameobject->FindNearestCreature(29931, 150, true))
+                        {
+                            Movement::MoveSplineInit init(firstRhino);
+                            init.MoveTo(1775.43, 743.43, 119.439232);
+                            init.SetWalk(true);
+                            init.SetFacing(3.165371);
+                            init.Launch();
+                            firstRhino->SetOrientation(3.165371);
+                        }
                         break;
                     case GO_ECK_DOORS:
                     case GO_ECK_UNDERWATER_GATE:
