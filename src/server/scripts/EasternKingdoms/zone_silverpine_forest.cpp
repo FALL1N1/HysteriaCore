@@ -228,20 +228,22 @@ public:
 
         void SummonCreatureWithRandomTarget(uint32 creatureId, int position)
         {
-            if (Creature* summoned = me->SummonCreature(creatureId, PyrewoodSpawnPoints[position][0], PyrewoodSpawnPoints[position][1], PyrewoodSpawnPoints[position][2], PyrewoodSpawnPoints[position][3], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 15000))
+            if (Creature* summoned = me->SummonCreature(creatureId, PyrewoodSpawnPoints[position][0], PyrewoodSpawnPoints[position][1], PyrewoodSpawnPoints[position][2], PyrewoodSpawnPoints[position][3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 15000))
             {
                 Unit* target = NULL;
                 if (PlayerGUID)
                     if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
-                        if (player->IsAlive() && RAND(0, 1))
+                        if (player->IsAlive() && !player->HasStealthAura() && RAND(0, 1))
                             target = player;
 
                 if (!target)
                     target = me;
 
-                summoned->setFaction(168);
-                summoned->AddThreat(target, 32.0f);
+;
+                summoned->GetMotionMaster()->MoveChase(target);
+                summoned->GetMotionMaster()->MovePoint(0, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
                 summoned->AI()->AttackStart(target);
+                summoned->AddThreat(target, 0.0f);
             }
         }
 

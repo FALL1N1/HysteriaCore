@@ -100,6 +100,7 @@ public:
         {
             events.Reset();
             summons.DespawnAll();
+            guardianCount = 0;
 
             if (pInstance)
             {
@@ -159,7 +160,6 @@ public:
         {
             events.Reset();
             summons.DespawnAll();
-            guardianCount = 0;
             
             me->MonsterYell("Master, is my service complete?", LANG_UNIVERSAL, 0);
              me->PlayDirectSound(SOUND_DEATH);

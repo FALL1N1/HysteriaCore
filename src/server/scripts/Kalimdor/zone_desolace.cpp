@@ -175,7 +175,7 @@ class npc_cork_gizelton : public CreatureScript
                     }
 
                     Creature* summon = ObjectAccessor::GetCreature(*me, summons[i]);
-                    if (!summon || me->GetDistance2d(summon) > 25.0f)
+                    if (!summon || me->GetDistance2d(summon) > 50.0f)
                     {
                         SummonHelpers();
                         return false;

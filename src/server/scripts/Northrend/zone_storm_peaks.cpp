@@ -693,6 +693,53 @@ public:
     };
 };
 
+class npc_jotunheim_protodrake : public CreatureScript
+{
+    enum NPCs
+    {
+        NPC_JOTUNHEIM_PROTO_DRAKE = 30330
+    };
+
+public:
+    npc_jotunheim_protodrake() : CreatureScript("npc_jotunheim_protodrake") { }
+
+    class npc_jotunheim_protodrakeAI : public CreatureAI
+    {
+    public:
+        npc_jotunheim_protodrakeAI(Creature* creature) : CreatureAI(creature) { }
+
+        void Reset()
+        {
+            me->setActive(true);
+        }
+
+        void JustDied(Unit* killer)
+        {
+            if (Player* player = killer->GetCharmerOrOwnerPlayerOrPlayerItself())
+            {
+                std::list<Unit*> PartyMembers;
+                player->GetPartyMembers(PartyMembers);
+                for (std::list<Unit*>::iterator itr = PartyMembers.begin(); itr != PartyMembers.end(); ++itr)
+                {
+                    if (Player* ptPlr = (*itr)->ToPlayer())
+                        ptPlr->KilledMonsterCredit(NPC_JOTUNHEIM_PROTO_DRAKE, me->GetGUID());
+                }
+            }
+        }
+
+        void UpdateAI(uint32 uiDiff)
+        {
+            
+        }
+
+
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_jotunheim_protodrakeAI(creature);
+    }
+};
 
 // Theirs
 /////////////////////
@@ -1140,6 +1187,7 @@ void AddSC_storm_peaks()
     new npc_wild_wyrm();
     new spell_q13003_thursting_hodirs_spear();
     new spell_q13007_iron_colossus();
+    new npc_jotunheim_protodrake();
 
     // Theirs
     new npc_injured_goblin();

@@ -594,7 +594,7 @@ public:
         {
             me->SetCorpseDelay(60);
             CombatAI::Reset();
-            if (Unit* target = me->SelectNearestTarget(50.0f))
+            if (Unit* target = me->SelectNearestTargetInAttackDistance(50.0f))
                 AttackStart(target);
         }
 
@@ -727,7 +727,7 @@ enum eSandC
 class WretchedGhoulCleaner
 {
     public:
-        void operator()(Creature* creature)
+        void operator()(Creature* creature) const
         {
             if (creature->GetEntry() == NPC_SAC_WRETCHED_GHOUL && creature->GetDisplayId() != 11686 && creature->IsAlive())
                 Unit::Kill(creature, creature);

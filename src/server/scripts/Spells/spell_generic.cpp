@@ -1419,6 +1419,55 @@ class spell_gen_throw_back : public SpellScriptLoader
         }
 };
 
+enum AnimalBloodDummy
+{
+    SPELL_ANIMAL_BLOOD_DUMMY = 46222,
+    DEHTA_FACTION_ID         = 942,
+};
+// 46222 - Animal Blood
+class spell_animal_blood_dummy : public SpellScriptLoader
+{
+public:
+    spell_animal_blood_dummy() : SpellScriptLoader("spell_animal_blood_dummy") { }
+
+    class spell_animal_blood_dummy_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_animal_blood_dummy_SpellScript);
+
+        bool Load()
+        {
+            return GetHitUnit() && GetHitUnit()->ToCreature();
+        }
+
+        bool Validate(SpellInfo const* /*spellInfo*/)
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_ANIMAL_BLOOD_DUMMY))
+                return false;
+
+            return true;
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            Unit* caster = GetCaster();
+            if (Unit* target = GetHitUnit())
+            {
+                if (!target->IsInCombat() && target->GetFactionTemplateEntry()->faction == DEHTA_FACTION_ID)
+                    target->GetAI()->AttackStart(caster);
+            }
+        }
+
+        void Register()
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_animal_blood_dummy_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_animal_blood_dummy_SpellScript();
+    }
+};
 
 // Theirs
 class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
@@ -5003,6 +5052,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_focused_bursts();
     new spell_gen_flurry_of_claws();
     new spell_gen_throw_back();
+    new spell_animal_blood_dummy();
 
     // theirs:
     new spell_gen_absorb0_hitlimit1();

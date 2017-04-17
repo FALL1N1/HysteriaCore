@@ -37,8 +37,7 @@ enum Says
     SAY_WATCH                 = 2,
     SAY_WATCH_WHISPER         = 3,
     SAY_OHGAN_DEAD            = 4,
-
-    SAY_GRATS_JINDO           = 0
+    SAY_GRATS_JINDO           = 0,
 };
 
 enum Spells
@@ -107,32 +106,24 @@ Position const PosMandokir[2] =
 
 class boss_mandokir : public CreatureScript
 {
-    public:
-        boss_mandokir() : CreatureScript("boss_mandokir") { }
+    public: boss_mandokir() : CreatureScript("boss_mandokir") { }
 
         struct boss_mandokirAI : public BossAI
         {
-            boss_mandokirAI(Creature* creature) : BossAI(creature, DATA_MANDOKIR)
-            {
-                Initialize();
-            }
-
-            void Initialize()
-            {
-                killCount = 0;
-            }
+            boss_mandokirAI(Creature* creature) : BossAI(creature, DATA_MANDOKIR) { }
 
             void Reset()
             {
                 if (me->GetPositionZ() > 140.0f)
                 {
-                    Initialize();
+                    _Reset();
+                    killCount = 0;
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC);
                     events.ScheduleEvent(EVENT_CHECK_START, 1000);
                     if (Creature* speaker = ObjectAccessor::GetCreature(*me, instance->GetData64(NPC_VILEBRANCH_SPEAKER)))
                         if (!speaker->IsAlive())
                             speaker->Respawn(true);
                 }
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC);
                 summons.DespawnAll();
                 me->Mount(MODEL_OHGAN_MOUNT);
             }
@@ -145,11 +136,6 @@ class boss_mandokir : public CreatureScript
                         unsummon->DespawnOrUnsummon();
                 instance->SetBossState(DATA_MANDOKIR, DONE);
                 instance->SaveToDB();
-            }
-
-            void JustReachedHome()
-            {
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
             }
 
             void EnterCombat(Unit* /*who*/)
@@ -198,9 +184,9 @@ class boss_mandokir : public CreatureScript
                     me->SetWalk(false);
                     if (id == POINT_MANDOKIR_END)
                     {
-                        me->SetHomePosition(PosMandokir[1]);
-                        me->GetMotionMaster()->MoveTargetedHome();
+                        me->SetHomePosition(PosMandokir[0]);
                         instance->SetBossState(DATA_MANDOKIR, NOT_STARTED);
+                        me->DespawnOrUnsummon(6000); // No idea how to respawn on wipe.
                     }
                 }
             }
@@ -227,7 +213,8 @@ class boss_mandokir : public CreatureScript
                                         events.ScheduleEvent(EVENT_CHECK_START, 1000);
                                     break;
                                 case EVENT_STARTED:
-                                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC);
+                                    me->GetMotionMaster()->MovePath(PATH_MANDOKIR, false);
                                     break;
                                 default:
                                     break;
@@ -306,24 +293,15 @@ enum OhganSpells
 
 class npc_ohgan : public CreatureScript
 {
-    public:
-        npc_ohgan() : CreatureScript("npc_ohgan") { }
+    public: npc_ohgan() : CreatureScript("npc_ohgan") { }
 
         struct npc_ohganAI : public ScriptedAI
         {
-            npc_ohganAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript())
-            {
-                Initialize();
-            }
-
-            void Initialize()
-            {
-                SunderArmor_Timer = 5000;
-            }
+            npc_ohganAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()) { }
 
             void Reset()
             {
-                Initialize();
+                SunderArmor_Timer = 5000;
             }
 
             void EnterCombat(Unit* /*who*/) { }
@@ -367,26 +345,18 @@ enum VilebranchSpells
 
 class npc_vilebranch_speaker : public CreatureScript
 {
-    public:
-        npc_vilebranch_speaker() : CreatureScript("npc_vilebranch_speaker") { }
+    public: npc_vilebranch_speaker() : CreatureScript("npc_vilebranch_speaker") { }
 
         struct npc_vilebranch_speakerAI : public ScriptedAI
         {
-            npc_vilebranch_speakerAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript())
-            {
-                Initialize();
-            }
+            npc_vilebranch_speakerAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()) { }
 
-            void Initialize()
+            void Reset()
             {
                 demoralizing_Shout_Timer = urand(2000, 4000);
                 cleave_Timer = urand(5000, 8000);
             }
 
-            void Reset()
-            {
-                Initialize();
-            }
 
             void EnterCombat(Unit* /*who*/) { }
 

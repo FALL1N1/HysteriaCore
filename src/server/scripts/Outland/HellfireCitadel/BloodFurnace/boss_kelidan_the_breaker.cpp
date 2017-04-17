@@ -133,7 +133,7 @@ class boss_kelidan_the_breaker : public CreatureScript
                     }
                     me->SetReactState(REACT_AGGRESSIVE);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NON_ATTACKABLE);
-                    if (Unit* target = me->SelectNearestPlayer(100.0f))
+                    if (Player* target = me->SelectNearestPlayer(100.0f))
                         AttackStart(target);
                 }
             }

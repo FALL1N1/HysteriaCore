@@ -347,10 +347,15 @@ public:
       {
           Say_Timer = 5000;
           ReleasedFromCage = false;
+          me->SetReactState(REACT_PASSIVE);
+          me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
       }
 
       void UpdateAI(uint32 diff)
       {
+          if (!UpdateVictim())
+              return;
+
           if (ReleasedFromCage)
           {
               if (Say_Timer <= diff)
