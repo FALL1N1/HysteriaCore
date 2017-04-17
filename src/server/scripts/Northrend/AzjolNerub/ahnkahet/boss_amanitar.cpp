@@ -172,12 +172,17 @@ public:
         npc_amanitar_mushroomsAI(Creature* c) : ScriptedAI(c)
         {
             SetCombatMovement(false);
+            c->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            c->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         }
 
         uint32 Timer;
         void Reset()
         {
             me->CastSpell(me, 31690, true);
+
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             Timer = 0;
             if (me->GetEntry() == NPC_POISONOUS_MUSHROOM)
