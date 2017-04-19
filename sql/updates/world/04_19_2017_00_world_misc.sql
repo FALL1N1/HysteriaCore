@@ -64,3 +64,7 @@ INSERT INTO areatrigger_scripts VALUES (4156, 'at_naxxramas_frostwyrm_wing');
 delete from creature_addon where guid = 247105
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES 
 (247105, 0, 0, 0, 1, 333, '47543');
+
+-- rewrite spell Ticking Bomb
+DELETE FROM `smart_scripts` WHERE  `entryorguid`=29684;
+UPDATE `creature_template` SET `AIName`='', `ScriptName`='npc_time_bomb_explode_bunny' WHERE  `entry`=29684;

@@ -231,10 +231,38 @@ class spell_ticking_time_bomb : public SpellScriptLoader
         }
 };
 
+class npc_time_bomb_explode_bunny : public CreatureScript
+{
+public:
+    npc_time_bomb_explode_bunny() : CreatureScript("npc_time_bomb_explode_bunny") { }
+
+    struct npc_time_bomb_explode_bunnyAI : ScriptedAI
+    {
+        npc_time_bomb_explode_bunnyAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void Reset() { }
+
+        void EnterCombat(Unit* victim) 
+        {
+            DoCast(victim, SPELL_TICKING_TIME_BOMB_EXPLODE, true);
+            me->DisappearAndDie();
+        }
+
+        void EnterEvadeMode() { }
+        void UpdateAI(uint32 diff) { }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_time_bomb_explode_bunnyAI(creature);
+    }
+};
+
 void AddSC_utgarde_keep()
 {
     new npc_dragonflayer_forge_master();
     new npc_enslaved_proto_drake();
 
     new spell_ticking_time_bomb();
+    new npc_time_bomb_explode_bunny();
 }
