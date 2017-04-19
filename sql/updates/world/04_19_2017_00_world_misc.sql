@@ -1,5 +1,4 @@
 -- cos waypoints for bosses
-
 SET @WPGUID := 20830274;
 
 delete from creature_template_addon where entry in(26529, 26530);
@@ -19,8 +18,6 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@WPGUID, 3, 2171.15, 1251.85, 135.168, 0, 0, 0, 0, 100, 0);
 (@WPGUID, 2, 2240.9, 1173.33, 137.171, 0, 0, 0, 0, 100, 0);
 (@WPGUID, 1, 2349.07, 1181.84, 130.416, 0, 0, 0, 0, 100, 0);
-
-
 
 -- patchwerk link with all adds in his room
 SET @PATCHWERKGuid := 128135;
@@ -88,3 +85,9 @@ UPDATE `creature_template` SET
 WHERE  `entry`=1763;
 
 delete from smart_scripts where entryorguid = 1763;
+
+-- ahn'qiraj
+-- ouro should be spawned now
+-- not blizzlike, @todo: code spawn event, no idea how it works
+-- UPDATE `creature` SET `id`=15957 WHERE  `guid`=88073;
+UPDATE `creature` SET `id`=15517 WHERE  `guid`=88073;
