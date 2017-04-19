@@ -68,3 +68,21 @@ INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `e
 -- rewrite spell Ticking Bomb
 DELETE FROM `smart_scripts` WHERE  `entryorguid`=29684;
 UPDATE `creature_template` SET `AIName`='', `ScriptName`='npc_time_bomb_explode_bunny' WHERE  `entry`=29684;
+
+-- deadmines creature group, scriptnames and some misc stuff
+delete from creature_summon_groups where summonerid = 1763;
+INSERT INTO `creature_summon_groups` (`summonerId`, `summonerType`, `groupId`, `entry`, `position_x`, `position_y`, `position_z`, `orientation`, `summonType`, `summonTime`) VALUES 
+(1763, 2, 1, 4417, -231.058, -585.401, 51.2364, 0, 6, 10000), -- taskmaster
+(1763, 2, 1, 4418, -231.539, -588.330, 51.2390, 0, 6, 10000), -- wizzard
+(1763, 2, 1, 4418, -227.990, -586.819, 51.2362, 0, 6, 10000); -- wizzard
+
+delete from `creature_text` where `entry` = 1763;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `TextRange`, `BroadcastTextId`, `comment`) VALUES 
+(1763, 0, 0, 'Get those parts moving down to the ship!', 12, 0, 100, 0, 0, 0, 0, 0, 'Gilnid'),
+(1763, 0, 1, 'Anyone want to take a break?  Well too bad!  Get to work you oafs!', 12, 0, 100, 0, 0, 0, 0, 0, 'Gilnid'),
+(1763, 0, 3, 'The cannons must be finished soon.', 12, 0, 100, 0, 0, 0, 0, 0, 'Gilnid');
+
+UPDATE `creature_template` SET 
+    `AIName`='', 
+    `ScriptName`='boss_gilnid_the_smelter' 
+WHERE  `entry`=1763;

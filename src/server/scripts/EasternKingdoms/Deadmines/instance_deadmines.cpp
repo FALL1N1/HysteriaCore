@@ -1,7 +1,3 @@
-/*
-REWRITTEN BY XINEF
-*/
-
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "deadmines.h"
@@ -87,7 +83,84 @@ class instance_deadmines : public InstanceMapScript
         }
 };
 
+#define SPELL_MOLTEN_METAL 5213
+#define RAND_TALK 1
+
+enum Events
+{
+  EVENT_MOLTEN_METAL = 1,
+  EVENT_RAND_TALK    = 2,
+  EVENT_SUMMON_AFTER = 3,
+};
+
+enum Adds
+{
+    NPC_DEFIAS_TASKMASTER = 4417, // 2x
+    NPC_DEFIAS_WIZZARD = 4418,    // 1x
+
+};
+
+class boss_gilnid_the_smelter : public CreatureScript
+{
+    public:
+        boss_gilnid_the_smelter() : CreatureScript("boss_gilnid_the_smelter") { }
+
+        CreatureAI* GetAI(Creature* creature) const
+        {
+            return GetInstanceAI<boss_gilnid_the_smelterAI>(creature);
+        }
+
+        struct boss_gilnid_the_smelterAI : public ScriptedAI
+        {
+            boss_gilnid_the_smelterAI(Creature* creature) : ScriptedAI(creature) 
+            { 
+                events.ScheduleEvent(EVENT_RAND_TALK, 1000);
+            }
+            EventMap events;
+
+            void Reset() { events.Reset(); }
+
+            void EnterCombat(Unit* /*who*/)
+            {
+                events.ScheduleEvent(EVENT_MOLTEN_METAL, 500);
+            }
+
+            void SummonDefiasAdds(Creature* me)
+            {
+                me->GetMap()->SummonCreatureGroup(1);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                SummonDefiasAdds(me);
+            }
+
+            void UpdateAI(uint32 diff)
+            {
+                if (!UpdateVictim())
+                    return;
+
+                events.Update(diff);
+                switch (events.ExecuteEvent())
+                {
+                    case EVENT_MOLTEN_METAL:
+                        me->CastSpell(me->GetVictim(), SPELL_MOLTEN_METAL, false);
+                        events.ScheduleEvent(EVENT_MOLTEN_METAL, 3000);
+                        break;
+                    case EVENT_RAND_TALK:
+                        if (!me->IsInCombat())
+                            Talk(urand(1, 3)); // random between 1 and 3
+                        events.ScheduleEvent(EVENT_RAND_TALK, 7000);
+                        break;
+                }
+
+                DoMeleeAttackIfReady();
+            }
+        };
+};
+
 void AddSC_instance_deadmines()
 {
     new instance_deadmines();
+    new boss_gilnid_the_smelter();
 }
