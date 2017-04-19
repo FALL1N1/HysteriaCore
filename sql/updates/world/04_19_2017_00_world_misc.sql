@@ -86,3 +86,5 @@ UPDATE `creature_template` SET
     `AIName`='', 
     `ScriptName`='boss_gilnid_the_smelter' 
 WHERE  `entry`=1763;
+
+delete from smart_scripts where entryorguid = 1763;
