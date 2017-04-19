@@ -655,7 +655,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: "Freeze Z coord check"
                 if (plrMover)
-                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling())
+                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && plrMover->GetMapId() != 548)
                     {
                         //sLog->outString("      111     ");
                         float playerZ = plrMover->GetPositionZ();
@@ -673,7 +673,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: custom fly / under map checks
                 if (plrMover)
-                    if ((no_fly_auras && !no_fly_flags) && !plrMover->IsFalling())
+                    if ((no_fly_auras && !no_fly_flags) && !plrMover->IsFalling() && plrMover->GetMapId() != 548)
                     {
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
