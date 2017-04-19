@@ -6235,6 +6235,18 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_SRC_AREA_ENEMY; // not sure! could be TARGET_UNIT_SRC_AREA_ENTRY
                 spellInfo->EffectRadiusIndex[0] = 20; // Radius: 20 yards
                 break;
+            // Hurl Dagger (client-side bug, throwing white-blue boxes)
+            case 42772: // used in 5N (confirmed), not sure about hc?
+            case 59685:
+            case 41152: // Another spell with similar issue
+                // we will use 59138 as base as it throws main hand weapon
+                spellInfo->SpellVisual[0] = 12645; // m_spellVisualID_1 @ Spell.dbc
+                spellInfo->SpellVisual[1] = 0;     // m_spellVisualID_2 @ Spell.dbc
+                break;
+            // Ticking Bomb
+            case 54962:
+                spellInfo->EffectRadiusIndex[0] = 10; // Radius: 10 yards
+                break;
         }
 
         switch (spellInfo->SpellFamilyName)
