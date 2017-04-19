@@ -91,3 +91,6 @@ delete from smart_scripts where entryorguid = 1763;
 -- not blizzlike, @todo: code spawn event, no idea how it works
 -- UPDATE `creature` SET `id`=15957 WHERE  `guid`=88073;
 UPDATE `creature` SET `id`=15517 WHERE  `guid`=88073;
+
+-- naxx mind control crystals should be spawned on all difficulties
+UPDATE `creature` SET `spawnMask`=15 WHERE `guid` in(128352, 128353);
