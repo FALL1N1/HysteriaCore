@@ -59,3 +59,8 @@ INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, 
 -- areatrigger for naxx port to frostwyrm lair
 DELETE FROM areatrigger_scripts WHERE entry = 4156;
 INSERT INTO areatrigger_scripts VALUES (4156, 'at_naxxramas_frostwyrm_wing');
+
+-- misc issues in the nexus
+delete from creature_addon where guid = 247105
+INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `auras`) VALUES 
+(247105, 0, 0, 0, 1, 333, '47543');
