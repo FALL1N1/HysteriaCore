@@ -835,23 +835,24 @@ public:
     };
 };
 
-class AreaTrigger_at_naxx_teleport_sal : public AreaTriggerScript
+class at_naxxramas_frostwyrm_wing : public AreaTriggerScript
 {
 public:
+    at_naxxramas_frostwyrm_wing() : AreaTriggerScript("at_naxxramas_frostwyrm_wing") { }
 
-    AreaTrigger_at_naxx_teleport_sal() : AreaTriggerScript("at_naxx_teleport_sal") { }
-
-    bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/)
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
     {
-        if (player->IsAlive() && !player->IsInCombat())
-        {
-            if (InstanceScript* instance = player->GetInstanceScript())
-                if (Access_To_Frostwyrmlair == true)
-                {
-                    player->TeleportTo(533, 3500.87f, -5339.03f, 145.00f, 1.34f); // db info from trigger
+        if (player->IsInCombat())
+            return true;
+
+        if (sWorld->IsInCurrentContent(PATCH_330))
+            return false;
+
+        if (InstanceScript* instance = player->GetInstanceScript())
+            for (uint32 i = EVENT_PATCHWERK; i < EVENT_SAPPHIRON; ++i)
+                if (instance->GetBossState(i) != DONE)
                     return true;
-                }
-        }
+
         return false;
     }
 };
@@ -860,5 +861,5 @@ void AddSC_instance_naxxramas()
 {
     new instance_naxxramas();
     new boss_naxxramas_misc();
-    new AreaTrigger_at_naxx_teleport_sal();
+    new at_naxxramas_frostwyrm_wing();
 }

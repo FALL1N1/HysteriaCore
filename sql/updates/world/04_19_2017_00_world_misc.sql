@@ -19,3 +19,43 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@WPGUID, 3, 2171.15, 1251.85, 135.168, 0, 0, 0, 0, 100, 0);
 (@WPGUID, 2, 2240.9, 1173.33, 137.171, 0, 0, 0, 0, 100, 0);
 (@WPGUID, 1, 2349.07, 1181.84, 130.416, 0, 0, 0, 0, 100, 0);
+
+
+
+-- patchwerk link with all adds in his room
+SET @PATCHWERKGuid := 128135;
+-- [28 total adds]
+DELETE FROM `creature_formations` WHERE `leaderGUID`=@PATCHWERKGuid;
+INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES 
+(@PATCHWERKGuid, 128095, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128091, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128086, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128094, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128096, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 97718, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128069, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128068, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128099, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128087, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128097, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128092, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128088, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128098, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128164, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128083, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128080, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128082, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128101, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128079, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128078, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 97736, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 97747, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128093, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128090, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128100, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128089, 0, 0, 2, 0, 0),
+(@PATCHWERKGuid, 128102, 0, 0, 2, 0, 0);
+
+-- areatrigger for naxx port to frostwyrm lair
+DELETE FROM areatrigger_scripts WHERE entry = 4156;
+INSERT INTO areatrigger_scripts VALUES (4156, 'at_naxxramas_frostwyrm_wing');
