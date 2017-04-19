@@ -6226,15 +6226,15 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[EFFECT_1] = TARGET_UNIT_TARGET_ANY;
             spellInfo->EffectImplicitTargetA[EFFECT_2] = TARGET_UNIT_TARGET_ANY;
             break;
-        //////////////////////////////////////////
-        ////////// Firefly Custom Spell Rules
-        //////////////////////////////////////////
-        // Frost Bolt (volley-like from "The Nexus" dungeon)
-        case 12737:
-            spellInfo->EffectImplicitTargetA[0] = TARGET_SRC_CASTER;
-            spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_SRC_AREA_ENEMY; // not sure! could be TARGET_UNIT_SRC_AREA_ENTRY
-            spellInfo->EffectRadiusIndex[0] = 20; // Radius: 20 yards
-            break;
+            //////////////////////////////////////////
+            ////////// Firefly Custom Spell Rules
+            //////////////////////////////////////////
+            // Frost Bolt (volley-like from "The Nexus" dungeon)
+            case 12737:
+                spellInfo->EffectImplicitTargetA[0] = TARGET_SRC_CASTER;
+                spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_SRC_AREA_ENEMY; // not sure! could be TARGET_UNIT_SRC_AREA_ENTRY
+                spellInfo->EffectRadiusIndex[0] = 20; // Radius: 20 yards
+                break;
         }
 
         switch (spellInfo->SpellFamilyName)
