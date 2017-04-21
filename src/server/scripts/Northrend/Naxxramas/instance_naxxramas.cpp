@@ -842,16 +842,16 @@ public:
 
     bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
     {
-        if (player->IsInCombat())
-            return true;
+        //if (player->IsInCombat())
+            //return true;
 
-        if (sWorld->IsInCurrentContent(PATCH_330))
-            return false;
+        //if (sWorld->IsInCurrentContent(PATCH_330))
+            //return false;
 
-        if (InstanceScript* instance = player->GetInstanceScript())
-            for (uint32 i = EVENT_PATCHWERK; i < EVENT_SAPPHIRON; ++i)
-                if (instance->GetBossState(i) != DONE)
-                    return true;
+        //if (InstanceScript* instance = player->GetInstanceScript())
+            //for (uint32 i = EVENT_PATCHWERK; i < EVENT_SAPPHIRON; ++i)
+                //if (instance->GetBossState(i) != DONE)
+                    //return true;
 
         return false;
     }
