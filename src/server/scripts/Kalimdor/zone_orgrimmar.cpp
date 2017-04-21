@@ -416,7 +416,8 @@ public:
                 Trinity::AnyFriendlyUnitInObjectRangeCheck checker(me, me, 25.0f);
                 Trinity::UnitListSearcher<Trinity::AnyFriendlyUnitInObjectRangeCheck> searcher(me, citizenList, checker);
                 me->VisitNearbyObject(20.0f, searcher);
-                for (Unit* target : citizenList)
+                // req C++11 support or rewrite :(
+                /*for (Unit* target : citizenList)
                 {
                     switch (target->GetEntry())
                     {
@@ -441,7 +442,7 @@ public:
                     default:
                         break;
                     }
-                }
+                }*/
             }
         }
 
