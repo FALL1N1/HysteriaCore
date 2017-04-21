@@ -842,17 +842,23 @@ public:
 
     bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
     {
-        //if (player->IsInCombat())
-            //return true;
+        bool teleEligible;
+        teleEligible = true; // to prevent annoying gcc warning
 
-        //if (sWorld->IsInCurrentContent(PATCH_330))
-            //return false;
+        if (player->IsInCombat())
+            teleEligible = false;
 
-        //if (InstanceScript* instance = player->GetInstanceScript())
-            //for (uint32 i = EVENT_PATCHWERK; i < EVENT_SAPPHIRON; ++i)
-                //if (instance->GetBossState(i) != DONE)
-                    //return true;
+        if (sWorld->IsInCurrentContent(PATCH_330))
+            teleEligible = true;
 
+        if (InstanceScript* instance = player->GetInstanceScript())
+            for (uint32 i = EVENT_PATCHWERK; i < EVENT_SAPPHIRON; ++i)
+                if (instance->GetBossState(i) != DONE)
+                    teleEligible = false;
+
+        if(teleEligible)
+            player->TeleportTo(533, 3497.237305f, -5354.635254f, 144.975876f, 1.349573f);
+        
         return false;
     }
 };
