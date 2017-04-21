@@ -5,7 +5,7 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ahnkahet.h"
-#include "World.h"
+
 
 enum Yells
 {
@@ -20,52 +20,51 @@ enum Yells
 enum Spells
 {
     // VISUALS
-    SPELL_PINK_SPHERE                        = 56075,
-    SPELL_WHITE_SPHERE                        = 56102,
-    SPELL_LIGHTNING_BOLTS                    = 56327,
-    SPELL_ACTIVATE_INITIATE                    = 56868,
-    SPELL_FREEZE_ANIM                        = 55591,
-    SPELL_SACRIFICE_VISUAL                    = 56133,
+    SPELL_PINK_SPHERE                       = 56075,
+    SPELL_WHITE_SPHERE                      = 56102,
+    SPELL_LIGHTNING_BOLTS                   = 56327,
+    SPELL_ACTIVATE_INITIATE                 = 56868,
+    SPELL_SACRIFICE_VISUAL                  = 56133,
 
     // FIGHT
     SPELL_GIFT_OF_THE_HERALD                = 56219,
     SPELL_CYCLONE_STRIKE                    = 56855, // Self
-    SPELL_CYCLONE_STRIKE_H                    = 60030,
+    SPELL_CYCLONE_STRIKE_H                  = 60030,
     SPELL_LIGHTNING_BOLT                    = 56891, // 40Y
-    SPELL_LIGHTNING_BOLT_H                    = 60032, // 40Y
-    SPELL_THUNDERSHOCK                        = 56926, // 30Y
+    SPELL_LIGHTNING_BOLT_H                  = 60032, // 40Y
+    SPELL_THUNDERSHOCK                      = 56926, // 30Y
     SPELL_THUNDERSHOCK_H                    = 60029  // 30Y
 };
 
 enum Events
 {
     EVENT_JEDOGA_CYCLONE                    = 1,
-    EVENT_JEDOGA_LIGHTNING_BOLT                = 2,
-    EVENT_JEDOGA_THUNDERSHOCK                = 3,
+    EVENT_JEDOGA_LIGHTNING_BOLT             = 2,
+    EVENT_JEDOGA_THUNDERSHOCK               = 3,
     EVENT_JEDOGA_MOVE_UP                    = 4,
-    EVENT_JEDOGA_MOVE_DOWN                    = 5,
+    EVENT_JEDOGA_MOVE_DOWN                  = 5,
 };
 
 enum Misc
 {
-    NPC_JEDOGA_CONTROLLER                    = 30181,
+    NPC_JEDOGA_CONTROLLER                   = 30181,
     NPC_INITIATE                            = 30114,
 
     ACTION_INITIATE_DIED                    = 1,
-    ACTION_ACTIVATE                            = 2,
-    ACTION_HERALD                            = 3,
-    ACTION_SACRIFICE_FAILED                    = 4,
+    ACTION_ACTIVATE                         = 2,
+    ACTION_HERALD                           = 3,
+    ACTION_SACRIFICE_FAILED                 = 4,
 
-    POINT_DOWN                                = 1,
+    POINT_DOWN                              = 1,
     POINT_UP                                = 2,
-    POINT_UP_START                            = 3,
+    POINT_UP_START                          = 3,
     POINT_RITUAL                            = 4,
 };
 
 const Position JedogaPosition[2] =
 {
-    {372.330994f, -705.278015f, 0.624178f,  5.427970f},
-    {372.330994f, -705.278015f, -16.179716f, 5.427970f}
+    {372.330994f, -705.278015f, -2.459692f,  5.628908f},
+    {372.330994f, -705.278015f, -16.179716f, 5.628908f}
 };
 
 class boss_jedoga_shadowseeker : public CreatureScript
@@ -78,7 +77,6 @@ public:
         boss_jedoga_shadowseekerAI(Creature* c) : ScriptedAI(c), summons(me)
         {
             pInstance = c->GetInstanceScript();
-            preNerf = sWorld->IsInCurrentContent(PATCH_MIN, PATCH_332);
         }
 
         InstanceScript* pInstance;
@@ -89,7 +87,6 @@ public:
         uint32 introCheck;
         bool isFlying;
         bool startFly;
-        bool preNerf;
 
         void JustSummoned(Creature *cr) { summons.Summon(cr); }
         void MoveInLineOfSight(Unit *) { }
@@ -149,14 +146,12 @@ public:
 
             uint8 rnd = urand(0, summons.size()-1);
             uint8 loop = 0;
-            Creature *summon = NULL;
             for (std::list<uint64>::iterator i = summons.begin(); i != summons.end();)
             {
-                summon = ObjectAccessor::GetCreature(*me, *i);
+                Creature *summon = ObjectAccessor::GetCreature(*me, *i);
                 if (summon && summon->GetEntry() == NPC_INITIATE && loop >= rnd)
                 {
                     summon->AI()->DoAction(ACTION_ACTIVATE);
-                    summons.erase(i);
                     break;
                 }
 
@@ -222,7 +217,6 @@ public:
             MoveUp(true);
             me->CastSpell(me, SPELL_PINK_SPHERE, true);
             me->CastSpell(me, SPELL_LIGHTNING_BOLTS, true);
-            me->CastSpell(me, SPELL_FREEZE_ANIM, true);
         }
 
         void EnterCombat(Unit* who)
@@ -254,9 +248,7 @@ public:
         {
             me->GetMotionMaster()->MoveIdle();
             me->GetMotionMaster()->MovePoint(POINT_DOWN, JedogaPosition[1]);
-
-            if (preNerf)
-                events.RescheduleEvent(EVENT_JEDOGA_MOVE_UP, urand(20000, 25000));
+            isFlying = false;
         }
 
         void MoveUp(bool start)
@@ -269,7 +261,6 @@ public:
             me->GetMotionMaster()->MovePoint((start ? POINT_UP_START : POINT_UP), JedogaPosition[0]);
 
             me->SetDisableGravity(true);
-            me->CastSpell(me, SPELL_FREEZE_ANIM, true);
         }
         
         void MovementInform(uint32 Type, uint32 PointId)
@@ -282,7 +273,6 @@ public:
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
                 me->RemoveAurasDueToSpell(SPELL_PINK_SPHERE);
                 me->RemoveAurasDueToSpell(SPELL_LIGHTNING_BOLTS);
-                me->RemoveAurasDueToSpell(SPELL_FREEZE_ANIM);
 
                 isFlying = false;
                 me->SetInCombatWithZone();
@@ -506,15 +496,16 @@ public:
                     me->SetControlled(false, UNIT_STATE_STUNNED);
                     me->RemoveAurasDueToSpell(SPELL_WHITE_SPHERE);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+                    me->SetWalk(true);
 
-                    float distance = me->GetDistance(373.48f, -706.00f, -16.18f);
+                    float distance = me->GetDistance(JedogaPosition[1]);
 
                     if (distance < 9.0f)
-                        me->SetSpeed(MOVE_RUN, 0.5f, true);
+                        me->SetSpeed(MOVE_WALK, 0.5f, true);
                     else if (distance < 15.0f)
-                        me->SetSpeed(MOVE_RUN, 0.75f, true);
+                        me->SetSpeed(MOVE_WALK, 0.75f, true);
                     else if (distance < 20.0f)
-                        me->SetSpeed(MOVE_RUN, 1.0f, true);
+                        me->SetSpeed(MOVE_WALK, 1.0f, true);
 
                     me->GetMotionMaster()->Clear(false);
                     me->GetMotionMaster()->MovePoint(POINT_RITUAL, 373.48f, -706.00f, -16.18f);
