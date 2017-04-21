@@ -307,14 +307,14 @@ public:
             inProgress = false;
         }
 
-        void Reset() override
+        void Reset() 
         {
             inProgress = false;
             me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow() * 10, true);
             events.Reset();
         }
 
-        void MoveInLineOfSight(Unit* who) override
+        void MoveInLineOfSight(Unit* who) 
         {
             if (who->GetTypeId() == TYPEID_PLAYER && who->IsWithinDist(me, 20.0f) && !inProgress)
             {
@@ -323,7 +323,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) 
         {
             events.Update(diff);
 
@@ -456,7 +456,7 @@ public:
         uint64 kajaGUID;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const 
     {
         return new npc_overlord_runthak_orgrimmarAI(creature);
     }
@@ -569,7 +569,7 @@ public:
             sceneInProgress = false;
         }
 
-        void Reset() override
+        void Reset() 
         {
             events.Reset();
             me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow() * 10, true);
@@ -586,7 +586,7 @@ public:
             }
         }
 
-        void MovementInform(uint32 type, uint32 pointId) override
+        void MovementInform(uint32 type, uint32 pointId) 
         {
             if (type != POINT_MOTION_TYPE)
                 return;
@@ -595,7 +595,7 @@ public:
                 me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow() * 10, true);
         }
 
-        void DoAction(int32 actionId) override
+        void DoAction(int32 actionId) 
         {
             if (actionId == ACTION_START_SCENE && !sceneInProgress)
             {
@@ -632,7 +632,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) override
+        void UpdateAI(uint32 diff) 
         {
             events.Update(diff);
 
@@ -768,7 +768,7 @@ public:
         bool sceneInProgress;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
+    CreatureAI* GetAI(Creature* creature) const 
     {
         return new npc_thrall_herald_of_warAI(creature);
     }
@@ -779,7 +779,7 @@ class areatrigger_orgrimmar_herald_of_war : public AreaTriggerScript
 public:
     areatrigger_orgrimmar_herald_of_war() : AreaTriggerScript("areatrigger_orgrimmar_herald_of_war") { }
 
-    bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/)
     {
         if (player->IsAlive() && player->GetQuestStatus(QUEST_HERALD_OF_WAR) == QUEST_STATUS_COMPLETE)
         {
