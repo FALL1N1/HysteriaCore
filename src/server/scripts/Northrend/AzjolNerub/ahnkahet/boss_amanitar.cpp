@@ -200,8 +200,10 @@ public:
                 return;
 
             if (me->GetEntry() == NPC_HEALTHY_MUSHROOM && !killer->HasAura(SPELL_MINI))
-                //me->CastSpell(me, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS, true);
                 DoCast(killer, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS);
+
+            if (killer->HasAura(SPELL_MINI))
+                killer->RemoveAura(SPELL_MINI);
         }
 
         void EnterCombat(Unit* /*who*/) {}
