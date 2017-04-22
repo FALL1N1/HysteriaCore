@@ -150,7 +150,7 @@ class boss_gilnid_the_smelter : public CreatureScript
                 {
                     case EVENT_MOLTEN_METAL:
                         me->CastSpell(me->GetVictim(), SPELL_MOLTEN_METAL, false);
-                        events.ScheduleEvent(EVENT_MOLTEN_METAL, 3000);
+                        events.ScheduleEvent(EVENT_MOLTEN_METAL, 6000);
                         break;
                     case EVENT_RAND_TALK:
                         if (!me->IsInCombat())
