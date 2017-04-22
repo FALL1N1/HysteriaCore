@@ -125,6 +125,11 @@ class boss_gilnid_the_smelter : public CreatureScript
                 events.ScheduleEvent(EVENT_MOLTEN_METAL, 500);
             }
 
+            void JustSummoned(Creature* creature)
+            {
+                sLog->outString("!!!YES!!!");
+            }
+
             void SummonDefiasAdds(Creature* me)
             {
                 me->GetMap()->SummonCreatureGroup(1);
