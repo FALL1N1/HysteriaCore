@@ -27,4 +27,4 @@ UPDATE `creature_template` SET `faction`=16 WHERE  `entry` in(38,103);
 -- 2136: 808
 -- 189: 1986, 2952
 -- 7: rest
-update creature_template set faction=16 where entry in(15273,15298,15367,16521,1986,2001,706,946,808,3101,3102,3183,1505,1688,2952,2954,2953,8554);
+update creature_template set faction=16 where entry in(16522, 15273,15298,15367,16521,1986,2001,706,946,808,3101,3102,3183,1505,1688,2952,2954,2953,8554);
