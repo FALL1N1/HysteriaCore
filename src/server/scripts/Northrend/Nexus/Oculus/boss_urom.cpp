@@ -183,9 +183,9 @@ public:
         void JustSummoned(Creature* pSummon)
         {
             pSummon->SetInCombatWithZone();
-            if( Unit* v = pSummon->SelectVictim() )
-                if( pSummon->AI() )
-                    pSummon->AI()->AttackStart(v);
+            //if( Unit* v = pSummon->SelectVictim() )
+                //if( pSummon->AI() )
+                    //pSummon->AI()->AttackStart(v);
         }
 
         void LeaveCombat()
@@ -309,7 +309,7 @@ public:
                     me->NearTeleportTo(x, y, z, 0.0f);
                     me->SetControlled(false, UNIT_STATE_ROOT);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                    me->GetMotionMaster()->MoveChase(me->GetVictim());
+                    //me->GetMotionMaster()->MoveChase(me->GetVictim());
                     events.PopEvent();
                     break;
             }
