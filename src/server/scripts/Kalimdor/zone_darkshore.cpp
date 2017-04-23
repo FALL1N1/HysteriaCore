@@ -303,18 +303,18 @@ public:
 enum Remtravel
 {
     SAY_REM_START               = 0,
-    SAY_REM_AGGRO               = 1,
-    SAY_REM_RAMP1_1             = 2,
-    SAY_REM_RAMP1_2             = 3,
-    SAY_REM_BOOK                = 4,
-    SAY_REM_TENT1_1             = 5,
-    SAY_REM_TENT1_2             = 6,
-    SAY_REM_MOSS                = 7,
-    EMOTE_REM_MOSS              = 8,
-    SAY_REM_MOSS_PROGRESS       = 9,
-    SAY_REM_PROGRESS            = 10,
-    SAY_REM_REMEMBER            = 11,
-    EMOTE_REM_END               = 12,
+    SAY_REM_RAMP1_1             = 1,
+    SAY_REM_RAMP1_2             = 2,
+    SAY_REM_BOOK                = 3,
+    SAY_REM_TENT1_1             = 4,
+    SAY_REM_TENT1_2             = 5,
+    SAY_REM_MOSS                = 6,
+    EMOTE_REM_MOSS              = 7,
+    SAY_REM_MOSS_PROGRESS       = 8,
+    SAY_REM_PROGRESS            = 9,
+    SAY_REM_REMEMBER            = 10,
+    EMOTE_REM_END               = 11,
+    SAY_REM_AGGRO               = 12,
 
     FACTION_ESCORTEE            = 10,
     QUEST_ABSENT_MINDED_PT2     = 731,
@@ -328,6 +328,17 @@ class npc_prospector_remtravel : public CreatureScript
 public:
     npc_prospector_remtravel() : CreatureScript("npc_prospector_remtravel") { }
 
+    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest)
+    {
+        if (quest->GetQuestId() == QUEST_ABSENT_MINDED_PT2)
+        {
+            CAST_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
+            creature->setFaction(FACTION_ESCORTEE);
+        }
+
+        return true;
+    }
+
     struct npc_prospector_remtravelAI : public npc_escortAI
     {
         npc_prospector_remtravelAI(Creature* creature) : npc_escortAI(creature) { }
@@ -336,90 +347,92 @@ public:
 
         void EnterCombat(Unit* who)
         {
-            if (urand(0, 1))
+            if (urand(0, 2))
                 Talk(SAY_REM_AGGRO, who);
         }
 
-        void JustSummoned(Creature* /*pSummoned*/)
+        void JustDied(Unit* /*killer*/)
         {
-            //unsure if it should be any
-            //pSummoned->AI()->AttackStart(me);
+            if (Player* player = GetPlayerForEscort())
+            {
+                player->FailQuest(QUEST_ABSENT_MINDED_PT2);
+                player->RemoveActiveQuest(QUEST_ABSENT_MINDED_PT2);
+            }
+            me->Respawn();
         }
 
         void WaypointReached(uint32 waypointId)
         {
-            if (Player* player = GetPlayerForEscort())
+            Player* player = GetPlayerForEscort();
+            if (!player)
+                return;
+
+            switch (waypointId)
             {
-                switch (waypointId)
-                {
-                    case 0:
-                        Talk(SAY_REM_START, player);
-                        break;
-                    case 5:
-                        Talk(SAY_REM_RAMP1_1, player);
-                        break;
-                    case 6:
-                        DoSpawnCreature(NPC_GRAVEL_SCOUT, -10.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        DoSpawnCreature(NPC_GRAVEL_BONE, -10.0f, 7.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        break;
-                    case 9:
-                        Talk(SAY_REM_RAMP1_2, player);
-                        break;
-                    case 14:
-                        //depend quest rewarded?
-                        Talk(SAY_REM_BOOK, player);
-                        break;
-                    case 15:
-                        Talk(SAY_REM_TENT1_1, player);
-                        break;
-                    case 16:
-                        DoSpawnCreature(NPC_GRAVEL_SCOUT, -10.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        DoSpawnCreature(NPC_GRAVEL_BONE, -10.0f, 7.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        break;
-                    case 17:
-                        Talk(SAY_REM_TENT1_2, player);
-                        break;
-                    case 26:
-                        Talk(SAY_REM_MOSS, player);
-                        break;
-                    case 27:
-                        Talk(EMOTE_REM_MOSS, player);
-                        break;
-                    case 28:
-                        Talk(SAY_REM_MOSS_PROGRESS, player);
-                        break;
-                    case 29:
-                        DoSpawnCreature(NPC_GRAVEL_SCOUT, -15.0f, 3.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        DoSpawnCreature(NPC_GRAVEL_BONE, -15.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        DoSpawnCreature(NPC_GRAVEL_GEO, -15.0f, 7.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
-                        break;
-                    case 31:
-                        Talk(SAY_REM_PROGRESS, player);
-                        break;
-                    case 41:
-                        Talk(SAY_REM_REMEMBER, player);
-                        break;
-                    case 42:
-                        Talk(EMOTE_REM_END, player);
-                        player->GroupEventHappens(QUEST_ABSENT_MINDED_PT2, me);
-                        break;
-                }
+            case 0:
+                Talk(SAY_REM_START, player);
+                break;
+            case 5:
+                Talk(SAY_REM_RAMP1_1, player);
+                break;
+            case 6:
+                DoSpawnCreature(NPC_GRAVEL_SCOUT, -10.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                DoSpawnCreature(NPC_GRAVEL_BONE, -10.0f, 7.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                break;
+            case 9:
+                Talk(SAY_REM_RAMP1_2, player);
+                break;
+            case 14:
+                //depend quest rewarded?
+                Talk(SAY_REM_BOOK, player);
+                break;
+            case 15:
+                Talk(SAY_REM_TENT1_1, player);
+                break;
+            case 16:
+                DoSpawnCreature(NPC_GRAVEL_SCOUT, -10.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                DoSpawnCreature(NPC_GRAVEL_BONE, -10.0f, 7.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                break;
+            case 17:
+                Talk(SAY_REM_TENT1_2, player);
+                break;
+            case 26:
+                Talk(SAY_REM_MOSS, player);
+                break;
+            case 27:
+                Talk(EMOTE_REM_MOSS, player);
+                break;
+            case 28:
+                Talk(SAY_REM_MOSS_PROGRESS, player);
+                break;
+            case 29:
+                DoSpawnCreature(NPC_GRAVEL_SCOUT, -15.0f, 3.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                DoSpawnCreature(NPC_GRAVEL_BONE, -15.0f, 5.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                DoSpawnCreature(NPC_GRAVEL_GEO, -15.0f, 7.0f, 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                break;
+            case 31:
+                Talk(SAY_REM_PROGRESS, player);
+                break;
+            case 41:
+                Talk(SAY_REM_REMEMBER, player);
+                break;
+            case 42:
+                Talk(EMOTE_REM_END, player);
+                player->GroupEventHappens(QUEST_ABSENT_MINDED_PT2, me);
+                break;
             }
         }
-    };
 
-    bool OnQuestAccept(Player* player, Creature* creature, const Quest* quest)
-    {
-        if (quest->GetQuestId() == QUEST_ABSENT_MINDED_PT2)
+        void UpdateAI(uint32 diff)
         {
-            if (npc_escortAI* pEscortAI = CAST_AI(npc_prospector_remtravel::npc_prospector_remtravelAI, creature->AI()))
-                pEscortAI->Start(false, false, player->GetGUID());
+            npc_escortAI::UpdateAI(diff);
 
-            creature->setFaction(FACTION_ESCORTEE);
+            if (me->IsInCombat())
+                SetEscortPaused(true);
+            else
+                SetEscortPaused(false);
         }
-
-        return true;
-    }
+    };
 
     CreatureAI* GetAI(Creature* creature) const
     {
