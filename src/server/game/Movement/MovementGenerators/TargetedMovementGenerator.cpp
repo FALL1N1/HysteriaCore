@@ -114,6 +114,8 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
     D::_addUnitStateMove(owner);
     i_targetReached = false;
     i_recalculateTravel = false;
+    if (owner->GetTypeId() == TYPEID_UNIT)
+        owner->ToCreature()->SetCannotReachTarget(false);
 
     Movement::MoveSplineInit init(owner);
 
@@ -173,6 +175,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T* owner, bool ini
             {
                 lastPathingFailMSTime = World::GetGameTimeMS();
                 owner->m_targetsNotAcceptable[i_target->GetGUID()] = MMapTargetData(sWorld->GetGameTime()+DISALLOW_TIME_AFTER_FAIL, owner, i_target.getTarget());
+                owner->ToCreature()->SetCannotReachTarget(true); // could be moved somewhere else?
                 return;
             }
             else
@@ -292,7 +295,11 @@ bool TargetedMovementGeneratorMedium<T,D>::DoUpdate(T* owner, uint32 time_diff)
     else
     {
         if (i_recalculateTravel)
+        {
+            if (owner->GetTypeId() == TYPEID_UNIT)
+                owner->ToCreature()->SetCannotReachTarget(true);
             _setTargetLocation(owner, false);
+        }
     }
     return true;
 }
@@ -303,6 +310,8 @@ void ChaseMovementGenerator<T>::_reachTarget(T* owner)
 {
     if (owner->IsWithinMeleeRange(this->i_target.getTarget()))
         owner->Attack(this->i_target.getTarget(),true);
+    if (owner->GetTypeId() == TYPEID_UNIT)
+        owner->ToCreature()->SetCannotReachTarget(false);
 }
 
 template<>
