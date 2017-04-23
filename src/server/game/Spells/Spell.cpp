@@ -1297,14 +1297,15 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
             break;
         case TARGET_DEST_CASTER_FISHING:
         {
+            // firefly: if there are issues with fishing - do changes here
              float min_dis = m_spellInfo->GetMinRange(true);
              float max_dis = m_spellInfo->GetMaxRange(true);
-             float dis = (float)rand_norm() * (max_dis - min_dis) + min_dis;
+             float dis = frand(min_dis, max_dis);
              float x, y, z, angle;
              angle = (float)rand_norm() * static_cast<float>(M_PI * 35.0f / 180.0f) - static_cast<float>(M_PI * 17.5f / 180.0f);
              m_caster->GetClosePoint(x, y, z, DEFAULT_WORLD_OBJECT_SIZE, dis, angle);
 
-            float ground = m_caster->GetMap()->GetHeight(m_caster->GetPhaseMask(), x, y, z, true, 120.0f);
+            float ground = m_caster->GetMap()->GetHeight(m_caster->GetPhaseMask(), x, y, z, true, 60.0f);
             float liquidLevel = VMAP_INVALID_HEIGHT_VALUE;
             LiquidData liquidData;
             if (m_caster->GetMap()->getLiquidStatus(x, y, z, MAP_ALL_LIQUIDS, &liquidData))
