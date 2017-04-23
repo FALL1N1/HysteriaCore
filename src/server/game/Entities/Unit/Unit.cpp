@@ -3421,10 +3421,29 @@ bool Unit::isInAccessiblePlaceFor(Creature const* c) const
             return false;
     }
 
-    if (IsInWater())
-        return IsUnderWater() ? c->CanSwim() : (c->CanSwim() || c->CanFly());
-    else
-        return c->CanWalk() || c->CanFly() || (c->CanSwim() && IsInWater(true));
+    if (IsInWater()) return IsUnderWater() ? c->CanSwim() : (c->CanSwim() || c->CanFly());
+    if (c->CanFly()) return true; // fly is always true
+    if (c->GetTransport()) return true;  // transport should return always true unless in ICC, we have custom rules there 
+    else if (c->CanWalk())                          // Walking creatures need to find a path
+    {
+        if (c->GetDistance(this) <= c->GetObjectSize() + CONTACT_DISTANCE)
+        {
+            // maybe some additional checks here?
+            return true;
+        }
+        else if (MMAP::MMapFactory::IsPathfindingEnabled(GetMap()))
+        {
+            PathGenerator path(c);
+            float x, y, z;
+            GetPosition(x, y, z);
+
+            return path.CalculatePath(x, y, z) && !(path.GetPathType() & (PATHFIND_NOPATH | PATHFIND_INCOMPLETE));
+        }
+        else                                        // Without mmaps walking creatures can reach any unit not in water
+            return true;
+    }
+
+    return false; 
 }
 
 void Unit::UpdateEnvironmentIfNeeded(const uint8 option)
