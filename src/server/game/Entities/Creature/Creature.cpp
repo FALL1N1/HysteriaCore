@@ -168,7 +168,7 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 Creature::Creature(bool isWorldObject): Unit(isWorldObject), MovableMapObject(),
 lootPickPocketRestoreTime(0), m_groupLootTimer(0), lootingGroupLowGUID(0),
 m_PlayerDamageReq(0), m_lootRecipient(0), m_lootRecipientGroup(0), m_corpseRemoveTime(0), m_respawnTime(0), m_transportCheckTimer(1000),
-m_respawnDelay(300), m_corpseDelay(60), m_respawnradius(0.0f), m_reactState(REACT_AGGRESSIVE),
+m_respawnDelay(300), m_baseRespawnDelay(300), m_corpseDelay(60), m_basecorpseDelay(60), m_respawnradius(0.0f), m_reactState(REACT_AGGRESSIVE),
 m_defaultMovementType(IDLE_MOTION_TYPE), m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_moveInLineOfSightDisabled(false), m_moveInLineOfSightStrictlyDisabled(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL),
 m_originalEntry(0), m_homePosition(), m_transportHomePosition(), m_creatureInfo(NULL), m_creatureData(NULL), m_waypointID(0), m_path_id(0), m_formation(NULL), _lastDamagedTime(0), outfitId(0)
@@ -879,6 +879,7 @@ bool Creature::Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, 
             break;
     }
 
+    m_baseCorpseDelay = m_corpseDelay;
     LoadCreaturesAddon();
 
     uint32 displayID = GetNativeDisplayId();
@@ -1352,6 +1353,7 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap, bool gri
     m_respawnradius = data->spawndist;
 
     m_respawnDelay = data->spawntimesecs;
+    m_baseRespawnDelay = data->spawntimesecs;
     m_deathState = ALIVE;
 
     m_respawnTime  = GetMap()->GetCreatureRespawnTime(m_DBTableGuid);
@@ -1547,6 +1549,32 @@ void Creature::setDeathState(DeathState s, bool despawn)
 
     if (s == JUST_DIED)
     {
+        if (sWorld->getBoolConfig(CONFIG_POOL_ENABLED) && !GetMap()->IsBattlegroundOrArena() && !GetMap()->Instanceable() && GetAreaId() != 0)
+        {
+            if (m_baseRespawnDelay + m_baseCorpseDelay >= sWorld->getIntConfig(CONFIG_POOL_CREATURE_MIN_RESPAWN_TIME))
+            {
+                uint32 count = GetMap()->GetPlayersInAreaCount(GetAreaId());
+
+                if (count > 0)
+                {
+                    float rateDecrease = std::min(count / sWorld->getIntConfig(CONFIG_POOL_PLAYERS_TO_DECREASE) * sWorld->getFloatConfig(CONFIG_POOL_RESPAWN_DECREASE), 100.0f);
+
+                    if (rateDecrease > 0)
+                    {
+                        uint64 newTime = std::max(CalculatePct(uint64(m_baseRespawnDelay + m_baseCorpseDelay), 100 - rateDecrease), uint64(sWorld->getIntConfig(CONFIG_POOL_CREATURE_MAX_MIN_RESPAWN_TIME)));
+                        if (newTime < m_corpseDelay)
+                        {
+                            m_corpseDelay = newTime - 5;
+                            m_respawnDelay = 5;
+                        } 
+                        else
+                        {
+                            m_respawnDelay = newTime - m_corpseDelay;
+                        }
+                    }
+                }
+            }
+        }
         m_corpseRemoveTime = time(NULL) + m_corpseDelay;
         m_respawnTime = time(NULL) + m_respawnDelay + m_corpseDelay;
 
@@ -2099,7 +2127,7 @@ void Creature::SaveRespawnTime()
     if (IsSummon() || !GetDBTableGUIDLow() || (m_creatureData && !m_creatureData->dbData))
         return;
 
-    GetMap()->SaveCreatureRespawnTime(GetDBTableGUIDLow(), m_respawnTime);
+    GetMap()->SaveCreatureRespawnTime(GetDBTableGUIDLow(), m_respawnTime, GetCreatureTemplate()->rank == CREATURE_ELITE_NORMAL ? GetAreaId() : 0);
 }
 
 bool Creature::CanCreatureAttack(Unit const* victim, bool skipDistCheck) const

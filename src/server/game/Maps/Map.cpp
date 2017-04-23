@@ -225,7 +225,7 @@ _instanceResetPeriod(0), i_scriptLock(false), _defaultLight(GetDefaultMapLight(i
             setNGrid(NULL, idx, j);
         }
     }
-
+    _areaPlayerCountMap.clear();
     //lets initialize visibility distance for map
     Map::InitVisibilityDistance();
 
@@ -791,6 +791,7 @@ struct ResetNotifier
 
 void Map::RemovePlayerFromMap(Player* player, bool remove)
 { 
+    player->UpdateZone(0xFFFFFFFF, 0);
     player->getHostileRefManager().deleteReferences(); // pussywizard: multithreading crashfix
 
     bool inWorld = player->IsInWorld();
@@ -2860,7 +2861,7 @@ void Map::UpdateIteratorBack(Player* player)
         m_mapRefIter = m_mapRefIter->nocheck_prev();
 }
 
-void Map::SaveCreatureRespawnTime(uint32 dbGuid, time_t& respawnTime)
+void Map::SaveCreatureRespawnTime(uint32 dbGuid, time_t& respawnTime, uint32 areaId)
 { 
     if (!respawnTime)
     {
@@ -2870,7 +2871,11 @@ void Map::SaveCreatureRespawnTime(uint32 dbGuid, time_t& respawnTime)
     }
 
     time_t now = time(NULL);
-    if (GetInstanceResetPeriod() > 0 && respawnTime-now+5 >= GetInstanceResetPeriod())
+    time_t diff = respawnTime - now;
+
+    uint8 respawnSpeedup = 0;
+
+	if (GetInstanceResetPeriod() > 0 && diff + 5 >= GetInstanceResetPeriod())
         respawnTime = now+YEAR;
 
     _creatureRespawnTimes[dbGuid] = respawnTime;
@@ -2980,6 +2985,38 @@ void Map::DeleteRespawnTimesInDB(uint16 mapId, uint32 instanceId)
     stmt->setUInt16(0, mapId);
     stmt->setUInt32(1, instanceId);
     CharacterDatabase.Execute(stmt);
+}
+
+void Map::UpdatePlayerAreaStats(uint32 oldArea, uint32 newArea)
+{
+    if (oldArea == newArea)
+        return;
+
+    uint32 oldAreaCount = 0;
+    uint32 newAreaCount = 0;
+
+    auto oldItr = _areaPlayerCountMap.find(oldArea);
+    if (oldItr != _areaPlayerCountMap.end())
+        oldAreaCount = oldItr->second;
+
+    if (oldArea && oldAreaCount == 0)
+        return;
+
+    if (oldArea && oldAreaCount > 1)
+        oldItr->second--;
+    else if (oldArea && oldAreaCount == 1)
+        _areaPlayerCountMap.erase(oldItr);
+
+    if (newArea == 0) return;
+
+    auto newItr = _areaPlayerCountMap.find(newArea);
+    if (newItr != _areaPlayerCountMap.end())
+        newAreaCount = newItr->second;
+
+    if (newArea && newAreaCount > 0)
+        newItr->second++;
+    else if (newArea)
+        _areaPlayerCountMap[newArea]++;
 }
 
 void Map::UpdateEncounterState(EncounterCreditType type, uint32 creditEntry, Unit* source)

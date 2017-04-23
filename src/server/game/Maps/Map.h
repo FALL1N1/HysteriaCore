@@ -426,6 +426,13 @@ class Map : public GridRefManager<NGridType>
 
         typedef MapRefManager PlayerList;
         PlayerList const& GetPlayers() const { return m_mapRefManager; }
+        uint32 GetPlayersInAreaCount(uint32 areaId) const
+        {
+            auto newItr = _areaPlayerCountMap.find(areaId);
+            if (newItr != _areaPlayerCountMap.end()) return newItr->second;
+
+            return 0;
+        }
 
         //per-map script storage
         void ScriptsStart(std::map<uint32, std::multimap<uint32, ScriptInfo> > const& scripts, uint32 id, Object* source, Object* target);
@@ -500,7 +507,8 @@ class Map : public GridRefManager<NGridType>
             return time_t(0);
         }
 
-        void SaveCreatureRespawnTime(uint32 dbGuid, time_t& respawnTime);
+        void UpdatePlayerAreaStats(uint32 oldArea, uint32 newArea);
+        void SaveCreatureRespawnTime(uint32 dbGuid, time_t& respawnTime, uint32 areaId = 0);
         void RemoveCreatureRespawnTime(uint32 dbGuid);
         void SaveGORespawnTime(uint32 dbGuid, time_t& respawnTime);
         void RemoveGORespawnTime(uint32 dbGuid);
@@ -651,6 +659,7 @@ class Map : public GridRefManager<NGridType>
 
         UNORDERED_MAP<uint32 /*dbGUID*/, time_t> _creatureRespawnTimes;
         UNORDERED_MAP<uint32 /*dbGUID*/, time_t> _goRespawnTimes;
+        UNORDERED_MAP<uint32, uint32> _areaPlayerCountMap;
 
         ZoneDynamicInfoMap _zoneDynamicInfo;
         uint32 _defaultLight;

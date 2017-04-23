@@ -3559,3 +3559,51 @@ AuctionHouseBot.Class.RandomStackRatio.Glyph = 0
 
 #
 ###################################################################################################
+#######################################   DYNAMIC RESPAWN   #######################################
+###################################################################################################
+#       This system is used to decrease respawn times of many factors, tune wisely.
+###
+
+#    Pooling.Enabled
+#        Description: Enables the dynamic respawn system.
+#        Default:     1 - true
+
+Pooling.Enabled = 1
+
+#    Pooling.PlayersToDecrease
+#        Description: Required player amount in area to decrease spawn time for creatures.
+#        Default:     10  - atleast 10 players for the system to kick in
+
+Pooling.PlayersToDecrease = 10
+
+#    Pooling.RespawnPctDecrease
+#        Description: Percentage amount of time that will be decreased then X players appears in same zone.
+#        Default:     15 (%)
+
+Pooling.RespawnPctDecrease = 15
+
+#    Pooling.CreatureMinRespawn
+#        Description: Creatures below this spawn time won't be included.
+#        Default:     60 (seconds)
+
+Pooling.CreatureMinRespawn = 60
+
+#    Pooling.GameObjectMinRespawn
+#        Description: Creatures below this spawn time won't be included.
+#        Default:     60 (seconds)
+
+Pooling.GameObjectMinRespawn = 60
+
+#    Pooling.CreatureMaxMinRespawn
+#        Description: Maximum minimum spawn time, that can be set for creature.
+#        Default:     15 (seconds)
+
+Pooling.CreatureMaxMinRespawn    = 15
+
+#    Pooling.GameObjectMaxMinRespawn
+#        Description: Maximum minimum spawn time, that can be set for gameobject.
+#        Default:     15 (seconds)
+
+Pooling.GameObjectMaxMinRespawn  = 15
+
+###################################################################################################

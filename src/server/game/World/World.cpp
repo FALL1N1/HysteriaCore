@@ -1384,6 +1384,15 @@ void World::LoadConfigSettings(bool reload)
     
     m_int_configs[CONFIG_CURRENT_BUILD] = sConfigMgr->GetIntDefault("CurrentBuild", 12340);
 
+    // pooling system
+    m_bool_configs[CONFIG_POOLING_ENABLED] = sConfigMgr->GetBoolDefault("Pooling.Enabled", true);
+    m_int_configs[CONFIG_POOLING_PLAYERS_TO_DECREASE] = sConfigMgr->GetIntDefault("Pooling.PlayersToDecrease", 6); 
+    m_float_configs[CONFIG_POOLING_RESPAWN_DECREASE] = sConfigMgr->GetFloatDefault("Pooling.RespawnPctDecrease", 25.0f);
+    m_int_configs[CONFIG_POOLING_CREATURE_MIN_RESPAWN_TIME] = sConfigMgr->GetIntDefault("Pooling.CreatureMinRespawn", 60);
+    m_int_configs[CONFIG_POOLING_GAMEOBJECT_MIN_RESPAWN_TIME] = sConfigMgr->GetIntDefault("Pooling.GameObjectMinRespawn", 60);
+    m_int_configs[CONFIG_POOLING_CREATURE_MAX_MIN_RESPAWN_TIME] = sConfigMgr->GetIntDefault("Pooling.CreatureMaxMinRespawn", 15);
+    m_int_configs[CONFIG_POOLING_GAMEOBJECT_MAX_MIN_RESPAWN_TIME] = sConfigMgr->GetIntDefault("Pooling.GameObjectMaxMinRespawn", 15);
+
     // AHBot
     m_int_configs[CONFIG_AHBOT_UPDATE_INTERVAL] = sConfigMgr->GetIntDefault("AuctionHouseBot.Update.Interval", 20);
 

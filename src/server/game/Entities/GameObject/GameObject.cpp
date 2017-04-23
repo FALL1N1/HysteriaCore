@@ -44,6 +44,7 @@ GameObject::GameObject() : WorldObject(false), MovableMapObject(),
     m_valuesCount = GAMEOBJECT_END;
     m_respawnTime = 0;
     m_respawnDelayTime = 300;
+    m_baseRespawnDelayTime = 300;
     m_lootState = GO_NOT_READY;
     m_spawnedByDefault = true;
     m_allowModifyDestructibleBuilding = true;
@@ -704,6 +705,24 @@ void GameObject::Update(uint32 diff)
                 return;
             }
 
+            if (sWorld->getBoolConfig(CONFIG_POOL_ENABLED) && !GetMap()->IsBattlegroundOrArena() && !GetMap()->Instanceable() && GetAreaId() != 0)
+            {
+                if (m_baseRespawnDelayTime >= sWorld->getIntConfig(CONFIG_POOL_GAMEOBJECT_MIN_RESPAWN_TIME))
+                {
+                    uint32 count = GetMap()->GetPlayersInAreaCount(GetAreaId());
+
+                    if (count > 0)
+                    {
+                        float rateDecrease = std::min(count / sWorld->getIntConfig(CONFIG_POOL_PLAYERS_TO_DECREASE) * 
+                            sWorld->getFloatConfig(CONFIG_POOL_RESPAWN_DECREASE), 100.0f);
+
+                        if (rateDecrease > 0)
+                            m_respawnDelayTime = std::max(CalculatePct(uint64(m_baseRespawnDelayTime), 100 - rateDecrease), 
+                                uint64(sWorld->getIntConfig(CONFIG_POOL_GAMEOBJECT_MAX_MIN_RESPAWN_TIME)));
+                    }
+                }
+            }
+
             m_respawnTime = time(NULL) + m_respawnDelayTime;
 
             // if option not set then object will be saved at grid unload
@@ -901,12 +920,12 @@ bool GameObject::LoadGameObjectFromDB(uint32 guid, Map* map, bool addToMap)
         if (!GetGOInfo()->GetDespawnPossibility() && !GetGOInfo()->IsDespawnAtAction())
         {
             SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NODESPAWN);
-            m_respawnDelayTime = 0;
+            m_baseRespawnDelayTime = m_respawnDelayTime = 0;
             m_respawnTime = 0;
         }
         else
         {
-            m_respawnDelayTime = data->spawntimesecs;
+            m_baseRespawnDelayTime = m_respawnDelayTime = data->spawntimesecs;
             m_respawnTime = GetMap()->GetGORespawnTime(m_DBTableGuid);
 
             // ready to respawn
@@ -920,7 +939,7 @@ bool GameObject::LoadGameObjectFromDB(uint32 guid, Map* map, bool addToMap)
     else
     {
         m_spawnedByDefault = false;
-        m_respawnDelayTime = -data->spawntimesecs;
+        m_baseRespawnDelayTime = m_respawnDelayTime = -data->spawntimesecs;
         m_respawnTime = 0;
     }
 
