@@ -428,8 +428,8 @@ class Map : public GridRefManager<NGridType>
         PlayerList const& GetPlayers() const { return m_mapRefManager; }
         uint32 GetPlayersInAreaCount(uint32 areaId) const
         {
-            auto newItr = _areaPlayerCountMap.find(areaId);
-            if (newItr != _areaPlayerCountMap.end()) return newItr->second;
+            //auto newItr = _areaPlayerCountMap.find(areaId);
+            //if (newItr != _areaPlayerCountMap.end()) return newItr->second;
 
             return 0;
         }
