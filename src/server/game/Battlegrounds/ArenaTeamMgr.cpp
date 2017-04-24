@@ -164,8 +164,6 @@ void ArenaTeamMgr::DistributeArenaPoints()
         if (Player* player = HashMapHolder<Player>::Find(playerItr->first))
         {
             uint32 pts = playerItr->second;
-            if (player->GetSession()->IsPremium())
-                pts *= sWorld->getFloatConfig(PREMIUM_RATE_ARENA);
             player->ModifyArenaPoints(pts, &trans);
         }
         else    // Update database

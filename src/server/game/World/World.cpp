@@ -464,7 +464,6 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_ARENA_1V1_MIN_LEVEL]                         = sConfigMgr->GetIntDefault("Arena.1v1.MinLevel", 80);
     m_int_configs[CONFIG_ARENA_1V1_COSTS]                             = sConfigMgr->GetIntDefault("Arena.1v1.Costs", 400000);
     m_bool_configs[CONFIG_ARENA_1V1_VENDOR_RATING]                     = sConfigMgr->GetBoolDefault("Arena.1v1.VendorRating", false);
-    m_float_configs[CONFIG_ARENA_1V1_ARENAPOINTS_MULTI]                 = sConfigMgr->GetFloatDefault("Arena.1v1.ArenaPointsMulti", 0.64f);
     m_bool_configs[CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS]         = sConfigMgr->GetBoolDefault("Arena.1v1.BlockForbiddenTalents", true);
     ///- Get string for new logins (newly created characters)
     SetNewCharString(sConfigMgr->GetStringDefault("PlayerStart.String", ""));
@@ -524,12 +523,6 @@ void World::LoadConfigSettings(bool reload)
         sLog->outError("Rate.RepairCost (%f) must be >=0. Using 0.0 instead.", rate_values[RATE_REPAIRCOST]);
         rate_values[RATE_REPAIRCOST] = 0.0f;
     }
-
-    /* custom exp rates */
-    rate_values[CUSTOM_EXP_GAIN_1_60] = sConfigMgr->GetFloatDefault("Custom.Rate.XP.1", 1.0f);
-    rate_values[CUSTOM_EXP_GAIN_61_70] = sConfigMgr->GetFloatDefault("Custom.Rate.XP.2", 1.0f);
-    rate_values[CUSTOM_EXP_GAIN_71_80] = sConfigMgr->GetFloatDefault("Custom.Rate.XP.3", 1.0f);
-    /* end custom exp rates */
 
     rate_values[RATE_REPUTATION_GAIN]  = sConfigMgr->GetFloatDefault("Rate.Reputation.Gain", 1.0f);
     rate_values[RATE_REPUTATION_LOWLEVEL_KILL]  = sConfigMgr->GetFloatDefault("Rate.Reputation.LowLevel.Kill", 1.0f);
@@ -703,30 +696,6 @@ void World::LoadConfigSettings(bool reload)
     //! ints
     m_int_configs[PREMIUM_CUSTOM_MOUNT_TAXI] = sConfigMgr->GetIntDefault("Premiums.CustomMountTaxi", 350);
 
-    // floats
-    m_float_configs[PREMIUM_RATE_HONOR] = sConfigMgr->GetFloatDefault("Premiums.Rate.Honor", 1.0f); // honor
-    m_float_configs[PREMIUM_RATE_EXP] = sConfigMgr->GetFloatDefault("Premiums.Rate.Exp", 1.0f); // exp
-    m_float_configs[PREMIUM_RATE_REP] = sConfigMgr->GetFloatDefault("Premiums.Rate.Rep", 1.0f); // rep
-    m_float_configs[PREMIUM_RATE_GOLD] = sConfigMgr->GetFloatDefault("Premiums.Rate.Gold", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_LOOT] = sConfigMgr->GetFloatDefault("Premiums.Rate.Loot", 1.0f); // loot
-    m_float_configs[PREMIUM_RATE_ARENA] = sConfigMgr->GetFloatDefault("Premiums.Rate.Arena", 1.0f); // arena
-    m_float_configs[PREMIUM_RATE_GATHER] = sConfigMgr->GetFloatDefault("Premiums.Rate.Gather", 1.0f); // gather
-    m_float_configs[PREMIUM_RATE_CRAFT] = sConfigMgr->GetFloatDefault("Premiums.Rate.Craft", 1.0f); // craft
-    
-    // custom flots for gold per level
-    m_float_configs[PREMIUM_RATE_1_10] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.1_10", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_11_20] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.11_20", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_21_30] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.21_30", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_31_40] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.31_40", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_41_50] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.41_50", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_51_60] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.51_60", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_61_70] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.61_70", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_71_74] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.71_74", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_75_78] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.75_78", 1.0f); // gold
-    m_float_configs[PREMIUM_RATE_79_80] = sConfigMgr->GetFloatDefault("Custom.Rate.Gold.79_80", 1.0f); // gold
-    // -------------------------------------------------------------------------------------------
-    // hysteria custom end
-    // -------------------------------------------------------------------------------------------
 
     m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE] = sConfigMgr->GetIntDefault("PlayerSave.Stats.MinLevel", 0);
     if (m_int_configs[CONFIG_MIN_LEVEL_STAT_SAVE] > MAX_LEVEL)

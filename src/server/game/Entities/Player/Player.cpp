@@ -6227,9 +6227,6 @@ bool Player::UpdateCraftSkill(uint32 spellid)
 
             uint32 craft_skill_gain = sWorld->getIntConfig(CONFIG_SKILL_GAIN_CRAFTING);
 
-            if (GetSession()->IsPremium())
-                craft_skill_gain *= sWorld->getFloatConfig(PREMIUM_RATE_CRAFT);;
-
             return UpdateSkillPro(_spell_idx->second->skillId, SkillGainChance(SkillValue,
                 _spell_idx->second->max_value,
                 (_spell_idx->second->max_value + _spell_idx->second->min_value)/2,
@@ -6245,9 +6242,6 @@ bool Player::UpdateGatherSkill(uint32 SkillId, uint32 SkillValue, uint32 RedLeve
     ;//sLog->outDebug(LOG_FILTER_PLAYER_SKILLS, "UpdateGatherSkill(SkillId %d SkillLevel %d RedLevel %d)", SkillId, SkillValue, RedLevel);
 
     uint32 gathering_skill_gain = sWorld->getIntConfig(CONFIG_SKILL_GAIN_GATHERING);
-
-    if (GetSession()->IsPremium())
-        gathering_skill_gain *= sWorld->getFloatConfig(PREMIUM_RATE_GATHER);;
 
     // For skinning and Mining chance decrease with level. 1-74 - no decrease, 75-149 - 2 times, 225-299 - 8 times
     switch (SkillId)
@@ -7334,9 +7328,6 @@ bool Player::RewardHonor(Unit* uVictim, uint32 groupsize, int32 honor, bool awar
     }
 
     honor_f *= sWorld->getRate(RATE_HONOR);
-
-    if (GetSession()->IsPremium())
-        honor_f *= sWorld->getFloatConfig(PREMIUM_RATE_HONOR);
 
     // Back to int now
     honor = int32(honor_f);
@@ -15761,115 +15752,6 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     else
         moneyRew = int32(quest->GetRewMoneyMaxLevel() * sWorld->getRate(RATE_DROP_MONEY));
 
-    if (GetSession()->IsPremium() && sWorld->getFloatConfig(PREMIUM_RATE_GOLD) > 1)
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_GOLD);
-
-    switch (getLevel())
-    {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_1_10);
-        break;
-    case 11:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 17:
-    case 18:
-    case 19:
-    case 20:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_11_20);
-        break;
-    case 21:
-    case 22:
-    case 23:
-    case 24:
-    case 25:
-    case 26:
-    case 27:
-    case 28:
-    case 29:
-    case 30:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_21_30);
-        break;
-    case 31:
-    case 32:
-    case 33:
-    case 34:
-    case 35:
-    case 36:
-    case 37:
-    case 38:
-    case 39:
-    case 40:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_31_40);
-        break;
-    case 41:
-    case 42:
-    case 43:
-    case 44:
-    case 45:
-    case 46:
-    case 47:
-    case 48:
-    case 49:
-    case 50:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_41_50);
-        break;
-    case 51:
-    case 52:
-    case 53:
-    case 54:
-    case 55:
-    case 56:
-    case 57:
-    case 58:
-    case 59:
-    case 60:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_51_60);
-        break;
-    case 61:
-    case 62:
-    case 63:
-    case 64:
-    case 65:
-    case 66:
-    case 67:
-    case 68:
-    case 69:
-    case 70:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_61_70);
-        break;
-    case 71:
-    case 72:
-    case 73:
-    case 74:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_71_74);
-        break;
-    case 75:
-    case 76:
-    case 77:
-    case 78:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_75_78);
-        break;
-    case 79:
-    case 80:
-        moneyRew *= sWorld->getFloatConfig(PREMIUM_RATE_79_80);
-            break;
-        default:
-            break;
-    }
-
     // Give player extra money if GetRewOrReqMoney > 0 and get ReqMoney if negative
     if (quest->GetRewOrReqMoney())
         moneyRew += quest->GetRewOrReqMoney();
@@ -17326,10 +17208,7 @@ void Player::SendQuestReward(Quest const* quest, uint32 XP)
     else
     {
         data << uint32(0);
-        if (ToPlayer() && ToPlayer()->GetSession()->IsPremium() && sWorld->getFloatConfig(PREMIUM_RATE_GOLD) > 0)
-            data << uint32(quest->GetRewOrReqMoney() + int32(quest->GetRewMoneyMaxLevel() * sWorld->getRate(RATE_DROP_MONEY) * sWorld->getFloatConfig(PREMIUM_RATE_GOLD)));
-        else
-            data << uint32(quest->GetRewOrReqMoney() + int32(quest->GetRewMoneyMaxLevel() * sWorld->getRate(RATE_DROP_MONEY)));
+        data << uint32(quest->GetRewOrReqMoney() + int32(quest->GetRewMoneyMaxLevel() * sWorld->getRate(RATE_DROP_MONEY)));
     }
 
     data << uint32(10 * quest->CalculateHonorGain(GetQuestLevel(quest)));

@@ -705,20 +705,20 @@ void GameObject::Update(uint32 diff)
                 return;
             }
 
-            if (sWorld->getBoolConfig(CONFIG_POOL_ENABLED) && !GetMap()->IsBattlegroundOrArena() && !GetMap()->Instanceable() && GetAreaId() != 0)
+            if (sWorld->getBoolConfig(CONFIG_POOLS_ENABLED) && !GetMap()->IsBattlegroundOrArena() && !GetMap()->Instanceable() && GetAreaId() != 0)
             {
-                if (m_baseRespawnDelayTime >= sWorld->getIntConfig(CONFIG_POOL_GAMEOBJECT_MIN_RESPAWN_TIME))
+                if (m_baseRespawnDelayTime >= sWorld->getIntConfig(CONFIG_POOLING_GAMEOBJECT_MIN_RESPAWN_TIME))
                 {
                     uint32 count = GetMap()->GetPlayersInAreaCount(GetAreaId());
 
                     if (count > 0)
                     {
-                        float rateDecrease = std::min(count / sWorld->getIntConfig(CONFIG_POOL_PLAYERS_TO_DECREASE) * 
-                            sWorld->getFloatConfig(CONFIG_POOL_RESPAWN_DECREASE), 100.0f);
+                        float rateDecrease = std::min(count / sWorld->getIntConfig(CONFIG_POOLING_PLAYERS_TO_DECREASE) * 
+                            sWorld->getFloatConfig(CONFIG_POOLING_RESPAWN_DECREASE), 100.0f);
 
                         if (rateDecrease > 0)
                             m_respawnDelayTime = std::max(CalculatePct(uint64(m_baseRespawnDelayTime), 100 - rateDecrease), 
-                                uint64(sWorld->getIntConfig(CONFIG_POOL_GAMEOBJECT_MAX_MIN_RESPAWN_TIME)));
+                                uint64(sWorld->getIntConfig(CONFIG_POOLING_GAMEOBJECT_MAX_MIN_RESPAWN_TIME)));
                     }
                 }
             }

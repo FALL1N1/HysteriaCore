@@ -961,12 +961,7 @@ void Battleground::EndBattleground(TeamId winnerTeamId)
 
                 // Xinef: check player level and not bracket level if (CanAwardArenaPoints())
                 if (player->getLevel() >= BG_AWARD_ARENA_POINTS_MIN_LEVEL)
-                {
-                    if (player->GetSession()->IsPremium())
-                        winner_arena *= sWorld->getFloatConfig(PREMIUM_RATE_ARENA);
-
                     player->ModifyArenaPoints(winner_arena);
-                }
 
                 if (!player->GetRandomWinner())
                     player->SetRandomWinner(true);
