@@ -297,8 +297,6 @@ bool ReputationMgr::SetReputation(FactionEntry const* factionEntry, int32 standi
                 {
                     // bonuses are already given, so just modify standing by rate
                     int32 spilloverRep = int32(standing * repTemplate->faction_rate[i]);
-                    if (_player->GetSession()->IsPremium() && spilloverRep > 0) // if premium && positive
-                        spilloverRep *= sWorld->getFloatConfig(PREMIUM_RATE_REP);
                     SetOneFactionReputation(sFactionStore.LookupEntry(repTemplate->faction[i]), spilloverRep, incremental);
                 }
             }

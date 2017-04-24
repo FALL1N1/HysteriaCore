@@ -1257,8 +1257,7 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-        if (target->GetSession()->IsPremium())
-            amount *= sWorld->getFloatConfig(PREMIUM_RATE_REP);
+
         target->GetReputationMgr().SetOneFactionReputation(factionEntry, amount, false);
         target->GetReputationMgr().SendState(target->GetReputationMgr().GetState(factionEntry));
         handler->PSendSysMessage(LANG_COMMAND_MODIFY_REP, factionEntry->name[handler->GetSessionDbcLocale()], factionId,

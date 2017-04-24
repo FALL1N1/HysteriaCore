@@ -2989,34 +2989,7 @@ void Map::DeleteRespawnTimesInDB(uint16 mapId, uint32 instanceId)
 
 void Map::UpdatePlayerAreaStats(uint32 oldArea, uint32 newArea)
 {
-    if (oldArea == newArea)
         return;
-
-    uint32 oldAreaCount = 0;
-    uint32 newAreaCount = 0;
-
-    auto oldItr = _areaPlayerCountMap.find(oldArea);
-    if (oldItr != _areaPlayerCountMap.end())
-        oldAreaCount = oldItr->second;
-
-    if (oldArea && oldAreaCount == 0)
-        return;
-
-    if (oldArea && oldAreaCount > 1)
-        oldItr->second--;
-    else if (oldArea && oldAreaCount == 1)
-        _areaPlayerCountMap.erase(oldItr);
-
-    if (newArea == 0) return;
-
-    auto newItr = _areaPlayerCountMap.find(newArea);
-    if (newItr != _areaPlayerCountMap.end())
-        newAreaCount = newItr->second;
-
-    if (newArea && newAreaCount > 0)
-        newItr->second++;
-    else if (newArea)
-        _areaPlayerCountMap[newArea]++;
 }
 
 void Map::UpdateEncounterState(EncounterCreditType type, uint32 creditEntry, Unit* source)
