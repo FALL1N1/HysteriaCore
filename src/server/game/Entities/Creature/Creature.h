@@ -677,6 +677,16 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
                 return; 
             m_cannotReachTarget = cannotReach; 
             m_cannotReachTimer = 0; 
+
+            if (cannotReach)
+            {
+                AddUnitMovementFlag(MOVEMENTFLAG_ROOT); // might want to add some more here
+            }
+            else
+            {
+                RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
+            }
+
         }
         bool CanNotReachTarget() const { return m_cannotReachTarget; }
 

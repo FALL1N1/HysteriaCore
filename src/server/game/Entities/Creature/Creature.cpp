@@ -2146,8 +2146,15 @@ bool Creature::CanCreatureAttack(Unit const* victim, bool skipDistCheck) const
     if (!IsValidAttackTarget(victim))
         return false;
 
+    //if (!victim->isInAccessiblePlaceFor(this))
+        //return false;
+
+    // only god knows if this works.. lol
     if (!victim->isInAccessiblePlaceFor(this))
-        return false;
+        Creature(ToCreature()).SetCannotReachTarget(true);
+    else
+        Creature(ToCreature()).SetCannotReachTarget(false);
+
 
     if (IsAIEnabled && !AI()->CanAIAttack(victim))
         return false;
