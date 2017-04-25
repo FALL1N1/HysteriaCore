@@ -224,7 +224,7 @@ public:
                         me->DestroyForNearbyPlayers();
                         LeaveCombat();
                         me->CastSpell(me, SPELL_EVOCATION, true);
-                        release LockTimer = 1;
+                        releaseLockTimer = 1;
                 }
                 break;
                 case SPELL_SUMMON_MENAGERIE_2:
