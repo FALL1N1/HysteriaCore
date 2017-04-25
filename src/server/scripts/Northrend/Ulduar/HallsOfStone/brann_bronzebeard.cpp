@@ -660,7 +660,8 @@ void brann_bronzebeard::brann_bronzebeardAI::WaypointReached(uint32 id)
                 if (Creature *cr = ObjectAccessor::GetCreature(*me, pInstance->GetData64(NPC_SJONNIR)))
                     cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->SetOrientation(3.132660f);
-                DoCast(me, 58506, false);
+                me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
+                //DoCast(me, 58506, false);
             }
             break;
         case 28:
