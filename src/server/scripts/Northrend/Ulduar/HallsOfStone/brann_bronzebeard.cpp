@@ -374,6 +374,7 @@ public:
                         door->SetGoState(GO_STATE_ACTIVE);
                     SetEscortPaused(false);
                     me->RemoveAura(58506);
+                    me->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
                     break;
             }
         }
