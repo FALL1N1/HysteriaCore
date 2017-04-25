@@ -244,7 +244,7 @@ public:
 
         void EnterCombat(Unit* victim) 
         {
-            DoCast(victim, SPELL_TICKING_TIME_BOMB_EXPLODE, true);
+            me->CastSpell(me, SPELL_TICKING_TIME_BOMB_EXPLODE, true);
             me->DisappearAndDie();
         }
 
