@@ -26,10 +26,11 @@ enum Creatures
 
 enum Events
 {
-    EVENT_AMANITAR_SPAWN                    = 1,
-    EVENT_AMANITAR_ROOTS                    = 2,
-    EVENT_AMANITAR_BASH                        = 3,
-    EVENT_AMANITAR_BOLT                        = 4,
+    EVENT_AMANITAR_SPAWN = 1,
+    EVENT_AMANITAR_ROOTS,
+    EVENT_AMANITAR_BASH,
+    EVENT_AMANITAR_BOLT,
+    EVENT_MINI_CURSE,
 };
 
 class boss_amanitar : public CreatureScript
@@ -82,6 +83,7 @@ public:
             events.ScheduleEvent(EVENT_AMANITAR_ROOTS, urand(5000, 9000));
             events.ScheduleEvent(EVENT_AMANITAR_BASH, urand(10000, 14000));
             events.ScheduleEvent(EVENT_AMANITAR_BOLT, urand(15000, 20000));
+            events.ScheduleEvent(EVENT_MINI_CURSE, urand(15000, 20000));
             events.ScheduleEvent(EVENT_AMANITAR_SPAWN, 0);
         }
 
@@ -146,7 +148,13 @@ public:
                 {
                     if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         me->CastSpell(pTarget, SPELL_VENOM_BOLT_VOLLEY, false);
-                    
+
+                    events.RepeatEvent(urand(15000, 20000));
+                    break;
+                }
+                case EVENT_MINI_CURSE:
+                {
+                    me->CastSpell(me, SPELL_MINI, false);
                     events.RepeatEvent(urand(15000, 20000));
                     break;
                 }
@@ -200,7 +208,7 @@ public:
                 return;
 
             if (me->GetEntry() == NPC_HEALTHY_MUSHROOM && !killer->HasAura(SPELL_MINI))
-                DoCast(killer, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS);
+                me->CastSpell(me, SPELL_HEALTHY_MUSHROOM_POTENT_FUNGUS, true);
 
             if (killer->HasAura(SPELL_MINI))
                 killer->RemoveAura(SPELL_MINI);
