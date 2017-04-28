@@ -2375,12 +2375,23 @@ void Spell::AddUnitTarget(Unit* target, uint32 effectMask, bool checkIfValid /*=
     // Calculate hit result
     if (m_originalCaster)
     {
-        targetInfo.missCondition = m_originalCaster->SpellHitResult(target, m_spellInfo, m_canReflect);
-        if (m_skipCheck && targetInfo.missCondition != SPELL_MISS_IMMUNE)
+        SpellMissInfo missTemp = m_originalCaster->SpellHitResult(target, m_spellInfo, m_canReflect);
+        if (!m_delayMoment)
+            targetInfo.missCondition = missTemp;
+        else switch (missTemp)
+        {
+            case SPELL_MISS_MISS:
+            case SPELL_MISS_REFLECT:
+                targetInfo.missCondition = missTemp;
+                break;
+            default:
+                break;
+        }
+        if (m_skipCheck && missTemp != SPELL_MISS_IMMUNE)
             targetInfo.missCondition = SPELL_MISS_NONE;
     }
     else
-        targetInfo.missCondition = SPELL_MISS_EVADE; //SPELL_MISS_NONE;
+        targetInfo.missCondition = SPELL_MISS_EVADE;
 
     // Spell have speed - need calculate incoming time
     // Incoming time is zero for self casts. At least I think so.
