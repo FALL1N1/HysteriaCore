@@ -48,10 +48,14 @@ enum VolkhanEvents
     EVENT_SHATTER                        = 3,
     EVENT_POSITION                        = 4,
     EVENT_MOVE_TO_ANVIL                    = 5,
+    EVENT_STOMP                         = 6,
 
     // Molten Golem
     EVENT_BLAST                            = 11,
     EVENT_IMMOLATION                    = 12,
+
+    // Slag
+    EVENT_MELT_ARMOR                    = 13,
 };
 
 enum Yells
@@ -89,14 +93,15 @@ public:
         float x, y, z;
         uint8 PointID;
         uint8 ShatteredCount;
+        bool Stomp;
 
         void Reset()
         {
             x = y = z = PointID = ShatteredCount = 0;
-            HealthCheck = 100;
+            HealthCheck = 80;
+            Stomp = false;
             events.Reset();
             summons.DespawnAll();
-            me->SetSpeed(MOVE_RUN, 1.2f,true);
             me->SetReactState(REACT_AGGRESSIVE);
 
             if (m_pInstance)
@@ -180,8 +185,11 @@ public:
         {
             events.SetPhase(1);
             events.RescheduleEvent(EVENT_HEAT, 8000, 0, 1);
-            events.RescheduleEvent(EVENT_SHATTER, 10000, 0, 1);
             events.RescheduleEvent(EVENT_CHECK_HEALTH, anvil ? 1000 : 6000, 0, 1);
+            if (Stomp)
+                events.RescheduleEvent(EVENT_STOMP, 30000, 0, 1);
+            else
+                events.RescheduleEvent(EVENT_STOMP, 1000, 0, 1);
             events.RescheduleEvent(EVENT_POSITION, 4000, 0, 1);
         }
 
@@ -214,7 +222,6 @@ public:
 
             if (id == POINT_ANVIL)
             {
-                me->SetSpeed(MOVE_RUN, 1.2f,true);
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->CastSpell(me, SPELL_TEMPER, false);
                 PointID = 0;
@@ -242,13 +249,15 @@ public:
                 me->GetMotionMaster()->MoveChase(me->GetVictim());
                 me->SetControlled(false, UNIT_STATE_ROOT);
             }
+
+            if (spellInfo->Id == SPELL_SHATTERING_STOMP_H || spellInfo->Id == SPELL_SHATTERING_STOMP_N)
+                summons.DoAction(ACTION_SHATTER);
         }
 
         void GoToAnvil()
         {
             events.SetPhase(2);
             HealthCheck -= 20;
-            me->SetSpeed(MOVE_RUN, 4.0f,true);
             me->SetReactState(REACT_PASSIVE);
 
             Talk(SAY_FORGE);
@@ -282,12 +291,19 @@ public:
 
                     events.RepeatEvent(1000);
                     return;
-                case EVENT_SHATTER:
-                {
-                    events.RepeatEvent(10000);
-                    summons.DoAction(ACTION_SHATTER);
-                    break;
-                }
+                case EVENT_STOMP:
+                    if (HealthBelowPct(26))
+                    {
+                        // Should he stomp even if he has no brittle golem to shatter?
+                        Talk(SAY_STOMP);
+                        Talk(EMOTE_SHATTER);
+
+                        DoCast(me, IsHeroic() ? SPELL_SHATTERING_STOMP_H : SPELL_SHATTERING_STOMP_N);
+                        Stomp = true;
+                        events.PopEvent();
+                    }
+                    events.RepeatEvent(1000);
+                    return;
                 case EVENT_MOVE_TO_ANVIL:
                     GetNextPos();
                     me->GetMotionMaster()->MovePoint(PointID, x, y, z);
