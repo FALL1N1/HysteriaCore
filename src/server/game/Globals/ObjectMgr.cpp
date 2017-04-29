@@ -3122,8 +3122,8 @@ void ObjectMgr::LoadPetLevelInfo()
     uint32 oldMSTime = getMSTime();
 
     uint32 currentBuild = sWorld->getIntConfig(CONFIG_CURRENT_BUILD);
-    //                                                 0                   1      2   3     4    5    6    7     8        9
-    QueryResult result = WorldDatabase.PQuery("SELECT creature_entry, pls.level, hp, mana, str, agi, sta, inte, spi, pls.armor FROM pet_levelstats pls "
+    //                                                 0                   1      2   3     4    5    6    7     8        9        10      11
+    QueryResult result = WorldDatabase.PQuery("SELECT creature_entry, pls.level, hp, mana, str, agi, sta, inte, spi, pls.armor, min_dmg, max_mdg FROM pet_levelstats pls "
         "LEFT OUTER JOIN creature_template ON creature_template.entry = pls.creature_entry "
         "WHERE creature_template.AddedInBuild <= '%u'", currentBuild);
 
@@ -3176,8 +3176,8 @@ void ObjectMgr::LoadPetLevelInfo()
         pLevelInfo->health = fields[2].GetUInt16();
         pLevelInfo->mana   = fields[3].GetUInt16();
         pLevelInfo->armor  = fields[9].GetUInt32();
-        pLevelInfo->min_dmg= fields[10].GetUInt32();
-        pLevelInfo->max_dmg= fields[11].GetUInt32();
+        pLevelInfo->min_dmg = fields[10].GetUInt16();
+        pLevelInfo->max_dmg = fields[11].GetUInt16();
 
         for (int i = 0; i < MAX_STATS; i++)
         {
