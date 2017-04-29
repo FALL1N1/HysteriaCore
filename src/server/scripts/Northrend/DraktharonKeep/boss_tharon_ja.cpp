@@ -145,7 +145,7 @@ class boss_tharon_ja : public CreatureScript
                         events.ScheduleEvent(EVENT_SPELL_SHADOW_VOLLEY, 9000);
                         break;
                     case EVENT_SPELL_TURN_FLESH:
-                        if (me->HealthBelowPct(80))
+                        if (me->HealthBelowPct(50))
                         {
                             Talk(SAY_FLESH);
                             me->getThreatManager().resetAllAggro();
