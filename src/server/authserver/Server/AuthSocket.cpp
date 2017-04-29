@@ -567,6 +567,7 @@ bool AuthSocket::_HandleLogonProof()
     // SRP safeguard: abort if A == 0
     if ((A % N).isZero())
     {
+        sLog->outString("Auth Hack Attempt, IP: %s", socket().getRemoteAddress().c_str());
         socket().shutdown();
         return true;
     }
