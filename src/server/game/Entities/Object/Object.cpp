@@ -2533,6 +2533,8 @@ void WorldObject::GetNearPoint(WorldObject const* searcher, float &x, float &y, 
 bool WorldObject::GetClosePoint(float &x, float &y, float &z, float size, float distance2d, float angle, const WorldObject* forWho, bool force) const
 { 
     // angle calculated from current orientation
+    GetNearPoint(NULL, x, y, z, size, distance2d, GetOrientation() + angle);
+    /*
     GetNearPoint(forWho, x, y, z, size, distance2d, GetOrientation() + angle);
 
     if (fabs(this->GetPositionZ()-z) > 3.0f || !IsWithinLOS(x, y, z))
@@ -2556,7 +2558,7 @@ bool WorldObject::GetClosePoint(float &x, float &y, float &z, float size, float 
         }
         return false;
     }
-    return true;
+    return true;*/
 }
 
 void WorldObject::GetContactPoint(const WorldObject* obj, float &x, float &y, float &z, float distance2d) const
