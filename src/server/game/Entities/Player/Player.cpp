@@ -4077,12 +4077,11 @@ bool Player::IsNeedCastPassiveSpellAtLearn(SpellInfo const* spellInfo) const
 void Player::learnSpell(uint32 spellId)
 {
     // Xinef: don't allow to learn active spell once more
-    // firefly: glyphs are spells as well, retards..
-    //if (HasActiveSpell(spellId))
-    //{
-    //    sLog->outError("Player (%u) tries to learn already active spell: %u", GetGUIDLow(), spellId);
-    //    return;
-    //}
+    if (HasActiveSpell(spellId))
+    {
+        sLog->outError("Player (%u) tries to learn already active spell: %u", GetGUIDLow(), spellId);
+        return;
+    }
 
     uint32 firstRankSpellId = sSpellMgr->GetFirstSpellInChain(spellId);
     bool thisSpec = GetTalentSpellCost(firstRankSpellId) > 0 || sSpellMgr->IsAdditionalTalentSpell(firstRankSpellId);
