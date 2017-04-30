@@ -16690,7 +16690,7 @@ void Unit::SetRooted(bool apply)
         // this will freeze clients. That's why we remove MOVEMENTFLAG_MASK_MOVING before
         // setting MOVEMENTFLAG_ROOT
         RemoveUnitMovementFlag(MOVEMENTFLAG_MASK_MOVING);
-        AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
+        //AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
 
         if (GetTypeId() == TYPEID_PLAYER)
         {
@@ -16725,7 +16725,7 @@ void Unit::SetRooted(bool apply)
                 SendMessageToSet(&data, true);
             }
 
-            RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
+            //RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
         }
     }
 }
