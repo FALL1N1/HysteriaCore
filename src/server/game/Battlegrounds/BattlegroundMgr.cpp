@@ -707,6 +707,8 @@ void BattlegroundMgr::BuildBattlegroundListPacket(WorldPacket* data, uint64 guid
     if (!player)
         return;
 
+    bool canReward = sWorld->IsInCurrentContent(PATCH_333);
+
     uint32 winner_kills = player->GetRandomWinner() ? BG_REWARD_WINNER_HONOR_LAST : BG_REWARD_WINNER_HONOR_FIRST;
     uint32 winner_arena = player->GetRandomWinner() ? BG_REWARD_WINNER_ARENA_LAST : BG_REWARD_WINNER_ARENA_FIRST;
     uint32 loser_kills = player->GetRandomWinner() ? BG_REWARD_LOSER_HONOR_LAST : BG_REWARD_LOSER_HONOR_FIRST;
@@ -721,22 +723,40 @@ void BattlegroundMgr::BuildBattlegroundListPacket(WorldPacket* data, uint64 guid
     *data << uint8(0);                                      // unk
     *data << uint8(0);                                      // unk
 
-    // Rewards
-    *data << uint8(player->GetRandomWinner());              // 3.3.3 hasWin
-    *data << uint32(winner_kills);                          // 3.3.3 winHonor
-    *data << uint32(winner_arena);                          // 3.3.3 winArena
-    *data << uint32(loser_kills);                           // 3.3.3 lossHonor
+    if (canReward)
+    {
+        *data << uint8(player->GetRandomWinner());              // 3.3.3 hasWin
+        *data << uint32(winner_kills);                          // 3.3.3 winHonor
+        *data << uint32(winner_arena);                          // 3.3.3 winArena
+        *data << uint32(loser_kills);                           // 3.3.3 lossHonor
+    } 
+    else
+    {
+        *data << uint8(0);                          // 3.3.3 hasWin
+        *data << uint32(0);                         // 3.3.3 winHonor
+        *data << uint32(0);                         // 3.3.3 winArena
+        *data << uint32(0);                         // 3.3.3 lossHonor
+    }
 
     uint8 isQueueRandom = (bgTypeId == BATTLEGROUND_RB);
 
     *data << uint8(isQueueRandom);                          // 3.3.3 isRandom
     if (isQueueRandom)
     {
-        // Rewards (random)
-        *data << uint8(player->GetRandomWinner());          // 3.3.3 hasWin_Random
-        *data << uint32(winner_kills);                      // 3.3.3 winHonor_Random
-        *data << uint32(winner_arena);                      // 3.3.3 winArena_Random
-        *data << uint32(loser_kills);                       // 3.3.3 lossHonor_Random
+        if (canReward)
+        {
+            *data << uint8(player->GetRandomWinner());              // 3.3.3 hasWin_Random
+            *data << uint32(winner_kills);                          // 3.3.3 winHonor_Random
+            *data << uint32(winner_arena);                          // 3.3.3 winArena_Random
+            *data << uint32(loser_kills);                           // 3.3.3 lossHonor_Random
+        }
+        else
+        {
+            *data << uint8(0);                          // 3.3.3 hasWin_Random
+            *data << uint32(0);                         // 3.3.3 winHonor_Random
+            *data << uint32(0);                         // 3.3.3 winArena_Random
+            *data << uint32(0);                         // 3.3.3 lossHonor_Random
+        }
     }
 
     if (bgTypeId == BATTLEGROUND_AA)                        // arena

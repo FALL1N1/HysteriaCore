@@ -3186,6 +3186,9 @@ void Player::GiveXP(uint32 xp, Unit* victim, float group_rate)
 { 
     if (xp < 1)
         return;
+    
+    if (!sWorld->IsInCurrentContent(PATCH_320) && GetBattleground())
+        return;
 
     if (!IsAlive() && !GetBattlegroundId())
         return;
