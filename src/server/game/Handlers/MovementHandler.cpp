@@ -654,7 +654,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
 
                 // firefly: "Freeze Z coord check"
-                if (plrMover)
+                /*if (plrMover)
                     if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && plrMover->GetMapId() != 548 && !plrMover->m_transport)
                     {
                         //sLog->outString("      111     ");
@@ -669,7 +669,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                             }
                         if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
                             plrMover->GetSession()->KickPlayer();
-                    }
+                    }*/
 
                 // firefly: custom fly / under map checks
                 if (plrMover)
