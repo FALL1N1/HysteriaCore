@@ -594,7 +594,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // AntiGravity (thanks to Meekro)
                 const float JumpHeight = plrMover->m_anti_JumpBaseZ - movementInfo.pos.GetPositionZ();
-                if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed)
+                if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport)
                 {
                     //sLog->outString("     555      ");
                     check_passed = false;
@@ -619,7 +619,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 if (opcode == MSG_MOVE_JUMP)
                 {
                     //sLog->outString("     444      ");
-                    if (no_fly_auras && no_swim_water)
+                    if ((no_fly_auras && no_swim_water) && !plrMover->m_transport)
                     {
                         if (plrMover->m_anti_JumpCount >= 1)
                         {
@@ -654,7 +654,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
 
                 // firefly: "Freeze Z coord check"
-                /*if (plrMover)
+                if (plrMover)
                     if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && plrMover->GetMapId() != 548 && !plrMover->m_transport)
                     {
                         //sLog->outString("      111     ");
@@ -669,7 +669,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                             }
                         if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
                             plrMover->GetSession()->KickPlayer();
-                    }*/
+                    }
 
                 // firefly: custom fly / under map checks
                 if (plrMover)
@@ -701,15 +701,15 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     }
 
                 // speed and teleport hack checks
-                if (real_delta > (allowed_delta * 2))
+                if ((real_delta > (allowed_delta * 2)) && !plrMover->m_transport)
                     check_passed = false;
 
                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
-                if (delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f)
+                if ((delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f) && !plrMover->m_transport)
                     check_passed = false;
                 
                 // Fly hack checks
-                if (no_fly_auras && !no_fly_flags)
+                if ((no_fly_auras && !no_fly_flags) && !plrMover->m_transport)
                 {
                     //sLog->outString("     333      ");
                     check_passed = false;
