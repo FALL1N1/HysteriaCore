@@ -2599,6 +2599,8 @@ Battleground.QueueAnnouncer.Enable = 0
 
 Battleground.QueueAnnouncer.PlayerOnly = 0
 
+Battleground.RandomCrossFaction.Enable = 0
+
 #
 #    Battleground.InvitationType
 #        Description: Set Battleground invitation type.
