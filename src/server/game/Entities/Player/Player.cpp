@@ -25211,6 +25211,10 @@ void Player::HandleFall(MovementInfo const& movementInfo)
                 if (HasAura(43621))
                     damage = GetMaxHealth()/2;
 
+                // If player is on transport (e.g elevators) damage should be 0
+                if (m_transport)
+                    damage = 0;
+
                 final_damage = EnvironmentalDamage(DAMAGE_FALL, damage);
             }
 
