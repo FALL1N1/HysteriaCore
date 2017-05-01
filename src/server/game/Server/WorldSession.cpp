@@ -527,7 +527,7 @@ void WorldSession::LogoutPlayer(bool save)
         //! Call script hook before deletion
         sScriptMgr->OnPlayerLogout(_player);
 
-        sLog->outChar("Account: %d (IP: %s) Logout Character:[%s] (GUID: %u) Level: %d", GetAccountId(), GetRemoteAddress().c_str(), _player->GetName().c_str(), _player->GetGUIDLow(), _player->getLevel());
+        //sLog->outChar("Account: %d (IP: %s) Logout Character:[%s] (GUID: %u) Level: %d", GetAccountId(), GetRemoteAddress().c_str(), _player->GetName().c_str(), _player->GetGUIDLow(), _player->getLevel());
 
         //! Remove the player from the world
         // the player may not be in the world when logging out

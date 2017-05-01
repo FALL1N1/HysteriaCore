@@ -664,7 +664,7 @@ void WorldSession::HandleCharCreateCallback(PreparedQueryResult result, Characte
 
             std::string IP_str = GetRemoteAddress();
             ;//sLog->outDetail("Account: %d (IP: %s) Create Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), createInfo->Name.c_str(), newChar.GetGUIDLow());
-            sLog->outChar("Account: %d (IP: %s) Create Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), createInfo->Name.c_str(), newChar.GetGUIDLow());
+            //sLog->outChar("Account: %d (IP: %s) Create Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), createInfo->Name.c_str(), newChar.GetGUIDLow());
             sScriptMgr->OnPlayerCreate(&newChar);
             sWorld->AddGlobalPlayerData(newChar.GetGUIDLow(), GetAccountId(), newChar.GetName(), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel(), 0, 0);
 
@@ -723,7 +723,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket& recvData)
 
     std::string IP_str = GetRemoteAddress();
     ;//sLog->outDetail("Account: %d (IP: %s) Delete Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), GUID_LOPART(guid));
-    sLog->outChar("Account: %d (IP: %s) Delete Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), GUID_LOPART(guid));
+    //sLog->outChar("Account: %d (IP: %s) Delete Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), GUID_LOPART(guid));
     sScriptMgr->OnPlayerDelete(guid);
 
     if (sLog->IsOutCharDump())                                // optimize GetPlayerDump call
@@ -1130,8 +1130,7 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         SendNotification(LANG_GM_ON);
 
     std::string IP_str = GetRemoteAddress();
-    sLog->outChar("Account: %d (IP: %s) Login Character:[%s] (GUID: %u) Level: %d",
-        GetAccountId(), IP_str.c_str(), pCurrChar->GetName().c_str(), pCurrChar->GetGUIDLow(), pCurrChar->getLevel());
+    //sLog->outChar("Account: %d (IP: %s) Login Character:[%s] (GUID: %u) Level: %d", GetAccountId(), IP_str.c_str(), pCurrChar->GetName().c_str(), pCurrChar->GetGUIDLow(), pCurrChar->getLevel());
 
     if (!pCurrChar->IsStandState() && !pCurrChar->HasUnitState(UNIT_STATE_STUNNED))
         pCurrChar->SetStandState(UNIT_STAND_STATE_STAND);
@@ -1509,7 +1508,7 @@ void WorldSession::HandleChangePlayerNameOpcodeCallBack(PreparedQueryResult resu
         CharacterDatabase.Execute(stmt);
     }
 
-    sLog->outChar("Account: %d (IP: %s), Character [%s] (guid: %u) Changed name to: %s", GetAccountId(), GetRemoteAddress().c_str(), oldName.c_str(), guidLow, newName.c_str());
+    //sLog->outChar("Account: %d (IP: %s), Character [%s] (guid: %u) Changed name to: %s", GetAccountId(), GetRemoteAddress().c_str(), oldName.c_str(), guidLow, newName.c_str());
 
     WorldPacket data(SMSG_CHAR_RENAME, 1+8+(newName.size()+1));
     data << uint8(RESPONSE_SUCCESS);
@@ -1822,7 +1821,7 @@ void WorldSession::HandleCharCustomize(WorldPacket& recvData)
         }
     }
 
-    sLog->outChar("Account: %d (IP: %s), Character [%s] (guid: %u) Customized to: %s", GetAccountId(), GetRemoteAddress().c_str(), playerData->name.c_str(), GUID_LOPART(guid), newName.c_str());
+    //sLog->outChar("Account: %d (IP: %s), Character [%s] (guid: %u) Customized to: %s", GetAccountId(), GetRemoteAddress().c_str(), playerData->name.c_str(), GUID_LOPART(guid), newName.c_str());
 
     Player::Customize(guid, gender, skin, face, hairStyle, hairColor, facialHair);
 
@@ -2218,7 +2217,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recvData)
     stmt->setUInt32(0, lowGuid);
     trans->Append(stmt);
 
-    sLog->outChar("Account: %d (IP: %s), Character [%s] (guid: %u) Changed Race/Faction to: %s", GetAccountId(), GetRemoteAddress().c_str(), playerData->name.c_str(), lowGuid, newname.c_str());
+    //sLog->outChar("Account: %d (IP: %s), Character [%s] (guid: %u) Changed Race/Faction to: %s", GetAccountId(), GetRemoteAddress().c_str(), playerData->name.c_str(), lowGuid, newname.c_str());
 
     // xinef: update global data
     sWorld->UpdateGlobalNameData(GUID_LOPART(guid), playerData->name, newname);
