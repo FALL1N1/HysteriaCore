@@ -1470,6 +1470,7 @@ uint8 LFGMgr::CheckGroupRoles(LfgRolesMap& groles, bool removeLeaderFlag /*= tru
 */
 void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
 {
+    return;
     LfgGuidList players;
     LfgGuidList playersToTeleport;
 
