@@ -151,7 +151,11 @@ void PlayerRelocationNotifier::Visit(PlayerMapType &m)
         Player* player = iter->GetSource();
         vis_guids.erase(player->GetGUID());
         i_player.UpdateVisibilityOf(player, i_data, i_visibleNow);
-        player->UpdateVisibilityOf(&i_player); // this notifier with different Visit(PlayerMapType&) than VisibleNotifier is needed to update visibility of self for other players when we move (eg. stealth detection changes)
+
+        if (player->m_seer->isNeedNotify(NOTIFY_VISIBILITY_CHANGED))
+            continue;
+
+        player->UpdateVisibilityOf(&i_player);
     }
 }
 

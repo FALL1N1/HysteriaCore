@@ -503,6 +503,12 @@ enum PlayerFieldByteFlags
     PLAYER_FIELD_BYTE_NO_RELEASE_WINDOW = 0x00000010        // Display no "release spirit" window at all
 };
 
+enum PlayerFieldBytes2Offsets
+{
+    PLAYER_FIELD_BYTES_2_OFFSET_IGNORE_POWER_REGEN_PREDICTION_MASK = 0,
+    PLAYER_FIELD_BYTES_2_OFFSET_AURA_VISION = 1,
+};
+
 // used in PLAYER_FIELD_BYTES2 values
 enum PlayerFieldByte2Flags
 {
