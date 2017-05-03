@@ -2838,6 +2838,9 @@ void Spell::DoAllEffectOnTarget(TargetInfo* target)
             if (!effectUnit->IsStandState())
                 effectUnit->SetStandState(UNIT_STAND_STATE_STAND);
     }
+    
+    if (m_spellInfo->HasAttribute(SPELL_ATTR7_INTERRUPT_ONLY_NONPLAYER) && unit->GetTypeId() != TYPEID_PLAYER)
+        caster->CastSpell(unit, 32747, true);
 
     if (spellHitTarget)
     {
