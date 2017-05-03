@@ -596,7 +596,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // AntiGravity (thanks to Meekro)
                 const float JumpHeight = plrMover->m_anti_JumpBaseZ - movementInfo.pos.GetPositionZ();
-                if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared())
                 {
                     //sLog->outString("     555      ");
                     check_passed = false;
@@ -621,7 +621,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 if (opcode == MSG_MOVE_JUMP)
                 {
                     //sLog->outString("     444      ");
-                    if ((no_fly_auras && no_swim_water) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                    if ((no_fly_auras && no_swim_water) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared())
                     {
                         if (plrMover->m_anti_JumpCount >= 1)
                         {
@@ -657,7 +657,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: "Freeze Z coord check"
                 if (plrMover)
-                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK)
+                    if (!plrMover->IsFlying() && !plrMover->isFeared() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK)
                     {
                         //sLog->outString("      111     ");
                         float playerZ = plrMover->GetPositionZ();
@@ -675,7 +675,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // firefly: custom fly / under map checks UNIT_STATE_CHARGING
                 if (plrMover)
                     if ((no_fly_auras && !no_fly_flags) && !plrMover->IsFalling() &&
-                        !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK)
+                        !plrMover->m_transport && !plrMover->isFeared() && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK)
                     {
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
@@ -696,22 +696,20 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                             check_passed = false;
                         }
-
                         //if (fabs(playerZ - mapZ) < -2.0f) // fell underground
                             //plrMover->TeleportTo(plrMover->GetMapId(), plrMover->GetPositionX(), plrMover->GetPositionY(), mapZ + 1.0f, plrMover->GetOrientation());
-
                     }
 
                 // speed and teleport hack checks
-                if ((real_delta > (allowed_delta * 2)) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                if ((real_delta > (allowed_delta * 2)) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared())
                     check_passed = false;
 
                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
-                if ((delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                if ((delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared())
                     check_passed = false;
                 
                 // Fly hack checks
-                if ((no_fly_auras && !no_fly_flags) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                if ((no_fly_auras && !no_fly_flags) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared())
                 {
                     //sLog->outString("     333      ");
                     check_passed = false;
