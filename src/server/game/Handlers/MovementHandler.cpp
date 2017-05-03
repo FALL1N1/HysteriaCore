@@ -574,6 +574,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     cClientTimeDelta = 0;
                 const float time_delta = cClientTimeDelta < 1500 ? float(cClientTimeDelta) / 1000.0f : 1.5f; // normalize time - 1.5 second allowed for heavy loaded server
 
+                bool areMapsOK = !plrMover->GetMapId() != 548 || plrMover->GetMapId() != 369;
+
                 const float tg_z = (real_delta != 0 && no_fly_auras && no_swim_flags) ? (pow(delta_z, 2) / real_delta) : -99999; // movement distance tangents
 
                 if (current_speed < plrMover->m_anti_Last_HSpeed && plrMover->m_anti_LastSpeedChangeTime == 0)
@@ -655,7 +657,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // firefly: "Freeze Z coord check"
                 if (plrMover)
-                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && plrMover->GetMapId() != 548 && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                    if (!plrMover->IsFlying() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK)
                     {
                         //sLog->outString("      111     ");
                         float playerZ = plrMover->GetPositionZ();
@@ -670,10 +672,10 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
                             plrMover->GetSession()->KickPlayer();
                     }
-
                 // firefly: custom fly / under map checks UNIT_STATE_CHARGING
                 if (plrMover)
-                    if ((no_fly_auras && !no_fly_flags) && !plrMover->IsFalling() && plrMover->GetMapId() != 548 && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING))
+                    if ((no_fly_auras && !no_fly_flags) && !plrMover->IsFalling() &&
+                        !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK)
                     {
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
