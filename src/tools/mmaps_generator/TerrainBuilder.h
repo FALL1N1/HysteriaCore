@@ -26,8 +26,6 @@
 #include "G3D/Vector3.h"
 #include "G3D/Matrix3.h"
 
-#include "Database/DatabaseEnv.h"
-
 namespace MMAP
 {
     enum Spot
@@ -85,7 +83,7 @@ namespace MMAP
 
             void loadMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData);
             bool loadVMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData);
-            void loadOffMeshConnections(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData, const char* offMeshFilePath);
+            void loadOffMeshConnections(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData, std::vector<OffMeshConnection> &offMeshConnections);
 
             bool usesLiquids() { return !m_skipLiquid; }
 

@@ -26,14 +26,9 @@
 #include "DetourNavMesh.h"
 #include "DetourCommon.h"
 
-#include "DisableMgr.h"
 #include <ace/OS_NS_unistd.h>
 
 uint32 GetLiquidFlags(uint32 /*liquidType*/) { return 0; }
-namespace DisableMgr
-{
-    bool IsDisabledFor(DisableType /*type*/, uint32 /*entry*/, Unit const* /*unit*/, uint8 /*flags*/ /*= 0*/) { return false; }
-}
 
 #define MMAP_MAGIC 0x4d4d4150   // 'MMAP'
 #define MMAP_VERSION 5
@@ -57,7 +52,6 @@ namespace MMAP
         bool debugOutput, bool bigBaseUnit, const char* offMeshFilePath) :
         m_terrainBuilder     (NULL),
         m_debugOutput        (debugOutput),
-        m_offMeshFilePath    (offMeshFilePath),
         m_skipContinents     (skipContinents),
         m_skipJunkMaps       (skipJunkMaps),
         m_skipBattlegrounds  (skipBattlegrounds),
@@ -70,6 +64,8 @@ namespace MMAP
         m_rcContext = new rcContext(false);
 
         discoverTiles();
+
+		LoadOffMeshConnections(offMeshFilePath);
     }
 
     /**************************************************************************/
@@ -424,7 +420,7 @@ namespace MMAP
         float bmin[3], bmax[3];
         getTileBounds(tileX, tileY, allVerts.getCArray(), allVerts.size() / 3, bmin, bmax);
 
-        m_terrainBuilder->loadOffMeshConnections(mapID, tileX, tileY, meshData, m_offMeshFilePath);
+		m_terrainBuilder->loadOffMeshConnections(mapID, tileX, tileY, meshData, m_offmeshConnections);
 
         // build navmesh tile
         buildMoveMapTile(mapID, tileX, tileY, meshData, bmin, bmax, navMesh);
@@ -441,7 +437,7 @@ namespace MMAP
         //if (tileBits < 1) tileBits = 1;                                     // need at least one bit!
         //int polyBits = sizeof(dtPolyRef)*8 - SALT_MIN_BITS - tileBits;
 
-        int polyBits = STATIC_POLY_BITS;
+        int polyBits = DT_POLY_BITS;
 
         int maxTiles = tiles->size();
         int maxPolysPerTile = 1 << polyBits;
@@ -981,4 +977,42 @@ namespace MMAP
         return true;
     }
 
+    void MapBuilder::LoadOffMeshConnections(const char* offMeshFilePath)
+    {
+        m_offmeshConnections = MMAP::DefaultOffMeshConnections;
+
+        // no meshfile input given?
+        if (offMeshFilePath == NULL)
+        {
+            printf("No --offMeshInput parameter has been specified, using default OffMesh Connections\n");
+            return;
+        }
+
+        FILE* fp = fopen(offMeshFilePath, "rb");
+        if (!fp)
+        {
+            printf(" loadOffMeshConnections:: input file %s not found!\n", offMeshFilePath);
+            return;
+        }
+
+        m_offmeshConnections.clear();
+
+        // pretty silly thing, as we parse entire file and load only the tile we need
+        // but we don't expect this file to be too large
+        char* buf = new char[512];
+        while (fgets(buf, 512, fp))
+        {
+            float p0[3], p1[3];
+            uint32 mid, tx, ty;
+            float size;
+            if (sscanf(buf, "%u %u,%u (%f %f %f) (%f %f %f) %f", &mid, &tx, &ty,
+                &p0[0], &p0[1], &p0[2], &p1[0], &p1[1], &p1[2], &size) != 10)
+                continue;
+
+            m_offmeshConnections.emplace_back(OffMeshConnection(mid, tx, ty, p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], size));
+        }
+
+        delete[] buf;
+        fclose(fp);
+    }
 }

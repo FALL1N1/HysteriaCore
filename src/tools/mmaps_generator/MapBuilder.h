@@ -33,8 +33,6 @@
 #include <ace/Activation_Queue.h>
 #include <ace/Method_Request.h>
 
-#include "Database/DatabaseEnv.h"
-
 using namespace VMAP;
 
 // G3D namespace typedefs conflicts with ACE typedefs
@@ -111,12 +109,14 @@ namespace MMAP
             bool isTransportMap(uint32 mapID);
             bool shouldSkipTile(uint32 mapID, uint32 tileX, uint32 tileY);
 
+			void LoadOffMeshConnections(const char* offMeshFilePath);
+
             TerrainBuilder* m_terrainBuilder;
             TileList m_tiles;
 
             bool m_debugOutput;
 
-            const char* m_offMeshFilePath;
+			std::vector<OffMeshConnection> m_offmeshConnections;
             bool m_skipContinents;
             bool m_skipJunkMaps;
             bool m_skipBattlegrounds;
