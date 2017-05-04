@@ -3441,7 +3441,7 @@ bool Unit::isInAccessiblePlaceFor(Creature const* c) const
             // maybe some additional checks here?
             return true;
         }
-        else if (MMAP::MMapFactory::IsPathfindingEnabled(GetMap()))
+        else if (MMAP::MMapFactory::IsPathfindingEnabled(GetMapId()))
         {
             PathGenerator path(c);
             float x, y, z;
