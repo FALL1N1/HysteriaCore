@@ -16,35 +16,18 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include <stdlib.h>
-#include "DetourAlloc.h"
+#ifndef RECASTASSERT_H
+#define RECASTASSERT_H
 
-static void *dtAllocDefault(int size, dtAllocHint)
-{
-    return malloc(size);
-}
+// Note: This header file's only purpose is to include define assert.
+// Feel free to change the file and include your own implementation instead.
 
-static void dtFreeDefault(void *ptr)
-{
-    free(ptr);
-}
+#ifdef NDEBUG
+// From http://cnicholson.net/2009/02/stupid-c-tricks-adventures-in-assert/
+#	define rcAssert(x) do { (void)sizeof(x); } while((void)(__LINE__==-1),false)  
+#else
+#	include <assert.h> 
+#	define rcAssert assert
+#endif
 
-static dtAllocFunc* sAllocFunc = dtAllocDefault;
-static dtFreeFunc* sFreeFunc = dtFreeDefault;
-
-void dtAllocSetCustom(dtAllocFunc *allocFunc, dtFreeFunc *freeFunc)
-{
-    sAllocFunc = allocFunc ? allocFunc : dtAllocDefault;
-    sFreeFunc = freeFunc ? freeFunc : dtFreeDefault;
-}
-
-void* dtAlloc(int size, dtAllocHint hint)
-{
-    return sAllocFunc(size, hint);
-}
-
-void dtFree(void* ptr)
-{
-    if (ptr)
-        sFreeFunc(ptr);
-}
+#endif // RECASTASSERT_H

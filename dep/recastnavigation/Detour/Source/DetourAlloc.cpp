@@ -16,21 +16,35 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef DETOURALLOCATOR_H
-#define DETOURALLOCATOR_H
+#include <stdlib.h>
+#include "DetourAlloc.h"
 
-enum dtAllocHint
+static void *dtAllocDefault(size_t size, dtAllocHint)
 {
-	DT_ALLOC_PERM,		// Memory persist after a function call.
-	DT_ALLOC_TEMP		// Memory used temporarily within a function.
-};
+	return malloc(size);
+}
 
-typedef void* (dtAllocFunc)(int size, dtAllocHint hint);
-typedef void (dtFreeFunc)(void* ptr);
+static void dtFreeDefault(void *ptr)
+{
+	free(ptr);
+}
 
-void dtAllocSetCustom(dtAllocFunc *allocFunc, dtFreeFunc *freeFunc);
+static dtAllocFunc* sAllocFunc = dtAllocDefault;
+static dtFreeFunc* sFreeFunc = dtFreeDefault;
 
-void* dtAlloc(int size, dtAllocHint hint);
-void dtFree(void* ptr);
+void dtAllocSetCustom(dtAllocFunc *allocFunc, dtFreeFunc *freeFunc)
+{
+	sAllocFunc = allocFunc ? allocFunc : dtAllocDefault;
+	sFreeFunc = freeFunc ? freeFunc : dtFreeDefault;
+}
 
-#endif
+void* dtAlloc(size_t size, dtAllocHint hint)
+{
+	return sAllocFunc(size, hint);
+}
+
+void dtFree(void* ptr)
+{
+	if (ptr)
+		sFreeFunc(ptr);
+}
