@@ -36,7 +36,7 @@
 #include "VMapFactory.h"
 #include "LFGMgr.h"
 #include "Chat.h"
-#include "MMAPFactory.h"
+#include "MMapFactory.h"
 
 union u_map_magic
 {
