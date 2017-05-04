@@ -4915,40 +4915,20 @@ void Spell::EffectSkinning(SpellEffIndex /*effIndex*/)
 
 void Spell::EffectCharge(SpellEffIndex /*effIndex*/)
 {
+    if (!unitTarget)
+        return;
+
     if (effectHandleMode == SPELL_EFFECT_HANDLE_LAUNCH_TARGET)
     {
-        if (!unitTarget)
-            return;
-
-        // charge changes fall time
-        if( m_caster->GetTypeId() == TYPEID_PLAYER )
-            m_caster->ToPlayer()->SetFallInformation(time(NULL), m_caster->GetPositionZ());
-
-        if (m_pathFinder)
-        {
-            m_caster->GetMotionMaster()->MoveCharge(m_pathFinder->GetEndPosition().x, m_pathFinder->GetEndPosition().y, m_pathFinder->GetEndPosition().z, 42.0f, EVENT_CHARGE, &m_pathFinder->GetPath());
-        }
-        else
-        {
-            Position pos;
-            unitTarget->GetContactPoint(m_caster, pos.m_positionX, pos.m_positionY, pos.m_positionZ);
-            // assume that target is not in water - else should be always in los
-            if (!m_caster->IsWithinLOS(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ()))
-            {
-                float angle = m_caster->GetRelativeAngle(&pos);
-                float dist = m_caster->GetDistance(pos);
-                m_caster->GetFirstCollisionPosition(pos, dist, angle);
-            }
-
-            m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ+0.5f);
-        }
+        float speed = G3D::fuzzyGt(m_spellInfo->Speed, 0.0f) ? m_spellInfo->Speed : SPEED_CHARGE;
+        // Spell is not using explicit target - no generated path
+        Position pos;
+        unitTarget->GetFirstCollisionPosition(pos, unitTarget->GetObjectSize(), unitTarget->GetRelativeAngle(m_caster));
+        m_caster->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ, speed);
     }
 
     if (effectHandleMode == SPELL_EFFECT_HANDLE_HIT_TARGET)
     {
-        if (!unitTarget)
-            return;
-
         // not all charge effects used in negative spells
         if (!m_spellInfo->IsPositive() && m_caster->GetTypeId() == TYPEID_PLAYER)
             m_caster->Attack(unitTarget, true);

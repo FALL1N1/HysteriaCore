@@ -456,7 +456,7 @@ enum SpellAttr4
 
 enum SpellAttr5
 {
-    SPELL_ATTR5_UNK0                             = 0x00000001, //  0
+    SPELL_ATTR5_CAN_CHANNEL_WHEN_MOVING          = 0x00000001, //  0
     SPELL_ATTR5_NO_REAGENT_WHILE_PREP            = 0x00000002, //  1 not need reagents if UNIT_FLAG_PREPARATION
     SPELL_ATTR5_REMOVE_ON_ARENA_ENTER            = 0x00000004, //  2 xinef: remove this aura on arena enter
     SPELL_ATTR5_USABLE_WHILE_STUNNED             = 0x00000008, //  3 usable while stunned
@@ -3543,7 +3543,7 @@ enum PartyResult
 };
 
 #define MMAP_MAGIC 0x4d4d4150   // 'MMAP'
-#define MMAP_VERSION 3
+#define MMAP_VERSION 5
 
 struct MmapTileHeader
 {

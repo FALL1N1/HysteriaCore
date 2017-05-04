@@ -26,7 +26,7 @@ class EscortMovementGenerator : public MovementGeneratorMedium< T, EscortMovemen
 
         MovementGeneratorType GetMovementGeneratorType() { return ESCORT_MOTION_TYPE; }
 
-        uint32 GetSplineId() const { return _splineId; }
+        uint32 GetSplineId() { return _splineId; }
 
     private:
         bool i_recalculateSpeed;

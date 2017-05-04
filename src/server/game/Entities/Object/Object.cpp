@@ -2632,15 +2632,37 @@ void WorldObject::MovePosition(Position &pos, float dist, float angle)
     pos.m_orientation = m_orientation;
 }
 
-void WorldObject::MovePositionToFirstCollision(Position &pos, float dist, float angle)
-{ 
-    angle += m_orientation;
+float NormalizeZforCollision(WorldObject const* obj, float x, float y, float z)
+{
+    float ground = obj->GetMap()->GetHeight(obj->GetPhaseMask(), x, y, MAX_HEIGHT, true);
+    float floor = obj->GetMap()->GetHeight(obj->GetPhaseMask(), x, y, z + 2.0f, true);
+    float helper = std::fabs(ground - z) <= std::fabs(floor - z) ? ground : floor;
+    if (z > helper) // must be above ground
+    {
+        if (Unit const* unit = obj->ToUnit())
+        {
+            if (unit->CanFly())
+                return z;
+        }
+        LiquidData liquid_status;
+        ZLiquidStatus res = obj->GetMap()->getLiquidStatus(x, y, z, MAP_ALL_LIQUIDS, &liquid_status);
+        if (res && liquid_status.level > helper) // water must be above ground
+        {
+            if (liquid_status.level > z) // z is underwater
+                return z;
+            else
+                return std::fabs(liquid_status.level - z) <= std::fabs(helper - z) ? liquid_status.level : helper;
+        }
+    }
+    return helper;
+}
+
+void WorldObject::MovePositionToFirstCollision(Position &pos, float dist, float angle) const
+{
+    angle += GetOrientation();
     float destx, desty, destz;
-    destx = pos.m_positionX + dist * cos(angle);
-    desty = pos.m_positionY + dist * sin(angle);
-    destz = pos.m_positionZ;
-    if (isType(TYPEMASK_UNIT|TYPEMASK_PLAYER) && !ToUnit()->IsInWater())
-        destz += 2.0f;
+    destx = pos.m_positionX + dist * std::cos(angle);
+    desty = pos.m_positionY + dist * std::sin(angle);
 
     // Prevent invalid coordinates here, position is unchanged
     if (!Trinity::IsValidMapCoord(destx, desty))
@@ -2649,88 +2671,123 @@ void WorldObject::MovePositionToFirstCollision(Position &pos, float dist, float 
         return;
     }
 
-    // Xinef: ugly hack for dalaran arena
-    float selfAddition = 1.5f;
-    float allowedDiff = 6.0f;
-    float newDist = dist;
-    if (GetMapId() == 617)
-    {
-        allowedDiff = 3.5f;
-        selfAddition = 1.0f;
-        destz = pos.m_positionZ + 1.0f;
-    }
-    else
-        UpdateAllowedPositionZ(destx, desty, destz);
-
-    bool col = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.m_positionX, pos.m_positionY, pos.m_positionZ+selfAddition, destx, desty, destz+0.5f, destx, desty, destz, -0.5f);
+    destz = NormalizeZforCollision(this, destx, desty, pos.GetPositionZ());
+    bool col = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.m_positionX, pos.m_positionY, pos.m_positionZ + 0.5f, destx, desty, destz + 0.5f, destx, desty, destz, -0.5f);
 
     // collision occured
     if (col)
     {
         // move back a bit
-        if (pos.GetExactDist2d(destx, desty) > CONTACT_DISTANCE)
-        {
-            destx -= CONTACT_DISTANCE * cos(angle);
-            desty -= CONTACT_DISTANCE * sin(angle);
-        }
-
-        newDist = sqrt((pos.m_positionX - destx)*(pos.m_positionX - destx) + (pos.m_positionY - desty)*(pos.m_positionY - desty));
+        destx -= CONTACT_DISTANCE * std::cos(angle);
+        desty -= CONTACT_DISTANCE * std::sin(angle);
+        dist = std::sqrt((pos.m_positionX - destx)*(pos.m_positionX - destx) + (pos.m_positionY - desty)*(pos.m_positionY - desty));
     }
 
     // check dynamic collision
-    col = GetMap()->getObjectHitPos(GetPhaseMask(), pos.m_positionX, pos.m_positionY, pos.m_positionZ+selfAddition, destx, desty, destz+0.5f, destx, desty, destz, -0.5f);
+    col = GetMap()->getObjectHitPos(GetPhaseMask(), pos.m_positionX, pos.m_positionY, pos.m_positionZ + 0.5f, destx, desty, destz + 0.5f, destx, desty, destz, -0.5f);
 
     // Collided with a gameobject
     if (col)
     {
-        // move back a bit
-        if (pos.GetExactDist2d(destx, desty) > CONTACT_DISTANCE)
-        {
-            destx -= CONTACT_DISTANCE * cos(angle);
-            desty -= CONTACT_DISTANCE * sin(angle);
-        }
-        newDist = sqrt((pos.m_positionX - destx)*(pos.m_positionX - destx) + (pos.m_positionY - desty)*(pos.m_positionY - desty));
+        destx -= CONTACT_DISTANCE * std::cos(angle);
+        desty -= CONTACT_DISTANCE * std::sin(angle);
+        dist = std::sqrt((pos.m_positionX - destx)*(pos.m_positionX - destx) + (pos.m_positionY - desty)*(pos.m_positionY - desty));
     }
 
-    float step = newDist / 10.0f;
+    float step = dist / 10.0f;
 
     for (uint8 j = 0; j < 10; ++j)
     {
         // do not allow too big z changes
-        if (fabs(pos.m_positionZ - destz) > allowedDiff)
+        if (std::fabs(pos.m_positionZ - destz) > 6.0f)
         {
-            destx -= step * cos(angle);
-            desty -= step * sin(angle);
-            UpdateAllowedPositionZ(destx, desty, destz);
+            destx -= step * std::cos(angle);
+            desty -= step * std::sin(angle);
+            destz = NormalizeZforCollision(this, destx, desty, pos.GetPositionZ());
         }
         // we have correct destz now
         else
+        {
+            pos.Relocate(destx, desty, destz);
             break;
+        }
     }
 
-    Trinity::NormalizeMapCoord(destx);
-    Trinity::NormalizeMapCoord(desty);
-    UpdateAllowedPositionZ(destx, desty, destz);
+    if (GetMapId() == 618 && pos.m_positionZ < 29.0f)
+        pos.m_positionZ = 28.5f;
 
-    float ground = GetMap()->GetHeight(GetPhaseMask(), destx, desty, MAX_HEIGHT, true);
-    float floor = GetMap()->GetHeight(GetPhaseMask(), destx, desty, destz, true);
-    ground = fabs(ground - destz) <= fabs(floor - pos.m_positionZ) ? ground : floor;
-    if (destz < ground)
-        destz = ground;
+    Trinity::NormalizeMapCoord(pos.m_positionX);
+    Trinity::NormalizeMapCoord(pos.m_positionY);
+    pos.m_positionZ = NormalizeZforCollision(this, destx, desty, pos.GetPositionZ());
+    pos.SetOrientation(GetOrientation());
+}
 
-    // Xinef: check if last z updates did not move z too far away
-    //newDist = pos.GetExactDist(destx, desty, destz);
-    //float ratio = newDist / dist;
-    //if (ratio > 1.3f)
-    //{
-    //    ratio = (1 / ratio) + (0.3f / ratio);
-    //    destx = pos.GetPositionX() + (fabs(destx - pos.GetPositionX()) * cos(angle) * ratio);
-    //    desty = pos.GetPositionY() + (fabs(desty - pos.GetPositionY()) * sin(angle) * ratio);
-    //    destz = pos.GetPositionZ() + (fabs(destz - pos.GetPositionZ()) * ratio * (destz < pos.GetPositionZ() ? -1.0f : 1.0f));
-    //}
+void WorldObject::MovePositionToFirstCollisions(Position &pos, float dist, float angle) const
+{
+    angle += GetOrientation();
+    float destx, desty, destz, ground, floor;
+    pos.m_positionZ += 2.0f;
+    destx = pos.m_positionX + dist * std::cos(angle);
+    desty = pos.m_positionY + dist * std::sin(angle);
 
-    pos.Relocate(destx, desty, destz);
-    pos.m_orientation = m_orientation;
+    // Prevent invalid coordinates here, position is unchanged
+    if (!Trinity::IsValidMapCoord(destx, desty))
+    {
+        sLog->outCrash("WorldObject::MovePositionToFirstCollision invalid coordinates X: %f and Y: %f were passed!", destx, desty);
+        return;
+    }
+
+    ground = GetMap()->GetHeight(GetPhaseMask(), destx, desty, MAX_HEIGHT, true);
+    floor = GetMap()->GetHeight(GetPhaseMask(), destx, desty, pos.m_positionZ, true);
+    destz = fabs(ground - pos.m_positionZ) <= fabs(floor - pos.m_positionZ) ? ground : floor;
+
+    bool col = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetMapId(), pos.m_positionX, pos.m_positionY, pos.m_positionZ + 0.5f, destx, desty, destz + 0.5f, destx, desty, destz, -0.5f);
+
+    // collision occured
+    if (col)
+    {
+        // move back a bit
+        destx -= CONTACT_DISTANCE * std::cos(angle);
+        desty -= CONTACT_DISTANCE * std::sin(angle);
+        dist = std::sqrt((pos.m_positionX - destx)*(pos.m_positionX - destx) + (pos.m_positionY - desty)*(pos.m_positionY - desty));
+    }
+
+    // check dynamic collision
+    col = GetMap()->getObjectHitPos(GetPhaseMask(), pos.m_positionX, pos.m_positionY, pos.m_positionZ + 0.5f, destx, desty, destz + 0.5f, destx, desty, destz, -0.5f);
+
+    // Collided with a gameobject
+    if (col)
+    {
+        destx -= CONTACT_DISTANCE * std::cos(angle);
+        desty -= CONTACT_DISTANCE * std::sin(angle);
+        dist = std::sqrt((pos.m_positionX - destx)*(pos.m_positionX - destx) + (pos.m_positionY - desty)*(pos.m_positionY - desty));
+    }
+
+    float step = dist / 10.0f;
+
+    for (uint8 j = 0; j < 10; ++j)
+    {
+        // do not allow too big z changes
+        if (fabs(pos.m_positionZ - destz) > 6.0f)
+        {
+            destx -= step * std::cos(angle);
+            desty -= step * std::sin(angle);
+            ground = GetMap()->GetHeight(GetPhaseMask(), destx, desty, MAX_HEIGHT, true);
+            floor = GetMap()->GetHeight(GetPhaseMask(), destx, desty, pos.m_positionZ, true);
+            destz = fabs(ground - pos.m_positionZ) <= fabs(floor - pos.m_positionZ) ? ground : floor;
+        }
+        // we have correct destz now
+        else
+        {
+            pos.Relocate(destx, desty, destz);
+            break;
+        }
+    }
+
+    Trinity::NormalizeMapCoord(pos.m_positionX);
+    Trinity::NormalizeMapCoord(pos.m_positionY);
+    UpdateAllowedPositionZ(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
+    pos.SetOrientation(GetOrientation());
 }
 
 void WorldObject::MovePositionToFirstCollisionForTotem(Position &pos, float dist, float angle, bool forGameObject)

@@ -36,6 +36,7 @@
 #include "VMapFactory.h"
 #include "LFGMgr.h"
 #include "Chat.h"
+#include "MMAPFactory.h"
 
 union u_map_magic
 {
@@ -119,7 +120,7 @@ bool Map::ExistVMap(uint32 mapid, int gx, int gy)
 
 void Map::LoadMMap(int gx, int gy)
 { 
-    if (!MMAP::MMapFactory::IsPathfindingEnabled(this, true)) // pussywizard
+    if (!MMAP::MMapFactory::IsPathfindingEnabled(GetId())) // pussywizard
         return;
 
     int mmapLoadResult = MMAP::MMapFactory::createOrGetMMapManager()->loadMap(GetId(), gx, gy);

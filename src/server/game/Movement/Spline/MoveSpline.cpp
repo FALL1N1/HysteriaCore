@@ -246,12 +246,6 @@ MoveSpline::UpdateResult MoveSpline::_updateState(int32& ms_time_diff)
         return Result_Arrived;
     }
 
-    if (ms_time_diff <= 0)
-    {
-        ms_time_diff = 0;
-        return Result_Arrived;
-    }
-
     UpdateResult result = Result_None;
 
     int32 minimal_diff = std::min(ms_time_diff, segment_time_elapsed());

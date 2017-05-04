@@ -425,6 +425,8 @@ struct Position
             pos->Relocate(m_positionX, m_positionY, m_positionZ, m_orientation);
     }
 
+    Position GetPosition() const { return *this; }
+
     Position::PositionXYZStreamer PositionXYZStream()
     {
         return PositionXYZStreamer(*this);
@@ -685,11 +687,17 @@ class WorldObject : public Object, public WorldLocation
             GetPosition(&pos);
             MovePosition(pos, dist, angle);
         }
-        void MovePositionToFirstCollision(Position &pos, float dist, float angle);
+        void MovePositionToFirstCollision(Position &pos, float dist, float angle) const;
         void GetFirstCollisionPosition(Position &pos, float dist, float angle)
         {
             GetPosition(&pos);
             MovePositionToFirstCollision(pos, dist, angle);
+        }
+        void MovePositionToFirstCollisions(Position &pos, float dist, float angle) const;
+        void GetFirstCollisionPositions(Position &pos, float dist, float angle)
+        {
+            GetPosition(&pos);
+            MovePositionToFirstCollisions(pos, dist, angle);
         }
         void MovePositionToFirstCollisionForTotem(Position &pos, float dist, float angle, bool forGameObject);
         void GetFirstCollisionPositionForTotem(Position &pos, float dist, float angle, bool forGameObject)

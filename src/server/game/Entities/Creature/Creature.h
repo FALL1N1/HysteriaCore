@@ -466,6 +466,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         bool CanWalk() const { return GetCreatureTemplate()->InhabitType & INHABIT_GROUND; }
         bool CanSwim() const { return (GetCreatureTemplate()->InhabitType & INHABIT_WATER) || IS_PLAYER_GUID(GetOwnerGUID()); }
         bool CanFly()  const { return GetCreatureTemplate()->InhabitType & INHABIT_AIR; }
+        bool IsIgnorePathfinding() const { return GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_IGNORE_PATHFINDING; }
 
         void SetReactState(ReactStates st) { m_reactState = st; }
         ReactStates GetReactState() const { return m_reactState; }

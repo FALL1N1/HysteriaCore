@@ -43,7 +43,7 @@ namespace MMAP
         public:
             static MMapManager* createOrGetMMapManager();
             static void clear();
-            static bool IsPathfindingEnabled(const Map* map, bool force = false);
+            static bool IsPathfindingEnabled(uint32 mapId);
             static void InitializeDisabledMaps();
             static bool forbiddenMaps[1000];
     };

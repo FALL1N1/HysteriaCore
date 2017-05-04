@@ -65,6 +65,7 @@
 #include "WorldSession.h"
 #include "ArenaSpectator.h"
 #include "DynamicVisibility.h"
+#include "MMapFactory.h"
 
 #include <math.h>
 
@@ -3362,6 +3363,15 @@ int32 Unit::GetCurrentSpellCastTime(uint32 spell_id) const
     if (Spell const* spell = FindCurrentSpellBySpellId(spell_id))
         return spell->GetCastTime();
     return 0;
+}
+
+bool Unit::CanMoveDuringChannel() const
+{
+    if (Spell* spell = m_currentSpells[CURRENT_CHANNELED_SPELL])
+        if (spell->getState() != SPELL_STATE_FINISHED)
+            return spell->GetSpellInfo()->HasAttribute(SPELL_ATTR5_CAN_CHANNEL_WHEN_MOVING) && spell->IsChannelActive();
+
+    return false;
 }
 
 bool Unit::isInFrontInMap(Unit const* target, float distance, float arc) const
@@ -18699,7 +18709,7 @@ void Unit::PetSpellFail(const SpellInfo* spellInfo, Unit* target, uint32 result)
     if (!charmInfo || GetTypeId() != TYPEID_UNIT)
         return;
 
-    if ((MMAP::MMapFactory::IsPathfindingEnabled(GetMap()) || result != SPELL_FAILED_LINE_OF_SIGHT) && target)
+    if ((MMAP::MMapFactory::IsPathfindingEnabled(GetMapId()) || result != SPELL_FAILED_LINE_OF_SIGHT) && target)
     {
         if ((result == SPELL_FAILED_LINE_OF_SIGHT || result == SPELL_FAILED_OUT_OF_RANGE) || !ToCreature()->HasReactState(REACT_PASSIVE))
             if (Unit *owner = GetOwner())
