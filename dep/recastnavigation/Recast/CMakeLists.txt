@@ -27,9 +27,7 @@ target_include_directories(Recast
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
-target_link_libraries(Recast
-  PUBLIC
-    zlib)
+target_link_libraries(Recast ${ZLIB_LIBRARIES})
 
 set_target_properties(Recast
     PROPERTIES

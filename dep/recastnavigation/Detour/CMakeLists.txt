@@ -23,9 +23,7 @@ target_include_directories(Detour
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
-target_link_libraries(Detour
-  PUBLIC
-    zlib)
+target_link_libraries(Detour ${ZLIB_LIBRARIES})
 
 set_target_properties(Detour
     PROPERTIES
