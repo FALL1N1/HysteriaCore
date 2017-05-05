@@ -56,7 +56,14 @@ void HomeMovementGenerator<Creature>::_setTargetLocation(Creature* owner)
         owner->GetHomePosition(x, y, z, o);
         init.SetFacing(o);
     }
-    init.MoveTo(x, y, z);
+
+    PathGenerator path(owner);
+    bool result = path.CalculatePath(x, y, z, true);
+    if (!result || (path.GetPathType() & PATHFIND_NOPATH))
+        init.MoveTo(x, y, z, true);
+    else
+        init.MovebyPath(path.GetPath());
+
     init.SetWalk(false);
     init.Launch();
 

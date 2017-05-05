@@ -3162,6 +3162,7 @@ enum SummonType
 enum EventId
 {
     EVENT_CHARGE            = 1003,
+    EVENT_CHARGE_PREPATH    = 1004,
 };
 
 enum ResponseCodes
