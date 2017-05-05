@@ -96,9 +96,9 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
 
     Movement::MoveSplineInit init(creature);
     PathGenerator path(creature);
-    bool result = path.CalculatePath(destX, destY, destZ, true);
+    bool result = path.CalculatePath(destX, destY, destZ, false);
     if (!result || (path.GetPathType() & PATHFIND_NOPATH))
-        init.MoveTo(destX, destY, destZ, true);
+        init.MoveTo(destX, destY, destZ, false);
     else
         init.MovebyPath(path.GetPath());
     init.SetWalk(true);
