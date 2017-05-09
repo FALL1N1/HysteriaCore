@@ -326,7 +326,7 @@ void WorldSession::DoLootRelease(uint64 lguid)
         loot = &corpse->loot;
 
         // Xinef: Buggs client? (Opening loot after closing)
-        //if (loot->isLooted())
+        if (loot->isLooted())
         {
             loot->clear();
             corpse->RemoveFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
@@ -338,7 +338,6 @@ void WorldSession::DoLootRelease(uint64 lguid)
         if (!pItem)
             return;
 
-        loot = &pItem->loot;
         ItemTemplate const* proto = pItem->GetTemplate();
 
         // destroy only 5 items from stack in case prospecting and milling
