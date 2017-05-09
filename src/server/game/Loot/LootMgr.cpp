@@ -62,6 +62,10 @@ struct LootGroupInvalidSelector : public std::unary_function<LootStoreItem*, boo
         if (!(item->lootmode & _lootMode))
             return true;
 
+        ItemTemplate const* _proto = sObjectMgr->GetItemTemplate(item->itemid);
+        if (!_proto)
+            return true;
+
         uint8 foundDuplicates = 0;
         for (std::vector<LootItem>::const_iterator itr = _loot.items.begin(); itr != _loot.items.end(); ++itr)
             if (itr->itemid == item->itemid)
