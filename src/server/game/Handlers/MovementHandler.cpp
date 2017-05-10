@@ -574,7 +574,9 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     cClientTimeDelta = 0;
                 const float time_delta = cClientTimeDelta < 1500 ? float(cClientTimeDelta) / 1000.0f : 1.5f; // normalize time - 1.5 second allowed for heavy loaded server
 
-                bool areMapsOK = !plrMover->GetMapId() != 548 || plrMover->GetMapId() != 369;
+                bool areMapsOK = true;
+                if (plrMover->GetMapId() != 548 || plrMover->GetMapId() != 369)
+                    areMapsOK = false;
 
                 const float tg_z = (real_delta != 0 && no_fly_auras && no_swim_flags) ? (pow(delta_z, 2) / real_delta) : -99999; // movement distance tangents
 
@@ -596,7 +598,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // AntiGravity (thanks to Meekro)
                 const float JumpHeight = plrMover->m_anti_JumpBaseZ - movementInfo.pos.GetPositionZ();
-                if (no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) 
+                if (areMapsOK && no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING)
                     && !plrMover->isFeared() && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                 {
                     //sLog->outString("     555      ");
@@ -622,7 +624,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 if (opcode == MSG_MOVE_JUMP)
                 {
                     //sLog->outString("     444      ");
-                    if ((no_fly_auras && no_swim_water) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared() && !plrMover->IsInWater() && !plrMover->IsUnderWater())
+                    if (areMapsOK && (no_fly_auras && no_swim_water) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared() && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                     {
                         if (plrMover->m_anti_JumpCount >= 1)
                         {
@@ -703,17 +705,17 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     }
 
                 // speed and teleport hack checks
-                if ((real_delta > (allowed_delta * 2)) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
+                if (areMapsOK && (real_delta > (allowed_delta * 2)) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
                     && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                     check_passed = false;
 
                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
-                if ((delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
+                if (areMapsOK && (delta_z < plrMover->m_anti_Last_VSpeed && plrMover->m_anti_JumpCount == 0 && tg_z > 2.37f) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
                     && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                     check_passed = false;
                 
                 // Fly hack checks
-                if ((no_fly_auras && !no_fly_flags) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
+                if (areMapsOK && (no_fly_auras && !no_fly_flags) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
                     && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                 {
                     //sLog->outString("     333      ");
@@ -735,7 +737,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
 
                 // Waterwalk checks
-                if (no_waterwalk_auras && !no_waterwalk_flags && !plrMover->IsInWater() && !plrMover->IsUnderWater())
+                if (areMapsOK && no_waterwalk_auras && !no_waterwalk_flags && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                 {
                     check_passed = false;
                     // Tell the player "Sure, you can fly!"
@@ -755,7 +757,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 }
 
                 // Teleport To Plane checks
-                if (no_swim_in_water && movementInfo.pos.GetPositionZ() < 0.0001f && movementInfo.pos.GetPositionZ() > -0.0001f)
+                if (areMapsOK && no_swim_in_water && movementInfo.pos.GetPositionZ() < 0.0001f && movementInfo.pos.GetPositionZ() > -0.0001f)
                 {
                     if (const Map *map = plrMover->GetMap())
                     {
