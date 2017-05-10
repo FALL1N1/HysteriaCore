@@ -312,6 +312,12 @@ bool LootStoreItem::Roll(bool rate) const
 // Checks correctness of values
 bool LootStoreItem::IsValid(LootStore const& store, uint32 entry) const
 {
+    if (group >= 1 << 7)                                     // it stored in 7 bit field
+    {
+        sLog->outErrorDb("Table '%s' entry %d item %d: group (%u) must be less %u - skipped", store.GetName(), entry, itemid, group, 1 << 7);
+        return false;
+    }
+
     if (mincountOrRef == 0)
     {
         sLog->outErrorDb("Table '%s' entry %d item %d: wrong mincountOrRef (%d) - skipped", store.GetName(), entry, itemid, mincountOrRef);
@@ -432,7 +438,7 @@ void Loot::AddItem(LootStoreItem const& item)
         return;
 
     uint32 count = urand(item.mincountOrRef, item.maxcount);
-    uint32 stacks = count / proto->GetMaxStackSize() + ((count % proto->GetMaxStackSize()) ? 1 : 0);
+    uint32 stacks = count / proto->GetMaxStackSize() + (count % proto->GetMaxStackSize() ? 1 : 0);
 
     std::vector<LootItem>& lootItems = item.needs_quest ? quest_items : items;
     uint32 limit = item.needs_quest ? MAX_NR_QUEST_ITEMS : MAX_NR_LOOT_ITEMS;
@@ -723,6 +729,8 @@ LootItem* Loot::LootItemInSlot(uint32 lootSlot, Player* player, QuestItem* *qite
             if (qitem)
                 *qitem = qitem2;
             item = &quest_items[qitem2->index];
+            if (item->follow_loot_rules && !item->AllowedForPlayer(player)) // pussywizard: such items (follow_loot_rules) are added to every player, but not everyone is allowed, check it here
+                return NULL;
             is_looted = qitem2->is_looted;
         }
     }
@@ -886,14 +894,29 @@ ByteBuffer& operator<<(ByteBuffer& b, LootView const& lv)
                                 slot_type = LOOT_SLOT_TYPE_ROLL_ONGOING;
                                 break;
                             case MASTER_PERMISSION:
-                                slot_type = LOOT_SLOT_TYPE_MASTER;
+                            {
+                                if (lv.viewer->GetGroup())
+                                {
+                                    if (lv.viewer->GetGroup()->GetMasterLooterGuid() == lv.viewer->GetGUID())
+                                        slot_type = LOOT_SLOT_TYPE_MASTER;
+                                    else
+                                        slot_type = LOOT_SLOT_TYPE_LOCKED;
+                                }
                                 break;
+                            }
                             case RESTRICTED_PERMISSION:
                                 slot_type = LOOT_SLOT_TYPE_LOCKED;
                                 break;
                             default:
                                 continue;
                         }
+                    }
+                    else if (l.items[i].rollWinnerGUID)
+                    {
+                        if (l.items[i].rollWinnerGUID == lv.viewer->GetGUID())
+                            slot_type = LOOT_SLOT_TYPE_OWNER;
+                        else
+                            continue;
                     }
                     else if (l.roundRobinPlayer == 0 || lv.viewer->GetGUID() == l.roundRobinPlayer || !l.items[i].is_underthreshold)
                     {
@@ -950,6 +973,10 @@ ByteBuffer& operator<<(ByteBuffer& b, LootView const& lv)
     }
 
     LootSlotType slotType = lv.permission == OWNER_PERMISSION ? LOOT_SLOT_TYPE_OWNER : LOOT_SLOT_TYPE_ALLOW_LOOT;
+
+    // Xinef: items that do not follow loot rules need this
+    LootSlotType partySlotType = lv.permission == MASTER_PERMISSION ? LOOT_SLOT_TYPE_MASTER : slotType;
+
     QuestItemMap const& lootPlayerQuestItems = l.GetPlayerQuestItems();
     QuestItemMap::const_iterator q_itr = lootPlayerQuestItems.find(lv.viewer->GetGUIDLow());
     if (q_itr != lootPlayerQuestItems.end())
@@ -984,6 +1011,8 @@ ByteBuffer& operator<<(ByteBuffer& b, LootView const& lv)
                             break;
                     }
                 }
+                else if (!item.freeforall)
+                    b << uint8(partySlotType);
                 else
                     b << uint8(slotType);
                 ++itemsShown;
@@ -1044,6 +1073,8 @@ ByteBuffer& operator<<(ByteBuffer& b, LootView const& lv)
                         break;
                     }
                 }
+                else if (!item.freeforall)
+                    b << uint8(partySlotType);
                 else
                     b << uint8(slotType);
                 ++itemsShown;
