@@ -7264,7 +7264,8 @@ void Spell::Delayed() // only called in DealDamage()
     else
         m_timer += delaytime;
 
-    sLog->outString("[FIREFLY] Spell %u partially interrupted for (%d) ms at damage", m_spellInfo->Id, delaytime);
+    // we don't need this log anymore, uncomment only if there is issue with fan of knives
+    //sLog->outString("[FIREFLY] Spell %u partially interrupted for (%d) ms at damage", m_spellInfo->Id, delaytime);
 
     WorldPacket data(SMSG_SPELL_DELAYED, 8+4);
     data.append(m_caster->GetPackGUID());
