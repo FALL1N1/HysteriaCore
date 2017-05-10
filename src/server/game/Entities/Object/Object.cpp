@@ -2534,15 +2534,17 @@ bool WorldObject::GetClosePoint(float &x, float &y, float &z, float size, float 
 { 
     // angle calculated from current orientation
     GetNearPoint(forWho, x, y, z, size, distance2d, GetOrientation() + angle);
+    
+    if (!forWho) 
+        return true;
 
     if (fabs(this->GetPositionZ()-z) > 3.0f || !IsWithinLOS(x, y, z))
     {
         x = this->GetPositionX();
         y = this->GetPositionY();
         z = this->GetPositionZ();
-        if (forWho)
-            if (const Unit* u = forWho->ToUnit())
-                u->UpdateAllowedPositionZ(x, y, z);
+        if (const Unit* u = forWho->ToUnit())
+            u->UpdateAllowedPositionZ(x, y, z);
     }
     float maxDist = GetObjectSize() + size + distance2d + 1.0f;
     if (GetExactDistSq(x, y, z) >= maxDist*maxDist)
