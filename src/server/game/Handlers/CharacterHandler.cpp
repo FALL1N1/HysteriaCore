@@ -996,6 +996,7 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
             pCurrChar->TeleportTo(at->target_mapId, at->target_X, at->target_Y, at->target_Z, pCurrChar->GetOrientation());
         else
             pCurrChar->TeleportTo(pCurrChar->m_homebindMapId, pCurrChar->m_homebindX, pCurrChar->m_homebindY, pCurrChar->m_homebindZ, pCurrChar->GetOrientation());
+        sLog->outString("TELEPORT BUG HERE #1! ");
     }
 
     //sLog->outDebug("Player %s added to Map.", pCurrChar->GetName().c_str());

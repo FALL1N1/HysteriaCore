@@ -1255,6 +1255,7 @@ public:
         if (location_str == "inn")
         {
             player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, player->GetOrientation());
+            sLog->outString("TELEPORT BUG HERE #11! ");
             return true;
         }
 
