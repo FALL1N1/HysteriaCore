@@ -17667,7 +17667,7 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
 
     std::string taxi_nodes = fields[37].GetString();
 
-#define RelocateToHomebind(){ mapId = m_homebindMapId; instanceId = 0; Relocate(m_homebindX, m_homebindY, m_homebindZ); }
+#define RelocateToHomebind(){ mapId = m_homebindMapId; instanceId = 0; Relocate(m_homebindX, m_homebindY, m_homebindZ); sLog->outString("Firefly Teleport Bug #111"); }
 
     _LoadGroup();
 
