@@ -1400,7 +1400,7 @@ void GameObject::Use(Unit* user)
         case GAMEOBJECT_TYPE_GOOBER:                        //10
         {
             GameObjectTemplate const* info = GetGOInfo();
-            sLog->outString("it is gobber");
+            //sLog->outString("it is gobber");
             // xinef: Goober cannot be used with this flag, skip
             if (HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE))
                 return;
