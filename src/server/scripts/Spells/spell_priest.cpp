@@ -726,15 +726,15 @@ class spell_pri_power_word_shield : public SpellScriptLoader
             if (int32 healModifier = caster->GetMaxPositiveAuraModifier(SPELL_AURA_MOD_HEALING_DONE_PERCENT))
                 AddPct(amount, healModifier);
 
-            if (sWorld->IsInCurrentContent(PATCH_332))
-            {
+            //if (sWorld->IsInCurrentContent(PATCH_332))
+            //{
                 // Arena - Dampening
                 if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_ARENA_DAMPENING, EFFECT_0))
                     AddPct(amount, dampening->GetAmount());
                 // Battleground - Dampening
                 else if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_BATTLEGROUND_DAMPENING, EFFECT_0))
                     AddPct(amount, dampening->GetAmount());
-            }
+            //}
 
             return amount;
         }
