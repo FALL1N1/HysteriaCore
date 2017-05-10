@@ -2490,9 +2490,11 @@ bool Player::TeleportToEntryPoint()
     ScheduleDelayedOperation(DELAYED_BG_MOUNT_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_TAXI_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_GROUP_RESTORE);
-
-    if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID)
+    sLog->outString("FireFly Teleport Bug: #1");
+    if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID){
+        sLog->outString("FireFly Teleport Bug: #2");
         return TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, GetOrientation());
+    }
     return TeleportTo(m_entryPointData.joinPos);
 }
 

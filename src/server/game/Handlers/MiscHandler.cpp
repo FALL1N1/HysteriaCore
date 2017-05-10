@@ -1776,6 +1776,7 @@ void WorldSession::HandleHearthAndResurrect(WorldPacket& /*recv_data*/)
     _player->ResurrectPlayer(1.0f);
     _player->SpawnCorpseBones();
     _player->TeleportTo(_player->m_homebindMapId, _player->m_homebindX, _player->m_homebindY, _player->m_homebindZ, _player->GetOrientation());
+    sLog->outString("FireFly Teleport Bug: #3");
 }
 
 void WorldSession::HandleInstanceLockResponse(WorldPacket& recvPacket)
