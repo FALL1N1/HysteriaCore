@@ -31,6 +31,7 @@
 #include "World.h"
 
 #define FLIGHT_TRAVEL_UPDATE  100
+#define STOP_TIME_FOR_PLAYER  2 * MINUTE * IN_MILLISECONDS           // 3 Minutes
 #define TIMEDIFF_NEXT_WP      250
 
 template<class T, class P>
@@ -113,6 +114,7 @@ class FlightPathMovementGenerator : public MovementGeneratorMedium< Player, Flig
             _endGridY = 0.0f;
             _endMapId = 0;
             _preloadTargetNode = 0;
+            _mapSwitch = false;
         }
         void LoadPath(Player* player);
         void DoInitialize(Player*);
@@ -123,29 +125,21 @@ class FlightPathMovementGenerator : public MovementGeneratorMedium< Player, Flig
 
         TaxiPathNodeList const& GetPath() { return i_path; }
         uint32 GetPathAtMapEnd() const;
-        bool HasArrived() { return (i_currentNode >= i_path.size()); }
+        bool HasArrived() const { return (i_currentNode >= i_path.size()); }
         void SetCurrentNodeAfterTeleport();
         void SkipCurrentNode() { ++i_currentNode; }
         void DoEventIfAny(Player* player, TaxiPathNodeEntry const* node, bool departure);
-
-        bool GetResetPos(Player*, float& x, float& y, float& z);
 
         void InitEndGridInfo();
         void PreloadEndGrid();
 
     private:
+        float _endGridX;                //! X coord of last node location
+        float _endGridY;                //! Y coord of last node location
+        uint32 _endMapId;               //! map Id of last node location
+        uint32 _preloadTargetNode;      //! node index where preloading starts
+        bool _mapSwitch;
 
-        float _endGridX;                            //! X coord of last node location
-        float _endGridY;                            //! Y coord of last node location
-        uint32 _endMapId;                           //! map Id of last node location
-        uint32 _preloadTargetNode;                  //! node index where preloading starts
-
-        struct TaxiNodeChangeInfo
-        {
-            uint32 PathIndex;
-            int32 Cost;
-        };
-
-        std::deque<TaxiNodeChangeInfo> _pointsForPathSwitch;    //! node indexes and costs where TaxiPath changes
+        std::deque<uint32> _pointsForPathSwitch;    //! node indexes and costs where TaxiPath changes
 };
 #endif
