@@ -22375,7 +22375,7 @@ void Player::SetEntryPoint()
     {
         m_entryPointData.mountSpell  = 0;
         m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
-
+        sLog->outString("FireFly Teleport Bug EmptyTaxiPath");
         std::vector<uint32> const& taxi = m_taxi.GetPath();
         for (std::vector<uint32>::const_iterator itr = taxi.begin(); itr != taxi.end(); ++itr)
             m_entryPointData.taxiPath.push_back(*itr);
@@ -22397,13 +22397,20 @@ void Player::SetEntryPoint()
         {
             if (const WorldSafeLocsEntry* entry = sObjectMgr->GetClosestGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId(), GetTeamId()))
                 m_entryPointData.joinPos = WorldLocation(entry->map_id, entry->x, entry->y, entry->z, 0.0f);
+            sLog->outString("FireFly Teleport Bug ItsDungeon");
         }
-        else if (!GetMap()->IsBattlegroundOrArena())
+        else if (!GetMap()->IsBattlegroundOrArena()) 
+        {
             m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
+            sLog->outString("FireFly Teleport Bug ItsBattleground");
+        }
     }
 
     if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID)
+    {
         m_entryPointData.joinPos = WorldLocation(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, 0.0f);
+        sLog->outString("FireFly Teleport Bug InvalidMap");
+    }
 }
 
 void Player::LeaveBattleground(Battleground* bg)
