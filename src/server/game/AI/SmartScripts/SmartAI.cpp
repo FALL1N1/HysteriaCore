@@ -797,17 +797,8 @@ void SmartAI::AttackStart(Unit* who)
 
     if (who && me->Attack(who, me->IsWithinMeleeRange(who)))
     {
-        if (mCanCombatMove || GetScript()->GetMaxCombatDist())
-        {
-            SetRun(mRun);
-            MovementGeneratorType type = me->GetMotionMaster()->GetMotionSlotType(MOTION_SLOT_ACTIVE);
-            if (type == ESCORT_MOTION_TYPE || type == POINT_MOTION_TYPE)
-            {
-                me->GetMotionMaster()->MovementExpired();
-                me->StopMoving();
-            }
-            me->GetMotionMaster()->MoveChase(who, GetScript()->GetCasterActualDist() ? GetScript()->GetCasterActualDist() : GetScript()->GetActualCombatDist());
-        }
+        if (mCanCombatMove)
+            me->GetMotionMaster()->MoveChase(who);
     }
 }
 
