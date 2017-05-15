@@ -200,7 +200,7 @@ enum PetScalingSpells
 
 };
 
-#define PET_FOLLOW_DIST  1.0f
+#define PET_FOLLOW_DIST  0.5f
 #define PET_FOLLOW_ANGLE (M_PI/2)
 
 #endif

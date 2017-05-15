@@ -44,25 +44,34 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     if (owner->HasUnitState(UNIT_STATE_CASTING) && !owner->CanMoveDuringChannel())
         return;
 
-    bool forceDest = owner->GetTypeId() == TYPEID_UNIT && owner->HasUnitState(UNIT_STATE_FOLLOW);
+    // allow pets to use shortcut if no path found when following their master
+    bool forceDest = (owner->GetTypeId() == TYPEID_UNIT && owner->ToCreature()->IsPet()
+        && owner->HasUnitState(UNIT_STATE_FOLLOW));
 
     if (owner->GetTypeId() == TYPEID_UNIT && !forceDest && !i_target->isInAccessiblePlaceFor(owner->ToCreature()))
     {
         owner->ToCreature()->SetCannotReachTarget(true);
         return;
     }
+
     float x, y, z;
 
     if (updateDestination || !i_path)
     {
-        if (!i_path)
-            i_path = new PathGenerator(owner);
+        if (!i_offset)
+        {
+            if (i_target->IsWithinDistInMap(owner, CONTACT_DISTANCE))
+                return;
+        }
 
         float dist = i_offset ? i_offset : CONTACT_DISTANCE;
         float angle = (i_offset || i_angle != 0.f) ? i_angle : i_target->GetRelativeAngle(owner->GetPositionX(), owner->GetPositionY());
 
+        if (i_target->IsWithinDistInMap(owner, dist))
+            return;
+
         Position pos;
-        owner->GetMapId() == 618 ? i_target->GetFirstCollisionPosition(pos, i_target->GetObjectSize() + dist, angle) :  i_target->GetFirstCollisionPositions(pos, i_target->GetObjectSize() + dist, angle);
+        i_target->GetFirstCollisionPosition(pos, i_target->GetObjectSize() + dist, angle);
 
         x = pos.m_positionX;
         y = pos.m_positionY;
@@ -76,6 +85,9 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
         y = end.y;
         z = end.z;
     }
+
+    if (!i_path)
+        i_path = new PathGenerator(owner);
 
     bool result = i_path->CalculatePath(x, y, z, forceDest);
     if (!result || (i_path->GetPathType() & PATHFIND_NOPATH))
@@ -235,7 +247,7 @@ void ChaseMovementGenerator<Creature>::MovementInform(Creature* unit)
 {
     // Pass back the GUIDLow of the target. If it is pet's owner then PetAI will handle
     if (unit->AI())
-        unit->AI()->MovementInform(CHASE_MOTION_TYPE, i_target.getTarget()->GetGUID());
+        unit->AI()->MovementInform(CHASE_MOTION_TYPE, i_target.getTarget()->GetGUIDLow());
 }
 
 //-----------------------------------------------//
@@ -296,7 +308,7 @@ void FollowMovementGenerator<Creature>::MovementInform(Creature* unit)
 {
     // Pass back the GUIDLow of the target. If it is pet's owner then PetAI will handle
     if (unit->AI())
-        unit->AI()->MovementInform(FOLLOW_MOTION_TYPE, i_target.getTarget()->GetGUID());
+        unit->AI()->MovementInform(FOLLOW_MOTION_TYPE, i_target.getTarget()->GetGUIDLow());
 }
 
 //-----------------------------------------------//
