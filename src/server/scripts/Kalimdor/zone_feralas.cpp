@@ -157,7 +157,10 @@ public:
                     Talk(SAY_OOX_END);
                     // Award quest credit
                     if (Player* player = GetPlayerForEscort())
+                    {
+                        player->CompleteQuest(QUEST_RESCUE_OOX22FE);
                         player->GroupEventHappens(QUEST_RESCUE_OOX22FE, me);
+                    }
                     break;
             }
         }

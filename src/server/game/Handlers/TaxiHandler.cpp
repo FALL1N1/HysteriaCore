@@ -319,6 +319,7 @@ void WorldSession::HandleMoveSplineDoneOpcode(WorldPacket& recvData)
     {
         GetPlayer()->RemoveAurasDueToSpell(38776);
         GetPlayer()->CompleteQuest(9718);
+        GetPlayer()->DeMorph();
     }
 }
 
