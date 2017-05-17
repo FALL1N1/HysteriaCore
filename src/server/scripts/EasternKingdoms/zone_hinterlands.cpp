@@ -99,7 +99,10 @@ public:
                 case 64:
                     Talk(SAY_OOX_END);
                     if (Player* player = GetPlayerForEscort())
+                    {
+                        player->CompleteQuest(QUEST_RESQUE_OOX_09);
                         player->GroupEventHappens(QUEST_RESQUE_OOX_09, me);
+                    }
                     break;
             }
         }
