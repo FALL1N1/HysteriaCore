@@ -1032,7 +1032,7 @@ class spell_q12634_some_make_lemonade : public SpellScriptLoader
             void DespawnObject()
             {
                 if (GameObject* go = GetCaster()->FindNearestGameObject(190622, 20.0f))
-                    go->Delete();
+                    go->SetRespawnTime(30);
             }
 
             void Register()
