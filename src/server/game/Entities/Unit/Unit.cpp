@@ -16369,6 +16369,9 @@ void Unit::Kill(Unit* killer, Unit* victim, bool durabilityLoss, WeaponAttackTyp
                 if (!ressSpellId)
                     ressSpellId = victim->ToPlayer()->GetResurrectionSpellId();
 
+                if (victim->ToPlayer()->GetResurrectionSpellId() == 21169 && victim->ToPlayer()->HasItemCount(17030, 1))
+                    player->DestroyItemCount(17030, 1, false);
+
                 //Remove all expected to remove at death auras (most important negative case like DoT or periodic triggers)
                 victim->RemoveAllAurasOnDeath();
 
