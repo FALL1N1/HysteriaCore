@@ -406,11 +406,12 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
             }
         }
 
-        if (!plrMover->m_transport)
-            if (Map *tempMap = mover->GetMap())
-                if (GameObject *tempTransport = tempMap->GetGameObject(movementInfo.transport.guid))
-                    if (tempTransport->IsTransport())
-                        plrMover->m_temp_transport = tempTransport;
+        if(plrMover)
+            if (!plrMover->m_transport)
+                if (Map *tempMap = mover->GetMap())
+                    if (GameObject *tempTransport = tempMap->GetGameObject(movementInfo.transport.guid))
+                        if (tempTransport->IsTransport())
+                            plrMover->m_temp_transport = tempTransport;
 
         if ((!plrMover && !mover->GetTransport() && !mover->GetVehicle()) || (plrMover && !plrMover->m_vehicle && !plrMover->m_transport && !plrMover->m_temp_transport)) // Not sure if the first part is needed. Just added it for verbosity.
             movementInfo.flags &= ~MOVEMENTFLAG_ONTRANSPORT;
