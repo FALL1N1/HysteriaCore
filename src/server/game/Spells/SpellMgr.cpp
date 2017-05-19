@@ -3248,9 +3248,14 @@ void SpellMgr::LoadDbcDataCorrections()
             case 63137: // Force Cast (HACK: Target shouldn't be changed; summon position should be untied from spell destination)
                 spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_DEST_DB;
                 break;
-            case 53096: // Quetz'lun's Judgment            
+            case 53096: // Quetz'lun's Judgment
             case 70743: // AoD Special
             case 70614: // AoD Special - Vegard
+            case 4020:  // Safirdrang's Chill
+            case 52438: // Summon Skittering Swarmer (Force Cast)
+            case 52449: // Summon Skittering Infector (Force Cast)
+            case 53609: // Summon Anub'ar Assassin (Force Cast)
+            case 53457: // Summon Impale Trigger (AoE)
                 spellInfo->MaxAffectedTargets = 1;
                 break;
             case 52611: // Summon Skeletons
