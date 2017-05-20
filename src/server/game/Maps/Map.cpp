@@ -2442,6 +2442,15 @@ bool InstanceMap::CanEnter(Player* player, bool loginCheck)
         return false;
     }
 
+    const AccessRequirement* req = sObjectMgr->GetAccessRequirement(GetId(), GetDifficulty());
+
+    if (req)
+    {
+        if (player->getLevel() < req->levelMin)
+        {
+            return false;
+        }
+    }
     // allow GM's to enter
     if (player->IsGameMaster())
         return Map::CanEnter(player, loginCheck);
