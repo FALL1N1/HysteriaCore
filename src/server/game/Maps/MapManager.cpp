@@ -235,6 +235,69 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
         }
     }
 
+    /* firefly */
+    // hardcode levelcap of instances
+    const AccessRequirement* req = sObjectMgr->GetAccessRequirement(mapid, targetDifficulty);
+
+    if (req)
+    {
+        sLog->outString("REQUIREMENTS SUCCESS #1");
+        if (player->getLevel() < req->levelMin)
+        {
+            sLog->outString("REQUIREMENTS SUCCESS #2");
+            player->GetSession()->SendAreaTriggerMessage(player->GetSession()->GetTrinityString(LANG_LEVEL_MINREQUIRED), req->levelMin);
+            return false;
+        }
+    }
+    // firefly /custom hardcode/ : disable higher raids
+    switch (mapid)
+    {
+        // 3.3.5A
+        case 724:
+            if (!sWorld->IsInCurrentContent(PATCH_335))
+            {
+                // add notification to player @todo
+                return false;
+            }
+            break;
+        // 3.3.0
+        case 668: // HoR
+        case 658: // PoS
+        case 632: // FoS
+        case 631: // ICC
+            if (!sWorld->IsInCurrentContent(PATCH_335))
+            {
+                // add notification to player @todo
+                return false;
+            }
+            break;
+        // 3.2.2
+        case 249:
+            if (!sWorld->IsInCurrentContent(PATCH_322))
+            {
+                // add notification to player @todo
+                return false;
+            }
+            break;
+        // 3.2.0
+        case 649: // raid toc
+        case 650: // dungeon toc
+            if (!sWorld->IsInCurrentContent(PATCH_320))
+            {
+                // add notification to player @todo
+                return false;
+            }
+            break;
+        // 3.1.0
+        case 603:
+            if (!sWorld->IsInCurrentContent(PATCH_31X))
+            {
+                // add notification to player @todo
+                return false;
+            }
+            break;
+    }
+
     //Other requirements
     return player->Satisfy(sObjectMgr->GetAccessRequirement(mapid, targetDifficulty), mapid, true);
 }
