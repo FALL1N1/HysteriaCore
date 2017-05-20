@@ -37,11 +37,6 @@ Unit* TempSummon::GetSummoner() const
     return m_summonerGUID ? ObjectAccessor::GetUnit(*this, m_summonerGUID) : NULL;
 }
 
-Creature* TempSummon::GetSummonerCreatureBase() const
-{
-    return m_summonerGUID ? ObjectAccessor::GetCreature(*this, m_summonerGUID) : NULL;
-}
-
 void TempSummon::Update(uint32 diff)
 { 
     Creature::Update(diff);

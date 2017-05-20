@@ -1687,8 +1687,6 @@ void Creature::Respawn(bool force)
         }
 
         GetMotionMaster()->InitDefault();
-        //Re-initialize reactstate that could be altered by movementgenerators
-        InitializeReactState();
 
         //Call AI respawn virtual function
         if (IsAIEnabled)
@@ -1701,6 +1699,9 @@ void Creature::Respawn(bool force)
         uint32 poolid = GetDBTableGUIDLow() ? sPoolMgr->IsPartOfAPool<Creature>(GetDBTableGUIDLow()) : 0;
         if (poolid)
             sPoolMgr->UpdatePool<Creature>(poolid, GetDBTableGUIDLow());
+
+        //Re-initialize reactstate that could be altered by movementgenerators
+        InitializeReactState();
     }
 
     // xinef: relocate notifier, fixes npc appearing in corpse position after forced respawn (instead of spawn)

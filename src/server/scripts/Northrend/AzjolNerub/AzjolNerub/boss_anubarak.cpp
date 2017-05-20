@@ -1,484 +1,138 @@
 /*
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
+REWRITTEN BY XINEF
  */
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
-#include "SpellScript.h"
-#include "PassiveAI.h"
 #include "azjol_nerub.h"
 
 enum Spells
 {
-    SPELL_EMERGE                = 53500,
-    SPELL_SUBMERGE              = 53421,
-    SPELL_IMPALE_AURA           = 53456,
-    SPELL_IMPALE_VISUAL         = 53455,
-    SPELL_IMPALE_DAMAGE         = 53454,
-    SPELL_LEECHING_SWARM        = 53467,
-    SPELL_POUND                 = 59433,
-    SPELL_POUND_DAMAGE          = 59432,
-    SPELL_CARRION_BEETLES       = 53520,
-    SPELL_CARRION_BEETLE        = 53521,
+    SPELL_CARRION_BEETLES                = 53520,
+    SPELL_SUMMON_CARRION_BEETLES        = 53521,
+    SPELL_LEECHING_SWARM                = 53467,
+    SPELL_POUND                            = 53472,
+    SPELL_POUND_DAMAGE                    = 53509,
+    SPELL_IMPALE_PERIODIC                = 53456,
+    SPELL_EMERGE                        = 53500,
+    SPELL_SUBMERGE                        = 53421,
+    SPELL_SELF_ROOT                        = 42716,
 
-    SPELL_SUMMON_DARTER         = 53599,
-    SPELL_SUMMON_ASSASSIN       = 53609,
-    SPELL_SUMMON_GUARDIAN       = 53614,
-    SPELL_SUMMON_VENOMANCER     = 53615,
-
-    SPELL_DART                  = 59349,
-    SPELL_BACKSTAB              = 52540,
-    SPELL_ASSASSIN_VISUAL       = 53611,
-    SPELL_SUNDER_ARMOR          = 53618,
-    SPELL_POISON_BOLT           = 53617
-};
-
-enum Creatures
-{
-    NPC_WORLD_TRIGGER           = 22515,
+    SPELL_SUMMON_DARTER                    = 53599,
+    SPELL_SUMMON_ASSASSIN                = 53610,
+    SPELL_SUMMON_GUARDIAN                = 53614,
+    SPELL_SUMMON_VENOMANCER                = 53615,
 };
 
 enum Yells
 {
-    SAY_AGGRO       = 0,
-    SAY_SLAY        = 1,
-    SAY_DEATH       = 2,
-    SAY_LOCUST      = 3,
-    SAY_SUBMERGE    = 4,
-    SAY_INTRO       = 5
-};
-
-enum Events
-{
-    EVENT_POUND = 1,
-    EVENT_IMPALE,
-    EVENT_LEECHING_SWARM,
-    EVENT_CARRION_BEETLES,
-    EVENT_SUBMERGE, // use event for this so we don't submerge mid-cast
-    EVENT_DARTER,
-    EVENT_ASSASSIN,
-    EVENT_GUARDIAN,
-    EVENT_VENOMANCER,
-    EVENT_CLOSE_DOOR
-};
-
-enum Actions
-{
-    ACTION_PET_DIED = 1,
-    ACTION_PET_EVADE
+    SAY_AGGRO                            = 0,
+    SAY_SLAY                            = 1,
+    SAY_DEATH                            = 2,
+    SAY_LOCUST                            = 3,
+    SAY_SUBMERGE                        = 4,
+    SAY_INTRO                            = 5
 };
 
 enum Misc
 {
-    ACHIEV_GOTTA_GO_START_EVENT = 20381,
-};
+    ACHIEV_TIMED_START_EVENT            = 20381,
 
-enum Phases
-{
-    PHASE_EMERGE = 1,
-    PHASE_SUBMERGE
-};
-
-enum GUIDTypes
-{
-    GUID_TYPE_PET = 0,
-    GUID_TYPE_IMPALE
-};
-
-enum SummonGroups
-{
-    SUMMON_GROUP_WORLD_TRIGGER_GUARDIAN = 1
+    EVENT_CHECK_HEALTH_25                = 1,
+    EVENT_CHECK_HEALTH_50                = 2,
+    EVENT_CHECK_HEALTH_75                = 3,
+    EVENT_CARRION_BEETELS                = 4,
+    EVENT_LEECHING_SWARM                = 5,
+    EVENT_IMPALE                        = 6,
+    EVENT_POUND                            = 7,
+    EVENT_CLOSE_DOORS                    = 8,
+    EVENT_EMERGE                        = 9,
+    EVENT_SUMMON_VENOMANCER                = 10,
+    EVENT_SUMMON_DARTER                    = 11,
+    EVENT_SUMMON_GUARDIAN                = 12,
+    EVENT_SUMMON_ASSASSINS                = 13,
+    EVENT_ENABLE_ROTATE                    = 14,
+    EVENT_KILL_TALK                        = 15
 };
 
 class boss_anub_arak : public CreatureScript
 {
-public:
-    boss_anub_arak() : CreatureScript("boss_anub_arak") { }
-
-    struct boss_anub_arakAI : public BossAI
-    {
-        boss_anub_arakAI(Creature* creature) : BossAI(creature, DATA_ANUBARAK), _nextSubmerge(0), _petCount(0), _assassinCount(0), _guardianCount(0), _venomancerCount(0) { }
-
-        void Reset()
-        {
-            BossAI::Reset();
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-            instance->DoStopTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_GOTTA_GO_START_EVENT);
-            _nextSubmerge = 75;
-            _petCount = 0;
-        }
-
-        void EnterCombat(Unit* who)
-        {
-            BossAI::EnterCombat(who);
-
-            if (GameObject* door = ObjectAccessor::GetGameObject(*me, instance->GetData64(DATA_ANUBARAK_WALL)))
-                door->SetGoState(GO_STATE_ACTIVE); // open door for now
-
-            Talk(SAY_AGGRO);
-            instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_GOTTA_GO_START_EVENT);
-
-            events.SetPhase(PHASE_EMERGE);
-            events.ScheduleEvent(EVENT_CLOSE_DOOR, Seconds(5));
-            events.ScheduleEvent(EVENT_POUND, urand(Seconds(2), Seconds(4)), 0, PHASE_EMERGE);
-            events.ScheduleEvent(EVENT_LEECHING_SWARM, urand(Seconds(5), Seconds(7)), 0, PHASE_EMERGE);
-            events.ScheduleEvent(EVENT_CARRION_BEETLES, urand(Seconds(14), Seconds(17)), 0, PHASE_EMERGE);
-
-            // set up world triggers
-            std::list<TempSummon*> summoned;
-            me->SummonCreatureGroup(SUMMON_GROUP_WORLD_TRIGGER_GUARDIAN, &summoned);
-            if (summoned.empty()) // something went wrong
-            {
-                EnterEvadeMode();
-                return;
-            }
-            _guardianTrigger = (*summoned.begin())->GetGUID();
-            if (Creature* trigger = DoSummon(NPC_WORLD_TRIGGER, me->GetPosition(), 0u, TEMPSUMMON_MANUAL_DESPAWN))
-                _assassinTrigger = trigger->GetGUID();
-            else
-            {
-                EnterEvadeMode();
-                return;
-            }
-        }
-
-        void EnterEvadeMode()
-        {
-            summons.DespawnAll();
-        }
-
-        void UpdateAI(uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            events.Update(diff);
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            while (uint32 eventId = events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                    case EVENT_CLOSE_DOOR:
-                        if (GameObject* door = ObjectAccessor::GetGameObject(*me, DATA_ANUBARAK_WALL))
-                            door->SetGoState(GO_STATE_READY);
-                        break;
-                    case EVENT_POUND:
-                        DoCastVictim(SPELL_POUND);
-                        events.RepeatEvent(urand(Seconds(26), Seconds(32)));
-                        break;
-                    case EVENT_LEECHING_SWARM:
-                        Talk(SAY_LOCUST);
-                        DoCastAOE(SPELL_LEECHING_SWARM);
-                        events.RepeatEvent(urand(Seconds(25), Seconds(28)));
-                        break;
-                    case EVENT_CARRION_BEETLES:
-                        DoCastAOE(SPELL_CARRION_BEETLES);
-                        events.RepeatEvent(urand(Seconds(24), Seconds(27)));
-                        break;
-                    case EVENT_IMPALE:
-                        if (Creature* impaleTarget = ObjectAccessor::GetCreature(*me, _impaleTarget))
-                            DoCast(impaleTarget, SPELL_IMPALE_DAMAGE, true);
-                        break;
-                    case EVENT_SUBMERGE:
-                        Talk(SAY_SUBMERGE);
-                        DoCast(me, SPELL_SUBMERGE);
-                        break;
-                    case EVENT_DARTER:
-                    {
-                        std::list<Creature*> triggers;
-                        me->GetCreatureListWithEntryInGrid(triggers, NPC_WORLD_TRIGGER, 250.0f);
-                        if (!triggers.empty())
-                        {
-                            std::list<Creature*>::iterator it = triggers.begin();
-                            std::advance(it, urand(0, triggers.size()-1));
-                            (*it)->CastSpell(*it, SPELL_SUMMON_DARTER, true);
-                            events.RepeatEvent(Seconds(11));
-                        }
-                        else
-                            EnterEvadeMode();
-                        break;
-                    }
-                    case EVENT_ASSASSIN:
-                        if (Creature* trigger = ObjectAccessor::GetCreature(*me, _assassinTrigger))
-                        {
-                            trigger->CastSpell(trigger, SPELL_SUMMON_ASSASSIN, true);
-                            trigger->CastSpell(trigger, SPELL_SUMMON_ASSASSIN, true);
-                            if (_assassinCount > 2)
-                            {
-                                _assassinCount -= 2;
-                                events.RepeatEvent(Seconds(20));
-                            }
-                            else
-                                _assassinCount = 0;
-                        }
-                        else // something went wrong
-                            EnterEvadeMode();
-                        break;
-                    case EVENT_GUARDIAN:
-                        if (Creature* trigger = ObjectAccessor::GetCreature(*me, _guardianTrigger))
-                        {
-                            trigger->CastSpell(trigger, SPELL_SUMMON_GUARDIAN, true);
-                            trigger->CastSpell(trigger, SPELL_SUMMON_GUARDIAN, true);
-                            if (_guardianCount > 2)
-                            {
-                                _guardianCount -= 2;
-                                events.RepeatEvent(Seconds(20));
-                            }
-                            else
-                                _guardianCount = 0;
-                        }
-                        else
-                            EnterEvadeMode();
-                        break;
-                    case EVENT_VENOMANCER:
-                        if (Creature* trigger = ObjectAccessor::GetCreature(*me, _guardianTrigger))
-                        {
-                            trigger->CastSpell(trigger, SPELL_SUMMON_VENOMANCER, true);
-                            trigger->CastSpell(trigger, SPELL_SUMMON_VENOMANCER, true);
-                            if (_venomancerCount > 2)
-                            {
-                                _venomancerCount -= 2;
-                                events.RepeatEvent(Seconds(20));
-                            }
-                            else
-                                _venomancerCount = 0;
-                        }
-                        else
-                            EnterEvadeMode();
-                        break;
-                    default:
-                        break;
-                }
-
-                if (me->HasUnitState(UNIT_STATE_CASTING))
-                    return;
-            }
-
-
-            DoMeleeAttackIfReady();
-        }
-
-        void JustDied(Unit* /*killer*/)
-        {
-            _JustDied();
-            Talk(SAY_DEATH);
-        }
-
-        void KilledUnit(Unit* victim)
-        {
-            if (victim->GetTypeId() == TYPEID_PLAYER)
-                Talk(SAY_SLAY);
-        }
-
-        void SetGUID(uint64 guid, int32 type)
-        {
-            switch (type)
-            {
-                case GUID_TYPE_PET:
-                {
-                    if (Creature* creature = ObjectAccessor::GetCreature(*me, guid))
-                        JustSummoned(creature);
-                    else // something has gone horribly wrong
-                        EnterEvadeMode();
-                    break;
-                }
-                case GUID_TYPE_IMPALE:
-                    _impaleTarget = guid;
-                    events.ScheduleEvent(EVENT_IMPALE, Seconds(4));
-                    break;
-            }
-        }
-
-        void DoAction(int32 action)
-        {
-            switch (action)
-            {
-                case ACTION_PET_DIED:
-                    if (!_petCount) // underflow check - something has gone horribly wrong
-                    {
-                        EnterEvadeMode();
-                        return;
-                    }
-                    if (!--_petCount) // last pet died, emerge
-                    {
-                        me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
-                        me->RemoveAurasDueToSpell(SPELL_IMPALE_AURA);
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                        DoCast(me, SPELL_EMERGE);
-                        events.SetPhase(PHASE_EMERGE);
-                        events.ScheduleEvent(EVENT_POUND, urand(Seconds(13), Seconds(18)), 0, PHASE_EMERGE);
-                        events.ScheduleEvent(EVENT_LEECHING_SWARM, urand(Seconds(3), Seconds(7)), 0, PHASE_EMERGE);
-                        events.ScheduleEvent(EVENT_CARRION_BEETLES, urand(Seconds(10), Seconds(15)), 0, PHASE_EMERGE);
-                    }
-                    break;
-                case ACTION_PET_EVADE:
-                    EnterEvadeMode();
-                    break;
-            }
-        }
-
-        void DamageTaken(Unit* /*source*/, uint32& damage, DamageEffectType, SpellSchoolMask)
-        {
-            if (me->HasAura(SPELL_SUBMERGE))
-                damage = 0;
-            else
-                if (_nextSubmerge && me->HealthBelowPctDamaged(_nextSubmerge, damage))
-                {
-                    events.CancelEvent(EVENT_SUBMERGE);
-                    events.ScheduleEvent(EVENT_SUBMERGE, 0, 0, PHASE_EMERGE);
-                    _nextSubmerge = _nextSubmerge-25;
-                }
-        }
-
-        void SpellHit(Unit* /*whose*/, SpellInfo const* spell)
-        {
-            if (spell->Id == SPELL_SUBMERGE)
-            {
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                me->RemoveAurasDueToSpell(SPELL_LEECHING_SWARM);
-                DoCast(me, SPELL_IMPALE_AURA, true);
-                
-                events.SetPhase(PHASE_SUBMERGE);
-                switch (_nextSubmerge)
-                {
-                    case 50: // first submerge phase
-                        _assassinCount = 4;
-                        _guardianCount = 2;
-                        _venomancerCount = 0;
-                        break;
-                    case 25: // second submerge phase
-                        _assassinCount = 6;
-                        _guardianCount = 2;
-                        _venomancerCount = 2;
-                        break;
-                    case 0:  // third submerge phase
-                        _assassinCount = 6;
-                        _guardianCount = 2;
-                        _venomancerCount = 2;
-                        events.ScheduleEvent(EVENT_DARTER, Seconds(0), 0, PHASE_SUBMERGE);
-                        break;
-                }
-                _petCount = _guardianCount + _venomancerCount;
-                if (_assassinCount)
-                    events.ScheduleEvent(EVENT_ASSASSIN, Seconds(0), 0, PHASE_SUBMERGE);
-                if (_guardianCount)
-                    events.ScheduleEvent(EVENT_GUARDIAN, Seconds(4), 0, PHASE_SUBMERGE);
-                if (_venomancerCount)
-                    events.ScheduleEvent(EVENT_VENOMANCER, Seconds(20), 0, PHASE_SUBMERGE);
-            }
-        }
-
-        private:
-            uint64 _impaleTarget;
-            uint32 _nextSubmerge;
-            uint32 _petCount;
-            uint64 _guardianTrigger;
-            uint64 _assassinTrigger;
-            uint8 _assassinCount;
-            uint8 _guardianCount;
-            uint8 _venomancerCount;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return GetInstanceAI<boss_anub_arakAI>(creature);
-    }
-};
-
-class npc_anubarak_pet_template : public ScriptedAI
-{
     public:
-        npc_anubarak_pet_template(Creature* creature, bool isLarge) : ScriptedAI(creature), _instance(creature->GetInstanceScript()), _isLarge(isLarge) { }
+        boss_anub_arak() : CreatureScript("boss_anub_arak") { }
 
-        void InitializeAI()
+        struct boss_anub_arakAI : public BossAI
         {
-            ScriptedAI::InitializeAI();
-            if (Creature* anubarak = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_ANUBARAK)))
-                anubarak->AI()->SetGUID(me->GetGUID(), GUID_TYPE_PET);
-            else
-                me->DespawnOrUnsummon();
-        }
-
-        void JustDied(Unit* killer)
-        {
-            ScriptedAI::JustDied(killer);
-            if (_isLarge)
-                if (Creature* anubarak = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_ANUBARAK)))
-                    anubarak->AI()->DoAction(ACTION_PET_DIED);
-        }
-
-        void EnterEvadeMode()
-        {
-            if (Creature* anubarak = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_ANUBARAK)))
-                anubarak->AI()->DoAction(ACTION_PET_EVADE);
-            else
-                me->DespawnOrUnsummon();
-        }
-
-    protected:
-        InstanceScript* _instance;
-    private:
-        bool const _isLarge;
-};
-
-class npc_anubarak_anub_ar_darter : public CreatureScript
-{
-    public:
-        npc_anubarak_anub_ar_darter() : CreatureScript("npc_anubarak_anub_ar_darter") { }
-
-        struct npc_anubarak_anub_ar_darterAI : public npc_anubarak_pet_template
-        {
-            npc_anubarak_anub_ar_darterAI(Creature* creature) : npc_anubarak_pet_template(creature, false) { }
-
-            void InitializeAI()
+            boss_anub_arakAI(Creature* creature) : BossAI(creature, DATA_ANUBARAK_EVENT)
             {
-                npc_anubarak_pet_template::InitializeAI();
-                DoCastAOE(SPELL_DART);
+                me->m_SightDistance = 120.0f;
+                intro = false;
             }
-        };
 
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return GetInstanceAI<npc_anubarak_anub_ar_darterAI>(creature);
-        }
-};
+            bool intro;
 
-class npc_anubarak_anub_ar_assassin : public CreatureScript
-{
-    public:
-        npc_anubarak_anub_ar_assassin() : CreatureScript("npc_anubarak_anub_ar_assassin") { }
-
-        struct npc_anubarak_anub_ar_assassinAI : public npc_anubarak_pet_template
-        {
-            npc_anubarak_anub_ar_assassinAI(Creature* creature) : npc_anubarak_pet_template(creature, false), _backstabTimer(6 * IN_MILLISECONDS) { }
-
-            Position GetRandomPositionAround(Creature* anubarak)
+            void EnterEvadeMode()
             {
-                static float DISTANCE_MIN = 10.0f;
-                static float DISTANCE_MAX = 30.0f;
-                double angle = rand_norm() * 2.0 * M_PI;
-                return { anubarak->GetPositionX() + (float)(frand(DISTANCE_MIN, DISTANCE_MAX)*std::sin(angle)), anubarak->GetPositionY() + (float)(frand(DISTANCE_MIN, DISTANCE_MAX)*std::cos(angle)), anubarak->GetPositionZ() };
+                me->DisableRotate(false);
+                BossAI::EnterEvadeMode();
             }
-            void InitializeAI()
+
+            void MoveInLineOfSight(Unit* who)
             {
-                npc_anubarak_pet_template::InitializeAI();
-                DoCast(me, SPELL_ASSASSIN_VISUAL, true);
+                if (!intro && who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    intro = true;
+                    Talk(SAY_INTRO);
+                }
+                BossAI::MoveInLineOfSight(who);
+            }
+
+            void JustDied(Unit* killer)
+            {
+                Talk(SAY_DEATH);
+                BossAI::JustDied(killer);
+            }
+
+            void KilledUnit(Unit* victim)
+            {
+                if (events.GetNextEventTime(EVENT_KILL_TALK) == 0)
+                {
+                    Talk(SAY_SLAY);
+                    events.ScheduleEvent(EVENT_KILL_TALK, 6000);
+                }
+            }
+
+            void JustSummoned(Creature* summon)
+            {
+                summons.Summon(summon);
+                if (!summon->IsTrigger())
+                    summon->SetInCombatWithZone();
+            }
+
+            void Reset()
+            {
+                BossAI::Reset();
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                instance->DoStopTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
+            }
+
+            void EnterCombat(Unit* )
+            {
+                Talk(SAY_AGGRO);
+                instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
+
+                events.ScheduleEvent(EVENT_CARRION_BEETELS, 6500);
+                events.ScheduleEvent(EVENT_LEECHING_SWARM, 20000);
+                events.ScheduleEvent(EVENT_POUND, 15000);
+                events.ScheduleEvent(EVENT_CHECK_HEALTH_75, 1000);
+                events.ScheduleEvent(EVENT_CHECK_HEALTH_50, 1000);
+                events.ScheduleEvent(EVENT_CHECK_HEALTH_25, 1000);
+                events.ScheduleEvent(EVENT_CLOSE_DOORS, 5000);
+            }
+
+            void SummonHelpers(float x, float y, float z, uint32 spellId)
+            {
+                const SpellInfo* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+                me->SummonCreature(spellInfo->Effects[EFFECT_0].MiscValue, x, y, z);
             }
 
             void UpdateAI(uint32 diff)
@@ -486,207 +140,182 @@ class npc_anubarak_anub_ar_assassin : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                if (diff >= _backstabTimer)
+                events.Update(diff);
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                switch (uint32 eventId = events.ExecuteEvent())
                 {
-                    if (me->GetVictim() && me->GetVictim()->isInBack(me))
-                        DoCastVictim(SPELL_BACKSTAB);
-                    _backstabTimer = 6 * IN_MILLISECONDS;
+                    case EVENT_CLOSE_DOORS:
+                        _EnterCombat();
+                        break;
+                    case EVENT_CARRION_BEETELS:
+                        me->CastSpell(me, SPELL_CARRION_BEETLES, false);
+                        events.ScheduleEvent(EVENT_CARRION_BEETELS, 25000);
+                        break;
+                    case EVENT_LEECHING_SWARM:
+                        Talk(SAY_LOCUST);
+                        me->CastSpell(me, SPELL_LEECHING_SWARM, false);
+                        events.ScheduleEvent(EVENT_LEECHING_SWARM, 20000);
+                        break;
+                    case EVENT_POUND:
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 10.0f))
+                        {                    
+                            me->CastSpell(me, SPELL_SELF_ROOT, true);
+                            me->DisableRotate(true);
+                            me->SendMovementFlagUpdate();
+                            events.ScheduleEvent(EVENT_ENABLE_ROTATE, 3300);
+                            me->CastSpell(target, SPELL_POUND, false);
+                        }
+                        events.ScheduleEvent(EVENT_POUND, 18000);
+                        break;
+                    case EVENT_ENABLE_ROTATE:
+                        me->RemoveAurasDueToSpell(SPELL_SELF_ROOT);
+                        me->DisableRotate(false);
+                        break;
+                    case EVENT_CHECK_HEALTH_25:
+                    case EVENT_CHECK_HEALTH_50:
+                    case EVENT_CHECK_HEALTH_75:
+                        if (me->HealthBelowPct(eventId*25))
+                        {
+                            Talk(SAY_SUBMERGE);
+                            me->CastSpell(me, SPELL_IMPALE_PERIODIC, true);
+                            me->CastSpell(me, SPELL_SUBMERGE, false);
+                            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+
+                            events.DelayEvents(46000, 0);
+                            events.ScheduleEvent(EVENT_EMERGE, 45000);
+                            events.ScheduleEvent(EVENT_SUMMON_ASSASSINS, 2000);
+                            events.ScheduleEvent(EVENT_SUMMON_GUARDIAN, 4000);
+                            events.ScheduleEvent(EVENT_SUMMON_ASSASSINS, 15000);
+                            events.ScheduleEvent(EVENT_SUMMON_VENOMANCER, 20000);
+                            events.ScheduleEvent(EVENT_SUMMON_DARTER, 30000);
+                            events.ScheduleEvent(EVENT_SUMMON_ASSASSINS, 35000);
+                            break;
+                        }
+                        events.ScheduleEvent(eventId, 500);
+                        break;
+                    case EVENT_EMERGE:
+                        me->CastSpell(me, SPELL_EMERGE, true);
+                        me->RemoveAura(SPELL_SUBMERGE);
+                        me->RemoveAura(SPELL_IMPALE_PERIODIC);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
+                        break;
+                    case EVENT_SUMMON_ASSASSINS:
+                        SummonHelpers(509.32f, 247.42f, 239.48f, SPELL_SUMMON_ASSASSIN);
+                        SummonHelpers(589.51f, 240.19f, 236.0f, SPELL_SUMMON_ASSASSIN);
+                        break;
+                    case EVENT_SUMMON_DARTER:
+                        SummonHelpers(509.32f, 247.42f, 239.48f, SPELL_SUMMON_DARTER);
+                        SummonHelpers(589.51f, 240.19f, 236.0f, SPELL_SUMMON_DARTER);
+                        break;
+                    case EVENT_SUMMON_GUARDIAN:
+                        SummonHelpers(550.34f, 316.00f, 234.30f, SPELL_SUMMON_GUARDIAN);
+                        break;
+                    case EVENT_SUMMON_VENOMANCER:
+                        SummonHelpers(550.34f, 316.00f, 234.30f, SPELL_SUMMON_VENOMANCER);
+                        break;
                 }
-                else
-                    _backstabTimer -= diff;
 
-                DoMeleeAttackIfReady();
-            }
-
-            void MovementInform(uint32 /*type*/, uint32 id)
-            {
-                me->RemoveAurasDueToSpell(SPELL_ASSASSIN_VISUAL);
-                DoZoneInCombat();
-            }
-
-            private:
-                uint32 _backstabTimer;
-        };
-
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return GetInstanceAI<npc_anubarak_anub_ar_assassinAI>(creature);
-        }
-};
-
-class npc_anubarak_anub_ar_guardian : public CreatureScript
-{
-    public:
-    npc_anubarak_anub_ar_guardian() : CreatureScript("npc_anubarak_anub_ar_guardian") { }
-
-    struct npc_anubarak_anub_ar_guardianAI : public npc_anubarak_pet_template
-    {
-        npc_anubarak_anub_ar_guardianAI(Creature* creature) : npc_anubarak_pet_template(creature, true), _sunderTimer(6 * IN_MILLISECONDS) { }
-
-        void UpdateAI(uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (diff >= _sunderTimer)
-            {
-                DoCastVictim(SPELL_SUNDER_ARMOR);
-                _sunderTimer = 12 * IN_MILLISECONDS;
-            }
-            else
-                _sunderTimer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        private:
-            uint32 _sunderTimer;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return GetInstanceAI<npc_anubarak_anub_ar_guardianAI>(creature);
-    }
-};
-
-class npc_anubarak_anub_ar_venomancer : public CreatureScript
-{
-    public:
-    npc_anubarak_anub_ar_venomancer() : CreatureScript("npc_anubarak_anub_ar_venomancer") { }
-
-    struct npc_anubarak_anub_ar_venomancerAI : public npc_anubarak_pet_template
-    {
-        npc_anubarak_anub_ar_venomancerAI(Creature* creature) : npc_anubarak_pet_template(creature, true), _boltTimer(5 * IN_MILLISECONDS) { }
-
-        void UpdateAI(uint32 diff)
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (diff >= _boltTimer)
-            {
-                DoCastVictim(SPELL_POISON_BOLT);
-                _boltTimer = urand(2000, 3000);
-            }
-            else
-                _boltTimer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-
-        private:
-            uint32 _boltTimer;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return GetInstanceAI<npc_anubarak_anub_ar_venomancerAI>(creature);
-    }
-};
-
-class npc_anubarak_impale_target : public CreatureScript
-{
-    public:
-        npc_anubarak_impale_target() : CreatureScript("npc_anubarak_impale_target") { }
-
-        struct npc_anubarak_impale_targetAI : public NullCreatureAI
-        {
-            npc_anubarak_impale_targetAI(Creature* creature) : NullCreatureAI(creature) { }
-
-            void InitializeAI()
-            {
-                if (Creature* anubarak = ObjectAccessor::GetCreature(*me, me->GetInstanceScript()->GetData64(DATA_ANUBARAK)))
-                {
-                    DoCast(me, SPELL_IMPALE_VISUAL);
-                    me->DespawnOrUnsummon(Seconds(6));
-                    anubarak->AI()->SetGUID(me->GetGUID(), GUID_TYPE_IMPALE);
-                }
-                else
-                    me->DespawnOrUnsummon();
+                if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
+                    DoMeleeAttackIfReady();
             }
         };
 
         CreatureAI* GetAI(Creature* creature) const
         {
-            return GetInstanceAI<npc_anubarak_impale_targetAI>(creature);
+            return new boss_anub_arakAI(creature);
         }
 };
 
-class spell_anubarak_pound : public SpellScriptLoader
+class spell_azjol_nerub_carrion_beetels : public SpellScriptLoader
 {
     public:
-        spell_anubarak_pound() : SpellScriptLoader("spell_anubarak_pound") { }
+        spell_azjol_nerub_carrion_beetels() : SpellScriptLoader("spell_azjol_nerub_carrion_beetels") { }
 
-        class spell_anubarak_pound_SpellScript : public SpellScript
+        class spell_azjol_nerub_carrion_beetelsAuraScript : public AuraScript
         {
-            PrepareSpellScript(spell_anubarak_pound_SpellScript);
+            PrepareAuraScript(spell_azjol_nerub_carrion_beetelsAuraScript)
 
-            bool Validate(SpellInfo const* /*spell*/)
+            void HandleEffectPeriodic(AuraEffect const* aurEff)
             {
-                return sSpellMgr->GetSpellInfo(SPELL_POUND_DAMAGE) != nullptr;
-            }
-
-            void HandleDummy(SpellEffIndex /*effIndex*/)
-            {
-                if (Unit* target = GetHitUnit())
-                    GetCaster()->CastSpell(target, SPELL_POUND_DAMAGE, true);
+                // Xinef: 2 each second
+                GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_SUMMON_CARRION_BEETLES, true);
+                GetUnitOwner()->CastSpell(GetUnitOwner(), SPELL_SUMMON_CARRION_BEETLES, true);
             }
 
             void Register()
             {
-                OnEffectHitTarget += SpellEffectFn(spell_anubarak_pound_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_azjol_nerub_carrion_beetelsAuraScript::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+            }
+        };
+
+        AuraScript *GetAuraScript() const
+        {
+            return new spell_azjol_nerub_carrion_beetelsAuraScript();
+        }
+};
+
+class spell_azjol_nerub_pound : public SpellScriptLoader
+{
+    public:
+        spell_azjol_nerub_pound() : SpellScriptLoader("spell_azjol_nerub_pound") { }
+
+        class spell_azjol_nerub_pound_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_azjol_nerub_pound_SpellScript);
+
+            void HandleApplyAura(SpellEffIndex effIndex)
+            {
+                if (Unit* unitTarget = GetHitUnit())
+                    GetCaster()->CastSpell(unitTarget, SPELL_POUND_DAMAGE, true);
+            }
+
+            void Register()
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_azjol_nerub_pound_SpellScript::HandleApplyAura, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
             }
         };
 
         SpellScript* GetSpellScript() const
         {
-            return new spell_anubarak_pound_SpellScript();
+            return new spell_azjol_nerub_pound_SpellScript();
         }
 };
 
-class spell_anubarak_carrion_beetles : public SpellScriptLoader
+class spell_azjol_nerub_impale_summon : public SpellScriptLoader
 {
     public:
-        spell_anubarak_carrion_beetles() : SpellScriptLoader("spell_anubarak_carrion_beetles") { }
+        spell_azjol_nerub_impale_summon() : SpellScriptLoader("spell_azjol_nerub_impale_summon") { }
 
-        class spell_anubarak_carrion_beetles_AuraScript : public AuraScript
+        class spell_azjol_nerub_impale_summon_SpellScript : public SpellScript
         {
-            public:
-                PrepareAuraScript(spell_anubarak_carrion_beetles_AuraScript);
+            PrepareSpellScript(spell_azjol_nerub_impale_summon_SpellScript);
 
-                bool Validate(SpellInfo const* /*spell*/)
-                {
-                    return (sSpellMgr->GetSpellInfo(SPELL_CARRION_BEETLE) != nullptr);
-                }
+            void SetDest(SpellDestination& dest)
+            {
+                // Adjust effect summon position
+                float floorZ = GetCaster()->GetMap()->GetHeight(GetCaster()->GetPositionX(), GetCaster()->GetPositionY(), GetCaster()->GetPositionZ(), true);
+                if (floorZ > INVALID_HEIGHT)
+                    dest._position.m_positionZ = floorZ;
+            }
 
-                void HandlePeriodic(AuraEffect const* /*eff*/)
-                {
-                    GetCaster()->CastSpell(GetCaster(), SPELL_CARRION_BEETLE, true);
-                    GetCaster()->CastSpell(GetCaster(), SPELL_CARRION_BEETLE, true);
-                }
-
-                void Register()
-                {
-                    OnEffectPeriodic += AuraEffectPeriodicFn(spell_anubarak_carrion_beetles_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
-                }
+            void Register()
+            {
+                OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_azjol_nerub_impale_summon_SpellScript::SetDest, EFFECT_0, TARGET_DEST_CASTER);
+            }
         };
 
-        AuraScript* GetAuraScript() const
+        SpellScript* GetSpellScript() const
         {
-            return new spell_anubarak_carrion_beetles_AuraScript();
+            return new spell_azjol_nerub_impale_summon_SpellScript();
         }
 };
 
 void AddSC_boss_anub_arak()
 {
     new boss_anub_arak();
-
-    new npc_anubarak_anub_ar_darter();
-    new npc_anubarak_anub_ar_assassin();
-    new npc_anubarak_anub_ar_guardian();
-    new npc_anubarak_anub_ar_venomancer();
-    new npc_anubarak_impale_target();
-
-    new spell_anubarak_pound();
-    new spell_anubarak_carrion_beetles();
+    new spell_azjol_nerub_carrion_beetels();
+    new spell_azjol_nerub_pound();
+    new spell_azjol_nerub_impale_summon();
 }
