@@ -637,7 +637,12 @@ void SmartAI::EnterEvadeMode()
     me->RemoveEvadeAuras();
 
     me->AddUnitState(UNIT_STATE_EVADE);
-    _EnterEvadeMode();
+    me->DeleteThreatList();
+    me->CombatStop(true);
+    me->LoadCreaturesAddon(true);
+    me->SetLootRecipient(NULL);
+    me->ResetPlayerDamageReq();
+    me->SetLastDamagedTime(0);
 
     GetScript()->ProcessEventsFor(SMART_EVENT_EVADE);//must be after aura clear so we can cast spells from db
 
