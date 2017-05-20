@@ -9354,11 +9354,7 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
         if (victim->ToPlayer()->IsGameMaster())
             return false;
     }
-    else
-    {
-        if (victim->ToCreature()->IsEvadingAttacks())
-            return false;
-    }
+
 
     // Unit with SPELL_AURA_SPIRIT_OF_REDEMPTION can not attack
     if (HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
