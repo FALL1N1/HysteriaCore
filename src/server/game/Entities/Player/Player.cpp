@@ -19250,13 +19250,22 @@ bool Player::Satisfy(AccessRequirement const* ar, uint32 target_map, bool report
         if (!mapEntry)
             return false;
 
-        if (!sWorld->getBoolConfig(CONFIG_INSTANCE_IGNORE_LEVEL))
-        {
+        //if (!sWorld->getBoolConfig(CONFIG_INSTANCE_IGNORE_LEVEL))
+        //{
             if (ar->levelMin && getLevel() < ar->levelMin)
                 LevelMin = ar->levelMin;
             if (ar->levelMax && getLevel() > ar->levelMax)
                 LevelMax = ar->levelMax;
-        }
+        //}
+            if (!ar->levelMin)
+                LevelMin = 80;
+
+        // mapid 608+
+            if (mapEntry->IsRaid() && target_map >= 608)
+                LevelMin = 80;
+
+        // custom rule end --
+
 
         uint32 missingItem = 0;
         if (ar->item)
