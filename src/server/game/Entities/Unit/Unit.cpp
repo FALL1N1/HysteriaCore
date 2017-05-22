@@ -16690,8 +16690,8 @@ void Unit::SetRooted(bool apply)
         // MOVEMENTFLAG_ROOT cannot be used in conjunction with MOVEMENTFLAG_MASK_MOVING (tested 3.3.5a)
         // this will freeze clients. That's why we remove MOVEMENTFLAG_MASK_MOVING before
         // setting MOVEMENTFLAG_ROOT
-        RemoveUnitMovementFlag(MOVEMENTFLAG_MASK_MOVING);
-        AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
+        //RemoveUnitMovementFlag(MOVEMENTFLAG_MASK_MOVING);
+        //AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
 
         if (Player* thisPlr = this->ToPlayer())
         {
@@ -16726,7 +16726,7 @@ void Unit::SetRooted(bool apply)
                 SendMessageToSet(&data, true);
             }
 
-            RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
+            //RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
         }
     }
 }
