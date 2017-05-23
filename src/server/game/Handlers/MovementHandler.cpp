@@ -601,7 +601,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
                 // AntiGravity (thanks to Meekro)
                 const float JumpHeight = plrMover->m_anti_JumpBaseZ - movementInfo.pos.GetPositionZ();
-                if (areMapsOK && !plrMover->IsGameMaster() && no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING)
+                if (areMapsOK && !plrMover->HasAura(51690) && !plrMover->IsGameMaster() && no_fly_auras && no_swim_in_water && plrMover->m_anti_JumpBaseZ != 0 && JumpHeight < plrMover->m_anti_Last_VSpeed && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING)
                     && !plrMover->isFeared() && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                 {
                     //sLog->outString("     555      ");
@@ -627,7 +627,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 if (opcode == MSG_MOVE_JUMP)
                 {
                     //sLog->outString("     444      ");
-                    if (areMapsOK && !plrMover->IsGameMaster() && (no_fly_auras && no_swim_water) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared() && !plrMover->IsInWater() && !plrMover->IsUnderWater())
+                    if (areMapsOK && !plrMover->IsGameMaster() && (no_fly_auras && no_swim_water) && !plrMover->HasAura(51690) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared() && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                     {
                         if (plrMover->m_anti_JumpCount >= 1)
                         {
@@ -664,7 +664,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // firefly: "Freeze Z coord check"
                 if (plrMover)
                     if (!plrMover->IsFlying() && !plrMover->IsGameMaster() && !plrMover->isFeared() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && !plrMover->m_transport &&
-                        !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater())
+                        !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater() && !plrMover->HasAura(51690))
                     {
                         //sLog->outString("      111     ");
                         float playerZ = plrMover->GetPositionZ();
@@ -682,7 +682,8 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 // firefly: custom fly / under map checks UNIT_STATE_CHARGING
                 if (plrMover)
                     if ((no_fly_auras && !no_fly_flags) && !plrMover->IsGameMaster() && !plrMover->IsFalling() &&
-                        !plrMover->m_transport && !plrMover->isFeared() && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater() && !plrMover->IsGameMaster())
+                        !plrMover->m_transport && !plrMover->isFeared() && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater() && !plrMover->IsGameMaster()
+						 && !plrMover->HasAura(51690))
                     {
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();
@@ -708,7 +709,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     }
 
                 // speed and teleport hack checks
-                if (areMapsOK && !plrMover->IsGameMaster() && (real_delta > (allowed_delta * 2)) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
+                if (areMapsOK && !plrMover->IsGameMaster() && (real_delta > (allowed_delta * 2)) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()  && !plrMover->HasAura(51690)
                     && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                     check_passed = false;
 
@@ -718,7 +719,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                     check_passed = false;
                 
                 // Fly hack checks
-                if (areMapsOK && !plrMover->IsGameMaster() && (no_fly_auras && !no_fly_flags) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()
+                if (areMapsOK && !plrMover->IsGameMaster() && (no_fly_auras && !no_fly_flags) && !plrMover->m_transport && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && !plrMover->isFeared()  && !plrMover->HasAura(51690)
                     && !plrMover->IsInWater() && !plrMover->IsUnderWater())
                 {
                     //sLog->outString("     333      ");
