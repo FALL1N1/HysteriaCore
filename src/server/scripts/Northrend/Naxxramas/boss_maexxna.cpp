@@ -85,7 +85,10 @@ public:
                 pInstance->SetData(EVENT_MAEXXNA, NOT_STARTED);
                 if (pInstance->GetData(EVENT_FAERLINA) == DONE)
                     if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_MAEXXNA_GATE)))
+                    {
                         go->SetGoState(GO_STATE_ACTIVE);
+                        go->SetPhaseMask(1, true);
+                    }
             }
         }
 
@@ -103,7 +106,10 @@ public:
             {
                 pInstance->SetData(EVENT_MAEXXNA, IN_PROGRESS);
                 if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_MAEXXNA_GATE)))
+                {
                     go->SetGoState(GO_STATE_READY);
+                    go->SetPhaseMask(0, true);
+                }
             }
         }
 
