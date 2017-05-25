@@ -1,34 +1,75 @@
 /*
-REWRITTEN BY XINEF
-*/
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-#ifndef DEF_AZJOL_NERUB_H
-#define DEF_AZJOL_NERUB_H
+#ifndef AZJOL_NERUB_H_
+#define AZJOL_NERUB_H_
 
-enum ANData
+#define AzjolNerubScriptName "instance_azjol_nerub"
+
+uint32 const EncounterCount = 3;
+
+enum ANDataTypes
 {
-    DATA_KRIKTHIR_THE_GATEWATCHER_EVENT    = 0,
-    DATA_HADRONOX_EVENT                    = 1,
-    DATA_ANUBARAK_EVENT                    = 2,
-    MAX_ENCOUNTERS                        = 3
+    // Encounter States/Boss GUIDs
+    DATA_KRIKTHIR_THE_GATEWATCHER   = 0,
+    DATA_HADRONOX                   = 1,
+    DATA_ANUBARAK                   = 2,
+
+    // Additional Data
+    DATA_WATCHER_NARJIL,
+    DATA_WATCHER_GASHRA,
+    DATA_WATCHER_SILTHIK,
+    DATA_ANUBARAK_WALL
 };
 
-enum ANIds
+enum ANCreatureIds
 {
-    NPC_SKITTERING_SWARMER              = 28735,
-    NPC_SKITTERING_INFECTIOR            = 28736,
-    NPC_KRIKTHIR_THE_GATEWATCHER        = 28684,
-    NPC_HADRONOX                        = 28921,
-    NPC_ANUB_AR_CHAMPION                = 29062,
-    NPC_ANUB_AR_NECROMANCER                = 29063,
-    NPC_ANUB_AR_CRYPTFIEND                = 29064,
+    NPC_KRIKTHIR                    = 28684,
+    NPC_HADRONOX                    = 28921,
+    NPC_ANUBARAK                    = 29120,
 
-    GO_KRIKTHIR_DOORS                    = 192395,
-    GO_ANUBARAK_DOORS1                    = 192396,
-    GO_ANUBARAK_DOORS2                    = 192397,
-    GO_ANUBARAK_DOORS3                    = 192398,
-
-    SPELL_WEB_WRAP_TRIGGER                = 52087
+    NPC_WATCHER_NARJIL              = 28729,
+    NPC_WATCHER_GASHRA              = 28730,
+    NPC_WATCHER_SILTHIK             = 28731
 };
 
-#endif
+enum ANGameObjectIds
+{
+    GO_KRIKTHIR_DOOR                = 192395,
+    GO_ANUBARAK_DOOR_1              = 192396,
+    GO_ANUBARAK_DOOR_2              = 192397,
+    GO_ANUBARAK_DOOR_3              = 192398
+};
+
+// These are passed as -action to AI's DoAction to differentiate between them and boss scripts' own actions
+enum ANInstanceActions
+{
+    ACTION_GATEWATCHER_GREET        = 1
+};
+
+static bool Seconds(uint32 time)
+{
+    return time * 1000;
+}
+
+template<class AI>
+AI* GetAzjolNerubAI(Creature* creature)
+{
+    return GetInstanceAI<AI>(creature, AzjolNerubScriptName);
+}
+
+#endif // AZJOL_NERUB_H_
