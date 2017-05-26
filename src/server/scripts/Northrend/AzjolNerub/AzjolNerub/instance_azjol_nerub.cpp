@@ -179,7 +179,7 @@ public:
         uint64 WatcherNarjilGUID;
     };
 
-    InstanceScript* GetInstanceScript(InstanceMap* map) const override
+    InstanceScript* GetInstanceScript(InstanceMap* map) const 
     {
         return new instance_azjol_nerub_InstanceScript(map);
     }

@@ -142,9 +142,10 @@ public:
         bool IsInCombatWithPlayer() const
         {
             std::list<HostileReference*> const& refs = me->getThreatManager().getThreatList();
-            for (HostileReference const* hostileRef : refs)
+
+            for (std::list<HostileReference*>::const_iterator itr = refs.begin(); itr != refs.end(); ++itr)
             {
-                if (Unit const* target = hostileRef->getTarget())
+                if (Unit* target = ObjectAccessor::GetUnit(*me, (*itr)->getUnitGuid()))
                     if (target->IsControlledByPlayer())
                         return true;
             }
@@ -168,10 +169,12 @@ public:
         {
             std::list<TempSummon*> summoned;
             me->SummonCreatureGroup(group, &summoned);
-            for (TempSummon* summon : summoned)
+            
+            for (std::list<TempSummon*>::iterator itr = summoned.begin(); itr != summoned.end(); ++itr)
+            //for (TempSummon* summon : summoned)
             {
-                summon->AI()->SetData(DATA_CRUSHER_PACK_ID, group);
-                summon->AI()->DoAction(ACTION_PACK_WALK);
+                (*itr)->AI()->SetData(DATA_CRUSHER_PACK_ID, group);
+                (*itr)->AI()->DoAction(ACTION_PACK_WALK);
             }
         }
 
@@ -242,13 +245,15 @@ public:
         {
             std::list<Creature*> triggers;
             me->GetCreatureListWithEntryInGrid(triggers, NPC_WORLDTRIGGER_LARGE, 70.0f);
-            for (Creature* trigger : triggers)
-                if (trigger->HasAura(SPELL_SUMMON_CHAMPION_PERIODIC) || trigger->HasAura(SPELL_WEB_FRONT_DOORS) || trigger->HasAura(SPELL_WEB_SIDE_DOORS))
-                    trigger->DespawnOrUnsummon(25);
+            //for (Creature* trigger : triggers)
+            for (std::list<Creature*>::iterator itr = triggers.begin(); itr != triggers.end(); ++itr)
+                if ((*itr)->HasAura(SPELL_SUMMON_CHAMPION_PERIODIC) || (*itr)->HasAura(SPELL_WEB_FRONT_DOORS) || (*itr)->HasAura(SPELL_WEB_SIDE_DOORS))
+                    (*itr)->DespawnOrUnsummon(25);
             summons.DespawnAll();
-            for (uint64 gNerubian : _anubar)
-                if (Creature* nerubian = ObjectAccessor::GetCreature(*me, gNerubian))
-                    nerubian->DespawnOrUnsummon();
+            //for (uint64 gNerubian : _anubar)
+                // issues will be reported for here
+                    //if (Creature* nerubian = ObjectAccessor::GetCreature(*me, _anubar))
+                        //nerubian->DespawnOrUnsummon();
         }
 
         void SetGUID(uint64 guid, int32 /*what*/)
@@ -432,11 +437,12 @@ struct npc_hadronox_crusherPackAI : public ScriptedAI
         {
             std::list<Creature*> others;
             me->GetCreatureListWithEntryInGrid(others, 0, 40.0f);
-            for (Creature* other : others)
-                if (other->AI()->GetData(DATA_CRUSHER_PACK_ID) == _myPack)
+            //for (Creature* other : others)
+            for (std::list<Creature*>::const_iterator itr = others.begin(); itr != others.end(); ++itr)
+                if ((*itr)->AI()->GetData(DATA_CRUSHER_PACK_ID) == _myPack)
                 {
-                    other->SetReactState(REACT_AGGRESSIVE);
-                    other->AI()->AttackStart(who);
+                    (*itr)->SetReactState(REACT_AGGRESSIVE);
+                    (*itr)->AI()->AttackStart(who);
                 }
         }
         _EnterCombat();
@@ -501,7 +507,7 @@ class npc_anub_ar_crusher : public CreatureScript
         {
             npc_anub_ar_crusherAI(Creature* creature) : npc_hadronox_crusherPackAI(creature, crusherWaypoints), _hadFrenzy(false) { }
 
-            void _EnterCombat() override
+            void _EnterCombat() 
             {
                 _events.ScheduleEvent(EVENT_SMASH, urand(Seconds(8), Seconds(12)));
 
@@ -518,7 +524,7 @@ class npc_anub_ar_crusher : public CreatureScript
                 Talk(CRUSHER_SAY_AGGRO);
             }
 
-            void DamageTaken(Unit* /*source*/, uint32& damage, DamageEffectType, SpellSchoolMask) override
+            void DamageTaken(Unit* /*source*/, uint32& damage, DamageEffectType, SpellSchoolMask) 
             {
                 if (_hadFrenzy || !me->HealthBelowPctDamaged(25, damage))
                     return;
@@ -527,7 +533,7 @@ class npc_anub_ar_crusher : public CreatureScript
                 DoCast(me, SPELL_FRENZY);
             }
 
-            void DoEvent(uint32 eventId) override
+            void DoEvent(uint32 eventId) 
             {
                 switch (eventId)
                 {
@@ -538,7 +544,7 @@ class npc_anub_ar_crusher : public CreatureScript
                 }
             }
 
-            void JustDied(Unit* killer) override
+            void JustDied(Unit* killer) 
             {
                 if (Creature* hadronox = ObjectAccessor::GetCreature(*me, _instance->GetData64(DATA_HADRONOX)))
                     hadronox->AI()->DoAction(ACTION_HADRONOX_MOVE);
@@ -549,7 +555,7 @@ class npc_anub_ar_crusher : public CreatureScript
                 bool _hadFrenzy;
         };
 
-        CreatureAI* GetAI(Creature* creature) const override
+        CreatureAI* GetAI(Creature* creature) const 
         {
             return GetInstanceAI<npc_anub_ar_crusherAI>(creature);
         }
@@ -936,8 +942,8 @@ class spell_hadronox_periodic_summon_template_AuraScript : public AuraScript
         bool Validate(SpellInfo const* /*spell*/)
         {
             return
-                (sSpellMgr->GetSpellInfo(_topSpellId) != nullptr) &&
-                (sSpellMgr->GetSpellInfo(_bottomSpellId) != nullptr);
+                (sSpellMgr->GetSpellInfo(_topSpellId) != NULL) &&
+                (sSpellMgr->GetSpellInfo(_bottomSpellId) != NULL);
         }
 
         void HandleApply(AuraEffect const* /*eff*/, AuraEffectHandleModes /*mode*/)
@@ -1038,7 +1044,7 @@ class spell_hadronox_leeching_poison : public SpellScriptLoader
 
         bool Validate(SpellInfo const* /*spell*/)
         {
-            return sSpellMgr->GetSpellInfo(SPELL_LEECH_POISON_HEAL) != nullptr;
+            return sSpellMgr->GetSpellInfo(SPELL_LEECH_POISON_HEAL) != NULL;
         }
 
         void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

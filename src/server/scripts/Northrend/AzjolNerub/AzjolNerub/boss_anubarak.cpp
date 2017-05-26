@@ -623,7 +623,7 @@ class spell_anubarak_pound : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spell*/)
             {
-                return sSpellMgr->GetSpellInfo(SPELL_POUND_DAMAGE) != nullptr;
+                return sSpellMgr->GetSpellInfo(SPELL_POUND_DAMAGE) != NULL;
             }
 
             void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -656,7 +656,7 @@ class spell_anubarak_carrion_beetles : public SpellScriptLoader
 
                 bool Validate(SpellInfo const* /*spell*/)
                 {
-                    return (sSpellMgr->GetSpellInfo(SPELL_CARRION_BEETLE) != nullptr);
+                    return (sSpellMgr->GetSpellInfo(SPELL_CARRION_BEETLE) != NULL);
                 }
 
                 void HandlePeriodic(AuraEffect const* /*eff*/)
