@@ -2138,8 +2138,8 @@ bool Creature::CanCreatureAttack(Unit const* victim, bool skipDistCheck) const
     if (!IsValidAttackTarget(victim))
         return false;
 
-    //if (!victim->isInAccessiblePlaceFor(this))
-        //return false;
+    if (!victim->isInAccessiblePlaceFor(this))
+        return false;
 
     //if (!victim->isInAccessiblePlaceFor(this))
         //AI()->EnterEvadeMode();
