@@ -87,7 +87,7 @@ public:
                     if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_MAEXXNA_GATE)))
                     {
                         go->SetGoState(GO_STATE_ACTIVE);
-                        go->SetPhaseMask(1, true);
+                        //go->SetPhaseMask(1, true);
                     }
             }
         }
@@ -108,7 +108,7 @@ public:
                 if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_MAEXXNA_GATE)))
                 {
                     go->SetGoState(GO_STATE_READY);
-                    go->SetPhaseMask(0, true);
+                    //go->SetPhaseMask(0, true);
                 }
             }
         }
