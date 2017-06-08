@@ -683,7 +683,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                 if (plrMover)
                     if ((no_fly_auras && !no_fly_flags) && !plrMover->IsGameMaster() && !plrMover->IsFalling() &&
                         !plrMover->m_transport && !plrMover->isFeared() && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater() && !plrMover->IsGameMaster()
-						 && !plrMover->HasAura(51690))
+                         && !plrMover->HasAura(51690))
                     {
                         //sLog->outString("      222     ");
                         float playerZ = plrMover->GetPositionZ();

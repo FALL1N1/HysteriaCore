@@ -2886,7 +2886,7 @@ void Map::SaveCreatureRespawnTime(uint32 dbGuid, time_t& respawnTime, uint32 are
 
     uint8 respawnSpeedup = 0;
 
-	if (GetInstanceResetPeriod() > 0 && diff + 5 >= GetInstanceResetPeriod())
+    if (GetInstanceResetPeriod() > 0 && diff + 5 >= GetInstanceResetPeriod())
         respawnTime = now+YEAR;
 
     _creatureRespawnTimes[dbGuid] = respawnTime;
