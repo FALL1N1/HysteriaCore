@@ -182,11 +182,11 @@ public:
                     uint8 rand = urand(0,2);
                     for (int32 i = 0; i < RAID_MODE(1,2); ++i)
                     {
-						// 10n - should spawn only from mid gate 25 from all 3
-						if (me->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
-							me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[1]);
-						else
-							me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[urand(0, 2)]);
+                        // 10n - should spawn only from mid gate 25 from all 3
+                        if (me->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+                            me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[1]);
+                        else
+                            me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[urand(0, 2)]);
                         (rand == 2 ? rand = 0 : rand++);
                     }
 
