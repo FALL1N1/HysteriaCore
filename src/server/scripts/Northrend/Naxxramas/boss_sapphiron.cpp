@@ -290,6 +290,7 @@ public:
                     me->SendMeleeAttackStop(me->GetVictim());
                     me->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
                     me->SetDisableGravity(true);
+                    me->SetHover(true);
                     currentTarget = 0;
                     events.PopEvent();
                     events.ScheduleEvent(EVENT_FLIGHT_ICEBOLT, 3000);
@@ -360,7 +361,7 @@ public:
                 case EVENT_LAND:
                     me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
                     me->SetDisableGravity(false);
-
+                    me->SetHover(false);
                     events.PopEvent();
                     events.ScheduleEvent(EVENT_GROUND, 1500);
                     return;
