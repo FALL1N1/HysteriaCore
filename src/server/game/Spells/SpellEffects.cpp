@@ -694,6 +694,13 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
         {
             switch (m_spellInfo->Id)
             {
+                // Goblin Bomb
+                case 23134:
+                {
+                    if (Creature* bomb = m_caster->SummonCreature(8937, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0))
+                        bomb->setFaction(m_caster->getFaction());
+					return;
+                }
                 // Trial of the Champion, Trample
                 case 67866:
                 {

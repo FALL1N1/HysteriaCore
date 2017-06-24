@@ -2742,6 +2742,49 @@ public:
 
 };
 
+
+/*######
+## npc_pet_bomb
+######*/
+
+#define SPELL_MALFUNCTION_EXPLOSION       13261
+
+class npc_pet_bomb : public CreatureScript
+{
+public:
+    npc_pet_bomb() : CreatureScript("npc_pet_bomb") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_pet_bombAI(creature);
+    }
+
+    struct npc_pet_bombAI : public ScriptedAI
+    {
+        npc_pet_bombAI(Creature* creature) : ScriptedAI(creature) { }
+
+		void Reset()
+		{
+			me->GetMotionMaster()->MoveFollow(me->GetOwner(), PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+		}
+
+        void EnterCombat(Unit* who) 
+		{ 
+			me->GetMotionMaster()->MoveChase(who);
+		}
+
+        void UpdateAI(uint32 diff)
+        {
+			if (me->GetVictim()) {
+				if (me->IsWithinDistInMap(me->GetVictim(), 3.0f)) {
+					DoCast(me->GetVictim(), SPELL_MALFUNCTION_EXPLOSION);
+					me->DisappearAndDie();
+				}
+			}
+        }
+    };
+};
+
 void AddSC_npcs_special()
 {
     // Ours
@@ -2751,6 +2794,7 @@ void AddSC_npcs_special()
     new npc_target_dummy();
     new npc_training_dummy();
     new npc_aged_dying_ancient_kodo();
+	new npc_pet_bomb();
 
     // Theirs
     new npc_air_force_bots();

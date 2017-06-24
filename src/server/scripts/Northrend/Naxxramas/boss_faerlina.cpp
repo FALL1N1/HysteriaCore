@@ -97,6 +97,13 @@ public:
             events.ScheduleEvent(EVENT_SPELL_FRENZY, urand(60000,80000), 1);
             events.SetPhase(1);
 
+            int8 maxsummons = sizeof(summons);
+
+            for (int8 summon; summon <= maxsummons; summon++)
+            {
+
+            }
+
             if (pInstance)
                 pInstance->SetData(EVENT_FAERLINA, IN_PROGRESS);
         }

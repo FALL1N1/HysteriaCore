@@ -258,20 +258,20 @@ void PlayerMenu::SendCloseGossip() const
     _session->SendPacket(&data);
 }
 
-void PlayerMenu::SendPointOfInterest(uint32 poiId) const
+void PlayerMenu::SendPointOfInterest(uint32 id) const
 {
-    PointOfInterest const* poi = sObjectMgr->GetPointOfInterest(poiId);
+    PointOfInterest const* poi = sObjectMgr->GetPointOfInterest(id);
     if (!poi)
     {
-        sLog->outErrorDb("Request to send non-existing POI (Id: %u), ignored.", poiId);
+        //sLog->outError(LOG_FILTER_WORLDSERVER, "Request to send non-existing POI (Id: %u), ignored.", id);
         return;
     }
 
-    std::string iconText = poi->icon_name;
-    LocaleConstant locale = _session->GetSessionDbLocaleIndex();
-    if (locale >= 0)
-        if (PointOfInterestLocale const* localeData = sObjectMgr->GetPointOfInterestLocale(poiId))
-            ObjectMgr::GetLocaleString(localeData->IconName, locale, iconText);
+    std::string name = poi->icon_name;
+    LocaleConstant localeConstant = _session->GetSessionDbLocaleIndex();
+    if (localeConstant != LOCALE_enUS)
+        if (PointOfInterestLocale const* localeData = sObjectMgr->GetPointOfInterestLocale(id))
+            ObjectMgr::GetLocaleString(localeData->IconName, localeConstant, name);
 
     WorldPacket data(SMSG_GOSSIP_POI, 4 + 4 + 4 + 4 + 4 + 10);  // guess size
     data << uint32(poi->flags);
@@ -279,7 +279,7 @@ void PlayerMenu::SendPointOfInterest(uint32 poiId) const
     data << float(poi->y);
     data << uint32(poi->icon);
     data << uint32(poi->data);
-    data << iconText;
+    data << name;
 
     _session->SendPacket(&data);
 }
@@ -357,10 +357,10 @@ void PlayerMenu::SendQuestGiverQuestList(QEmote const& eEmote, const std::string
             ++count;
             std::string title = quest->GetTitle();
 
-            LocaleConstant locale = _session->GetSessionDbLocaleIndex();
-            if (locale >= 0)
+            LocaleConstant localeConstant = _session->GetSessionDbLocaleIndex();
+            if (localeConstant != LOCALE_enUS)
                 if (QuestLocale const* localeData = sObjectMgr->GetQuestLocale(questID))
-                    ObjectMgr::GetLocaleString(localeData->Title, locale, title);
+                    ObjectMgr::GetLocaleString(localeData->Title, localeConstant, title);
 
             if (questLevelInTitle)
                 AddQuestLevelToTitle(title, quest->GetQuestLevel());
@@ -396,15 +396,15 @@ void PlayerMenu::SendQuestGiverQuestDetails(Quest const* quest, uint64 npcGUID, 
     std::string questObjectives       = quest->GetObjectives();
     std::string questAreaDescription  = quest->GetAreaDescription();
 
-    LocaleConstant locale = _session->GetSessionDbLocaleIndex();
-    if (locale >= 0)
+    LocaleConstant localeConstant = _session->GetSessionDbLocaleIndex();
+    if (localeConstant != LOCALE_enUS)
     {
         if (QuestLocale const* localeData = sObjectMgr->GetQuestLocale(quest->GetQuestId()))
         {
-            ObjectMgr::GetLocaleString(localeData->Title, locale, questTitle);
-            ObjectMgr::GetLocaleString(localeData->Details, locale, questDetails);
-            ObjectMgr::GetLocaleString(localeData->Objectives, locale, questObjectives);
-            ObjectMgr::GetLocaleString(localeData->AreaDescription, locale, questAreaDescription);
+            ObjectMgr::GetLocaleString(localeData->Title,           localeConstant, questTitle);
+            ObjectMgr::GetLocaleString(localeData->Details,         localeConstant, questDetails);
+            ObjectMgr::GetLocaleString(localeData->Objectives,      localeConstant, questObjectives);
+            ObjectMgr::GetLocaleString(localeData->AreaDescription, localeConstant, questAreaDescription);
         }
     }
 
@@ -642,13 +642,13 @@ void PlayerMenu::SendQuestGiverOfferReward(Quest const* quest, uint64 npcGUID, b
     std::string questTitle = quest->GetTitle();
     std::string questOfferRewardText = quest->GetOfferRewardText();
 
-    LocaleConstant locale = _session->GetSessionDbLocaleIndex();
-    if (locale >= 0)
+    LocaleConstant localeConstant = _session->GetSessionDbLocaleIndex();
+    if (localeConstant != LOCALE_enUS)
     {
         if (QuestLocale const* localeData = sObjectMgr->GetQuestLocale(quest->GetQuestId()))
         {
-            ObjectMgr::GetLocaleString(localeData->Title, locale, questTitle);
-            ObjectMgr::GetLocaleString(localeData->OfferRewardText, locale, questOfferRewardText);
+            ObjectMgr::GetLocaleString(localeData->Title,           localeConstant, questTitle);
+            ObjectMgr::GetLocaleString(localeData->OfferRewardText, localeConstant, questOfferRewardText);
         }
     }
 

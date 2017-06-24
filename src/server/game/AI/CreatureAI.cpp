@@ -132,7 +132,7 @@ void CreatureAI::MoveInLineOfSight(Unit* who)
         return;
 
     // Northshire Abbey - wolves fix. They can call assistance only outside the starting zone.
-    if (me->ToUnit()->getLevel() < 5 && me->GetAreaId() == 9)
+    if (me->ToUnit()->getLevel() < 5 && me->GetAreaId() == 9 || me->GetAreaId() == 59)
         return;
 
     // pussywizard: civilian, non-combat pet or any other NOT HOSTILE TO ANYONE (!)
