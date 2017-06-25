@@ -179,7 +179,7 @@ class instance_gundrak : public InstanceMapScript
                         break;
                     case DATA_ECK_THE_FEROCIOUS_INIT:
                     {
-                        if (instance->GetDifficulty() == DUNGEON_DIFFICULTY_NORMAL)
+                        if (instance->GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC)
                         {
                             Position pos = {1624.70f, 891.43f, 95.08f, 1.2f};
                             instance->SummonCreature(NPC_ECK_THE_FEROCIOUS, pos);
