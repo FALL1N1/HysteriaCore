@@ -14,15 +14,16 @@ public:
     {
         ChatCommand static fireflyCommandTable[] =
         {
-            { "damage",                             SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,   "", NULL },
-            { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel, "", NULL },
-            { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMinLevel, "", NULL },
-            { NULL,                                 0,                 false, NULL,                   "", NULL }
+            { "damage",                             SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,     "", NULL },
+            { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel,   "", NULL },
+            { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMinLevel,   "", NULL },
+            { "statistics",                         SEC_PLAYER,        false, &HandleFireFlyStatistics, "", NULL },
+            { NULL,                                 0,                 false, NULL,                     "", NULL }
         };
 
         static ChatCommand commandTable[] =
         {
-            { "firefly",            SEC_ADMINISTRATOR,      true,  NULL,                                "", fireflyCommandTable },
+            { "firefly",            SEC_PLAYER,             true,  NULL,                                "", fireflyCommandTable },
             {  NULL,                SEC_PLAYER,             false, NULL,                                "", NULL }
         };
         
@@ -32,6 +33,33 @@ public:
     /* ------------------------------------------------------------------------- */
     /*                     COMMAND SCRIPTS BELONG BELOW THIS LINE                */
     /* ------------------------------------------------------------------------- */
+
+    static bool HandleFireFlyStatistics(ChatHandler* handler)
+    {
+        std::string realmName = sWorld->GetRealmName();
+        uint32 playerCount = sWorld->GetPlayerCount();
+        uint32 activeSessionCount = sWorld->GetActiveSessionCount();
+        uint32 queuedSessionCount = sWorld->GetQueuedSessionCount();
+        uint32 connPeak = sWorld->GetMaxActiveSessionCount();
+        std::string uptime = secsToTimeString(sWorld->GetUptime()).append(".");
+        std::string cur_rev = "99cb6a13ba";
+        uint32 updateTime = sWorld->GetUpdateTime();
+        uint32 avgUpdateTime = avgDiffTracker.getAverage();
+        /* let's generate our output */
+        handler->PSendSysMessage("-------------------");
+        handler->PSendSysMessage("|cff3a8edbFirefly WoW|r, revision: |cff3E9448%s|r", cur_rev.c_str()); if (!queuedSessionCount)
+            // -- //
+            handler->PSendSysMessage("[PLAYERS] Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448315|r", activeSessionCount, playerCount); else
+            handler->PSendSysMessage("[PLAYERS] Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448315|r | Queue: |cff3E9448%u|r", activeSessionCount, playerCount, queuedSessionCount);
+            // -- //
+        handler->PSendSysMessage("Online Peak: |cff3E9448%u|r | Ever: |cff3E9448315|r", connPeak);
+        handler->PSendSysMessage("Server uptime is: |cff3E9448%s|r", uptime.c_str());
+
+        if (sWorld->IsShuttingDown())
+            handler->PSendSysMessage("|cffFF0000Realm will be taken down for update, time left: %s|r", secsToTimeString(sWorld->GetShutDownTimeLeft()).append(".").c_str());
+        handler->PSendSysMessage("-------------------");
+        return true;
+    }
 
     static bool HandleFireFlyDamage(ChatHandler* handler, char const* args)
     {
