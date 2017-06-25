@@ -842,26 +842,8 @@ public:
 
     bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
     {
-        bool teleEligible;
-        teleEligible = false; // to prevent annoying gcc warning
-
-        //if (player->IsInCombat())
-            //teleEligible = false;
-
-        //if (sWorld->IsInCurrentContent(PATCH_330))
-            //teleEligible = true;
-
-		if (InstanceScript* instance = player->GetInstanceScript())
-			if (instance->GetBossState(EVENT_HORSEMAN) == DONE)
-				if (instance->GetBossState(EVENT_THADDIUS) == DONE)
-					if (instance->GetBossState(EVENT_MAEXXNA) == DONE)
-						if (instance->GetBossState(EVENT_LOATHEB) == DONE)
-							teleEligible = true;
-
-        if(teleEligible)
-            player->TeleportTo(533, 3497.237305f, -5354.635254f, 144.975876f, 1.349573f);
-        
-        return false;
+        player->TeleportTo(533, 3497.237305f, -5354.635254f, 144.975876f, 1.349573f);
+		return false;
     }
 };
 
