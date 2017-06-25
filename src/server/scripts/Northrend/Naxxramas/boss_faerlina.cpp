@@ -99,11 +99,11 @@ public:
 
             int8 maxsummons = sizeof(summons);
 
-            for (int8 summon; summon <= maxsummons; summon++)
+/*            for (int8 summon; summon <= maxsummons; summon++)
             {
 
             }
-
+*/
             if (pInstance)
                 pInstance->SetData(EVENT_FAERLINA, IN_PROGRESS);
         }

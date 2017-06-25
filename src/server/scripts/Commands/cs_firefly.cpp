@@ -4,6 +4,7 @@
 #include "LFGMgr.h"
 #include "Group.h"
 #include "Player.h"
+#include "AvgDiffTracker.h"
 
 class firefly_commandscript : public CommandScript
 {
@@ -34,7 +35,7 @@ public:
     /*                     COMMAND SCRIPTS BELONG BELOW THIS LINE                */
     /* ------------------------------------------------------------------------- */
 
-    static bool HandleFireFlyStatistics(ChatHandler* handler)
+    static bool HandleFireFlyStatistics(ChatHandler* handler, char const* args)
     {
         std::string realmName = sWorld->GetRealmName();
         uint32 playerCount = sWorld->GetPlayerCount();
