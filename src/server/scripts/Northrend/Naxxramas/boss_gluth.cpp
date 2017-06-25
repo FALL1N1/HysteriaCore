@@ -184,7 +184,7 @@ public:
                     {
                         // 10n - should spawn only from mid gate 25 from all 3
                         if (me->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
-                            me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[1]);
+                            me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[0]);
                         else
                             me->SummonCreature(NPC_ZOMBIE_CHOW, zombiePos[urand(0, 2)]);
                         (rand == 2 ? rand = 0 : rand++);
