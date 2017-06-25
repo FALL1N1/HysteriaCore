@@ -42,22 +42,23 @@ public:
         uint32 activeSessionCount = sWorld->GetActiveSessionCount();
         uint32 queuedSessionCount = sWorld->GetQueuedSessionCount();
         uint32 connPeak = sWorld->GetMaxActiveSessionCount();
+        
+        uint32 int_h = 0;
+        uint32 int_a = 0;
+        
         std::string uptime = secsToTimeString(sWorld->GetUptime()).append(".");
         std::string cur_rev = "99cb6a13ba";
         uint32 updateTime = sWorld->GetUpdateTime();
         uint32 avgUpdateTime = avgDiffTracker.getAverage();
         /* let's generate our output */
         handler->PSendSysMessage("-------------------");
-        handler->PSendSysMessage("|cff3a8edbFirefly WoW|r, revision: |cff3E9448%s|r", cur_rev.c_str()); if (!queuedSessionCount)
-            // -- //
-            handler->PSendSysMessage("[PLAYERS] Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448315|r", activeSessionCount, playerCount); else
-            handler->PSendSysMessage("[PLAYERS] Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448315|r | Queue: |cff3E9448%u|r", activeSessionCount, playerCount, queuedSessionCount);
-            // -- //
-        handler->PSendSysMessage("Online Peak: |cff3E9448%u|r | Ever: |cff3E9448315|r", connPeak);
+        handler->PSendSysMessage("|cff3a8edbFirefly WoW|r, Current Patch: 3.0 - Echoes of Doom (Naxxramas)");
+        handler->PSendSysMessage("Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448315|r | Today: |cff3E9448%u|r", activeSessionCount, playerCount, connPeak);
+        handler->PSendSysMessage("Horde has |cffFF0000%u online.| Alliance has |cff0000FF%u|r online.", int_h, int_a);
         handler->PSendSysMessage("Server uptime is: |cff3E9448%s|r", uptime.c_str());
 
         if (sWorld->IsShuttingDown())
-            handler->PSendSysMessage("|cffFF0000Realm will be taken down for update, time left: %s|r", secsToTimeString(sWorld->GetShutDownTimeLeft()).append(".").c_str());
+            handler->PSendSysMessage("Realm will be |cffFF0000taken down for updates|r, time left till restart: |cffFF0000%s|r", secsToTimeString(sWorld->GetShutDownTimeLeft()).append(".").c_str());
         handler->PSendSysMessage("-------------------");
         return true;
     }
