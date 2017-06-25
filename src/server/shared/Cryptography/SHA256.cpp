@@ -1,3 +1,4 @@
+/*
 #include "SHA256.h"
 #include "BigNumber.h"
 #include <cstring>
@@ -48,3 +49,4 @@ void SHA256Hash::Finalize(void)
 {
     SHA256_Final(mDigest, &mC);
 }
+*/

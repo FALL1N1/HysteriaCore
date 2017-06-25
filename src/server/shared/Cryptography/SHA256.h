@@ -1,3 +1,4 @@
+/*
 #ifndef SHA256_h__
 #define SHA256_h__
 
@@ -33,3 +34,4 @@ class SHA256Hash
 };
 
 #endif // SHA256_h__
+*/
