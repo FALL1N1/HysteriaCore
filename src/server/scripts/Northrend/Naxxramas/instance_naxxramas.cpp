@@ -845,16 +845,19 @@ public:
         bool teleEligible;
         teleEligible = true; // to prevent annoying gcc warning
 
-        if (player->IsInCombat())
-            teleEligible = false;
+        //if (player->IsInCombat())
+            //teleEligible = false;
 
-        if (sWorld->IsInCurrentContent(PATCH_330))
-            teleEligible = true;
+        //if (sWorld->IsInCurrentContent(PATCH_330))
+            //teleEligible = true;
 
         if (InstanceScript* instance = player->GetInstanceScript())
-            for (uint32 i = EVENT_PATCHWERK; i < EVENT_SAPPHIRON; ++i)
+            for (uint32 i = EVENT_PATCHWERK; i < EVENT_HORSEMAN; ++i)
                 if (instance->GetBossState(i) != DONE)
+                {
+                    sLog->outString("Teleportation is not available yet.");
                     teleEligible = false;
+                }
 
         if(teleEligible)
             player->TeleportTo(533, 3497.237305f, -5354.635254f, 144.975876f, 1.349573f);
