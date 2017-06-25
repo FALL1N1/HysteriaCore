@@ -41,7 +41,7 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     if (owner->HasUnitState(UNIT_STATE_NOT_MOVE))
         return;
 
-    if (owner->HasUnitState(UNIT_STATE_CASTING) && !owner->CanMoveDuringChannel())
+    if (owner->IsMovementPreventedByCasting())
         return;
 
     // allow pets to use shortcut if no path found when following their master
@@ -59,20 +59,32 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
         {
             if (i_target->IsWithinDistInMap(owner, CONTACT_DISTANCE))
                 return;
+
+            // to nearest contact position
+            i_target->GetContactPoint(owner, x, y, z);
         }
+        else
+        {
+            float dist;
+            float size;
 
-        float dist = i_offset ? i_offset : CONTACT_DISTANCE;
-        float angle = (i_offset || i_angle != 0.f) ? i_angle : i_target->GetRelativeAngle(owner->GetPositionX(), owner->GetPositionY());
+            if (owner->IsPet() && i_target->GetTypeId() == TYPEID_PLAYER)
+            {
+                dist = 1.0f; //i_target->GetCombatReach();
+                size = 1.0f; //i_target->GetCombatReach() - i_target->GetCombatReach();
+            }
+            else
+            {
+                dist = i_offset + 1.0f;
+                size = owner->GetCombatReach();
+            }
 
-        if (i_target->IsWithinDistInMap(owner, dist))
-            return;
+            if (i_target->IsWithinDistInMap(owner, dist))
+                return;
 
-        Position pos;
-        i_target->GetFirstCollisionPosition(pos, i_target->GetObjectSize() + dist, angle);
-
-        x = pos.m_positionX;
-        y = pos.m_positionY;
-        z = (i_target->IsInWater() || i_target->IsUnderWater() || i_target->IsFlying()) ? i_target->GetPositionZ() : pos.m_positionZ;
+            // to at i_offset distance from target and i_angle from target facing
+            i_target->GetClosePoint(x, y, z, size, i_offset, i_angle);
+        }
     }
     else
     {
@@ -121,7 +133,7 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
     }
 
     // prevent movement while casting spells with cast time or channel time
-    if (owner->HasUnitState(UNIT_STATE_CASTING) && !owner->CanMoveDuringChannel())
+    if (owner->IsMovementPreventedByCasting())
     {
         if (!owner->IsStopped())
             owner->StopMoving();
