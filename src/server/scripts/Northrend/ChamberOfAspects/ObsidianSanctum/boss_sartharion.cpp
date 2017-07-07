@@ -203,7 +203,7 @@ public:
         uint8 dragonsCount;
         bool usedBerserk;
         std::list<uint32> volcanoBlows;
-        uint8 tokens = 0;
+        uint8 tokens; tokens = 0;
         void HandleSartharionAbilities();
         void HandleDrakeAbilities();
 
@@ -373,7 +373,7 @@ public:
                 if (!PlayerList.isEmpty() && map->IsRaid())
                     for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                         if (i->GetSource() && tokens > 0)
-                            i->GetSource()->AddItem(me->GetMap()->Is25ManRaid ? 40753 /* if 25n == valor else heroism */ : 40752, tokens);
+                            i->GetSource()->AddItem(map->Is25ManRaid() ? 40753 /* if 25n == valor else heroism */ : 40752, tokens);
             }
 
             summons.DespawnEntry(NPC_FLAME_TSUNAMI);
