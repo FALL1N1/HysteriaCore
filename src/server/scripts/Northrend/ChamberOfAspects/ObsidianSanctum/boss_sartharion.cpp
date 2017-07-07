@@ -203,7 +203,7 @@ public:
         uint8 dragonsCount;
         bool usedBerserk;
         std::list<uint32> volcanoBlows;
-        uint8 tokens; tokens = 0;
+        uint8 tokens = 0;
         void HandleSartharionAbilities();
         void HandleDrakeAbilities();
 
