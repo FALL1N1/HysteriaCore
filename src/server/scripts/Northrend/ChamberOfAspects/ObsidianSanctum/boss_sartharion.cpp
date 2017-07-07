@@ -1,4 +1,6 @@
 #include "ScriptMgr.h"
+#include "Player.h"
+#include "Group.h"
 #include "ScriptedCreature.h"
 #include "obsidian_sanctum.h"
 #include "SpellScript.h"
@@ -83,7 +85,9 @@ enum Spells
 
     // Misc
     SPELL_FADE_ARMOR                            = 60708,
-    SPELL_FLAME_TSUNAMI_DAMAGE_AURA                = 57492,
+    SPELL_FLAME_TSUNAMI_DAMAGE_AURA                = 57492, // the aura on flame waves
+    SPELL_FLAME_TSUNAMI_PERIODIC_DMG               = 57491, // the aura that is applied on plr
+    SPELL_FLAME_TSUNAMI_KNOCKBACK                  = 60241, // the knockback effect
     SPELL_SARTHARION_PYROBUFFET_TRIGGER            = 57557,
 };
 
@@ -199,7 +203,7 @@ public:
         uint8 dragonsCount;
         bool usedBerserk;
         std::list<uint32> volcanoBlows;
-
+        uint8 tokens = 0;
         void HandleSartharionAbilities();
         void HandleDrakeAbilities();
 
@@ -356,7 +360,22 @@ public:
 
         void JustDied(Unit* pKiller)
         {
-            RespawnDragons(true);
+            if (Map* map = me->GetMap())
+            {
+                if (me->FindNearestCreature(NPC_TENEBRON, 999, true)) // if tenebron is alive - increase tokens
+                    tokens++;
+                if (me->FindNearestCreature(NPC_VESPERON, 999, true)) // if vesperon is alive - increase tokens
+                    tokens++;
+                if (me->FindNearestCreature(NPC_SHADRON, 999, true)) // if shadron is alive - increase tokens
+                    tokens++;
+
+                Map::PlayerList const &PlayerList = map->GetPlayers();
+                if (!PlayerList.isEmpty() && map->IsRaid())
+                    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                        if (i->GetSource() && tokens > 0)
+                            i->GetSource()->AddItem(me->GetMap()->Is25ManRaid ? 40753 /* if 25n == valor else heroism */ : 40752, tokens);
+            }
+
             summons.DespawnEntry(NPC_FLAME_TSUNAMI);
             Talk(SAY_SARTHARION_DEATH);
 
