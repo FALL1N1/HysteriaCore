@@ -308,6 +308,15 @@ void WorldSession::HandleGameObjectUseOpcode(WorldPacket & recvData)
         if (GetPlayer()->m_mover != GetPlayer())
             if (!(GetPlayer()->IsOnVehicle(GetPlayer()->m_mover) || !GetPlayer()->IsMounted()) && !obj->GetGOInfo()->IsUsableMounted())
                 return;
+		
+		// Junky: hackfix for malygos, i don't have time to deal with gameobjects rn
+		if (GetPlayer()->GetMapId() == 616 && obj->GetEntry() == 193908)
+		{
+			GetPlayer()->ExitVehicle();
+			GetPlayer()->CastSpell(GetPlayer(), 60474);
+			sLog->outString("Player %s successfully left 'Eye of Eternity' raid trough the portal while on vehicle.", GetPlayer()->GetName().c_str());
+		}
+
 
         obj->Use(GetPlayer());
     }
