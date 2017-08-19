@@ -503,7 +503,7 @@ public:
     }
 
     void CreateArenasMap()
-    { // BattlegroundTemplateContainer ??
+    { 
         arenasMap.clear();
         BattlegroundContainer store = sBattlegroundMgr->GetBattlegroundList();
 
@@ -531,5 +531,6 @@ private:
 
 void AddSC_custom_scripts()
 {
-    
+    new spectate_commandscript();
+    new npc_arenamaster();
 }

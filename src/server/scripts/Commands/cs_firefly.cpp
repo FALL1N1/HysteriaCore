@@ -15,10 +15,10 @@ public:
     {
         ChatCommand static westmereCommandTable[] =
         {
-            { "damage",                             SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,     "", NULL },
-            { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel,   "", NULL },
-            { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMinLevel,   "", NULL },
-            { "statistics",                         SEC_PLAYER,        false, &HandleFireFlyStatistics, "", NULL },
+            { "damage",                             SEC_ADMINISTRATOR, false, &HandleWestmereDamage,     "", NULL },
+            { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMaxLevel,   "", NULL },
+            { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMinLevel,   "", NULL },
+            { "statistics",                         SEC_PLAYER,        false, &HandleWestmereStatistics, "", NULL },
             { NULL,                                 0,                 false, NULL,                     "", NULL }
         };
 
@@ -35,7 +35,7 @@ public:
     /*                     COMMAND SCRIPTS BELONG BELOW THIS LINE                */
     /* ------------------------------------------------------------------------- */
 
-    static bool HandleFireFlyStatistics(ChatHandler* handler, char const* args)
+    static bool HandleWestmereStatistics(ChatHandler* handler, char const* args)
     {
         std::string realmName = sWorld->GetRealmName();
         uint32 playerCount = sWorld->GetPlayerCount();
@@ -63,7 +63,7 @@ public:
         return true;
     }
 
-    static bool HandleFireFlyDamage(ChatHandler* handler, char const* args)
+    static bool HandleWestmereDamage(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
             if (!plr->HasAura(68378) || !plr->HasAura(64238) || !plr->HasAura(62555) || !plr->HasAura(62560))
@@ -79,7 +79,7 @@ public:
         return true;
     }
 
-    static bool HandleFireFlyMinLevel(ChatHandler* handler, char const* args)
+    static bool HandleWestmereMinLevel(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
@@ -90,7 +90,7 @@ public:
         return true;
     }
 
-    static bool HandleFireFlyMaxLevel(ChatHandler* handler, char const* args)
+    static bool HandleWestmereMaxLevel(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
         {

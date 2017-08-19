@@ -2490,9 +2490,9 @@ bool Player::TeleportToEntryPoint()
     ScheduleDelayedOperation(DELAYED_BG_MOUNT_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_TAXI_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_GROUP_RESTORE);
-    sLog->outString("FireFly Teleport Bug: #1");
+    sLog->outString("Westmere Teleport Bug: #1");
     if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID){
-        sLog->outString("FireFly Teleport Bug: #2");
+        sLog->outString("Westmere Teleport Bug: #2");
         return TeleportTo(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, GetOrientation());
     }
     return TeleportTo(m_entryPointData.joinPos);
@@ -22386,7 +22386,7 @@ void Player::SetEntryPoint()
     {
         m_entryPointData.mountSpell  = 0;
         m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
-        sLog->outString("FireFly Teleport Bug EmptyTaxiPath");
+        sLog->outString("Westmere Teleport Bug EmptyTaxiPath");
         std::vector<uint32> const& taxi = m_taxi.GetPath();
         for (std::vector<uint32>::const_iterator itr = taxi.begin(); itr != taxi.end(); ++itr)
             m_entryPointData.taxiPath.push_back(*itr);
@@ -22408,19 +22408,19 @@ void Player::SetEntryPoint()
         {
             if (const WorldSafeLocsEntry* entry = sObjectMgr->GetClosestGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId(), GetTeamId()))
                 m_entryPointData.joinPos = WorldLocation(entry->map_id, entry->x, entry->y, entry->z, 0.0f);
-            sLog->outString("FireFly Teleport Bug ItsDungeon");
+            sLog->outString("Westmere Teleport Bug ItsDungeon");
         }
         else if (!GetMap()->IsBattlegroundOrArena()) 
         {
             m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
-            sLog->outString("FireFly Teleport Bug ItsBattleground");
+            sLog->outString("Westmere Teleport Bug ItsBattleground");
         }
     }
 
     if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID)
     {
         m_entryPointData.joinPos = WorldLocation(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, 0.0f);
-        sLog->outString("FireFly Teleport Bug InvalidMap");
+        sLog->outString("Westmere Teleport Bug InvalidMap");
     }
 }
 

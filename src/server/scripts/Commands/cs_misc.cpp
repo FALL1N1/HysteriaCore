@@ -147,7 +147,7 @@ public:
         return commandTable;
     }
 
-    static bool HandleFireFlyDamage(ChatHandler* handler, char const* args)
+    static bool HandleWestmereDamage(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
             if (!plr->HasAura(68378) || !plr->HasAura(64238) || !plr->HasAura(62555) || !plr->HasAura(62560))
@@ -163,7 +163,7 @@ public:
         return true;
     }
 
-    static bool HandleFireFlyMinLevel(ChatHandler* handler, char const* args)
+    static bool HandleWestmereMinLevel(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
@@ -174,7 +174,7 @@ public:
         return true;
     }
 
-    static bool HandleFireFlyMaxLevel(ChatHandler* handler, char const* args)
+    static bool HandleWestmereMaxLevel(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
