@@ -1359,7 +1359,7 @@ void AddSC_the_scarlet_enclave_c1()
     new npc_scarlet_miner_cart();
     new go_inconspicuous_mine_car();
 
-    // firefly
+    // westmere
     new npc_runeforge_trigger();
     new npc_runebladed_sword();
     new npc_citizen_of_havenshire();

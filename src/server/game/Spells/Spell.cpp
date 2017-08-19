@@ -1295,7 +1295,7 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
             break;
         case TARGET_DEST_CASTER_FISHING:
         {
-            // firefly: if there are issues with fishing - do changes here
+            // westmere: if there are issues with fishing - do changes here
             float minDist = m_spellInfo->GetMinRange(true);
             float maxDist = m_spellInfo->GetMaxRange(true);
             float dist = frand(minDist, maxDist);
@@ -5538,7 +5538,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             return SPELL_FAILED_LINE_OF_SIGHT;
     }
 
-    // firefly: small hack for mages in the nexus, if player is not in los they should interrupt frostbolt 
+    // westmere: small hack for mages in the nexus, if player is not in los they should interrupt frostbolt 
     // (we can't code it properly as they are SAI based)
     if (m_caster->GetTypeId() != TYPEID_PLAYER && m_caster->GetVictim())
     {

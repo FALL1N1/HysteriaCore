@@ -168,7 +168,7 @@ public:
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(1);
-            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".firefly maxlevel\".");
+            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".westmere maxlevel\".");
         }
 
         return true;
@@ -179,7 +179,7 @@ public:
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(80);
-            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".firefly minlevel\".");
+            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".westmere minlevel\".");
         }
 
         return true;
