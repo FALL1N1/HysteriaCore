@@ -24,7 +24,7 @@ public:
 
         static ChatCommand commandTable[] =
         {
-            { "firefly",            SEC_PLAYER,             true,  NULL,                                "", fireflyCommandTable },
+            { "help",            SEC_PLAYER,             true,  NULL,                                "", fireflyCommandTable },
             {  NULL,                SEC_PLAYER,             false, NULL,                                "", NULL }
         };
         
@@ -47,12 +47,12 @@ public:
         uint32 int_a = 0;
         
         std::string uptime = secsToTimeString(sWorld->GetUptime()).append(".");
-        std::string cur_rev = "99cb6a13ba";
+        std::string cur_rev = "00000000";
         uint32 updateTime = sWorld->GetUpdateTime();
         uint32 avgUpdateTime = avgDiffTracker.getAverage();
         /* let's generate our output */
         handler->PSendSysMessage("-------------------");
-        handler->PSendSysMessage("|cff3a8edbFirefly WoW|r, Current Patch: 3.0 - Echoes of Doom (Naxxramas)");
+        //handler->PSendSysMessage("|cff3a8edbFirefly WoW|r, Current Patch: 3.0 - Echoes of Doom (Naxxramas)");
         handler->PSendSysMessage("Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448315|r | Today: |cff3E9448%u|r", activeSessionCount, playerCount, connPeak);
         handler->PSendSysMessage("Horde has |cffFF0000%u|r online. Alliance has |cff0000FF%u|r online.", int_h, int_a);
         handler->PSendSysMessage("Server uptime is: |cff3E9448%s|r", uptime.c_str());

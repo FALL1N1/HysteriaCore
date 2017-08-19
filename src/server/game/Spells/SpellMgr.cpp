@@ -6235,7 +6235,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[EFFECT_2] = TARGET_UNIT_TARGET_ANY;
             break;
             //////////////////////////////////////////
-            ////////// Firefly Custom Spell Rules
+            ////////// Westmere Custom Spell Rules
             //////////////////////////////////////////
             // Frost Bolt (volley-like from "The Nexus" dungeon)
             case 12737:

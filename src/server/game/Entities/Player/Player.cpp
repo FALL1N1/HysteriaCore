@@ -17704,7 +17704,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
         if (!fixed)
         {
             RelocateToHomebind();
-            sLog->outString("Firefly Taxi #1");
             mapEntry = sMapStore.LookupEntry(mapId);
         }
     }
@@ -17713,7 +17712,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
     {
         sLog->outError("Player (guidlow %d) have invalid coordinates (MapId: %u X: %f Y: %f Z: %f O: %f). Teleport to default race/class locations.", guid, mapId, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
         RelocateToHomebind();
-        sLog->outString("Firefly Taxi #2");
     }
     // Player was saved in Arena or Bg
     else if (mapEntry->IsBattlegroundOrArena())
@@ -17733,7 +17731,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
         if (mapId == MAPID_INVALID)
         {
             RelocateToHomebind();
-            sLog->outString("Firefly Taxi #3");
         }
         else
         {
@@ -17777,7 +17774,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
                 m_movementInfo.transport.Reset();
                 m_movementInfo.RemoveMovementFlag(MOVEMENTFLAG_ONTRANSPORT);
                 RelocateToHomebind();
-                sLog->outString("Firefly Taxi #4");
             }
             else
             {
@@ -17798,7 +17794,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
                 }
             if (!fixed)
                 RelocateToHomebind();
-            sLog->outString("Firefly Taxi #5");
         }
     }
     // currently we do not support taxi in instance
@@ -17810,7 +17805,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
             // xinef: could no load valid data for taxi, relocate to homebind and clear
             m_taxi.ClearTaxiDestinations();
             RelocateToHomebind();
-            sLog->outString("Firefly Taxi #6");
         }
     }
 
@@ -17823,7 +17817,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
         {
             ;//sLog->outDebug(LOG_FILTER_PLAYER_LOADING, "Player %s using client without required expansion tried login at non accessible map %u", GetName().c_str(), mapId);
             RelocateToHomebind();
-            sLog->outString("Firefly Taxi #7");
         }
 
         // check whether player was unbound or is bound to another instance
@@ -17843,7 +17836,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
             Relocate(at->target_X, at->target_Y, at->target_Z, at->target_Orientation);
         else
         {
-            sLog->outString("Firefly Taxi #8");
             RelocateToHomebind();
         }
     }
@@ -17866,7 +17858,6 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
         {
             sLog->outError("Player (guidlow %d) is teleported to home (Map: %u X: %f Y: %f Z: %f O: %f).", guid, mapId, GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
             RelocateToHomebind();
-            sLog->outString("Firefly Taxi #9");
         }
 
         map = sMapMgr->CreateMap(mapId, this);

@@ -1,5 +1,5 @@
 /*
- * FireflyCore
+ * Westmere
  * Voice Chat Engine
  * Copyright (C) 2016 JunkyBulgaria <emiliyan9604bg@gmail.com>
  */
