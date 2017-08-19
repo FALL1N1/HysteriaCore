@@ -7495,7 +7495,7 @@ uint32 Player::GetLevelFromStorage(uint64 guid)
 
 void Player::UpdateArea(uint32 newArea)
 { 
-    // firefly: required for pool system
+    // westmere: required for pool system
     GetMap()->UpdatePlayerAreaStats(m_areaUpdateId, newArea);
     
     // pussywizard: inform instance, needed for Icecrown Citadel

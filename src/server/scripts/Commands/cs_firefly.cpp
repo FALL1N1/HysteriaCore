@@ -6,14 +6,14 @@
 #include "Player.h"
 #include "AvgDiffTracker.h"
 
-class firefly_commandscript : public CommandScript
+class westmere_commandscript : public CommandScript
 {
 public:
-    firefly_commandscript() : CommandScript("firefly_commandscript") { }
+    westmere_commandscript() : CommandScript("westmere_commandscript") { }
     /* ------------------------------------------------------------------------- */
     ChatCommand* GetCommands() const
     {
-        ChatCommand static fireflyCommandTable[] =
+        ChatCommand static westmereCommandTable[] =
         {
             { "damage",                             SEC_ADMINISTRATOR, false, &HandleFireFlyDamage,     "", NULL },
             { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleFireFlyMaxLevel,   "", NULL },
@@ -24,7 +24,7 @@ public:
 
         static ChatCommand commandTable[] =
         {
-            { "help",            SEC_PLAYER,             true,  NULL,                                "", fireflyCommandTable },
+            { "help",            SEC_PLAYER,             true,  NULL,                                "", westmereCommandTable },
             {  NULL,                SEC_PLAYER,             false, NULL,                                "", NULL }
         };
         
@@ -84,7 +84,7 @@ public:
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(1);
-            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".firefly maxlevel\".");
+            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".westmere maxlevel\".");
         }
 
         return true;
@@ -95,14 +95,14 @@ public:
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(80);
-            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".firefly minlevel\".");
+            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".westmere minlevel\".");
         }
 
         return true;
     }
 };
 
-void AddSC_firefly_commandscript()
+void AddSC_westmere_commandscript()
 {
-    new firefly_commandscript();
+    new westmere_commandscript();
 }

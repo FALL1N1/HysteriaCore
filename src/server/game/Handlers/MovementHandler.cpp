@@ -661,7 +661,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         plrMover->m_anti_JumpCount = 0;
                 }
 
-                // firefly: "Freeze Z coord check"
+                // westmere: "Freeze Z coord check"
                 if (plrMover)
                     if (!plrMover->IsFlying() && !plrMover->IsGameMaster() && !plrMover->isFeared() && no_fly_auras && no_fly_flags && !plrMover->IsInWater() && !plrMover->IsFalling() && !plrMover->m_transport &&
                         !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater() && !plrMover->HasAura(51690))
@@ -679,7 +679,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                         if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
                             plrMover->GetSession()->KickPlayer();
                     }
-                // firefly: custom fly / under map checks UNIT_STATE_CHARGING
+                // westmere: custom fly / under map checks UNIT_STATE_CHARGING
                 if (plrMover)
                     if ((no_fly_auras && !no_fly_flags) && !plrMover->IsGameMaster() && !plrMover->IsFalling() &&
                         !plrMover->m_transport && !plrMover->isFeared() && !plrMover->HasUnitState(UNIT_STATE_CHARGING) && areMapsOK && !plrMover->IsInWater() && !plrMover->IsUnderWater() && !plrMover->IsGameMaster()
