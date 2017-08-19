@@ -2281,10 +2281,10 @@ Rate.Skill.Discovery = 1
 #                     1 - (Rate.Drop.Item.Referenced)
 #                     1 - (Rate.Drop.Money)
 
-Rate.Drop.Item.Poor             = 1
-Rate.Drop.Item.Normal           = 1
-Rate.Drop.Item.Uncommon         = 1
-Rate.Drop.Item.Rare             = 1
+Rate.Drop.Item.Poor             = 0.3
+Rate.Drop.Item.Normal           = 0.3
+Rate.Drop.Item.Uncommon         = 0.3
+Rate.Drop.Item.Rare             = 0.3
 Rate.Drop.Item.Epic             = 1
 Rate.Drop.Item.Legendary        = 1
 Rate.Drop.Item.Artifact         = 1
