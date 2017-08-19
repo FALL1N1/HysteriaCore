@@ -46,9 +46,6 @@ void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket& recvData)
     if (IS_GAMEOBJECT_GUID(lguid))
     {
         GameObject* go = player->GetMap()->GetGameObject(lguid);
-        // xinef: cheating protection
-        //if (player->GetGroup() && player->GetGroup()->GetLootMethod() == MASTER_LOOT && player->GetGUID() != player->GetGroup()->GetMasterLooterGuid())
-        //    go = NULL;
 
         // not check distance for GO in case owned GO (fishing bobber case, for example) or Fishing hole GO
         if (!go || ((go->GetOwnerGUID() != _player->GetGUID() && go->GetGoType() != GAMEOBJECT_TYPE_FISHINGHOLE) && !go->IsWithinDistInMap(_player, INTERACTION_DISTANCE)))
@@ -325,8 +322,7 @@ void WorldSession::DoLootRelease(uint64 lguid)
 
         loot = &corpse->loot;
 
-        // Xinef: Buggs client? (Opening loot after closing)
-        //if (loot->isLooted())
+        if (loot->isLooted())
         {
             loot->clear();
             corpse->RemoveFlag(CORPSE_FIELD_DYNAMIC_FLAGS, CORPSE_DYNFLAG_LOOTABLE);
@@ -338,7 +334,6 @@ void WorldSession::DoLootRelease(uint64 lguid)
         if (!pItem)
             return;
 
-        loot = &pItem->loot;
         ItemTemplate const* proto = pItem->GetTemplate();
 
         // destroy only 5 items from stack in case prospecting and milling
@@ -355,11 +350,13 @@ void WorldSession::DoLootRelease(uint64 lguid)
 
             player->DestroyItemCount(pItem, count, true);
         }
-        else if (pItem->loot.isLooted() || !(proto->Flags & ITEM_PROTO_FLAG_OPENABLE))
+        else
         {
-            player->DestroyItem(pItem->GetBagSlot(), pItem->GetSlot(), true);
-            return;
+            // Only delete item if no loot or money (unlooted loot is saved to db) or if it isn't an openable item
+            if (pItem->loot.isLooted() || !(proto->Flags & ITEM_FLAG_HAS_LOOT))
+                player->DestroyItem(pItem->GetBagSlot(), pItem->GetSlot(), true);
         }
+        return;                                             // item can be looted only single player
     }
     else
     {
@@ -372,11 +369,12 @@ void WorldSession::DoLootRelease(uint64 lguid)
         loot = &creature->loot;
         if (loot->isLooted())
         {
+            creature->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+
             // skip pickpocketing loot for speed, skinning timer reduction is no-op in fact
             if (!creature->IsAlive())
                 creature->AllLootRemovedFromCorpse();
 
-            creature->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
             loot->clear();
         }
         else
@@ -387,13 +385,10 @@ void WorldSession::DoLootRelease(uint64 lguid)
                 loot->roundRobinPlayer = 0;
 
                 if (Group* group = player->GetGroup())
-                {
-                    group->SendLooter(creature, NULL);
-
-                    // force update of dynamic flags, otherwise other group's players still not able to loot.
-                    creature->ForceValuesUpdateAtIndex(UNIT_DYNAMIC_FLAGS);
-                }
+                    group->SendLooter(creature, nullptr);
             }
+            // force dynflag update to update looter and lootable info
+            creature->ForceValuesUpdateAtIndex(UNIT_DYNAMIC_FLAGS);
         }
     }
 
