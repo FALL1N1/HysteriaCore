@@ -204,6 +204,7 @@ public:
         bool usedBerserk;
         std::list<uint32> volcanoBlows;
         uint8 tokens = 0;
+        uint32 tokenid = 0; // gona be used after patch 3.1x
         void HandleSartharionAbilities();
         void HandleDrakeAbilities();
 
@@ -362,6 +363,7 @@ public:
         {
             if (Map* map = me->GetMap())
             {
+                tokens = tokens + 2; // 2 drops from sartharion
                 if (me->FindNearestCreature(NPC_TENEBRON, 999, true)) // if tenebron is alive - increase tokens
                     tokens++;
                 if (me->FindNearestCreature(NPC_VESPERON, 999, true)) // if vesperon is alive - increase tokens
@@ -373,7 +375,7 @@ public:
                 if (!PlayerList.isEmpty() && map->IsRaid())
                     for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                         if (i->GetSource() && tokens > 0)
-                            i->GetSource()->AddItem(map->Is25ManRaid() ? 40753 /* if 25n == valor else heroism */ : 40752, tokens);
+                            i->GetSource()->AddItem(map->Is25ManRaid() ? 40753/*25*/ : 40752/*10*/, tokens);
             }
 
             summons.DespawnEntry(NPC_FLAME_TSUNAMI);
