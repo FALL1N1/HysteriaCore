@@ -20,3 +20,8 @@
 -- not done yet
 [] NO CLIP -- i don't think this could be handled trough the server as we can't check wmo/m2 objects, can we?
 [] TRACKING (could be undetectable? / sending tracking flags if not hunter?)
+
+
+---------------------
+[x] - done
+[] - not done

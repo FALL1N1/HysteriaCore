@@ -487,7 +487,7 @@ public:
         }
         player->SetIsSpectator(true);
         player->SetBattlegroundId(action, arena->GetBgTypeID(), PLAYER_MAX_BATTLEGROUND_QUEUES, false, false, TEAM_NEUTRAL);
-        player->SetEntryPoint();
+        //player->SetEntryPoint();
         arena->HandlePlayerUnderMap(player);
     }
 
