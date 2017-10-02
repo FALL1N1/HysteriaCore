@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2013 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2013 ProjectB <http://www.Balnazzar.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -435,32 +435,32 @@ class boss_hadronox : public CreatureScript
                 }
             }
 
-			void MoveInLineOfSight(Unit* who)
-			{
-				if (who->GetTypeId() == TYPEID_PLAYER || who->IsControlledByPlayer())
-					return;
+            void MoveInLineOfSight(Unit* who)
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER || who->IsControlledByPlayer())
+                    return;
 
-				if (!me->IsWithinDistInMap(who, 10.0f, false))
-					return;
+                if (!me->IsWithinDistInMap(who, 10.0f, false))
+                    return;
 
-				if (who->ToCreature() && who->ToCreature()->GetReactState() != REACT_DEFENSIVE)
-					return;
+                if (who->ToCreature() && who->ToCreature()->GetReactState() != REACT_DEFENSIVE)
+                    return;
 
-				if (who->ToCreature())
-					who->ToCreature()->SetReactState(REACT_AGGRESSIVE);
+                if (who->ToCreature())
+                    who->ToCreature()->SetReactState(REACT_AGGRESSIVE);
 
-				DoCast(who, SPELL_TAUNT);
-			}
+                DoCast(who, SPELL_TAUNT);
+            }
 
-			void DamageTaken(Unit* attacker, uint32& /*damage*/, DamageEffectType /*damagetype*/, SpellSchoolMask /*mask*/)
-			{
-				if (!_clearedWPMovement && (attacker->GetTypeId() == TYPEID_PLAYER) && !_eventReseted)
-				{
-					_clearedWPMovement = true;
-					events.CancelEventGroup(2);
-					me->GetMotionMaster()->Clear(false);
-				}
-			}
+            void DamageTaken(Unit* attacker, uint32& /*damage*/, DamageEffectType /*damagetype*/, SpellSchoolMask /*mask*/)
+            {
+                if (!_clearedWPMovement && (attacker->GetTypeId() == TYPEID_PLAYER) && !_eventReseted)
+                {
+                    _clearedWPMovement = true;
+                    events.CancelEventGroup(2);
+                    me->GetMotionMaster()->Clear(false);
+                }
+            }
 
             void UpdateAI(uint32 diff)
             {

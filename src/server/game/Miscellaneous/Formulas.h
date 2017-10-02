@@ -181,7 +181,7 @@ namespace Trinity
                             xpMod *= 2.0f;
                     }
 
-                    // This requires TrinityCore creature_template.ExperienceModifier feature
+                    // This requires ProjectB creature_template.ExperienceModifier feature
                     // xpMod *= creature->GetCreatureTemplate()->ModExperience;
                 }
 

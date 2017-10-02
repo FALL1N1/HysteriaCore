@@ -843,7 +843,7 @@ public:
     bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/)
     {
         player->TeleportTo(533, 3497.237305f, -5354.635254f, 144.975876f, 1.349573f);
-		return false;
+        return false;
     }
 };
 

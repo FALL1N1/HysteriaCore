@@ -2356,7 +2356,7 @@ void LFGMgr::SetLeader(uint64 gguid, uint64 leader)
 void LFGMgr::SetTeam(uint64 guid, TeamId teamId)
 {
     if (sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GROUP))
-        teamId = TEAM_ALLIANCE; // @Not Sure About That TeamId is supposed to be uint8 Team = 0(@TrinityCore)
+        teamId = TEAM_ALLIANCE; // @Not Sure About That TeamId is supposed to be uint8 Team = 0(@ProjectB)
 
     PlayersStore[guid].SetTeam(teamId);
 }

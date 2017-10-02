@@ -699,7 +699,7 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                 {
                     if (Creature* bomb = m_caster->SummonCreature(8937, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0))
                         bomb->setFaction(m_caster->getFaction());
-					return;
+                    return;
                 }
                 // Trial of the Champion, Trample
                 case 67866:

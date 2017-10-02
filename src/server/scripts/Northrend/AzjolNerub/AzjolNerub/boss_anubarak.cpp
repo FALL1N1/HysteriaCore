@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2013 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2013 ProjectB <http://www.Balnazzar.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -203,7 +203,7 @@ public:
                         ImpaleTimer = 1*IN_MILLISECONDS;
                         break;
                     case IMPALE_PHASE_DMG:
-						if (Creature* impaleTarget = ObjectAccessor::GetCreature(*me, ImpaleTarget))
+                        if (Creature* impaleTarget = ObjectAccessor::GetCreature(*me, ImpaleTarget))
                             me->CastSpell(impaleTarget, SPELL_IMPALE_DMG, true);
                         ImpalePhase = IMPALE_PHASE_TARGET;
                         ImpaleTimer = 9*IN_MILLISECONDS;
