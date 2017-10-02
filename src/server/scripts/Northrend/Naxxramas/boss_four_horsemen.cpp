@@ -181,7 +181,12 @@ public:
             events.Reset();
 
             if (pInstance)
+            {
                 pInstance->SetData(EVENT_HORSEMAN, NOT_STARTED);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_HORSEMAN_GATE)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+            }
+
 
             // Schedule Events
             events.RescheduleEvent(EVENT_SPELL_MARK_CAST, 24000);
@@ -265,7 +270,11 @@ public:
         void EnterCombat(Unit *who)
         {
             if (pInstance)
+            {
                 pInstance->SetData(EVENT_HORSEMAN, IN_PROGRESS);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_HORSEMAN_GATE)))
+                    go->SetGoState(GO_STATE_READY);
+            }
 
             if (movementPhase == MOVE_PHASE_NONE)
             {
@@ -332,6 +341,12 @@ public:
             }
             else
                 DoMeleeAttackIfReady();
+            EnterEvadeIfOutOfCombatArea();
+        }
+
+        bool CheckEvadeIfOutOfCombatArea() const
+        {
+            return me->GetHomePosition().GetExactDist2d(me) > 80.0f;
         }
     };
 };

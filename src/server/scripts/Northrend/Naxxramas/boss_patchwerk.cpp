@@ -24,6 +24,11 @@ enum Spells
     SPELL_SLIME_BOLT                = 32309,
 };
 
+enum HatefulThreatAmounts
+{
+    HATEFUL_THREAT_AMT = 1000,
+};
+
 enum Events
 {
     EVENT_HEALTH_CHECK              = 1,
@@ -87,6 +92,7 @@ public:
         {
             Talk(SAY_AGGRO);
             
+            me->CallForHelp(250.0f);
             me->SetInCombatWithZone();
             events.ScheduleEvent(EVENT_SPELL_HATEFUL_STRIKE, 1200);
             events.ScheduleEvent(EVENT_SPELL_BERSERK, 360000);
@@ -112,44 +118,57 @@ public:
             {
                 case EVENT_SPELL_HATEFUL_STRIKE:
                 {
-                    //Cast Hateful strike on the player with the highest
-                    //amount of HP within melee distance, and second threat amount
-                    std::list<Unit*> meleeRangeTargets;
-                    Unit* finalTarget = NULL;
-                    uint8 counter = 0;
-                    
-                    ThreatContainer::StorageType::const_iterator i = me->getThreatManager().getThreatList().begin();
-                    for (; i != me->getThreatManager().getThreatList().end(); ++i, ++counter)
-                    {
-                        // Gather all units with melee range
-                        Unit *target = (*i)->getTarget();
-                        if (me->IsWithinMeleeRange(target))
-                            meleeRangeTargets.push_back(target);
+                    // Hateful Strike targets the highest non-MT threat in melee range on 10man
+                    // and the higher HP target out of the two highest non-MT threats in melee range on 25man
+                    float MostThreat = 0.0f;
+                    Unit* secondThreatTarget = NULL;
+                    Unit* thirdThreatTarget = NULL;
 
-                        // and add threat to most hated
-                        if (counter < RAID_MODE(2,3))
-                            me->AddThreat(target, 500.0f);
-                    }
-
-                    counter = 0;
-                    for (std::list<Unit*>::const_iterator i = meleeRangeTargets.begin(); i != meleeRangeTargets.end(); ++i, ++counter)
-                    {
-                        // if there is only one target available
-                        if (meleeRangeTargets.size() == 1)
-                            finalTarget = (*i);
-                        else if (counter > 0) // skip first target
+                    std::list<HostileReference*>::const_iterator i = me->getThreatManager().getThreatList().begin();
+                    for (; i != me->getThreatManager().getThreatList().end(); ++i)
+                    { // find second highest
+                        Unit* target = (*i)->getTarget();
+                        if (target->IsAlive() && target != me->GetVictim() && (*i)->getThreat() >= MostThreat && me->IsWithinMeleeRange(target))
                         {
-                            if (!finalTarget || (*i)->GetHealth() > finalTarget->GetHealth())
-                                finalTarget = (*i);
-
-                            // third loop
-                            if (counter >= 2)
-                                break;
+                            MostThreat = (*i)->getThreat();
+                            secondThreatTarget = target;
                         }
                     }
 
-                    if (finalTarget)
-                        me->CastSpell(finalTarget, RAID_MODE(SPELL_HATEFUL_STRIKE_10, SPELL_HATEFUL_STRIKE_25), false);
+                    if (secondThreatTarget && Is25ManRaid())
+                    { // find third highest
+                        MostThreat = 0.0f;
+                        i = me->getThreatManager().getThreatList().begin();
+                        for (; i != me->getThreatManager().getThreatList().end(); ++i)
+                        {
+                            Unit* target = (*i)->getTarget();
+                            if (target->IsAlive() && target != me->GetVictim() && target != secondThreatTarget && (*i)->getThreat() >= MostThreat && me->IsWithinMeleeRange(target))
+                            {
+                                MostThreat = (*i)->getThreat();
+                                thirdThreatTarget = target;
+                            }
+                        }
+                    }
+
+                    Unit* pHatefulTarget = NULL;
+                    if (!thirdThreatTarget)
+                        pHatefulTarget = secondThreatTarget;
+                    else if (secondThreatTarget)
+                        pHatefulTarget = (secondThreatTarget->GetHealth() < thirdThreatTarget->GetHealth()) ? thirdThreatTarget : secondThreatTarget;
+
+                    if (!pHatefulTarget)
+                        pHatefulTarget = me->GetVictim();
+
+                    if (pHatefulTarget)
+                        me->CastSpell(pHatefulTarget, RAID_MODE(SPELL_HATEFUL_STRIKE_10, SPELL_HATEFUL_STRIKE_25), false);
+    
+                    // add threat to highest threat targets
+                    if (me->GetVictim() && me->IsWithinMeleeRange(me->GetVictim()))
+                        me->getThreatManager().addThreat(me->GetVictim(), HATEFUL_THREAT_AMT);
+                    if (secondThreatTarget)
+                        me->getThreatManager().addThreat(secondThreatTarget, HATEFUL_THREAT_AMT);
+                    if (thirdThreatTarget)
+                        me->getThreatManager().addThreat(thirdThreatTarget, HATEFUL_THREAT_AMT); // this will only ever be used in 25m
 
                     events.RepeatEvent(1000);
                     break;

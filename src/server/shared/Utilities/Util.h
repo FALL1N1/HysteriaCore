@@ -632,6 +632,27 @@ class EventMap
                 _phase = (1 << (phase - 1));
         }
 
+        uint32 EventMap::GetNextEventTime(uint32 eventId) const
+        {
+            if (Empty())
+                return 0;
+
+            for (EventStore::const_iterator itr = _eventMap.begin(); itr != _eventMap.end(); ++itr)
+                if (eventId == (itr->second & 0x0000FFFF))
+                    return itr->first;
+
+            return 0;
+        }
+
+        uint32 EventMap::GetTimeUntilEvent(uint32 eventId) const
+        {
+            for (EventStore::const_iterator itr = _eventMap.begin(); itr != _eventMap.end(); ++itr)
+                if (eventId == (itr->second & 0x0000FFFF))
+                    return itr->first - _time;
+
+            return std::numeric_limits<uint32>::max();
+        }
+
         /**
         * @name AddPhase
         * @brief Activates the given phase (bitwise).
@@ -863,17 +884,6 @@ class EventMap
         * @param eventId Wanted event id.
         * @return Time of found event.
         */
-        uint32 GetNextEventTime(uint32 eventId) const
-        {
-            if (Empty())
-                return 0;
-
-            for (EventStore::const_iterator itr = _eventMap.begin(); itr != _eventMap.end(); ++itr)
-                if (eventId == (itr->second & 0x0000FFFF))
-                    return itr->first;
-
-            return 0;
-        }
 
         /**
          * @name GetNextEventTime

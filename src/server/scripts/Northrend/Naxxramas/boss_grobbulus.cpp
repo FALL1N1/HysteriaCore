@@ -12,6 +12,7 @@ enum Spells
 {
     SPELL_POISON_CLOUD                      = 28240,
     SPELL_MUTATING_INJECTION                = 28169,
+    SPELL_MUTATING_EXPLOSION                = 28206,
     SPELL_SLIME_SPRAY_10                    = 28157,
     SPELL_SLIME_SPRAY_25                    = 54364,
     SPELL_POISON_CLOUD_DAMAGE_AURA_10       = 28158,
@@ -27,6 +28,13 @@ enum Events
     EVENT_SPELL_POISON_CLOUD                = 2,
     EVENT_SPELL_SLIME_SPRAY                 = 3,
     EVENT_SPELL_MUTATING_INJECTION          = 4,
+    EVENT_SPELL_SLIME_SPRAY1                = 5,
+    EVENT_SPELL_SLIME_SPRAY2                = 6,
+    EVENT_SPELL_SLIME_SPRAY3                = 7,
+    EVENT_SPELL_SLIME_SPRAY4                = 8,
+    EVENT_SPELL_SLIME_SPRAY5                = 9,
+    EVENT_SPELL_SLIME_SPRAY6                = 10,
+    EVENT_SPELL_SLIME_SPRAY7                = 11,
 };
 
 enum Misc
@@ -37,8 +45,8 @@ enum Misc
 
 class boss_grobbulus : public CreatureScript
 {
-public:
-    boss_grobbulus() : CreatureScript("boss_grobbulus") { }
+    public:
+        boss_grobbulus() : CreatureScript("boss_grobbulus") { }
 
     CreatureAI* GetAI(Creature* pCreature) const
     {
@@ -71,8 +79,8 @@ public:
         {
             me->SetInCombatWithZone();
             events.ScheduleEvent(EVENT_SPELL_POISON_CLOUD, 15000);
-            events.ScheduleEvent(EVENT_SPELL_MUTATING_INJECTION, 20000);
-            events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY, 10000);
+            events.ScheduleEvent(EVENT_SPELL_MUTATING_INJECTION, 14000);
+            events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY, 27000);
             events.ScheduleEvent(EVENT_SPELL_BERSERK, RAID_MODE(12*MINUTE*IN_MILLISECONDS, 9*MINUTE*IN_MILLISECONDS));
 
             if (pInstance)
@@ -140,12 +148,54 @@ public:
                 case EVENT_SPELL_SLIME_SPRAY:
                     me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
                     me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
-                    events.RepeatEvent(20000);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY1, 35000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY1:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY1);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY2, 60000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY2:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY2);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY3, 35000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY3:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY3);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY4, 60000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY4:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY4);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY5, 17000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY5:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY5);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY6, 35000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY6:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY6);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY7, 60000);
+                    break;
+                case EVENT_SPELL_SLIME_SPRAY7:
+                    me->MonsterTextEmote("Grobbulus sprays slime across the room!", 0, true);
+                    me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_SLIME_SPRAY_10, SPELL_SLIME_SPRAY_25), false);
+                    events.CancelEvent(EVENT_SPELL_SLIME_SPRAY7);
+                    events.ScheduleEvent(EVENT_SPELL_SLIME_SPRAY, 27000);
                     break;
                 case EVENT_SPELL_MUTATING_INJECTION:
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 100.0f, true, -SPELL_MUTATING_INJECTION))
                         me->CastSpell(target, SPELL_MUTATING_INJECTION, false);
-
                     events.RepeatEvent(8000 + uint32(120 * me->GetHealthPct()));
                     break;
             }
@@ -209,6 +259,49 @@ public:
 
 };
 
+// 28169 - Mutating Injection
+class spell_grobbulus_mutating_injection : public SpellScriptLoader
+{
+    public:
+        spell_grobbulus_mutating_injection() : SpellScriptLoader("spell_grobbulus_mutating_injection") { }
+
+        class spell_grobbulus_mutating_injection_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_grobbulus_mutating_injection_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_MUTATING_EXPLOSION)
+                    || !sSpellMgr->GetSpellInfo(SPELL_POISON_CLOUD))
+                    return false;
+                return true;
+            }
+
+            void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                AuraRemoveMode removeMode = GetTargetApplication()->GetRemoveMode();
+                if (removeMode != AURA_REMOVE_BY_ENEMY_SPELL && removeMode != AURA_REMOVE_BY_EXPIRE)
+                    return;
+
+                if (Unit* caster = GetCaster())
+                {
+                    caster->CastSpell(GetTarget(), SPELL_MUTATING_EXPLOSION, true);
+                    GetTarget()->CastSpell(GetTarget(), SPELL_POISON_CLOUD, true, NULL, aurEff, GetCasterGUID());
+                }
+            }
+
+            void Register()
+            {
+                AfterEffectRemove += AuraEffectRemoveFn(spell_grobbulus_mutating_injection_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_grobbulus_mutating_injection_AuraScript();
+        }
+};
+
 class spell_grobbulus_poison : public SpellScriptLoader
 {
     public:
@@ -246,5 +339,6 @@ void AddSC_boss_grobbulus()
 {
     new boss_grobbulus();
     new boss_grobbulus_poison_cloud();
+    new spell_grobbulus_mutating_injection();
     new spell_grobbulus_poison();
 }

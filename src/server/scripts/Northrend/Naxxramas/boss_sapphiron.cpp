@@ -156,7 +156,7 @@ public:
             events.ScheduleEvent(EVENT_SPELL_CLEAVE, 5000);
             events.ScheduleEvent(EVENT_SPELL_TAIL_SWEEP, 10000);
             events.ScheduleEvent(EVENT_SPELL_LIFE_DRAIN, 17000);
-            events.ScheduleEvent(EVENT_SPELL_BLIZZARD, 21000);
+            events.ScheduleEvent(EVENT_SPELL_BLIZZARD, 17000);
             events.ScheduleEvent(EVENT_FLIGHT_START, 45000);
             events.ScheduleEvent(EVENT_HUNDRED_CLUB, 5000);
 

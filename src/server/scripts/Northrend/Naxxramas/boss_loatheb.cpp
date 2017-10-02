@@ -23,6 +23,7 @@ enum Events
     EVENT_SPELL_DEATHBLOOM                      = 2,
     EVENT_SPELL_INEVITABLE_DOOM                 = 3,
     EVENT_SPELL_BERSERK                         = 4,
+    EVENT_SUMMON_SPORE                            = 5,
 };
 
 enum Texts
@@ -87,8 +88,9 @@ public:
             }
 
             me->SetInCombatWithZone();
-            events.ScheduleEvent(EVENT_SPELL_NECROTIC_AURA, 0);
-            events.ScheduleEvent(EVENT_SPELL_DEATHBLOOM, 25000);
+            events.ScheduleEvent(EVENT_SPELL_NECROTIC_AURA, 10000);
+            events.ScheduleEvent(EVENT_SPELL_DEATHBLOOM, 6000);
+            events.ScheduleEvent(EVENT_SUMMON_SPORE, 12000);
             events.ScheduleEvent(EVENT_SPELL_INEVITABLE_DOOM, 120000);
             events.ScheduleEvent(EVENT_SPELL_BERSERK, 720000);
         }
@@ -115,9 +117,13 @@ public:
                     events.RepeatEvent(20000);
                     break;
                 case EVENT_SPELL_DEATHBLOOM:
-                    me->CastSpell(me, SPELL_SUMMON_SPORE, true);
+                    //me->CastSpell(me, SPELL_SUMMON_SPORE, true);
                     me->CastSpell(me, RAID_MODE(SPELL_DEATHBLOOM_10, SPELL_DEATHBLOOM_25), false);
                     events.RepeatEvent(30000);
+                    break;
+                case EVENT_SUMMON_SPORE:
+                    me->CastSpell(me, SPELL_SUMMON_SPORE, true);
+                    events.RepeatEvent(35000);
                     break;
                 case EVENT_SPELL_INEVITABLE_DOOM:
                     me->CastSpell(me, RAID_MODE(SPELL_INEVITABLE_DOOM_10, SPELL_INEVITABLE_DOOM_25), false);
@@ -130,6 +136,12 @@ public:
             }
 
             DoMeleeAttackIfReady();
+            EnterEvadeIfOutOfCombatArea();
+        }
+
+        bool CheckEvadeIfOutOfCombatArea() const
+        {
+            return me->GetHomePosition().GetExactDist2d(me) > 50.0f;
         }
     };
 };

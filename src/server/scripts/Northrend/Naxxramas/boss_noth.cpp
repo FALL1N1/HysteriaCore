@@ -23,6 +23,7 @@ enum Spells
     SPELL_SUMMON_PLAGUED_WARRIORS           = 29237,
     SPELL_TELEPORT                          = 29216,
     SPELL_BLINK                             = 29208,
+    SPELL_ENRAGE                            = 68378,
 };
 
 enum Events
@@ -36,6 +37,8 @@ enum Events
     EVENT_SUMMON_PLAGUED_WARRIOR_REAL       = 7,
     EVENT_BALCONY_SUMMON_ANNOUNCE           = 8,
     EVENT_BALCONY_SUMMON_REAL               = 9,
+    EVENT_CRIPPLE                            = 10,
+    EVENT_ENRAGE                            = 11,
 };
 
 enum Misc
@@ -76,29 +79,43 @@ public:
         InstanceScript* pInstance;
         EventMap events;
         SummonList summons;
+        uint8 totalPhase;
 
         void StartGroundPhase()
         {
             me->SetReactState(REACT_AGGRESSIVE);
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DISABLE_MOVE);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
             me->SetControlled(false, UNIT_STATE_ROOT);
-            events.SetPhase(0);
 
             events.Reset();
-            events.ScheduleEvent(EVENT_MOVE_TO_BALCONY, 110000);
+            events.ScheduleEvent(EVENT_MOVE_TO_BALCONY, (totalPhase < 2 ? 90000 : (90000 / totalPhase)));
             events.ScheduleEvent(EVENT_SPELL_CURSE, 15000);
-            events.ScheduleEvent(EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE, 25000);
-            if (Is25ManRaid())
-                events.ScheduleEvent(EVENT_SPELL_BLINK, 26000);
+            events.ScheduleEvent(EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE, 30000);
+            events.ScheduleEvent(EVENT_CRIPPLE, 27000);
+            events.ScheduleEvent(EVENT_ENRAGE, 540000);
+            /*if (Is25ManRaid())
+            events.ScheduleEvent(EVENT_SPELL_BLINK, 27000);*/
+        }
+
+        void DamageTaken(Unit*, uint32& damage, DamageEffectType, SpellSchoolMask)
+        {
+            if (!events.IsInPhase(EVENT_MOVE_TO_BALCONY))
+                return;
+            if (damage < me->GetHealth())
+                return;
+
+            me->SetHealth(1);
+            damage = 0;
         }
 
         void StartBalconyPhase()
         {
-            me->SetReactState(REACT_PASSIVE);
-            me->AttackStop();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE |UNIT_FLAG_DISABLE_MOVE);
             me->SetControlled(true, UNIT_STATE_ROOT);
-            events.SetPhase(1);
+            me->SetReactState(REACT_PASSIVE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
+            me->AttackStop();
+            me->RemoveAllAuras();
+
             events.Reset();
             events.ScheduleEvent(EVENT_BALCONY_SUMMON_ANNOUNCE, 4000);
             events.ScheduleEvent(EVENT_MOVE_TO_GROUND, 70000);
@@ -112,6 +129,9 @@ public:
 
         bool IsInRoom()
         {
+            if (events.IsInPhase(EVENT_MOVE_TO_BALCONY))
+                return true;
+
             if (me->GetPositionX() > 2730 || me->GetPositionX() < 2614 || me->GetPositionY() > -3455 || me->GetPositionY() < -3553)
             {
                 EnterEvadeMode();
@@ -126,11 +146,16 @@ public:
             events.Reset();
             summons.DespawnAll();
             me->SetControlled(false, UNIT_STATE_ROOT);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
             me->SetReactState(REACT_AGGRESSIVE);
-            events.SetPhase(0);
+            totalPhase = 0;
 
             if (pInstance)
+            {
                 pInstance->SetData(EVENT_NOTH, NOT_STARTED);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_NOTH_ENTER_GATE)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+            }
         }
 
         void EnterEvadeMode()
@@ -143,9 +168,13 @@ public:
         {
             Talk(SAY_AGGRO);
             if (pInstance)
+            {
                 pInstance->SetData(EVENT_NOTH, IN_PROGRESS);
-
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_NOTH_ENTER_GATE)))
+                    go->SetGoState(GO_STATE_READY);
+            }
             StartGroundPhase();
+            DoZoneInCombat();
         }
 
         void JustSummoned(Creature *summon)
@@ -158,7 +187,12 @@ public:
         {
             Talk(SAY_DEATH);
             if (pInstance)
+            {
                 pInstance->SetData(EVENT_NOTH, DONE);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_NOTH_ENTER_GATE)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+                summons.DespawnAll();
+            }
         }
 
         void KilledUnit(Unit* who)
@@ -189,14 +223,13 @@ public:
             {
                 // GROUND
                 case EVENT_SPELL_CURSE:
-                    if (events.GetPhaseMask() == 0)
                     me->CastCustomSpell(RAID_MODE(SPELL_CURSE_OF_THE_PLAGUEBRINGER_10, SPELL_CURSE_OF_THE_PLAGUEBRINGER_25), SPELLVALUE_MAX_TARGETS, RAID_MODE(3, 10), me, false);
                     events.RepeatEvent(25000);
                     break;
                 case EVENT_SUMMON_PLAGUED_WARRIOR_ANNOUNCE:
                     me->MonsterTextEmote("Noth the Plaguebringer summons forth Skeletal Warriors!", 0, true);
                     Talk(SAY_SUMMON);
-                    events.RepeatEvent(25000);
+                    events.RepeatEvent(30000);
                     events.ScheduleEvent(EVENT_SUMMON_PLAGUED_WARRIOR_REAL, 4000);
                     break;
                 case EVENT_SUMMON_PLAGUED_WARRIOR_REAL:
@@ -213,8 +246,12 @@ public:
                 case EVENT_SPELL_BLINK:
                     DoResetThreat();
                     me->MonsterTextEmote("%s blinks away!", 0, true);
-                    me->CastSpell(me, RAID_MODE(SPELL_CRIPPLE_10, SPELL_CRIPPLE_25), false);
+                    //me->CastSpell(me, RAID_MODE(SPELL_CRIPPLE_10, SPELL_CRIPPLE_25), false);
                     me->CastSpell(me, SPELL_BLINK, true);
+                    events.RepeatEvent(30000);
+                    break;
+                case EVENT_CRIPPLE:
+                    me->CastSpell(me, RAID_MODE(SPELL_CRIPPLE_10, SPELL_CRIPPLE_25), false);
                     events.RepeatEvent(30000);
                     break;
                 // BALCONY
@@ -225,26 +262,39 @@ public:
                     break;
                 case EVENT_BALCONY_SUMMON_REAL:
                     me->CastSpell(me, SPELL_SUMMON_PLAGUED_WARRIORS, true); // visual only
-                    if (events.GetPhaseMask() == 0)
+                    if (totalPhase == 0)
                         SummonHelper(NPC_PLAGUED_CHAMPION, RAID_MODE(2,4));
-                    else if (events.GetPhaseMask() == 1)
+                    else if (totalPhase == 1)
                     {
-                        SummonHelper(NPC_PLAGUED_CHAMPION, RAID_MODE(1,2));
+                        SummonHelper(NPC_PLAGUED_CHAMPION, RAID_MODE(2,2));
                         SummonHelper(NPC_PLAGUED_GUARDIAN, RAID_MODE(1,2));
                     }
                     else
                         SummonHelper(NPC_PLAGUED_GUARDIAN, RAID_MODE(2,4));
+                        //SummonHelper(NPC_PLAGUED_CHAMPION, RAID_MODE(2,4));
                     events.PopEvent();
                     break;
                 case EVENT_MOVE_TO_GROUND:
                     me->MonsterTextEmote("%s teleports back into the battle!", 0, true);
+                    totalPhase++;
                     StartGroundPhase();
                     me->NearTeleportTo(nothPosition.GetPositionX(), nothPosition.GetPositionY(), nothPosition.GetPositionZ(), nothPosition.GetOrientation(), true);
+                    events.PopEvent();
+                    break;
+                case EVENT_ENRAGE:
+                    me->MonsterTextEmote("%s went enrage!", 0, true);
+                    me->CastSpell(false, SPELL_ENRAGE);
                     break;
             }
 
             if (me->HasReactState(REACT_AGGRESSIVE))
                 DoMeleeAttackIfReady();
+            EnterEvadeIfOutOfCombatArea();
+        }
+
+        bool CheckEvadeIfOutOfCombatArea() const
+        {
+            return me->GetHomePosition().GetExactDist2d(me) > 70.0f;
         }
     };    
 };

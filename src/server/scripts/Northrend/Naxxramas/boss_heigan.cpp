@@ -52,6 +52,7 @@ public:
     {
         boss_heiganAI(Creature *c) : ScriptedAI(c)
         {
+            me->m_SightDistance = 10.00f;
             pInstance = me->GetInstanceScript();
         }
 
@@ -92,7 +93,11 @@ public:
         {
             Talk(SAY_DEATH);
             if (pInstance)
+            {
                 pInstance->SetData(EVENT_HEIGAN, DONE);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_HEIGAN_ENTER_GATE)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+            }
         }
 
         void EnterCombat(Unit *who)
@@ -116,22 +121,22 @@ public:
             events.Reset();
             if (phase == PHASE_SLOW_DANCE)
             {
-                events.ScheduleEvent(EVENT_SPELL_SPELL_DISRUPTION, 0);
-                events.ScheduleEvent(EVENT_SPELL_DECEPIT_FEVER, 12000);
-                events.ScheduleEvent(EVENT_ERUPT_SECTION, 10000);
+                events.ScheduleEvent(EVENT_SPELL_SPELL_DISRUPTION, 15000);
+                events.ScheduleEvent(EVENT_SPELL_DECEPIT_FEVER, 17000);
+                events.ScheduleEvent(EVENT_ERUPT_SECTION, 15000);
                 events.ScheduleEvent(EVENT_SWITCH_PHASE, 90000);
             }
             else // if (phase == PHASE_FAST_DANCE)
             {
                 me->MonsterTextEmote("%s teleports and begins to channel a spell!", 0, true);
                 // teleport
-                float x, y, z, o;
-                me->GetHomePosition(x, y, z, o);
-                me->NearTeleportTo(x, y, z, o);
+                //float x, y, z, o;
+                //me->GetHomePosition(x, y, z, o);
+                me->NearTeleportTo(2794.3139f, -3707.2636f, 276.5461f, 2.3134f);
 
                 me->CastSpell(me, SPELL_PLAGUE_CLOUD, false);
-                events.ScheduleEvent(EVENT_ERUPT_SECTION, 4000);
-                events.ScheduleEvent(EVENT_SWITCH_PHASE, 45000);
+                events.ScheduleEvent(EVENT_ERUPT_SECTION, 8000);
+                events.ScheduleEvent(EVENT_SWITCH_PHASE, 47000);
             }
             events.ScheduleEvent(EVENT_SAFETY_DANCE, 5000);
         }
@@ -168,7 +173,7 @@ public:
                     break;
                 case EVENT_SPELL_DECEPIT_FEVER:
                     me->CastSpell(me, RAID_MODE(SPELL_DECREPIT_FEVER_10, SPELL_DECREPIT_FEVER_25), false);
-                    events.RepeatEvent(20000);
+                    events.RepeatEvent(22000);
                     break;
                 case EVENT_SWITCH_PHASE:
                     StartFightPhase(currentPhase == PHASE_SLOW_DANCE ? PHASE_FAST_DANCE : PHASE_SLOW_DANCE);
@@ -189,7 +194,7 @@ public:
                     if (currentPhase == PHASE_SLOW_DANCE && !urand(0,3))
                         Talk(SAY_TAUNT);
 
-                    events.RepeatEvent(currentPhase == PHASE_SLOW_DANCE ? 10000 : 4000);
+                    events.RepeatEvent(currentPhase == PHASE_SLOW_DANCE ? 10000 : 3000);
                     break;
                 case EVENT_SAFETY_DANCE:
                 {
@@ -211,6 +216,12 @@ public:
             }
 
             DoMeleeAttackIfReady();
+            EnterEvadeIfOutOfCombatArea();
+        }
+
+        bool CheckEvadeIfOutOfCombatArea() const
+        {
+            return me->GetHomePosition().GetExactDist2d(me) > 60.0f;
         }
     };
 };

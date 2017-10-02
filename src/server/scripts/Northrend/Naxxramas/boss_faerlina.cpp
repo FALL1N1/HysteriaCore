@@ -31,6 +31,7 @@ enum Events
     EVENT_SPELL_POISON_BOLT             = 1,
     EVENT_SPELL_RAIN_OF_FIRE            = 2,
     EVENT_SPELL_FRENZY                  = 3,
+    EVENT_CALL_FOR_HELP                    = 4,
 };
 
 enum Misc
@@ -95,6 +96,7 @@ public:
             events.ScheduleEvent(EVENT_SPELL_POISON_BOLT, urand(12000,15000));
             events.ScheduleEvent(EVENT_SPELL_RAIN_OF_FIRE, urand(6000,18000));
             events.ScheduleEvent(EVENT_SPELL_FRENZY, urand(60000,80000), 1);
+            events.ScheduleEvent(EVENT_CALL_FOR_HELP, 3000);
             events.SetPhase(1);
 
             int8 maxsummons = sizeof(summons);
@@ -162,7 +164,12 @@ public:
                 case EVENT_SPELL_FRENZY:
                     me->MonsterTextEmote("%s goes into a frenzy!", 0, true);
                     me->CastSpell(me, RAID_MODE(SPELL_FRENZY_10, SPELL_FRENZY_25), true);
-                    events.RepeatEvent(70000);
+                    events.RepeatEvent(60000 + urand(0, 20000));
+                    break;
+                    //Prevents players from vanish pulling the boss, cheesy bastards.
+                case EVENT_CALL_FOR_HELP:
+                    me->CallForHelp(60);
+                    events.PopEvent();
                     break;
             }
 

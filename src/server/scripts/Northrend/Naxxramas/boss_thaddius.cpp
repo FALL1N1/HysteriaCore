@@ -31,57 +31,61 @@ enum Says
 
 enum Spells
 {
-    SPELL_MAGNETIC_PULL                 = 28337,
-    SPELL_TESLA_SHOCK                   = 28099,
+    SPELL_MAGNETIC_PULL                    = 28337,
+    SPELL_TESLA_SHOCK                    = 28099,
 
     // Stalagg
     SPELL_POWER_SURGE_10                = 54529,
     SPELL_POWER_SURGE_25                = 28134,
-    SPELL_STALAGG_CHAIN                 = 28096,
+    SPELL_STALAGG_CHAIN                    = 28096,
 
     // Feugen
-    SPELL_STATIC_FIELD_10               = 28135,
-    SPELL_STATIC_FIELD_25               = 54528,
-    SPELL_FEUGEN_CHAIN                  = 28111,
+    SPELL_STATIC_FIELD_10                = 28135,
+    SPELL_STATIC_FIELD_25                = 54528,
+    SPELL_FEUGEN_CHAIN                    = 28111,
 
     // Thaddius
     SPELL_POLARITY_SHIFT                = 28089,
     SPELL_BALL_LIGHTNING                = 28299,
     SPELL_CHAIN_LIGHTNING_10            = 28167,
     SPELL_CHAIN_LIGHTNING_25            = 54531,
-    SPELL_BERSERK                       = 27680,
+    SPELL_BERSERK                        = 27680,
 
-    SPELL_THADDIUS_VISUAL_LIGHTNING     = 28136,
-    SPELL_THADDIUS_SPAWN_STUN           = 28160,
+    SPELL_THADDIUS_VISUAL_LIGHTNING        = 28136,
+    SPELL_THADDIUS_SPAWN_STUN            = 28160,
 
-    SPELL_POSITIVE_CHARGE               = 28062,
-    SPELL_POSITIVE_CHARGE_STACK         = 29659,
-    SPELL_NEGATIVE_CHARGE               = 28085,
-    SPELL_NEGATIVE_CHARGE_STACK         = 29660,
-    SPELL_POSITIVE_POLARITY             = 28059,
-    SPELL_NEGATIVE_POLARITY             = 28084,
+    SPELL_POSITIVE_CHARGE                = 28062,
+    SPELL_POSITIVE_CHARGE_STACK            = 29659,
+    SPELL_NEGATIVE_CHARGE                = 28085,
+    SPELL_NEGATIVE_CHARGE_STACK            = 29660,
+    SPELL_POSITIVE_POLARITY                = 28059,
+    SPELL_NEGATIVE_POLARITY                = 28084,
 };
 
 enum Events
 {
-    EVENT_MINION_SPELL_POWER_SURGE      = 1,
+    EVENT_MINION_SPELL_POWER_SURGE        = 1,
     EVENT_MINION_SPELL_MAGNETIC_PULL    = 2,
-    EVENT_MINION_CHECK_DISTANCE         = 3,
-    EVENT_MINION_SPELL_STATIC_FIELD     = 4,
+    EVENT_MINION_CHECK_DISTANCE            = 3,
+    EVENT_MINION_SPELL_STATIC_FIELD        = 4,
+    EVENT_MINION_SPELL_POWER_SURGE2        = 5,
+    EVENT_MINION_SPELL_POWER_SURGE3     = 6,
+    EVENT_MINION_SPELL_POWER_SURGE4     = 7,
 
     EVENT_THADDIUS_START                = 10,
     EVENT_THADDIUS_SPELL_CHAIN_LIGHTNING= 11,
     EVENT_THADDIUS_SPELL_BERSERK        = 12,
-    EVENT_THADDIUS_POLARITY_SHIFT       = 13,
-    EVENT_THADDIUS_START_2              = 14,
+    EVENT_THADDIUS_POLARITY_SHIFT        = 13,
+    EVENT_THADDIUS_START_2                = 14,
+    EVENT_THADDIUS_SPELL_CHAIN_LIGHTNING2= 15,
 };
 
 enum Misc
 {
     ACTION_MAGNETIC_PULL                = 1,
-    ACTION_SUMMON_DIED                  = 2,
-    ACTION_RESTORE                      = 3,
-    NPC_TESLA_COIL                      = 16218,           //the coils (emotes "Tesla Coil overloads!")
+    ACTION_SUMMON_DIED                    = 2,
+    ACTION_RESTORE                        = 3,
+    NPC_TESLA_COIL                        = 16218,           //the coils (emotes "Tesla Coil overloads!")
 };
 
 class boss_thaddius : public CreatureScript
@@ -113,6 +117,7 @@ public:
             me->RemoveAllAuras();
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             events.ScheduleEvent(EVENT_THADDIUS_START_2, 1000);
+
             for (SummonList::const_iterator itr = summons.begin(); itr != summons.end(); ++itr)
                 if (Creature* cr = ObjectAccessor::GetCreature(*me, (*itr)))
                     if (cr->GetEntry() == NPC_TESLA_COIL)
@@ -148,9 +153,17 @@ public:
             reviveTimer = 0;
             resetTimer = 1;
             me->SetPosition(me->GetHomePosition());
-
-            if (pInstance) 
+            
+            if (pInstance)
+            {
                 pInstance->SetData(EVENT_THADDIUS, NOT_STARTED);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_GATE)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_TESLA)))
+                    go->SetGoState(GO_STATE_READY);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_TESLA_TWO)))
+                    go->SetGoState(GO_STATE_READY);
+            }
 
             me->SummonCreature(NPC_STALAGG, 3450.45f, -2931.42f, 312.091f, 5.49779f);
             me->SummonCreature(NPC_FEUGEN, 3508.14f, -2988.65f, 312.092f, 2.37365f);
@@ -190,6 +203,13 @@ public:
                 pInstance->SetData(EVENT_THADDIUS, DONE);
                 pInstance->DoRemoveAurasDueToSpellOnPlayers(28059);
                 pInstance->DoRemoveAurasDueToSpellOnPlayers(28084);
+
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_GATE)))
+                go->SetGoState(GO_STATE_ACTIVE);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_TESLA)))
+                go->SetGoState(GO_STATE_READY);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_TESLA_TWO)))
+                go->SetGoState(GO_STATE_READY);
             }
         }
 
@@ -202,7 +222,15 @@ public:
             summons.DoZoneInCombat(NPC_STALAGG);
 
             if (pInstance)
-                pInstance->SetData(EVENT_THADDIUS, IN_PROGRESS);
+            {
+                pInstance->SetData(EVENT_THADDIUS, NOT_STARTED);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_GATE)))
+                    go->SetGoState(GO_STATE_READY);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_TESLA)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+                if (GameObject* go = me->GetMap()->GetGameObject(pInstance->GetData64(DATA_THADDIUS_TESLA_TWO)))
+                    go->SetGoState(GO_STATE_ACTIVE);
+            }
         }
 
         void UpdateAI(uint32 diff)
@@ -220,7 +248,7 @@ public:
             if (reviveTimer)
             {
                 reviveTimer += diff;
-                if (reviveTimer >= 12000)
+                if (reviveTimer >= 15000)
                 {
                     StartEvent();
                     reviveTimer = 0;
@@ -260,9 +288,9 @@ public:
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     me->setAttackTimer(BASE_ATTACK, 4000);
                     
-                    events.ScheduleEvent(EVENT_THADDIUS_SPELL_CHAIN_LIGHTNING, 14000);
+                    events.ScheduleEvent(EVENT_THADDIUS_SPELL_CHAIN_LIGHTNING, urand(5000, 28000));
                     events.ScheduleEvent(EVENT_THADDIUS_SPELL_BERSERK, 360000);
-                    events.ScheduleEvent(EVENT_THADDIUS_POLARITY_SHIFT, 30000);
+                    events.ScheduleEvent(EVENT_THADDIUS_POLARITY_SHIFT, 12000);
                     return;
                 case EVENT_THADDIUS_SPELL_BERSERK:
                     me->CastSpell(me, SPELL_BERSERK, true);
@@ -270,7 +298,7 @@ public:
                     break;
                 case EVENT_THADDIUS_SPELL_CHAIN_LIGHTNING:
                     me->CastSpell(me->GetVictim(), RAID_MODE(SPELL_CHAIN_LIGHTNING_10, SPELL_CHAIN_LIGHTNING_25), false);
-                    events.RepeatEvent(15000);
+                    events.RepeatEvent(urand(5000, 28000));
                     break;
                 case EVENT_THADDIUS_POLARITY_SHIFT:
                     me->CastSpell(me, SPELL_POLARITY_SHIFT, false);
@@ -347,7 +375,7 @@ public:
 
             // This event needs synchronisation, called for stalagg only
             if (me->GetEntry() == NPC_STALAGG)
-                events.ScheduleEvent(EVENT_MINION_SPELL_MAGNETIC_PULL, 25000);
+                events.ScheduleEvent(EVENT_MINION_SPELL_MAGNETIC_PULL, 20000);
 
             if (pInstance)
                 if (Creature* cr = ObjectAccessor::GetCreature(*me, pInstance->GetData64(DATA_THADDIUS_BOSS)))
@@ -376,7 +404,7 @@ public:
             }
         }
 
-        void JustDied(Unit* )
+        void JustDied(Unit*)
         {
             Talk(me->GetEntry() == NPC_STALAGG ? SAY_FEUG_DEATH : SAY_STAL_DEATH);
             if (pInstance)
@@ -432,14 +460,30 @@ public:
             {
                 case EVENT_MINION_SPELL_POWER_SURGE:
                     me->CastSpell(me, RAID_MODE(SPELL_POWER_SURGE_10, SPELL_POWER_SURGE_25), false);
-                    events.RepeatEvent(19000);
+                    events.CancelEvent(EVENT_MINION_SPELL_POWER_SURGE);
+                    events.ScheduleEvent(EVENT_MINION_SPELL_POWER_SURGE2, 26000);
+                    break;
+                case EVENT_MINION_SPELL_POWER_SURGE2:
+                    me->CastSpell(me, RAID_MODE(SPELL_POWER_SURGE_10, SPELL_POWER_SURGE_25), false);
+                    events.CancelEvent(EVENT_MINION_SPELL_POWER_SURGE2);
+                    events.ScheduleEvent(EVENT_MINION_SPELL_POWER_SURGE3, 26000);
+                    break;
+                case EVENT_MINION_SPELL_POWER_SURGE3:
+                    me->CastSpell(me, RAID_MODE(SPELL_POWER_SURGE_10, SPELL_POWER_SURGE_25), false);
+                    events.CancelEvent(EVENT_MINION_SPELL_POWER_SURGE3);
+                    events.ScheduleEvent(EVENT_MINION_SPELL_POWER_SURGE4, 30000);
+                    break;
+                case EVENT_MINION_SPELL_POWER_SURGE4:
+                    me->CastSpell(me, RAID_MODE(SPELL_POWER_SURGE_10, SPELL_POWER_SURGE_25), false);
+                    events.CancelEvent(EVENT_MINION_SPELL_POWER_SURGE4);
+                    events.ScheduleEvent(EVENT_MINION_SPELL_POWER_SURGE, 30000);
                     break;
                 case EVENT_MINION_SPELL_STATIC_FIELD:
                     me->CastSpell(me, RAID_MODE(SPELL_STATIC_FIELD_10, SPELL_STATIC_FIELD_25), false);
                     events.RepeatEvent(3000);
                     break;
                 case EVENT_MINION_SPELL_MAGNETIC_PULL:
-                    events.RepeatEvent(25000);
+                    events.RepeatEvent(20000);
                     if (pInstance)
                         if (Creature* feugen = ObjectAccessor::GetCreature(*me, pInstance->GetData64(DATA_FEUGEN_BOSS)))
                         {

@@ -1714,9 +1714,9 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
     // init items_count to 1, since 1 item will be created regardless of specialization
     int32 itemsCount = 1;
     float additionalCreateChance = 0.0f;
-    int32 newMaxOrEntry = 0;
+    uint8 newMaxOrEntry = 0;
     // get the chance and maximum number for creating extra items
-    if (canCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, newMaxOrEntry))
+    if (CanCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, newMaxOrEntry))
             // roll with this chance till we roll not to create or we create the max num
             while (roll_chance_f(additionalCreateChance) && itemsCount <= newMaxOrEntry)
                 ++itemsCount;
