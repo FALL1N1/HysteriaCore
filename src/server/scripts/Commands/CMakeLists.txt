@@ -22,7 +22,7 @@ set(scripts_STAT_SRCS
   Commands/cs_debug.cpp
   Commands/cs_disable.cpp
   Commands/cs_event.cpp
-  Commands/cs_firefly.cpp
+  Commands/cs_pb.cpp
   Commands/cs_gm.cpp
   Commands/cs_go.cpp
   Commands/cs_gobject.cpp

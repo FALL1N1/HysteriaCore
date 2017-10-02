@@ -3105,8 +3105,8 @@ void SpellMgr::LoadSpellCustomAttr()
             case 34655: // Snake Trap, Deadly Poison
             case 11971: // Sunder Armor
             case 58567: // Player Sunder Armor
-            case 61509: // Melt Armor | Jozo | Westmere
-            case 61510: // Melt Armor | Jozo | Westmere
+            case 61509: // Melt Armor | Jozo | PB
+            case 61510: // Melt Armor | Jozo | PB
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SINGLE_AURA_STACK;
                 break;
             case 43138: // North Fleet Reservist Kill Credit
@@ -6238,7 +6238,7 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->EffectImplicitTargetA[EFFECT_2] = TARGET_UNIT_TARGET_ANY;
             break;
             //////////////////////////////////////////
-            ////////// Westmere Custom Spell Rules
+            ////////// PB Custom Spell Rules
             //////////////////////////////////////////
             // Frost Bolt (volley-like from "The Nexus" dungeon)
             case 12737:

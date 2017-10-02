@@ -235,7 +235,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
         }
     }
 
-    /* westmere */
+    /* PB */
     // hardcode levelcap of instances
     const AccessRequirement* req = sObjectMgr->GetAccessRequirement(mapid, targetDifficulty);
 
@@ -249,7 +249,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
             return false;
         }
     }
-    // westmere /custom hardcode/ : disable higher raids
+    // PB /custom hardcode/ : disable higher raids
     switch (mapid)
     {
         // 3.3.5A

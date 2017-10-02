@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Westmere.rc
+// Used by PB.rc
 //
 
 // Next default values for new objects

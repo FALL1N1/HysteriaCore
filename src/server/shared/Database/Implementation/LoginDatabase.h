@@ -107,7 +107,7 @@ enum LoginDatabaseStatements
     LOGIN_DEL_ACCOUNT,
     LOGIN_SEL_AUTOBROADCAST,
 
-    // westmere
+    // PB
     LOGIN_UPD_UPTIME_PLAYERS,
 
     MAX_LOGINDATABASE_STATEMENTS

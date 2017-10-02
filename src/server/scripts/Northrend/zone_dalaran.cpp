@@ -761,6 +761,6 @@ void AddSC_dalaran()
     new npc_mageguard_dalaran();
     new npc_minigob_manabonk();
     
-    // westmere
+    // PB
     new npc_archmage_timear();
 }

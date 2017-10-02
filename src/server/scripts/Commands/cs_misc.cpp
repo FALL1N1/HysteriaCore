@@ -147,7 +147,7 @@ public:
         return commandTable;
     }
 
-    static bool HandleWestmereDamage(ChatHandler* handler, char const* args)
+    static bool HandlePBDamage(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
             if (!plr->HasAura(68378) || !plr->HasAura(64238) || !plr->HasAura(62555) || !plr->HasAura(62560))
@@ -163,23 +163,23 @@ public:
         return true;
     }
 
-    static bool HandleWestmereMinLevel(ChatHandler* handler, char const* args)
+    static bool HandlePBMinLevel(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(1);
-            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".westmere maxlevel\".");
+            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".PB maxlevel\".");
         }
 
         return true;
     }
 
-    static bool HandleWestmereMaxLevel(ChatHandler* handler, char const* args)
+    static bool HandlePBMaxLevel(ChatHandler* handler, char const* args)
     {
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(80);
-            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".westmere minlevel\".");
+            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".PB minlevel\".");
         }
 
         return true;

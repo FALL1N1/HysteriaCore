@@ -5131,7 +5131,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_eject_passenger();
     new spell_onslaught_horse_deliver();
     
-    // westmere
+    // PB
     new spell_gen_blade_warding();
     new spell_gen_moss_covered_feet();
 }
