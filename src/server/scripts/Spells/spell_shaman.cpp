@@ -1352,6 +1352,42 @@ class spell_sha_thunderstorm : public SpellScriptLoader
         }
 };
 
+// Shaman Flurry Talent
+class spell_sha_flurry : public SpellScriptLoader
+{
+    public:
+        spell_sha_flurry() : SpellScriptLoader("spell_sha_flurry") { }
+
+        class spell_sha_flurry_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_sha_flurry_SpellScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(16257) || !sSpellMgr->GetSpellInfo(16277) || !sSpellMgr->GetSpellInfo(16278)
+                    || !sSpellMgr->GetSpellInfo(16279) || !sSpellMgr->GetSpellInfo(16280))
+                    return false;
+                return true;
+            }
+
+            void HandleBeforeHit()
+            {
+                if (Unit* target = GetHitUnit())
+                    target->HasAura(GetSpellInfo()->Id) ? target->RemoveAura(GetSpellInfo()->Id) : NULL;
+            }
+
+            void Register()
+            {
+                BeforeHit += SpellHitFn(spell_sha_flurry_SpellScript::HandleBeforeHit);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_sha_flurry_SpellScript();
+        }
+};
+
 void AddSC_shaman_spell_scripts()
 {
     // ours
@@ -1384,4 +1420,5 @@ void AddSC_shaman_spell_scripts()
     new spell_sha_mana_tide_totem();
     new spell_sha_sentry_totem();
     new spell_sha_thunderstorm();
+    new spell_sha_flurry();
 }

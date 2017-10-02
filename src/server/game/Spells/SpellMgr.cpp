@@ -2868,7 +2868,12 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_BINARY_SPELL;
                 break;
             case 1776: // Gouge
+                spellInfo->AttributesCu |= SPELL_ATTR0_CU_REQ_TARGET_FACING_CASTER;
+                break;
             case 1777:
+            case 51852: // The Eye of Acherus (no spawn in phase 2 in db)
+                spellInfo->Effects[EFFECT_0].MiscValue |= 1;
+                break;
             case 8629:
             case 11285:
             case 11286:
@@ -2881,6 +2886,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 36862:
             case 38764:
             case 38863:
+            case 42767: // Sic'em QUEST  Let them eat crow
+                spellInfo->Effects[EFFECT_0].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_NEARBY_ENTRY);
+                break;
             case 52743: // Head Smack
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_REQ_TARGET_FACING_CASTER;
                 break;
@@ -3046,7 +3054,6 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
                 break;
             case 64422: // Sonic Screech (Auriaya)
-            case 13877: // Blade Flurry (Rogue Spell) should ignore armor and share damage to 2nd mob
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_SHARE_DAMAGE;
                 spellInfo->AttributesCu |= SPELL_ATTR0_CU_IGNORE_ARMOR;
                 break;
@@ -3139,6 +3146,9 @@ void SpellMgr::LoadSpellCustomAttr()
                 spellInfo->RecoveryTime = 1500;
                 spellInfo->_requireCooldownInfo = true;
                 break;
+            case 44535: // Spirit Heal, abilities also have no cost
+                spellInfo->Effects[EFFECT_0].MiscValue = 127;
+                break;
         }
 
         switch (spellInfo->SpellFamilyName)
@@ -3206,7 +3216,6 @@ void SpellMgr::LoadSpellCustomAttr()
 void SpellMgr::LoadDbcDataCorrections()
 {
     uint32 oldMSTime = getMSTime();
-    uint32 count = 0;
 
     SpellEntry* spellInfo = NULL;
     for (uint32 i = 0; i < sSpellStore.GetNumRows(); ++i)
@@ -3245,6 +3254,12 @@ void SpellMgr::LoadDbcDataCorrections()
 
         switch (spellInfo->Id)
         {
+            case 38776: // Evergrove Druid Transform Crow
+                spellInfo->DurationIndex = 4; // 120 seconds
+                break;
+            case 58139: // Phase
+                spellInfo->EffectMiscValue[0] = 3;
+                break;
             case 63026: // Force Cast (HACK: Target shouldn't be changed)
             case 63137: // Force Cast (HACK: Target shouldn't be changed; summon position should be untied from spell destination)
                 spellInfo->EffectImplicitTargetA[EFFECT_0] = TARGET_DEST_DB;
@@ -3344,13 +3359,13 @@ void SpellMgr::LoadDbcDataCorrections()
         case 17941: // Shadow Trance
         case 22008: // Netherwind Focus
         case 31834: // Light's Grace
-        case 34754: // Clearcasting
+        //case 34754: // Clearcasting
         case 34936: // Backlash
         case 48108: // Hot Streak
         case 51124: // Killing Machine
         case 54741: // Firestarter
         case 57761: // Fireball!
-        case 39805: // Lightning Overload
+        //case 39805: // Lightning Overload
         case 64823: // Item - Druid T8 Balance 4P Bonus
         case 34477: // Misdirection
         case 44401: // Missile Barrage
@@ -3375,24 +3390,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 29809: // Desecration Arm - 36 instead of 37 - typo? :/
             spellInfo->EffectRadiusIndex[0] = 37;
             break;
-        /*case 18754:
-            spellInfo->EffectApplyAuraName[0] = SPELL_AURA_ADD_FLAT_MODIFIER;
-            spellInfo->EffectBasePoints[0] = -1.5*IN_MILLISECONDS*0.22;           // reduce cast time of seduction by 22%
-            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
-            count++;
-            break;
-        case 18755:
-            spellInfo->EffectApplyAuraName[0] = SPELL_AURA_ADD_FLAT_MODIFIER;
-            spellInfo->EffectBasePoints[0] = -1.5*IN_MILLISECONDS*0.44;           //  reduce cast time of seduction by 44%
-            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
-            count++;
-            break;
-        case 18756:
-            spellInfo->EffectApplyAuraName[0] = SPELL_AURA_ADD_FLAT_MODIFIER;
-            spellInfo->EffectBasePoints[0] = -1.5*IN_MILLISECONDS*0.66;           //  reduce cast time of seduction by 66%
-            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
-            count++;
-            break;*/
         // Master Shapeshifter: missing stance data for forms other than bear - bear version has correct data
         // To prevent aura staying on target after talent unlearned
         case 48420:
@@ -3591,7 +3588,6 @@ void SpellMgr::LoadDbcDataCorrections()
         case 20271:
         case 53407:
         case 53408:
-            spellInfo->FacingCasterFlags |= SPELL_FACING_FLAG_INFRONT;
             break;
         // Seal of Light trigger
         case 20167:
@@ -3750,13 +3746,17 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->AttributesEx &= ~SPELL_ATTR1_DISMISS_PET;
             spellInfo->RecoveryTime = 8*60*IN_MILLISECONDS; // prev 600000
             break;
-
+        // Flare
+        case 1543:
+            spellInfo->speed = 100;
+            break;
 
 
         /////////////////////////////////
         ///// ROGUE
         /////////////////////////////////
         // Master of Subtlety
+        case 1776: // Gouge
         case 31221:
         case 31222:
         case 31223:
@@ -4133,8 +4133,6 @@ void SpellMgr::LoadDbcDataCorrections()
             spellInfo->procCharges = 2;
             spellInfo->StackAmount = 0;
             break;
-
-
         /////////////////////////////////
         ///// WARRIOR
         /////////////////////////////////
@@ -5859,6 +5857,10 @@ void SpellMgr::LoadDbcDataCorrections()
         // ///////////////////////////////////////////
         // ////////////////QUESTS/////////////////////
         // ///////////////////////////////////////////
+        // Convocation at Zol'Heb (12730)
+        case 52956:
+            spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_DEST_AREA_ENTRY;
+            break;
         // Going Bearback (12851)
         case 54897:
             spellInfo->Effect[1] = SPELL_EFFECT_DUMMY;
@@ -6029,6 +6031,7 @@ void SpellMgr::LoadDbcDataCorrections()
         case 21855:
             spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
             break;
+
 
 
 

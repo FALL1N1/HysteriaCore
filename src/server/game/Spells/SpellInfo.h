@@ -196,6 +196,7 @@ enum SpellCustomAttributes
     SPELL_ATTR0_CU_SINGLE_AURA_STACK             = 0x00400000, // pussywizard
     SPELL_ATTR0_CU_SCHOOLMASK_NORMAL_WITH_MAGIC  = 0x00800000,
     SPELL_ATTR0_CU_ENCOUNTER_REWARD              = 0x01000000, // pussywizard
+    SPELL_ATTR0_CU_NEEDS_AMMO_DATA                 = 0x00080000, // Bin4ry - Rubix cube visual fix
 
     SPELL_ATTR0_CU_NEGATIVE                      = SPELL_ATTR0_CU_NEGATIVE_EFF0 | SPELL_ATTR0_CU_NEGATIVE_EFF1 | SPELL_ATTR0_CU_NEGATIVE_EFF2,
 };

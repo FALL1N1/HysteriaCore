@@ -202,7 +202,7 @@ class spell_item_branns_communicator : public SpellScriptLoader
 
                 if (Player* target = GetHitPlayer())
                 {
-                    target->KilledMonsterCredit(29579, 0); // Brann's entry
+                    //target->KilledMonsterCredit(29579, 0); // Brann's entry
                     target->CastSpell(target, 55038, true); // Brann summoning spell
                 }
             }

@@ -625,6 +625,7 @@ void Aura::UpdateTargetMap(Unit* caster, bool apply)
 
                 switch( GetId() )
                 {
+                    case 52067: // Nexus, Aura of Regeneration
                     case 62821: // Ulduar, Hodir, Toasty Fire
                     case 62807: // Ulduar, Hodir, Starlight
                     case 51103: // Oculus, Mage-Lord Urom, Frostbomb

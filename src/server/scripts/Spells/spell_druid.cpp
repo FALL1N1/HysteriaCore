@@ -1376,6 +1376,41 @@ class spell_dru_wild_growth : public SpellScriptLoader
         }
 };
 
+// -50334 - Berserk
+class spell_dru_berserk : public SpellScriptLoader
+{
+    public:
+        spell_dru_berserk() : SpellScriptLoader("spell_dru_berserk") { }
+
+        class spell_dru_berserk_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_dru_berserk_SpellScript);
+
+            void OnHit()
+            {
+                Player* caster = GetCaster()->ToPlayer();
+                uint32 firstid = sSpellMgr->GetFirstSpellInChain(48564);
+                uint32 currentrank = sSpellMgr->GetSpellRank(48564);
+                for (uint32 i = sSpellMgr->GetSpellRank(firstid); i < (currentrank + 1); i++)
+                {
+                    if (caster->HasSpellCooldown(firstid))
+                        caster->RemoveSpellCooldown(firstid, true);
+                    firstid = sSpellMgr->GetNextSpellInChain(firstid);
+                }
+            }
+
+            void Register()
+            {
+                AfterHit += SpellHitFn(spell_dru_berserk_SpellScript::OnHit);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_dru_berserk_SpellScript();
+        }
+};
+
 void AddSC_druid_spell_scripts()
 {
     // Ours
@@ -1386,6 +1421,7 @@ void AddSC_druid_spell_scripts()
     new spell_dru_brambles_treant();
     new spell_dru_barkskin();
     new spell_dru_treant_scaling();
+    new spell_dru_berserk();
 
     // Theirs
     new spell_dru_dash();

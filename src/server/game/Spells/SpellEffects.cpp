@@ -1140,7 +1140,7 @@ void Spell::EffectJumpDest(SpellEffIndex effIndex)
     // Override, calculations are incorrect
     if (m_spellInfo->Id == 49376) // feral charge
     {
-        speedXY = pow(speedZ*10, 2);
+        speedXY = pow(speedZ*15, 3);
         m_caster->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ, 0, ObjectAccessor::GetUnit(*m_caster, m_caster->GetUInt64Value(UNIT_FIELD_TARGET)));
         return;
     }
@@ -1660,42 +1660,45 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
 
     Player* player = unitTarget->ToPlayer();
 
-    uint32 newitemid = itemId;
-    ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(newitemid);
+    ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(itemId);
     if (!pProto)
     {
         player->SendEquipError(EQUIP_ERR_ITEM_NOT_FOUND, NULL, NULL);
         return;
     }
 
+    uint32 addNumber = damage;
+
     // bg reward have some special in code work
-    uint32 bgType = 0;
+    bool SelfCast = true;
     switch (m_spellInfo->Id)
     {
         case SPELL_AV_MARK_WINNER:
         case SPELL_AV_MARK_LOSER:
-            bgType = BATTLEGROUND_AV;
-            break;
         case SPELL_WS_MARK_WINNER:
         case SPELL_WS_MARK_LOSER:
-            bgType = BATTLEGROUND_WS;
-            break;
         case SPELL_AB_MARK_WINNER:
         case SPELL_AB_MARK_LOSER:
-            bgType = BATTLEGROUND_AB;
+            SelfCast = true;
             break;
-        default:
+        case SPELL_WG_MARK_WINNER:
+            if (player->HasAura(55629 /*SPELL_LIEUTENANT*/))
+                addNumber = 3;
+            else if (player->HasAura(33280 /*SPELL_CORPORAL*/))
+                addNumber = 2;
+            else
+                addNumber = 1;
+            SelfCast = true;
             break;
     }
 
-    uint32 num_to_add = damage;
-
-    if (num_to_add < 1)
-        num_to_add = 1;
-    if (num_to_add > pProto->GetMaxStackSize())
-        num_to_add = pProto->GetMaxStackSize();
+    if (addNumber < 1)
+        addNumber = 1;
+    if (addNumber > pProto->GetMaxStackSize())
+        addNumber = pProto->GetMaxStackSize();
 
     /* == gem perfection handling == */
+
     // the chance of getting a perfect result
     float perfectCreateChance = 0.0f;
     // the resulting perfect item if successful
@@ -1703,27 +1706,23 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
     // get perfection capability and chance
     if (CanCreatePerfectItem(player, m_spellInfo->Id, perfectCreateChance, perfectItemType))
         if (roll_chance_f(perfectCreateChance)) // if the roll succeeds...
-            newitemid = perfectItemType;        // the perfect item replaces the regular one
+            itemId = perfectItemType;        // the perfect item replaces the regular one
 
-                                                /* == gem perfection handling over == */
+    /* == gem perfection handling over == */
 
 
-                                                /* == profession specialization handling == */
-
-                                                // init items_count to 1, since 1 item will be created regardless of specialization
-    int items_count = 1;
-    // the chance to create additional items
+    // init items_count to 1, since 1 item will be created regardless of specialization
+    int32 itemsCount = 1;
     float additionalCreateChance = 0.0f;
-    // the maximum number of created additional items
-    uint8 additionalMaxNum = 0;
+    int32 newMaxOrEntry = 0;
     // get the chance and maximum number for creating extra items
-    if (CanCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, additionalMaxNum))
-        // roll with this chance till we roll not to create or we create the max num
-        while (roll_chance_f(additionalCreateChance) && items_count <= additionalMaxNum)
-            ++items_count;
+    if (canCreateExtraItems(player, m_spellInfo->Id, additionalCreateChance, newMaxOrEntry))
+            // roll with this chance till we roll not to create or we create the max num
+            while (roll_chance_f(additionalCreateChance) && itemsCount <= newMaxOrEntry)
+                ++itemsCount;
 
     // really will be created more items
-    num_to_add *= items_count;
+    addNumber *= itemsCount;
 
     /* == profession specialization handling over == */
 
@@ -1731,24 +1730,24 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
     // can the player store the new item?
     ItemPosCountVec dest;
     uint32 no_space = 0;
-    InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, newitemid, num_to_add, &no_space);
+    InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, addNumber, &no_space);
     if (msg != EQUIP_ERR_OK)
     {
         // convert to possible store amount
         if (msg == EQUIP_ERR_INVENTORY_FULL || msg == EQUIP_ERR_CANT_CARRY_MORE_OF_THIS)
-            num_to_add -= no_space;
+            addNumber -= no_space;
         else
         {
             // if not created by another reason from full inventory or unique items amount limitation
-            player->SendEquipError(msg, NULL, NULL, newitemid);
+            player->SendEquipError(msg, NULL, NULL, itemId);
             return;
         }
     }
 
-    if (num_to_add)
+    if (addNumber)
     {
         // create the new item and store it
-        Item* pItem = player->StoreNewItem(dest, newitemid, true, Item::GenerateItemRandomPropertyId(newitemid));
+        Item* pItem = player->StoreNewItem(dest, itemId, true, Item::GenerateItemRandomPropertyId(itemId));
 
         // was it successful? return error if not
         if (!pItem)
@@ -1762,10 +1761,10 @@ void Spell::DoCreateItem(uint8 /*effIndex*/, uint32 itemId)
             pItem->SetUInt32Value(ITEM_FIELD_CREATOR, player->GetGUIDLow());
 
         // send info to the client
-        player->SendNewItem(pItem, num_to_add, true, bgType == 0);
+        player->SendNewItem(pItem, addNumber, true, SelfCast);
 
         // we succeeded in creating at least one item, so a levelup is possible
-        if (bgType == 0)
+        if (SelfCast)
             player->UpdateCraftSkill(m_spellInfo->Id);
     }
 }
@@ -2314,7 +2313,7 @@ void Spell::EffectSummonType(SpellEffIndex effIndex)
     if (!entry)
         return;
 
-    SummonPropertiesEntry const* properties = sSummonPropertiesStore.LookupEntry(m_spellInfo->Effects[effIndex].MiscValueB);
+    SummonPropertiesEntry* properties = const_cast<SummonPropertiesEntry*>(sSummonPropertiesStore.LookupEntry(m_spellInfo->Effects[effIndex].MiscValueB));
     if (!properties)
     {
         sLog->outError("EffectSummonType: Unhandled summon type %u", m_spellInfo->Effects[effIndex].MiscValueB);
@@ -2360,6 +2359,16 @@ void Spell::EffectSummonType(SpellEffIndex effIndex)
             numSummons = 1;
             break;
     }
+
+    // Some creatures must be summoned as pets, yet have a different category or type set in SummonProperties.dbc.
+    // Until a generic way is found to handle them, replace the existing values.
+    switch (properties->Id)
+    {
+    case 628: // Hungry Plaguehound
+        properties->Category = SUMMON_CATEGORY_PET;
+        break;
+    }
+    
 
     switch (properties->Category)
     {
@@ -3183,6 +3192,7 @@ void Spell::EffectSummonPet(SpellEffIndex effIndex)
     float x, y, z;
     owner->GetClosePoint(x, y, z, owner->GetObjectSize());
     owner->SummonPet(petentry, x, y, z, owner->GetOrientation(), SUMMON_PET, 0, m_spellInfo->Id, m_caster->GetGUID(), PET_LOAD_SUMMON_PET);
+    owner->SummonPet(petentry, x, y, z, owner->GetOrientation(), DK_PET, 0, m_spellInfo->Id, m_caster->GetGUID(), PET_LOAD_SUMMON_PET);
     //if (!pet)
     //    return;
 
@@ -5172,6 +5182,7 @@ void Spell::EffectResurrectPet(SpellEffIndex /*effIndex*/)
     if (!pet)
     {
         player->SummonPet(0, x, y, z, player->GetOrientation(), SUMMON_PET, 0, 0, (uint64)damage, PET_LOAD_SUMMON_DEAD_PET);
+        player->SummonPet(0, x, y, z, player->GetOrientation(), DK_PET, 0, 0, (uint64)damage, PET_LOAD_SUMMON_DEAD_PET);
         return;
     }
  

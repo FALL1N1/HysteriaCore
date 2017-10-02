@@ -230,16 +230,13 @@ class spell_pal_sacred_shield_base : public SpellScriptLoader
                     // +75.00% from sp bonus
                     amount += CalculatePct(caster->SpellBaseDamageBonusDone(spellInfo->GetSchoolMask()), 75.0f);
 
-                    //if (sWorld->IsInCurrentContent(PATCH_332))
-                    //{
-                        // Xinef: removed divine guardian because it will affect triggered spell with increased amount
-                        // Arena - Dampening
-                        if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_ARENA_DAMPENING, EFFECT_0))
-                            AddPct(amount, dampening->GetAmount());
-                        // Battleground - Dampening
-                        else if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_BATTLEGROUND_DAMPENING, EFFECT_0))
-                            AddPct(amount, dampening->GetAmount());
-                    //}
+                    // Xinef: removed divine guardian because it will affect triggered spell with increased amount
+                    // Arena - Dampening
+                    if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_ARENA_DAMPENING, EFFECT_0))
+                        AddPct(amount, dampening->GetAmount());
+                    // Battleground - Dampening
+                    else if (AuraEffect const* dampening = caster->GetAuraEffect(SPELL_GENERIC_BATTLEGROUND_DAMPENING, EFFECT_0))
+                        AddPct(amount, dampening->GetAmount());
                 }
             }
 

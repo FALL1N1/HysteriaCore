@@ -27,6 +27,9 @@
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
+#include "Player.h"
+#include "SpellInfo.h"
+
 
 enum RogueSpells
 {
@@ -42,6 +45,7 @@ enum RogueSpells
     SPELL_ROGUE_SHIV_TRIGGERED                  = 5940,
     SPELL_ROGUE_TRICKS_OF_THE_TRADE_DMG_BOOST   = 57933,
     SPELL_ROGUE_TRICKS_OF_THE_TRADE_PROC        = 59628,
+    SPELL_ROGUE_GOUGE                            = 1776,
 };
 
 // Ours
@@ -811,11 +815,48 @@ class spell_rog_tricks_of_the_trade_proc : public SpellScriptLoader
         }
 };
 
+class spell_rog_gouge : public SpellScriptLoader
+{
+public:
+    spell_rog_gouge() : SpellScriptLoader("spell_rog_gouge"){}
+
+    class spell_rog_gouge_spellscript : public SpellScript
+    {
+        PrepareSpellScript(spell_rog_gouge_spellscript);
+
+        SpellInfo* spellInfo;
+
+        bool Validate(SpellInfo const* /* spellInfo */ )
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_ROGUE_GOUGE) && spellInfo->AttributesCu == SPELL_ATTR0_CU_REQ_TARGET_FACING_CASTER)
+                return false;
+            return true;
+        }
+
+        void HandleOnHit()
+        {
+            if (GetHitUnit())
+                GetCaster()->CastCustomSpell(SPELL_ROGUE_GOUGE, SPELLVALUE_BASE_POINT0, GetEffectValue(), GetHitUnit(), TRIGGERED_FULL_MASK);
+        }
+
+        void Register()
+        {
+            OnHit += SpellHitFn(spell_rog_gouge_spellscript::HandleOnHit);
+        }
+
+    };
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_rog_gouge_spellscript;
+    }
+};
+
 void AddSC_rogue_spell_scripts()
 {
     // Ours
     new spell_rog_savage_combat();
     new spell_rog_combat_potency();
+    new spell_rog_gouge();
 
     // Theirs
     new spell_rog_blade_flurry();

@@ -53,6 +53,14 @@ enum MageSpells
     SPELL_MAGE_SUMMON_WATER_ELEMENTAL_PERMANENT  = 70908,
     SPELL_MAGE_SUMMON_WATER_ELEMENTAL_TEMPORARY  = 70907,
     SPELL_MAGE_GLYPH_OF_BLAST_WAVE               = 62126,
+    SPELL_MAGE_ARCANE_POTENCY_RANK_1             = 57529,
+    SPELL_MAGE_ARCANE_POTENCY_RANK_2             = 57531
+};
+
+enum MageSpellIcons
+{
+    SPELL_ICON_MAGE_PRESENCE_OF_MIND = 139,
+    SPELL_ICON_MAGE_CLEARCASTING = 212
 };
 
 // Ours
@@ -92,6 +100,57 @@ class spell_mage_arcane_blast : public SpellScriptLoader
         SpellScript* GetSpellScript() const
         {
             return new spell_mage_arcane_blast_SpellScript();
+        }
+};
+
+// -31571 - Arcane Potency
+class spell_mage_arcane_potency : public SpellScriptLoader
+{
+    public:
+        spell_mage_arcane_potency() : SpellScriptLoader("spell_mage_arcane_potency") { }
+
+        class spell_mage_arcane_potency_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_mage_arcane_potency_AuraScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/) override
+            {
+                if (!sSpellMgr->GetSpellInfo(SPELL_MAGE_ARCANE_POTENCY_RANK_1) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_MAGE_ARCANE_POTENCY_RANK_2))
+                    return false;
+                return true;
+            }
+
+            bool CheckProc(ProcEventInfo& eventInfo)
+            {
+                // due to family mask sharing with brain freeze/missile barrage proc, we need to filter out by icon id
+                SpellInfo const* spellInfo = eventInfo.GetSpellInfo();
+                if (!spellInfo || (spellInfo->SpellIconID != SPELL_ICON_MAGE_CLEARCASTING && spellInfo->SpellIconID != SPELL_ICON_MAGE_PRESENCE_OF_MIND))
+                    return false;
+
+                return true;
+            }
+
+            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+            {
+                static uint32 const triggerSpell[2] = { SPELL_MAGE_ARCANE_POTENCY_RANK_1, SPELL_MAGE_ARCANE_POTENCY_RANK_2 };
+
+                PreventDefaultAction();
+                Unit* caster = eventInfo.GetActor();
+                uint32 spellId = triggerSpell[GetSpellInfo()->GetRank() - 1];
+                caster->CastSpell(caster, spellId, true, nullptr, aurEff);
+            }
+
+            void Register() override
+            {
+                DoCheckProc += AuraCheckProcFn(spell_mage_arcane_potency_AuraScript::CheckProc);
+                OnEffectProc += AuraEffectProcFn(spell_mage_arcane_potency_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new spell_mage_arcane_potency_AuraScript();
         }
 };
 
@@ -933,47 +992,47 @@ class spell_mage_mana_shield : public SpellScriptLoader
 // -29074 - Master of Elements
 class spell_mage_master_of_elements : public SpellScriptLoader
 {
-    public:
-        spell_mage_master_of_elements() : SpellScriptLoader("spell_mage_master_of_elements") { }
+public:
+    spell_mage_master_of_elements() : SpellScriptLoader("spell_mage_master_of_elements") { }
 
-        class spell_mage_master_of_elements_AuraScript : public AuraScript
+    class spell_mage_master_of_elements_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_mage_master_of_elements_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/)
         {
-            PrepareAuraScript(spell_mage_master_of_elements_AuraScript);
-
-            bool Validate(SpellInfo const* /*spellInfo*/)
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_MAGE_MASTER_OF_ELEMENTS_ENERGIZE))
-                    return false;
-                return true;
-            }
-
-            bool CheckProc(ProcEventInfo& eventInfo)
-            {
-                return eventInfo.GetDamageInfo()->GetSpellInfo(); // eventInfo.GetSpellInfo()
-            }
-
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
-            {
-                PreventDefaultAction();
-
-                int32 mana = int32(eventInfo.GetDamageInfo()->GetSpellInfo()->CalcPowerCost(GetTarget(), eventInfo.GetDamageInfo()->GetSchoolMask()));
-                mana = CalculatePct(mana, aurEff->GetAmount());
-
-                if (mana > 0)
-                    GetTarget()->CastCustomSpell(SPELL_MAGE_MASTER_OF_ELEMENTS_ENERGIZE, SPELLVALUE_BASE_POINT0, mana, GetTarget(), true, NULL, aurEff);
-            }
-
-            void Register()
-            {
-                DoCheckProc += AuraCheckProcFn(spell_mage_master_of_elements_AuraScript::CheckProc);
-                OnEffectProc += AuraEffectProcFn(spell_mage_master_of_elements_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
-            }
-        };
-
-        AuraScript* GetAuraScript() const
-        {
-            return new spell_mage_master_of_elements_AuraScript();
+            if (!sSpellMgr->GetSpellInfo(SPELL_MAGE_MASTER_OF_ELEMENTS_ENERGIZE))
+                return false;
+            return true;
         }
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            return eventInfo.GetDamageInfo()->GetSpellInfo(); // eventInfo.GetSpellInfo()
+        }
+
+        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        {
+            PreventDefaultAction();
+
+            int32 mana = int32(eventInfo.GetDamageInfo()->GetSpellInfo()->CalcPowerCost(GetTarget(), eventInfo.GetDamageInfo()->GetSchoolMask()));
+            mana = CalculatePct(mana, aurEff->GetAmount());
+
+            if (mana > 0)
+                GetTarget()->CastCustomSpell(SPELL_MAGE_MASTER_OF_ELEMENTS_ENERGIZE, SPELLVALUE_BASE_POINT0, mana, GetTarget(), true, NULL, aurEff);
+        }
+
+        void Register()
+        {
+            DoCheckProc += AuraCheckProcFn(spell_mage_master_of_elements_AuraScript::CheckProc);
+            OnEffectProc += AuraEffectProcFn(spell_mage_master_of_elements_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_mage_master_of_elements_AuraScript();
+    }
 };
 
 enum SilvermoonPolymorph
@@ -1104,6 +1163,7 @@ void AddSC_mage_spell_scripts()
     new spell_mage_brain_freeze();
 
     // Theirs
+    new spell_mage_arcane_potency();
     new spell_mage_blast_wave();
     new spell_mage_cold_snap();
     new spell_mage_fire_frost_ward();

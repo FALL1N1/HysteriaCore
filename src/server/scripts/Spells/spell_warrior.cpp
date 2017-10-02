@@ -1005,6 +1005,42 @@ class spell_warr_retaliation : public SpellScriptLoader
         }
 };
 
+// Warrior Flurry Talent
+class spell_warr_flurry : public SpellScriptLoader
+{
+    public:
+        spell_warr_flurry() : SpellScriptLoader("spell_warr_flurry") { }
+
+        class spell_warr_flurry_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_warr_flurry_SpellScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(12966) || !sSpellMgr->GetSpellInfo(12967) || !sSpellMgr->GetSpellInfo(12968)
+                    || !sSpellMgr->GetSpellInfo(12969) || !sSpellMgr->GetSpellInfo(12974))
+                    return false;
+                return true;
+            }
+
+            void HandleBeforeHit()
+            {
+                if (Unit* target = GetHitUnit())
+                    target->HasAura(GetSpellInfo()->Id) ? target->RemoveAura(GetSpellInfo()->Id) : NULL;
+            }
+
+            void Register()
+            {
+                BeforeHit += SpellHitFn(spell_warr_flurry_SpellScript::HandleBeforeHit);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_warr_flurry_SpellScript();
+        }
+    };
+
 void AddSC_warrior_spell_scripts()
 {
     // Ours
@@ -1033,4 +1069,5 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_sweeping_strikes();
     new spell_warr_vigilance();
     new spell_warr_vigilance_trigger();
+    new spell_warr_flurry();
 }

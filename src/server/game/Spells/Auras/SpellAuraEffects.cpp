@@ -1490,7 +1490,7 @@ void AuraEffect::HandleModInvisibilityDetect(AuraApplication const* aurApp, uint
     }
 
     // call functions which may have additional effects after chainging state of unit
-    target->UpdateObjectVisibility();
+    target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID()));
 }
 
 void AuraEffect::HandleModInvisibility(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -1546,7 +1546,14 @@ void AuraEffect::HandleModInvisibility(AuraApplication const* aurApp, uint8 mode
         // drop flag at invisibiliy in bg
         target->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION);
     }
-    target->UpdateObjectVisibility();
+
+    if (!apply && aurApp->GetRemoveMode() == AURA_REMOVE_BY_DEFAULT)
+    {
+        target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID() || target->GetMap()->Instanceable()), true);
+        target->bRequestForcedVisibilityUpdate = false;
+    }
+    else
+        target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID()) || target->GetMap()->Instanceable());
 }
 
 void AuraEffect::HandleModStealthDetect(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -1571,7 +1578,7 @@ void AuraEffect::HandleModStealthDetect(AuraApplication const* aurApp, uint8 mod
     }
 
     // call functions which may have additional effects after chainging state of unit
-    target->UpdateObjectVisibility();
+    target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID()));
 }
 
 void AuraEffect::HandleModStealth(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -1590,6 +1597,13 @@ void AuraEffect::HandleModStealth(AuraApplication const* aurApp, uint8 mode, boo
         target->SetStandFlags(UNIT_STAND_FLAGS_CREEP);
         if (target->GetTypeId() == TYPEID_PLAYER)
             target->SetByteFlag(PLAYER_FIELD_BYTES2, PLAYER_FIELD_BYTES_2_OFFSET_AURA_VISION, PLAYER_FIELD_BYTE2_STEALTH);
+
+        // interrupt autoshot
+        if (target->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL))
+        {
+            target->FinishSpell(CURRENT_AUTOREPEAT_SPELL);
+            target->ToPlayer()->SendAutoRepeatCancel(target);
+        }
     }
     else
     {
@@ -1611,7 +1625,14 @@ void AuraEffect::HandleModStealth(AuraApplication const* aurApp, uint8 mode, boo
         // drop flag at stealth in bg
         target->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION);
     }
-    target->UpdateObjectVisibility();
+
+    if (!apply && aurApp->GetRemoveMode() == AURA_REMOVE_BY_DEFAULT)
+    {
+        target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID() || target->GetMap()->Instanceable()), true);
+        target->bRequestForcedVisibilityUpdate = false;
+    }
+    else
+        target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID() || target->GetMap()->Instanceable()));
 }
 
 void AuraEffect::HandleModStealthLevel(AuraApplication const* aurApp, uint8 mode, bool apply) const
@@ -1628,7 +1649,7 @@ void AuraEffect::HandleModStealthLevel(AuraApplication const* aurApp, uint8 mode
         target->m_stealth.AddValue(type, -GetAmount());
 
     // call functions which may have additional effects after chainging state of unit
-    target->UpdateObjectVisibility();
+    target->UpdateObjectVisibility(target->GetTypeId() == TYPEID_PLAYER || IS_PLAYER_GUID(target->GetOwnerGUID()));
 }
 
 void AuraEffect::HandleSpiritOfRedemption(AuraApplication const* aurApp, uint8 mode, bool apply) const
