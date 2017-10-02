@@ -6,10 +6,10 @@
 #include "Player.h"
 #include "AvgDiffTracker.h"
 
-class westmere_commandscript : public CommandScript
+class PB_commandscript : public CommandScript
 {
 public:
-    westmere_commandscript() : CommandScript("westmere_commandscript") { }
+    PB_commandscript() : CommandScript("PB_commandscript") { }
     /* ------------------------------------------------------------------------- */
     ChatCommand* GetCommands() const
     {
@@ -102,7 +102,7 @@ public:
     }
 };
 
-void AddSC_westmere_commandscript()
+void AddSC_PB_commandscript()
 {
-    new westmere_commandscript();
+    new PB_commandscript();
 }
