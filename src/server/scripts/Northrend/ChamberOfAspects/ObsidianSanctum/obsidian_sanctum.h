@@ -37,11 +37,11 @@ enum Data
 
     // GOs
     GO_TWILIGHT_PORTAL                = 193988,
-    GO_NORMAL_PORTAL                = 193989,
+    //GO_NORMAL_PORTAL                = 193989, Fix by Nedzad Jaywalker #881
 
     // Spells
     SPELL_TWILIGHT_SHIFT            = 57620,
-    SPELL_TWILIGHT_TORMENT_SARTHARION = 58853,
+    SPELL_TWILIGHT_TORMENT_SARTHARION = 58835,
 };
 
 #endif

@@ -225,19 +225,19 @@ public:
             summons.RemoveNotExisting();
             Talk(WHISPER_LAVA_CHURN);
             events.ScheduleEvent(EVENT_SARTHARION_START_LAVA, 2000);
-            events.ScheduleEvent(EVENT_SARTHARION_FINISH_LAVA, 9000);
+            events.ScheduleEvent(EVENT_SARTHARION_FINISH_LAVA, 13000);
 
             // Send wave from left
             if (urand(0,1))
             {
                 for (uint8 i = 0; i < 3; ++i)
-                    me->SummonCreature(NPC_FLAME_TSUNAMI, 3208.44f, 580.0f-(i*50.0f), 55.8f, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 12000);
+                    me->SummonCreature(NPC_FLAME_TSUNAMI, 3208.44f, 580.0f-(i*50.0f), 55.8f, 0.0f, TEMPSUMMON_TIMED_DESPAWN, 15000);
             }
             // from right
             else
             {
                 for (uint8 i = 0; i < 2; ++i)
-                    me->SummonCreature(NPC_FLAME_TSUNAMI, 3283.44f, 555.0f-(i*50.0f), 55.8f, 3.14f, TEMPSUMMON_TIMED_DESPAWN, 12000);
+                    me->SummonCreature(NPC_FLAME_TSUNAMI, 3283.44f, 555.0f-(i*50.0f), 55.8f, 3.14f, TEMPSUMMON_TIMED_DESPAWN, 15000);
             }
         }
 
@@ -351,7 +351,7 @@ public:
             events.ScheduleEvent(EVENT_SARTHARION_CAST_FLAME_BREATH, 15000);
             events.ScheduleEvent(EVENT_SARTHARION_CAST_TAIL_LASH, 11000);
             events.ScheduleEvent(EVENT_SARTHARION_SUMMON_LAVA, 20000);
-            events.ScheduleEvent(EVENT_SARTHARION_LAVA_STRIKE, 5000);
+            events.ScheduleEvent(EVENT_SARTHARION_LAVA_STRIKE, 25000);
             events.ScheduleEvent(EVENT_SARTHARION_HEALTH_CHECK, 10000);
             events.ScheduleEvent(EVENT_SARTHARION_BERSERK, 900000);
 
@@ -379,6 +379,7 @@ public:
             }
 
             summons.DespawnEntry(NPC_FLAME_TSUNAMI);
+            summons.DespawnAll();
             Talk(SAY_SARTHARION_DEATH);
 
             if (pInstance)
@@ -681,6 +682,7 @@ public:
         void JustDied(Unit* )
         {
             Talk(SAY_TENEBRON_DEATH);
+            summons2.DespawnAll();
 
             if (!isSartharion)
             {
