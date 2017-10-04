@@ -6326,6 +6326,13 @@ SpellCastResult Spell::CheckCast(bool strict)
         if (m_caster->HasSpellCooldown(SPELL_RELIC_COOLDOWN) && !m_caster->HasSpellItemCooldown(SPELL_RELIC_COOLDOWN, m_CastItem->GetEntry()))
             return SPELL_FAILED_NOT_READY;
 
+    // balnazzar: hackfix for 52264 / deliver stolen horse to salazar
+    if (m_spellInfo->Id == 52264)   
+    {
+        if (!m_caster->FindNearestCreature(28653, 5))
+            return SPELL_FAILED_OUT_OF_RANGE;
+    }
+
     // all ok
     return SPELL_CAST_OK;
 }
