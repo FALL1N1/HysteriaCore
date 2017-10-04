@@ -375,6 +375,7 @@ public:
         SummonList summons;
         uint32 startTimeRemaining;
         uint32 defendersRemaining;
+        uint32 defenderscap;
         uint32 scourgeRemaining;
         uint8 battleStarted;
         bool resetExecuted;
@@ -388,6 +389,7 @@ public:
                 startTimeRemaining = ENCOUNTER_START_TIME;
                 defendersRemaining = ENCOUNTER_TOTAL_DEFENDERS;
                 scourgeRemaining = ENCOUNTER_TOTAL_SCOURGE;
+                defenderscap = 200;
 
                 SendInitialWorldStates();
 
@@ -467,6 +469,17 @@ public:
 
         void SummonedCreatureDies(Creature* creature, Unit*)
         {
+            uint32 plrCount = me->GetMap()->GetPlayersInAreaCount(me->GetAreaId());
+
+            if (plrCount <= 5)
+                defenderscap = 295;
+            if (plrCount <= 10)
+                defenderscap = 290;
+            if (plrCount <= 15)
+                defenderscap = 288;
+            if (plrCount <= 20)
+                defenderscap = 285;
+
             // Refill Armies and update counters
             if (battleStarted != ENCOUNTER_STATE_FIGHT)
                 return;
@@ -482,7 +495,7 @@ public:
                 --defendersRemaining;
                 SendUpdateWorldState(WORLD_STATE_DEFENDERS_COUNT, GetData(WORLD_STATE_DEFENDERS_COUNT));
 
-                if (defendersRemaining == 200)
+                if (defendersRemaining <= defenderscap)
                     FinishFight();
             }
         }
@@ -549,6 +562,7 @@ public:
 
             battleStarted = ENCOUNTER_STATE_NONE;
             startTimeRemaining = 0;
+            defenderscap = 200;
             defendersRemaining = 0;
             scourgeRemaining = 0;
 
