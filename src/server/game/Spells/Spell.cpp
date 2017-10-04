@@ -6331,6 +6331,11 @@ SpellCastResult Spell::CheckCast(bool strict)
     {
         if (!m_caster->FindNearestCreature(28653, 5))
             return SPELL_FAILED_OUT_OF_RANGE;
+        else
+        {
+            m_caster->ExitVehicle();
+            return SPELL_CAST_OK;
+        }
     }
 
     // all ok
