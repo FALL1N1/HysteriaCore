@@ -262,6 +262,15 @@ struct CalendarEvent
         std::string _title;
         std::string _description;
 };
+
+struct CalendarDatesData
+{
+    CalendarDatesData() : duration(0) { }
+    std::vector<time_t> start;
+    uint32 duration;
+};
+
+typedef std::unordered_map<uint32 /* eventId */, CalendarDatesData /* Date, Duration */> CalendarDatesContainer;
 typedef std::vector<CalendarInvite*> CalendarInviteStore;
 typedef UNORDERED_SET<CalendarEvent*> CalendarEventStore;
 typedef UNORDERED_MAP<uint64 /* eventId */, CalendarInviteStore > CalendarEventInviteStore;
@@ -276,6 +285,7 @@ class CalendarMgr
 
         CalendarEventStore _events;
         CalendarEventInviteStore _invites;
+        CalendarDatesContainer _eventDates;
 
         std::deque<uint64> _freeEventIds;
         std::deque<uint64> _freeInviteIds;
@@ -293,6 +303,7 @@ class CalendarMgr
         CalendarEventInviteStore const& GetInvites() const { return _invites; }
         CalendarInviteStore const& GetEventInvites(uint64 eventId);
         CalendarInviteStore GetPlayerInvites(uint64 guid);
+        CalendarDatesContainer const& GetCalendarDates() const { return _eventDates; }
 
         void FreeEventId(uint64 id);
         uint64 GetFreeEventId();

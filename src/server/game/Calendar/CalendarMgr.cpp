@@ -22,6 +22,7 @@
 #include "GuildMgr.h"
 #include "ObjectAccessor.h"
 #include "Opcodes.h"
+#include "GameEventMgr.h"
 
 CalendarInvite::~CalendarInvite()
 {
@@ -116,6 +117,32 @@ void CalendarMgr::LoadFromDB()
     for (uint64 i = 1; i < _maxInviteId; ++i)
         if (!GetInvite(i))
             _freeInviteIds.push_back(i);
+
+    sLog->outString("Loading Game Holiday Calendar Data...");
+    QueryResult result = WorldDatabase.Query("SELECT eventEntry, UNIX_TIMESTAMP(start_time), UNIX_TIMESTAMP(end_time), occurence, length, holiday, description, world_event, announce FROM game_event WHERE holiday > 0");
+    if (!result)
+        sLog->outString(">> Loaded 0 Game Holiday Calendar Events.");
+    else
+    {
+        uint32 count = 0;
+        do
+        {
+            Field* fields = result->Fetch();
+
+            CalendarDatesData& eventDates = _eventDates[fields[5].GetUInt32()];
+            uint64 startTime = fields[1].GetUInt64();
+            for (uint8 i = 1; i < 11; ++i)
+            {
+                eventDates.start.push_back(startTime);
+                startTime += fields[3].GetUInt64() * 60;
+            }
+            eventDates.duration = fields[4].GetUInt64() / 60;
+
+            ++count;
+        } while (result->NextRow());
+
+        sLog->outString(">> Loaded %u Game Holiday Calendar Events", count);
+    }
 }
 
 void CalendarMgr::AddEvent(CalendarEvent* calendarEvent, CalendarSendEventType sendType)
