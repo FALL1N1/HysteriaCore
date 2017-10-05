@@ -19,6 +19,7 @@
 #ifndef _BYTEBUFFER_H
 #define _BYTEBUFFER_H
 
+#include "Common.h"
 #include "Define.h"
 #include "Errors.h"
 #include "ByteConverter.h"
@@ -239,22 +240,22 @@ class ByteBuffer
         ByteBuffer &operator>>(float &value)
         {
             value = read<float>();
-            if (!myisfinite(value))
-            {
-                value = 0.0f;
+			if (!std::isfinite(value))
+			{
+				value = 0.0f;
                 //throw ByteBufferException();
-            }
+			}
             return *this;
         }
 
         ByteBuffer &operator>>(double &value)
         {
             value = read<double>();
-            if (!myisfinite(value))
-            {
-                value = 0.0f;
+			if (!std::isfinite(value))
+			{
+				value = 0.0f;
                 //throw ByteBufferException();
-            }
+			}
             return *this;
         }
 
@@ -376,7 +377,7 @@ class ByteBuffer
             lt.tm_mon = (packedDate >> 20) & 0xF;
             lt.tm_year = ((packedDate >> 24) & 0x1F) + 100;
 
-            return uint32(mktime(&lt) + timezone);
+            return uint32(mktime(&lt));
         }
 
         ByteBuffer& ReadPackedTime(uint32& time)
@@ -435,19 +436,19 @@ class ByteBuffer
 
             ASSERT(size() < 10000000);
 
-            size_t newsize = _wpos + cnt;
+			size_t newsize = _wpos + cnt;
 
-            if (_storage.capacity() < newsize) // pussywizard
-            {
-                if (newsize < 100)
-                    _storage.reserve(300);
-                else if (newsize < 750)
-                    _storage.reserve(2500);
-                else if (newsize < 6000)
-                    _storage.reserve(10000);
-                else
-                    _storage.reserve(400000);
-            }
+			if (_storage.capacity() < newsize) // pussywizard
+			{
+				if (newsize < 100)
+					_storage.reserve(300);
+				else if (newsize < 750)
+					_storage.reserve(2500);
+				else if (newsize < 6000)
+					_storage.reserve(10000);
+				else
+					_storage.reserve(400000);
+			}
 
             if (_storage.size() < newsize)
                 _storage.resize(newsize);
