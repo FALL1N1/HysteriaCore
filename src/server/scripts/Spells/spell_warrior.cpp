@@ -1026,7 +1026,8 @@ class spell_warr_flurry : public SpellScriptLoader
             void HandleBeforeHit()
             {
                 if (Unit* target = GetHitUnit())
-                    target->HasAura(GetSpellInfo()->Id) ? target->RemoveAura(GetSpellInfo()->Id) : NULL;
+                    if(target->HasAura(GetSpellInfo()->Id))
+                        target->RemoveAura(GetSpellInfo()->Id);
             }
 
             void Register()

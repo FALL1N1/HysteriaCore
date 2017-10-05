@@ -1373,7 +1373,8 @@ class spell_sha_flurry : public SpellScriptLoader
             void HandleBeforeHit()
             {
                 if (Unit* target = GetHitUnit())
-                    target->HasAura(GetSpellInfo()->Id) ? target->RemoveAura(GetSpellInfo()->Id) : nullptr;
+                    if(target->HasAura(GetSpellInfo()->Id))
+                        target->RemoveAura(GetSpellInfo()->Id);
             }
 
             void Register()
