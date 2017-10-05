@@ -229,7 +229,7 @@ class SmartScript
         void SetScript9(SmartScriptHolder& e, uint32 entry);
         Unit* GetLastInvoker(Unit* invoker = NULL);
         uint64 mLastInvoker;
-        typedef UNORDERED_MAP<uint32, uint32> CounterMap;
+        typedef std::unordered_map<uint32, uint32> CounterMap;
         CounterMap mCounterList;
 
         // Xinef: Fix Combat Movement

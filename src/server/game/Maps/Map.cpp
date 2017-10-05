@@ -773,7 +773,7 @@ void Map::HandleDelayedVisibility()
 { 
     if (i_objectsForDelayedVisibility.empty())
         return;
-    for (UNORDERED_SET<Unit*>::iterator itr = i_objectsForDelayedVisibility.begin(); itr != i_objectsForDelayedVisibility.end(); ++itr)
+    for (std::unordered_set<Unit*>::iterator itr = i_objectsForDelayedVisibility.begin(); itr != i_objectsForDelayedVisibility.end(); ++itr)
         (*itr)->ExecuteDelayedUnitRelocationEvent();
     i_objectsForDelayedVisibility.clear();
 }
@@ -2258,7 +2258,7 @@ void Map::RemoveAllObjectsInRemoveList()
     //sLog->outDebug(LOG_FILTER_MAPS, "Object remover 1 check.");
     while (!i_objectsToRemove.empty())
     {
-        UNORDERED_SET<WorldObject*>::iterator itr = i_objectsToRemove.begin();
+        std::unordered_set<WorldObject*>::iterator itr = i_objectsToRemove.begin();
         WorldObject* obj = *itr;
         i_objectsToRemove.erase(itr);
 

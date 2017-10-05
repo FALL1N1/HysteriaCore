@@ -27,7 +27,7 @@
 #include <ace/Singleton.h>
 
 typedef std::map<uint32, Battleground*> BattlegroundContainer;
-typedef UNORDERED_MAP<uint32, BattlegroundTypeId> BattleMastersMap;
+typedef std::unordered_map<uint32, BattlegroundTypeId> BattleMastersMap;
 
 struct CreateBattlegroundData
 {

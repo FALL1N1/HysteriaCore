@@ -254,7 +254,7 @@ struct ZoneDynamicInfo
 #define MIN_UNLOAD_DELAY      1                             // immediate unload
 
 typedef std::map<uint32/*leaderDBGUID*/, CreatureGroup*>        CreatureGroupHolderType;
-typedef UNORDERED_MAP<uint32 /*zoneId*/, ZoneDynamicInfo> ZoneDynamicInfoMap;
+typedef std::unordered_map<uint32 /*zoneId*/, ZoneDynamicInfo> ZoneDynamicInfoMap;
 typedef std::set<MotionTransport*> TransportsContainer;
 
 enum EncounterCreditType
@@ -331,9 +331,9 @@ class Map : public GridRefManager<NGridType>
         // pussywizard: movemaps, mmaps
         ACE_RW_Thread_Mutex& GetMMapLock() const { return *(const_cast<ACE_RW_Thread_Mutex*>(&MMapLock)); }
         // pussywizard:
-        UNORDERED_SET<Object*> i_objectsToUpdate;
+        std::unordered_set<Object*> i_objectsToUpdate;
         void BuildAndSendUpdateForObjects(); // definition in ObjectAccessor.cpp, below ObjectAccessor::Update, because it does the same for a map
-        UNORDERED_SET<Unit*> i_objectsForDelayedVisibility;
+        std::unordered_set<Unit*> i_objectsForDelayedVisibility;
         void HandleDelayedVisibility();
 
         // some calls like isInWater should not use vmaps due to processor power
@@ -622,9 +622,9 @@ class Map : public GridRefManager<NGridType>
         std::bitset<TOTAL_NUMBER_OF_CELLS_PER_MAP*TOTAL_NUMBER_OF_CELLS_PER_MAP> marked_cells;
 
         bool i_scriptLock;
-        UNORDERED_SET<WorldObject*> i_objectsToRemove;
+        std::unordered_set<WorldObject*> i_objectsToRemove;
         std::map<WorldObject*, bool> i_objectsToSwitch;
-        UNORDERED_SET<WorldObject*> i_worldObjects;
+        std::unordered_set<WorldObject*> i_worldObjects;
 
         typedef std::multimap<time_t, ScriptAction> ScriptScheduleMap;
         ScriptScheduleMap m_scriptSchedule;

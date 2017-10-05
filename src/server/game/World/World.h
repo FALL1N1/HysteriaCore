@@ -565,7 +565,7 @@ struct CliCommandHolder
     ~CliCommandHolder() { delete[] m_command; }
 };
 
-typedef UNORDERED_MAP<uint32, WorldSession*> SessionMap;
+typedef std::unordered_map<uint32, WorldSession*> SessionMap;
 
 #define WORLD_SLEEP_CONST 10
 
@@ -594,7 +594,7 @@ enum GlobalPlayerUpdateMask
     PLAYER_UPDATE_DATA_NAME                = 0x10,
 };
 
-typedef UNORDERED_MAP<uint32, GlobalPlayerData> GlobalPlayerDataMap;
+typedef std::unordered_map<uint32, GlobalPlayerData> GlobalPlayerDataMap;
 typedef std::map<std::string, uint32> GlobalPlayerNameMap;
 
 // xinef: petitions storage
@@ -889,7 +889,7 @@ class World
 
         SessionMap m_sessions;
         SessionMap m_offlineSessions;
-        typedef UNORDERED_MAP<uint32, time_t> DisconnectMap;
+        typedef std::unordered_map<uint32, time_t> DisconnectMap;
         DisconnectMap m_disconnects;
         uint32 m_maxActiveSessionCount;
         uint32 m_maxQueuedSessionCount;
