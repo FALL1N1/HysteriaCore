@@ -283,7 +283,7 @@ public:
                     break;
                 case EVENT_ENRAGE:
                     me->MonsterTextEmote("%s went enrage!", 0, true);
-                    me->CastSpell(false, SPELL_ENRAGE);
+                    DoCast(SPELL_ENRAGE);
                     break;
             }
 
