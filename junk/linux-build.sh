@@ -1,0 +1,1 @@
+cmake ../ -DCMAKE_INSTALL_PREFIX=/home/b/server -DCMAKE_BUILD_TYPE=RelWithDebInfo -DTOOLS=0
