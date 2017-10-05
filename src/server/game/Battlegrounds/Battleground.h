@@ -736,7 +736,7 @@ class Battleground
         // Invited players counters
         uint32 m_BgInvitedPlayers[BG_TEAMS_COUNT];
 
-        UNORDERED_MAP<uint64, bool> m_hasPlayerJoinedPremade;
+        std::unordered_map<uint64, bool> m_hasPlayerJoinedPremade;
         uint32 m_premadeAssigned[BG_TEAMS_COUNT];
 
         // Raid Group

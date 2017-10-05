@@ -47,13 +47,13 @@ class CrossFaction
 
     private:
         // Group leader guid-race caching
-        UNORDERED_MAP<uint64, uint8> LeaderRaceMap; 
+        std::unordered_map<uint64, uint8> LeaderRaceMap; 
         uint8 GetLeaderRace(uint64 playerGuid);
 
         // Fake race caching
-        UNORDERED_MAP<uint64, uint8> m_FakeRace;
-        UNORDERED_MAP<uint64, uint32> m_FakeMorph;
-        UNORDERED_MAP<uint64, bool> m_resetCache;
+        std::unordered_map<uint64, uint8> m_FakeRace;
+        std::unordered_map<uint64, uint32> m_FakeMorph;
+        std::unordered_map<uint64, bool> m_resetCache;
 
         // Disables system
         typedef std::vector<uint32> CrossFactionDisableList;

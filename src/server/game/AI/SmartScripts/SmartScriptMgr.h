@@ -1619,7 +1619,7 @@ class SmartWaypointMgr
         }
 
     private:
-        UNORDERED_MAP<uint32, WPPath*> waypoint_map;
+        std::unordered_map<uint32, WPPath*> waypoint_map;
 };
 
 // all events for a single entry

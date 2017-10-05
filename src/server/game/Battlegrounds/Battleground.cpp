@@ -1952,7 +1952,7 @@ uint8 Battleground::GetUniqueBracketId() const
 
 bool Battleground::HasPlayerJoinPremade(uint64 guid)
 {
-    for (UNORDERED_MAP<uint64, bool>::iterator itr = m_hasPlayerJoinedPremade.begin(); itr != m_hasPlayerJoinedPremade.end(); itr++)
+    for (std::unordered_map<uint64, bool>::iterator itr = m_hasPlayerJoinedPremade.begin(); itr != m_hasPlayerJoinedPremade.end(); itr++)
         if (itr->first == guid)
             return itr->second;
 

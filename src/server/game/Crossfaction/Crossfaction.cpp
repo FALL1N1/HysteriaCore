@@ -83,7 +83,7 @@ void CrossFaction::SetFakeRaceAndMorph(Player* player)
 
 uint8 CrossFaction::GetFakeRace(uint64 playerGuid)
 {
-    UNORDERED_MAP<uint64, uint8>::iterator itr = m_FakeRace.find(playerGuid);
+    std::unordered_map<uint64, uint8>::iterator itr = m_FakeRace.find(playerGuid);
     if (itr != m_FakeRace.end())
         return itr->second;
     else
@@ -92,7 +92,7 @@ uint8 CrossFaction::GetFakeRace(uint64 playerGuid)
 
 uint32 CrossFaction::GetFakeMorph(uint64 playerGuid)
 {
-    UNORDERED_MAP<uint64, uint32>::iterator itr = m_FakeMorph.find(playerGuid);
+    std::unordered_map<uint64, uint32>::iterator itr = m_FakeMorph.find(playerGuid);
     if (itr != m_FakeMorph.end())
         return itr->second;
     else
@@ -123,7 +123,7 @@ void CrossFaction::SetMorph(Player* player, bool value)
 
 void CrossFaction::ResetCacheWorker()
 {
-    for (UNORDERED_MAP<uint64, bool>::iterator itr = m_resetCache.begin(); itr != m_resetCache.end(); itr++)
+    for (std::unordered_map<uint64, bool>::iterator itr = m_resetCache.begin(); itr != m_resetCache.end(); itr++)
         if (itr->second)
             if (Player* player = ObjectAccessor::FindPlayer(itr->first))
                 if (Battleground* bg = player->GetBattleground())
@@ -184,7 +184,7 @@ void CrossFaction::UpdatePlayerTeam(Group* group, uint64 guid, bool reset /* = f
                 }
                 else // if leader guid is offline, access is race from the leader map
                 {
-                    UNORDERED_MAP<uint64, uint8>::iterator itr = LeaderRaceMap.find(leaderGuid);
+                    std::unordered_map<uint64, uint8>::iterator itr = LeaderRaceMap.find(leaderGuid);
                     if (itr != LeaderRaceMap.end())
                     {
                         uint8 raceid = itr->second;
@@ -224,7 +224,7 @@ void CrossFaction::UpdateGroupLeaderMap(uint64 leaderGuid, bool remove)
 
 void CrossFaction::UpdateAllGroups()
 {
-    for (UNORDERED_MAP<uint64, uint8>::iterator itr = LeaderRaceMap.begin(); itr != LeaderRaceMap.end(); itr++)
+    for (std::unordered_map<uint64, uint8>::iterator itr = LeaderRaceMap.begin(); itr != LeaderRaceMap.end(); itr++)
         if (Player* leader = ObjectAccessor::FindPlayer(itr->first))
             if(Group* group = leader->GetGroup())
             {
