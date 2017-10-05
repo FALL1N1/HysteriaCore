@@ -241,7 +241,7 @@ public:
     Eluna_WorldScript* LuaWorldAI;
 
     typedef std::map<int, int> ElunaBindingMap;
-    typedef UNORDERED_MAP<uint32, ElunaBindingMap> ElunaEntryMap;
+    typedef std::unordered_map<uint32, ElunaBindingMap> ElunaEntryMap;
     struct ElunaBind;
     std::map<int, std::vector<int> > ServerEventBindings;
     ElunaBind* CreatureEventBindings;
@@ -621,7 +621,7 @@ public:
     {
         if (!obj)
             return NULL;
-        UNORDERED_MAP<uint64, LuaEventMap*>::const_iterator it = LuaEventMaps.find(obj->GetGUID());
+        std::unordered_map<uint64, LuaEventMap*>::const_iterator it = LuaEventMaps.find(obj->GetGUID());
         if (it != LuaEventMaps.end())
             return it->second;
         return NULL;
@@ -642,7 +642,7 @@ public:
         _eventMap.insert(EventStore::value_type(_time + delay, eventData(funcRef, delay, calls)));
     }
 
-    static UNORDERED_MAP<uint64, LuaEventMap*> LuaEventMaps; // Creature and gameobject timed events
+    static std::unordered_map<uint64, LuaEventMap*> LuaEventMaps; // Creature and gameobject timed events
 
 private:
     EventStore _eventMap;
@@ -1265,8 +1265,8 @@ public:
 };
 struct Eluna::LuaEventData : public BasicEvent, public Eluna::LuaEventMap::eventData
 {
-    static UNORDERED_MAP<int, LuaEventData*> LuaEvents;
-    static UNORDERED_MAP<uint64, std::set<int> > EventIDs;
+    static std::unordered_map<int, LuaEventData*> LuaEvents;
+    static std::unordered_map<uint64, std::set<int> > EventIDs;
     Unit* _unit;
     uint64 GUID;
 
@@ -1286,7 +1286,7 @@ struct Eluna::LuaEventData : public BasicEvent, public Eluna::LuaEventMap::event
 
     static void RemoveAll()
     {
-        for (UNORDERED_MAP<uint64, std::set<int> >::const_iterator it = EventIDs.begin(); it != EventIDs.end(); ++it)
+        for (std::unordered_map<uint64, std::set<int> >::const_iterator it = EventIDs.begin(); it != EventIDs.end(); ++it)
         {
             if(it->second.empty())
                 continue;

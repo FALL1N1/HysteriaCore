@@ -931,8 +931,8 @@ void WorldSession::HandlePlayerLoginFromDB(LoginQueryHolder* holder)
         ;//sLog->outStaticDebug("WORLD: Sent motd (SMSG_MOTD)");
 
         // send server info
-        if (sWorld->getIntConfig(CONFIG_ENABLE_SINFO_LOGIN) == 1)
-            chH.PSendSysMessage(_FULLVERSION);
+//        if (sWorld->getIntConfig(CONFIG_ENABLE_SINFO_LOGIN) == 1)
+//            chH.PSendSysMessage(_FULLVERSION);
 
         ;//sLog->outStaticDebug("WORLD: Sent server info");
     }
@@ -1232,8 +1232,8 @@ void WorldSession::HandlePlayerLoginToCharInWorld(Player* pCurrChar)
         ;//sLog->outStaticDebug("WORLD: Sent motd (SMSG_MOTD)");
 
         // send server info
-        if (sWorld->getIntConfig(CONFIG_ENABLE_SINFO_LOGIN) == 1)
-            chH.PSendSysMessage(_FULLVERSION);
+//        if (sWorld->getIntConfig(CONFIG_ENABLE_SINFO_LOGIN) == 1)
+//            chH.PSendSysMessage(_FULLVERSION);
 
         ;//sLog->outStaticDebug("WORLD: Sent server info");
     }

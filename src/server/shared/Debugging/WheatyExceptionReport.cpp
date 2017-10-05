@@ -113,10 +113,10 @@ PEXCEPTION_POINTERS pExceptionInfo)
     SYSTEMTIME systime;
     GetLocalTime(&systime);
     sprintf(m_szDumpFileName, "%s\\%s_%s_[%u-%u_%u-%u-%u].dmp",
-        crash_folder_path, GitRevision::GetHash(), pos, systime.wDay, systime.wMonth, systime.wHour, systime.wMinute, systime.wSecond);
+        crash_folder_path, 0, pos, systime.wDay, systime.wMonth, systime.wHour, systime.wMinute, systime.wSecond);
 
     sprintf(m_szLogFileName, "%s\\%s_%s_[%u-%u_%u-%u-%u].txt",
-        crash_folder_path, GitRevision::GetHash(), pos, systime.wDay, systime.wMonth, systime.wHour, systime.wMinute, systime.wSecond);
+        crash_folder_path, 0, pos, systime.wDay, systime.wMonth, systime.wHour, systime.wMinute, systime.wSecond);
 
     m_hDumpFile = CreateFile(m_szDumpFileName,
         GENERIC_WRITE,
@@ -420,7 +420,7 @@ PEXCEPTION_POINTERS pExceptionInfo)
     GetLocalTime(&systime);
 
     // Start out with a banner
-    _tprintf(_T("Revision: %s\r\n"), GitRevision::GetFullVersion());
+    _tprintf(_T("Revision: %s\r\n"), 0);
     _tprintf(_T("Date %u:%u:%u. Time %u:%u \r\n"), systime.wDay, systime.wMonth, systime.wYear, systime.wHour, systime.wMinute);
     PEXCEPTION_RECORD pExceptionRecord = pExceptionInfo->ExceptionRecord;
 
