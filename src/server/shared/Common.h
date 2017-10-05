@@ -71,6 +71,7 @@
 #include <errno.h>
 #include <signal.h>
 #include <assert.h>
+#include <memory>
 
 #if PLATFORM == PLATFORM_WINDOWS
 #define STRCASECMP stricmp
@@ -86,6 +87,7 @@
 #include <sstream>
 #include <algorithm>
 #include <vector>
+#include <array>
 
 #include "Threading/LockedQueue.h"
 #include "Threading/Threading.h"
@@ -135,12 +137,6 @@
 #endif
 
 inline float finiteAlways(float f) { return finite(f) ? f : 0.0f; }
-
-#if COMPILER == COMPILER_MICROSOFT
-inline bool myisfinite(float f) { return _finite(f) && !_isnan(f); }
-#else
-inline bool myisfinite(float f) { return finite(f) && !isnan(f); }
-#endif
 
 #define atol(a) strtoul( a, NULL, 10)
 
@@ -222,5 +218,15 @@ typedef std::vector<std::string> StringVector;
 # define TRINITY_READ_GUARD(MUTEX, LOCK) \
   ACE_Read_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
     if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+
+namespace Trinity
+{
+    //! std::make_unique implementation (TODO: remove this once C++14 is supported)
+    template<typename T, typename ...Args>
+    std::unique_ptr<T> make_unique(Args&& ...args)
+    {
+        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
+}
 
 #endif
