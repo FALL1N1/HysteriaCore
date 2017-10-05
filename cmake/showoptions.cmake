@@ -1,8 +1,8 @@
 # output generic information about the core and buildtype chosen
 message("")
-message("* HysteriaCore revision   : ${rev_hash} ${rev_date} (${rev_branch} branch)")
+message("* Balnazzar revision   : ${rev_hash} ${rev_date} (${rev_branch} branch)")
 if( UNIX )
-  message("* HysteriaCore buildtype  : ${CMAKE_BUILD_TYPE}")
+  message("* Balnazzar buildtype  : ${CMAKE_BUILD_TYPE}")
 endif()
 message("")
 
@@ -31,10 +31,9 @@ else()
 endif()
 
 if( ELUNA )
-  message("* Build Eluna LuaEngine   : Yes (default)")
-  add_definitions(-DELUNA)
+  message("* Build Eluna LuaEngine   : Yes")
 else()
-  message("* Build Eluna LuaEngine   : No")
+  message("* Build Eluna LuaEngine   : No (default) - we don't need this garbage")
 endif()
 
 if( TOOLS )
@@ -76,6 +75,12 @@ if( WIN32 )
     message("* Use MySQL sourcetree   : No")
   endif()
 endif( WIN32 )
+
+if( NOT WITH_SOURCE_TREE STREQUAL "no" )
+  message("* Show source tree       : Yes - \"${WITH_SOURCE_TREE}\"")
+else()
+  message("* Show source tree       : No")
+endif()
 
 if ( WITHOUT_GIT )
   message("* Use GIT revision hash  : No")
