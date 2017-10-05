@@ -195,7 +195,7 @@ class Channel
         bool IsLFG() const { return GetFlags() & CHANNEL_FLAG_LFG; }
         std::string const& GetPassword() const { return _password; }
         void SetPassword(std::string const& npassword) { _password = npassword; }
-        uint32 GetNumPlayers() const { return playersStore.size(); }
+        uint32 GetNumPlayers() const { return uint32(playersStore.size()); }
         uint8 GetFlags() const { return _flags; }
         bool HasFlag(uint8 flag) const { return _flags & flag; }
 

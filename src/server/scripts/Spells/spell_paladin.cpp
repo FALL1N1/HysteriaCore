@@ -665,7 +665,7 @@ class spell_pal_divine_storm_dummy : public SpellScriptLoader
             void CountTargets(std::list<WorldObject*>& targetList)
             {
                 Trinity::Containers::RandomResizeList(targetList, GetSpellValue()->MaxAffectedTargets);
-                _targetCount = targetList.size();
+                _targetCount = uint32(targetList.size());
             }
 
             void HandleDummy(SpellEffIndex /*effIndex*/)

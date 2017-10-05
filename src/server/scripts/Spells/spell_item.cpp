@@ -1846,7 +1846,7 @@ class spell_item_flask_of_the_north : public SpellScriptLoader
                         break;
                 }
 
-                caster->CastSpell(caster, possibleSpells[irand(0, (possibleSpells.size() - 1))], true, NULL);
+                caster->CastSpell(caster, int32(possibleSpells[irand(0, (possibleSpells.size() - 1))]), true, NULL);
             }
 
             void Register()

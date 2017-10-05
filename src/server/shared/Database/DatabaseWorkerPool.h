@@ -449,7 +449,7 @@ class DatabaseWorkerPool
                 return;
 
             char* buf = new char[str.size()*2+1];
-            EscapeString(buf, str.c_str(), str.size());
+            EscapeString(buf, str.c_str(), long(str.size()));
             str = buf;
             delete[] buf;
         }

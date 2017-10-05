@@ -172,7 +172,7 @@ class GossipMenu
         uint32 GetMenuItemCount() const
         {
             //TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, GetLock());
-            return _menuItems.size();
+            return uint32(_menuItems.size());
         }
 
         bool Empty() const
@@ -233,7 +233,7 @@ class QuestMenu
         uint8 GetMenuItemCount() const
         {
             //TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, GetLock());
-            return _questMenuItems.size();
+            return uint32(_questMenuItems.size());
         }
 
         bool Empty() const

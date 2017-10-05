@@ -1012,7 +1012,7 @@ class ScriptMgr
 
         uint32 IncreaseScheduledScriptsCount() { return ++_scheduledScripts; }
         uint32 DecreaseScheduledScriptCount() { return --_scheduledScripts; }
-        uint32 DecreaseScheduledScriptCount(size_t count) { return _scheduledScripts -= count; }
+        uint32 DecreaseScheduledScriptCount(size_t count) { return _scheduledScripts -= uint32(count); }
         bool IsScriptScheduled() const { return _scheduledScripts > 0; }
 
     private:

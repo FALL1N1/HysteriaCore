@@ -438,7 +438,7 @@ class Battleground
 
         typedef std::map<uint64, Player*> BattlegroundPlayerMap;
         BattlegroundPlayerMap const& GetPlayers() const { return m_Players; }
-        uint32 GetPlayersSize() const { return m_Players.size(); }
+        uint32 GetPlayersSize() const { return uint32(m_Players.size()); }
 
         void ReadyMarkerClicked(Player* p); // pussywizard
         std::set<uint32> readyMarkerClickedSet; // pussywizard
@@ -448,9 +448,9 @@ class Battleground
         ArenaLogEntryDataMap ArenaLogEntries; // pussywizard
         BattlegroundScoreMap::const_iterator GetPlayerScoresBegin() const { return PlayerScores.begin(); }
         BattlegroundScoreMap::const_iterator GetPlayerScoresEnd() const { return PlayerScores.end(); }
-        uint32 GetPlayerScoresSize() const { return PlayerScores.size(); }
+        uint32 GetPlayerScoresSize() const { return uint32(PlayerScores.size()); }
 
-        uint32 GetReviveQueueSize() const { return m_ReviveQueue.size(); }
+        uint32 GetReviveQueueSize() const { return uint32(m_ReviveQueue.size()); }
 
         void AddPlayerToResurrectQueue(uint64 npc_guid, uint64 player_guid);
         void RemovePlayerFromResurrectQueue(Player* player);

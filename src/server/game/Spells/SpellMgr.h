@@ -693,7 +693,7 @@ class SpellMgr
 
         // SpellInfo object management
         SpellInfo const* GetSpellInfo(uint32 spellId) const { return spellId < GetSpellInfoStoreSize() ?  mSpellInfoMap[spellId] : NULL; }
-        uint32 GetSpellInfoStoreSize() const { return mSpellInfoMap.size(); }
+        uint32 GetSpellInfoStoreSize() const { return uint32(mSpellInfoMap.size()); }
 
         // Talent Additional Set
         bool IsAdditionalTalentSpell(uint32 spellId) const;

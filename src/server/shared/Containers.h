@@ -36,7 +36,7 @@ namespace Trinity
             while (list_size > size)
             {
                 typename std::list<T>::iterator itr = list.begin();
-                std::advance(itr, urand(0, list_size - 1));
+                std::advance(itr, urand(0, uint32(list_size) - 1));
                 list.erase(itr);
                 --list_size;
             }
@@ -61,7 +61,7 @@ namespace Trinity
         template <class C> typename C::value_type const& SelectRandomContainerElement(C const& container)
         {
             typename C::const_iterator it = container.begin();
-            std::advance(it, urand(0, container.size() - 1));
+            std::advance(it, urand(0, uint32(container.size()) - 1));
             return *it;
         }
     }

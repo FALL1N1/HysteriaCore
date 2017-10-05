@@ -221,7 +221,7 @@ class SmartAI : public CreatureAI
         uint32 mWPPauseTimer;
         WayPoint* mLastWP;
         uint32 mEscortNPCFlags;
-        uint32 GetWPCount() { return mWayPoints ? mWayPoints->size() : 0; }
+        uint32 GetWPCount() { return mWayPoints ? uint32(mWayPoints->size()) : 0; }
         bool mCanRepeatPath;
         bool mRun;
         bool mCanAutoAttack;

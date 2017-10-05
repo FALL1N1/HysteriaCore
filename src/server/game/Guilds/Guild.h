@@ -777,7 +777,7 @@ public:
 
     // pussywizard
     uint64 GetTotalBankMoney() const { return m_bankMoney; }
-    uint32 GetMemberCount() const { return m_members.size(); }
+    uint32 GetMemberCount() const { return uint32(m_members.size()); }
 
     // Bank tabs
     void SetBankTabText(uint8 tabId, std::string const& text);

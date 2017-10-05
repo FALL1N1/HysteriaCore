@@ -112,7 +112,7 @@ public:
     // Xinef: DO NOT USE EXCEPT FOR SPLINE INITIALIZATION!!!!!!
     const ControlArray* allocateVisualPoints() const { return &pointsVisual; }
     const ControlArray& getPoints(bool visual) const { return visual ? pointsVisual : points;}
-    index_type getPointCount() const { return points.size();}
+    index_type getPointCount() const { return uint32(points.size());}
     const Vector3& getPoint(index_type i, bool visual) const { return visual ? pointsVisual[i] : points[i];}
 
     /** Initializes spline. Don't call other methods while spline not initialized. */

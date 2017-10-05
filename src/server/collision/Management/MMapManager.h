@@ -83,7 +83,7 @@ namespace MMAP
             dtNavMesh const* GetNavMesh(uint32 mapId);
 
             uint32 getLoadedTilesCount() const { return loadedTiles; }
-            uint32 getLoadedMapsCount() const { return loadedMMaps.size(); }
+            uint32 getLoadedMapsCount() const { return uint32(loadedMMaps.size()); }
 
             ACE_RW_Thread_Mutex& GetMMapLock(uint32 mapId);
             ACE_RW_Thread_Mutex& GetMMapGeneralLock() { return MMapLock; } // pussywizard: in case a per-map mutex can't be found, should never happen

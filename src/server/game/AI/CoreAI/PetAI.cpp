@@ -276,7 +276,7 @@ void PetAI::UpdateAI(uint32 diff)
         //found units to cast on to
         if (!targetSpellStore.empty())
         {
-            uint32 index = urand(0, targetSpellStore.size() - 1);
+            uint32 index = urand(0, uint32(targetSpellStore.size()) - 1);
 
             Spell* spell  = targetSpellStore[index].second;
             Unit*  target = targetSpellStore[index].first;

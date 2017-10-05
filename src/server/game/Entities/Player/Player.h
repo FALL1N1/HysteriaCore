@@ -1673,7 +1673,7 @@ class Player : public Unit, public GridObject<Player>
         void RemoveMail(uint32 id);
 
         void AddMail(Mail* mail) { m_mail.push_front(mail);}// for call from WorldSession::SendMailTo
-        uint32 GetMailSize() { return m_mail.size();}
+        uint32 GetMailSize() { return uint32(m_mail.size());}
         Mail* GetMail(uint32 id);
 
         PlayerMails::iterator GetMailBegin() { return m_mail.begin();}

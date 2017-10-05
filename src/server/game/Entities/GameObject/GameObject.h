@@ -769,7 +769,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
         void AddUse() { ++m_usetimes; }
 
         uint32 GetUseCount() const { return m_usetimes; }
-        uint32 GetUniqueUseCount() const { return m_unique_users.size(); }
+        uint32 GetUniqueUseCount() const { return uint32(m_unique_users.size()); }
 
         void SaveRespawnTime();
 
