@@ -632,7 +632,7 @@ class EventMap
                 _phase = (1 << (phase - 1));
         }
 
-        uint32 EventMap::GetNextEventTime(uint32 eventId) const
+        uint32 GetNextEventTime(uint32 eventId) const
         {
             if (Empty())
                 return 0;
@@ -644,7 +644,7 @@ class EventMap
             return 0;
         }
 
-        uint32 EventMap::GetTimeUntilEvent(uint32 eventId) const
+        uint32 GetTimeUntilEvent(uint32 eventId) const
         {
             for (EventStore::const_iterator itr = _eventMap.begin(); itr != _eventMap.end(); ++itr)
                 if (eventId == (itr->second & 0x0000FFFF))
