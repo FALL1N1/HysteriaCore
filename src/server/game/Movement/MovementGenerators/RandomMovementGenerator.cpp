@@ -98,7 +98,7 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     PathGenerator path(creature);
     bool result = path.CalculatePath(destX, destY, destZ, false);
     if (!result || (path.GetPathType() & PATHFIND_NOPATH))
-        init.MoveTo(destX, destY, destZ, false);
+        init.MoveTo(destX, destY, destZ, true);
     else
         init.MovebyPath(path.GetPath());
     init.SetWalk(true);
