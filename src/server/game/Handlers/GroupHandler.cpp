@@ -78,8 +78,8 @@ void WorldSession::HandleGroupInviteOpcode(WorldPacket& recvData)
 
     Player* player = ObjectAccessor::FindPlayerByName(membername, false);
 
-    // no player
-    if (!player)
+    // no player or self invite
+    if (!player || player == GetPlayer())
     {
         if (sWorld->getBoolConfig(CONFIG_FAKE_WHO_LIST))
         {

@@ -423,6 +423,8 @@ class Spell
         void _handle_immediate_phase();
         void _handle_finish_phase();
 
+        void OnSpellLaunch();
+ 
         SpellCastResult CheckItems();
         SpellCastResult CheckSpellFocus();
         SpellCastResult CheckRange(bool strict);
