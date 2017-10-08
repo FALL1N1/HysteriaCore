@@ -6269,6 +6269,11 @@ void SpellMgr::LoadDbcDataCorrections()
             case 8983:  // Druid - Bash  - R3
                 spellInfo->AttributesEx7 |= SPELL_ATTR7_INTERRUPT_ONLY_NONPLAYER;
                 break;
+            case 28099: // thaddius tesla coil
+                spellInfo->Targets = 0;
+                spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ANY;
+                spellInfo->EffectImplicitTargetA[1] = TARGET_UNIT_TARGET_ANY;
+                break;
         }
 
         switch (spellInfo->SpellFamilyName)

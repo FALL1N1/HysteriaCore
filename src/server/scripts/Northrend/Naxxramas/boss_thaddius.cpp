@@ -103,7 +103,8 @@ public:
         boss_thaddiusAI(Creature *c) : ScriptedAI(c), summons(me)
         {
             pInstance = me->GetInstanceScript();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+            // unconfirmed / incorrect?
+            //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
         }
 
         InstanceScript* pInstance;
@@ -509,13 +510,13 @@ public:
                     
                     break;
                 case EVENT_MINION_CHECK_DISTANCE:
-                    if (Creature* cr = me->FindNearestCreature(NPC_TESLA_COIL, 150.0f))
+                    if (Creature* cr = me->FindNearestCreature(NPC_TESLA_COIL, 999.9f))
                     {
                         if (me->GetExactDist(cr) > 60.0f || me->GetExactDist(cr) < 20.0f)
                         {
                             cr->InterruptNonMeleeSpells(true);
-                            cr->CastSpell(me->GetVictim(), SPELL_TESLA_SHOCK, true); // dont know real spell
-                            events.RepeatEvent(1500);
+                            cr->CastSpell(me->GetVictim(), SPELL_TESLA_SHOCK, true);
+                            events.RepeatEvent(1000);
                             break;
                         }
                         else
