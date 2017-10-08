@@ -1190,7 +1190,7 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature)
+    CreatureAI* GetAI(Creature* creature) const
     {
         if (!sEluna->CreatureEventBindings->GetBindMap(creature->GetEntry()))
             return NULL;
