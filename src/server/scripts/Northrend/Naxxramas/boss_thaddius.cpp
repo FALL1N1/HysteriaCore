@@ -103,6 +103,7 @@ public:
         boss_thaddiusAI(Creature *c) : ScriptedAI(c), summons(me)
         {
             pInstance = me->GetInstanceScript();
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
         }
 
         InstanceScript* pInstance;
