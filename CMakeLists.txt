@@ -54,8 +54,6 @@ set(ACE_EXPECTED_VERSION 5.8.3)
 find_package(PCHSupport)
 find_package(ACE REQUIRED)
 find_package(OpenSSL REQUIRED)
-find_package(Threads REQUIRED)
-
 if( NOT USE_MYSQL_SOURCES )
   find_package(MySQL REQUIRED)
 endif()
@@ -64,11 +62,8 @@ if( UNIX )
   find_package(Readline)
   find_package(ZLIB)
   find_package(BZip2)
+  find_package(Threads REQUIRED)
 endif()
-
-#if(NOT WITHOUT_GIT)
-#  find_package(Git)
-#endif()
 
 # Find revision ID and hash of the sourcetree
 include(cmake/genrev.cmake)
