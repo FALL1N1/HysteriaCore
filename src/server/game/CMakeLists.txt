@@ -237,9 +237,9 @@ add_library(game STATIC
 )
 
 add_dependencies(game revision.h)
-add_dependencies(game lua)
 
 if (ELUNA)
+add_dependencies(game lua)
 target_link_libraries(game
  lua
  LuaEngine
