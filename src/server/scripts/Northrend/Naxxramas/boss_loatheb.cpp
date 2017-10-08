@@ -45,17 +45,20 @@ public:
 
     struct boss_loathebAI : public ScriptedAI
     {
-        boss_loathebAI(Creature *c) : ScriptedAI(c)
+        boss_loathebAI(Creature *c) : ScriptedAI(c), summons(me)
         {
             pInstance = me->GetInstanceScript();
         }
 
         InstanceScript* pInstance;
         EventMap events;
+        SummonList summons;
 
         void Reset()
         {
             events.Reset();
+            summons.DespawnAll();
+
             if (pInstance)
             {
                 pInstance->SetData(EVENT_LOATHEB, NOT_STARTED);
@@ -64,7 +67,11 @@ public:
             }
         }
 
-        void JustSummoned(Creature* cr) { cr->SetInCombatWithZone(); }
+        void JustSummoned(Creature* cr) 
+        { 
+            cr->SetInCombatWithZone(); 
+            summons.Summon(cr);
+        }
 
         void SummonedCreatureDies(Creature* cr, Unit*)
         {
@@ -99,6 +106,7 @@ public:
         {
             if (pInstance)
                 pInstance->SetData(EVENT_LOATHEB, DONE);
+            summons.DespawnAll();
         }
 
         void UpdateAI(uint32 diff)
