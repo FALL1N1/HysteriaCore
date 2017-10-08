@@ -111,11 +111,28 @@ extern int main(int argc, char** argv)
         return 1;
     }
 
-    //sLog->outString("%s (authserver)", _FULLVERSION);
-    sLog->outString("<Ctrl-C> to stop.\n");
+    sLog->outString("      ________________________________________________________________________________________");
+    sLog->outString("      |                                                                                       |");
+    sLog->outString("      |                       ,,                                                              |");
+    sLog->outString("      | `7MM\"\"\"Yp,          `7MM                       MMM\"\"\"AMV MMM\"\"\"AMV                    |");
+    sLog->outString("      |   MM    Yb            MM                       M'   AMV  M'   AMV                     |");
+    sLog->outString("      |   MM    dP  ,6\"Yb.    MM  `7MMpMMMb.   ,6\"Yb.  '   AMV   '   AMV    ,6\"Yb.  `7Mb,od8  |");
+    sLog->outString("      |   MM\"\"\"bg. 8)   MM    MM    MM    MM  8)   MM     AMV       AMV    8)   MM    MM' \"'  |");
+    sLog->outString("      |   MM    `Y  ,pm9MM    MM    MM    MM   ,pm9MM    AMV   ,   AMV   ,  ,pm9MM    MM      |");
+    sLog->outString("      |   MM    ,9 8M   MM    MM    MM    MM  8M   MM   AMV   ,M  AMV   ,M 8M   MM    MM      |");
+    sLog->outString("      | .JMMmmmd9  `Moo9^Yo..JMML..JMML  JMML.`Moo9^Yo.AMVmmmmMM AMVmmmmMM `Moo9^Yo..JMML.    |");
+    sLog->outString("      |                                                                                       |");
+    sLog->outString("      |_______________________________________________________________________________________|");
+    sLog->outString("                                   Copyright (c) Project Balnazzar 2017       ");
+    sLog->outString("                                           www.balnazzar.org                  ");
+    sLog->outString("                                 _______________________________________      ");
+    sLog->outString("                     %s", _FULLVERSION);
+    sLog->outString("");
+    sLog->outString("");
+    sLog->outString("");
+    sLog->outString("Starting \"Authentication Server\"...");
     sLog->outString("Using configuration file %s.", configFile);
-
-    sLog->outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+    //sLog->outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
     ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);

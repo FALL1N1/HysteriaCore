@@ -27,6 +27,8 @@
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
 #include "Configuration/Config.h"
+#include "SystemConfig.h"
+#include "Util.h"
 
 #include "Log.h"
 #include "Master.h"
@@ -131,6 +133,29 @@ extern int main(int argc, char** argv)
         printf("Verify that the file exists and has \'[worldserver]' written in the top of the file!\n");
         return 1;
     }
+
+    sLog->outString("      ________________________________________________________________________________________");
+    sLog->outString("      |                                                                                       |");
+    sLog->outString("      |                       ,,                                                              |");
+    sLog->outString("      | `7MM\"\"\"Yp,          `7MM                       MMM\"\"\"AMV MMM\"\"\"AMV                    |");
+    sLog->outString("      |   MM    Yb            MM                       M'   AMV  M'   AMV                     |");
+    sLog->outString("      |   MM    dP  ,6\"Yb.    MM  `7MMpMMMb.   ,6\"Yb.  '   AMV   '   AMV    ,6\"Yb.  `7Mb,od8  |");
+    sLog->outString("      |   MM\"\"\"bg. 8)   MM    MM    MM    MM  8)   MM     AMV       AMV    8)   MM    MM' \"'  |");
+    sLog->outString("      |   MM    `Y  ,pm9MM    MM    MM    MM   ,pm9MM    AMV   ,   AMV   ,  ,pm9MM    MM      |");
+    sLog->outString("      |   MM    ,9 8M   MM    MM    MM    MM  8M   MM   AMV   ,M  AMV   ,M 8M   MM    MM      |");
+    sLog->outString("      | .JMMmmmd9  `Moo9^Yo..JMML..JMML  JMML.`Moo9^Yo.AMVmmmmMM AMVmmmmMM `Moo9^Yo..JMML.    |");
+    sLog->outString("      |                                                                                       |");
+    sLog->outString("      |_______________________________________________________________________________________|");
+    sLog->outString("                                   Copyright (c) Project Balnazzar 2017       ");
+    sLog->outString("                                           www.balnazzar.org                  ");
+    sLog->outString("                                 _______________________________________      ");
+    sLog->outString("                     %s", _FULLVERSION);
+    sLog->outString("");
+    sLog->outString("");
+    sLog->outString("");
+    sLog->outString("Starting \"World Server Node\"...");
+
+
     sLog->outString("Using configuration file %s.", cfg_file);
 
     sLog->outString("Using SSL version: %s (library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
