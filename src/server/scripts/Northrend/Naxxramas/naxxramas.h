@@ -150,7 +150,10 @@ enum NXSays
 enum NXSounds
 {
     // Background screams in Instance if Thaddius still alive, four of them from 8873 to 8876
-    SOUND_SCREAM = 8873
+    SOUND_SCREAM_1 = 8873,
+    SOUND_SCREAM_2 = 8874,
+    SOUND_SCREAM_3 = 8875,
+    SOUND_SCREAM_4 = 8876,
 };
 #endif
 

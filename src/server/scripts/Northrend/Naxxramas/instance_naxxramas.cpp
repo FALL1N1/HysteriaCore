@@ -820,10 +820,27 @@ public:
         {
             if (screamsTimer && Encounters[EVENT_THADDIUS] != DONE)
             {
+                Creature* thadd = instance->GetCreature(_thaddiusGUID);
                 if (screamsTimer <= diff)
                 {
-                    instance->PlayDirectSoundToMap(SOUND_SCREAM + urand(0, 3));
-                    screamsTimer = (2 * MINUTE + urand(0, 30)) * IN_MILLISECONDS;
+                    int8 sound = SOUND_SCREAM_1 + urand(0, 3);
+                    switch (sound)
+                    {
+                    case SOUND_SCREAM_1:
+                        thadd->MonsterYell("Pleeease!", LANG_UNIVERSAL, 0);
+                        break;
+                    case SOUND_SCREAM_2:
+                        thadd->MonsterYell("Stop, please stop...", LANG_UNIVERSAL, 0);
+                        break;
+                    case SOUND_SCREAM_3:
+                        thadd->MonsterYell("Help me! Save me.... Stop screaming!", LANG_UNIVERSAL, 0);
+                        break;
+                    case SOUND_SCREAM_4:
+                        thadd->MonsterYell("Please, nooo!", LANG_UNIVERSAL, 0);
+                        break;
+                    }
+                    instance->PlayDirectSoundToMap(sound);
+                    screamsTimer = (1 * MINUTE + urand(0, 30)) * IN_MILLISECONDS;
                 }
                 else
                     screamsTimer -= diff;
