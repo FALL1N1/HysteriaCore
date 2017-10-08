@@ -34,7 +34,7 @@ endif()
 
 if(_GIT_VERSION_OK)
   execute_process(
-    COMMAND "${_GIT_EXEC}" describe --abbrev=5
+    COMMAND "${_GIT_EXEC}" describe --tags --always
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     OUTPUT_VARIABLE rev_info
     OUTPUT_STRIP_TRAILING_WHITESPACE

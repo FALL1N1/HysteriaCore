@@ -65,6 +65,8 @@ if( UNIX )
   find_package(Threads REQUIRED)
 endif()
 
+find_package(Git)
+
 # Find revision ID and hash of the sourcetree
 include(cmake/genrev.cmake)
 

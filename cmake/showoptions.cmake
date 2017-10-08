@@ -1,6 +1,6 @@
 # output generic information about the core and buildtype chosen
 message("")
-message("* Project Balnazzar's revision: ${rev_info} ${rev_date} (${rev_branch} branch)")
+message("* Project Balnazzar's revision: ${rev_info} ${rev_date} (development branch)")
 if( UNIX )
   message("* Project Balnazzar's build type: ${CMAKE_BUILD_TYPE}")
 endif()
