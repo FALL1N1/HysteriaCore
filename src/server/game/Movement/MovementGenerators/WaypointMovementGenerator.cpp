@@ -307,7 +307,7 @@ void FlightPathMovementGenerator::DoFinalize(Player* player)
     player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_TAXI_BENCHMARK);
 }
 
-#define PLAYER_FLIGHT_SPEED 32.0f
+#define PLAYER_FLIGHT_SPEED 30.0f
 
 void FlightPathMovementGenerator::DoReset(Player* player)
 {
@@ -317,13 +317,16 @@ void FlightPathMovementGenerator::DoReset(Player* player)
 
     Movement::MoveSplineInit init(player);
     uint32 end = GetPathAtMapEnd();
-    for (uint32 i = GetCurrentNode(); i < end; ++i)
+    for (uint32 i = GetCurrentNode(); i != end; ++i)
     {
         G3D::Vector3 vertice(i_path[i]->x, i_path[i]->y, i_path[i]->z);
         init.Path().push_back(vertice);
     }
     init.SetFirstPointId(GetCurrentNode());
     init.SetFly();
+    init.SetSmooth();
+    init.SetUncompressed();
+    init.SetWalk(true);
     init.SetVelocity(PLAYER_FLIGHT_SPEED);
     init.Launch();
 }
