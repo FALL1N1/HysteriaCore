@@ -37,13 +37,14 @@ class SQLQueryHolder
         PreparedQueryResult GetPreparedResult(size_t index);
         void SetResult(size_t index, ResultSet* result);
         void SetPreparedResult(size_t index, PreparedResultSet* result);
-        bool m_executed;
 };
 
 typedef ACE_Future<SQLQueryHolder*> QueryResultHolderFuture;
 
 class SQLQueryHolderTask : public SQLOperation
 {
+    public:
+        bool m_executed;
     private:
         SQLQueryHolder * m_holder;
         QueryResultHolderFuture m_result;
