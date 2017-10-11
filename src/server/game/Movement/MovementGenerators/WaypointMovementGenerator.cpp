@@ -214,7 +214,8 @@ bool WaypointMovementGenerator<Creature>::DoUpdate(Creature* creature, uint32 di
 
         if (creature->IsStopped())
             Stop(3 * MINUTE * IN_MILLISECONDS);
-        else if (creature->movespline->Finalized())
+        //Checking just before reaching waypoint gives smother movement than using FinalDestination
+        else if (creature->movespline->timeElapsed() < 150)
         {
             OnArrived(creature);
             return StartMove(creature);
