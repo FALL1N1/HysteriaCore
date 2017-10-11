@@ -37,6 +37,7 @@ class SQLQueryHolder
         PreparedQueryResult GetPreparedResult(size_t index);
         void SetResult(size_t index, ResultSet* result);
         void SetPreparedResult(size_t index, PreparedResultSet* result);
+        bool m_executed;
 };
 
 typedef ACE_Future<SQLQueryHolder*> QueryResultHolderFuture;
@@ -49,7 +50,8 @@ class SQLQueryHolderTask : public SQLOperation
 
     public:
         SQLQueryHolderTask(SQLQueryHolder *holder, QueryResultHolderFuture res)
-            : m_holder(holder), m_result(res){ };
+            : m_holder(holder), m_result(res), m_executed(false) { };
+        ~SQLQueryHolderTask();
         bool Execute();
 
 };
