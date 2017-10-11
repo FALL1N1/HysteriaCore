@@ -472,8 +472,8 @@ public:
                 WaypointPath const* i_path = sWaypointMgr->GetPath(me->GetWaypointPath());
                 for (uint8 i = 0; i < i_path->size(); ++i)
                 {
-                    WaypointData const* node = i_path->at(i);
-                    pathPoints.push_back(G3D::Vector3(node->x, node->y, node->z));
+                    WaypointData const node = i_path->at(i);
+                    pathPoints.push_back(G3D::Vector3(node.x, node.y, node.z));
                 }
 
                 me->GetMotionMaster()->MoveSplinePath(&pathPoints);
@@ -1003,8 +1003,8 @@ public:
                                 WaypointPath const* i_path = sWaypointMgr->GetPath(NPC_DRAKE);
                                 for (uint8 i = 0; i < i_path->size(); ++i)
                                 {
-                                    WaypointData const* node = i_path->at(i);
-                                    pathPoints.push_back(G3D::Vector3(node->x, node->y, node->z));
+                                    WaypointData const node = i_path->at(i);
+                                    pathPoints.push_back(G3D::Vector3(node.x, node.y, node.z));
                                 }
 
                                 me->GetMotionMaster()->MoveSplinePath(&pathPoints);

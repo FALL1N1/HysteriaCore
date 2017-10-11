@@ -189,8 +189,8 @@ class boss_alar : public CreatureScript
                         pathPoints.push_back(G3D::Vector3(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
                         for (uint8 i = 0; i < i_path->size(); ++i)
                         {
-                            WaypointData const* node = i_path->at(i);
-                            pathPoints.push_back(G3D::Vector3(node->x, node->y, node->z));
+                            WaypointData const node = i_path->at(i);
+                            pathPoints.push_back(G3D::Vector3(node.x, node.y, node.z));
                         }
                         me->GetMotionMaster()->MoveSplinePath(&pathPoints);
                     }

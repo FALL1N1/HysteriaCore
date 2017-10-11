@@ -360,8 +360,8 @@ public:
             {
                 for (uint8 i = 0; i < i_path->size(); ++i)
                 {
-                    WaypointData const* node = i_path->at(i_path->size()-1-i);
-                    pathPoints.push_back(G3D::Vector3(node->x, node->y, node->z));
+                    WaypointData const node = i_path->at(i_path->size()-1-i);
+                    pathPoints.push_back(G3D::Vector3(node.x, node.y, node.z));
                 }
                 float x, y, z, o;
                 me->GetRespawnPosition(x, y, z, &o);
@@ -371,8 +371,8 @@ public:
             {
                 for (uint8 i = 0; i < i_path->size(); ++i)
                 {
-                    WaypointData const* node = i_path->at(i);
-                    pathPoints.push_back(G3D::Vector3(node->x, node->y, node->z));
+                    WaypointData const node = i_path->at(i);
+                    pathPoints.push_back(G3D::Vector3(node.x, node.y, node.z));
                 }
             }
 
