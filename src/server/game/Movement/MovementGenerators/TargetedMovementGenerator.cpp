@@ -72,13 +72,13 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
             {
                 if (GetTarget()->GetTypeId() == TYPEID_PLAYER)
                 {
-                    distance = 1.0f;
+                    dist = 1.0f;
                     size = 1.0f;
                 }
                 else if (GetTarget()->GetVictim() != owner) // if pet is not the target's victim
-                    _angle = float(M_PI); // then pet goes for the back
+                    i_angle = float(M_PI); // then pet goes for the back
                 else
-                    _angle = 0.f; // else pet goes for the front
+                    i_angle = 0.f; // else pet goes for the front
             }
             else
             {
