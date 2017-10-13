@@ -18173,7 +18173,7 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
 }
 
 bool Player::isAllowedToLoot(const Creature* creature)
-{
+{ 
     if (!creature->isDead() || !creature->IsDamageEnoughForLootingAndReward())
         return false;
 
@@ -18192,6 +18192,7 @@ bool Player::isAllowedToLoot(const Creature* creature)
 
     switch (thisGroup->GetLootMethod())
     {
+        case MASTER_LOOT:
         case FREE_FOR_ALL:
             return true;
         case ROUND_ROBIN:
@@ -18201,11 +18202,6 @@ bool Player::isAllowedToLoot(const Creature* creature)
                 return true;
 
             return loot->hasItemFor(this);
-        case MASTER_LOOT:
-            // may loot if the player is the master looter
-            if (thisGroup->GetMasterLooterGuid() == GetGUID())
-                return true;
-            // fall-through
         case GROUP_LOOT:
         case NEED_BEFORE_GREED:
             // may only loot if the player is the loot roundrobin player
