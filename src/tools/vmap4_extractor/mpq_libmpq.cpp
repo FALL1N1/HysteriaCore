@@ -19,10 +19,11 @@
 #include "mpq_libmpq04.h"
 #include <deque>
 #include <cstdio>
+#include <algorithm>
 
 ArchiveSet gOpenArchives;
 
-MPQArchive::MPQArchive(const char* filename)
+MPQArchive::MPQArchive(char const* filename)
 {
     int result = libmpq__archive_open(&mpq_a, filename, -1);
     printf("Opening %s\n", filename);
@@ -52,13 +53,18 @@ MPQArchive::MPQArchive(const char* filename)
     gOpenArchives.push_front(this);
 }
 
+bool MPQArchive::isOpened() const
+{
+    return std::find(gOpenArchives.begin(), gOpenArchives.end(), this) != gOpenArchives.end();
+}
+
 void MPQArchive::close()
 {
     //gOpenArchives.erase(erase(&mpq_a);
     libmpq__archive_close(mpq_a);
 }
 
-MPQFile::MPQFile(const char* filename):
+MPQFile::MPQFile(char const* filename):
     eof(false),
     buffer(0),
     pointer(0),
@@ -71,7 +77,7 @@ MPQFile::MPQFile(const char* filename):
         uint32 filenum;
         if(libmpq__file_number(mpq_a, filename, &filenum)) continue;
         libmpq__off_t transferred;
-        libmpq__file_unpacked_size(mpq_a, filenum, &size);
+        libmpq__file_size_unpacked(mpq_a, filenum, &size);
 
         // HACK: in patch.mpq some files don't want to open and give 1 for filesize
         if (size<=1) {

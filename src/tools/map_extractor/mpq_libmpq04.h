@@ -27,23 +27,21 @@
 #include <iostream>
 #include <deque>
 
-using namespace std;
-
 class MPQArchive
 {
 
 public:
     mpq_archive_s *mpq_a;
 
-    MPQArchive(const char* filename);
+    MPQArchive(char const* filename);
     ~MPQArchive() { close(); }
     void close();
 
-    void GetFileListTo(vector<string>& filelist) {
+    void GetFileListTo(std::vector<std::string>& filelist) {
         uint32_t filenum;
         if(libmpq__file_number(mpq_a, "(listfile)", &filenum)) return;
         libmpq__off_t size, transferred;
-        libmpq__file_unpacked_size(mpq_a, filenum, &size);
+        libmpq__file_size_unpacked(mpq_a, filenum, &size);
 
         char *buffer = new char[size+1];
         buffer[size] = '\0';
@@ -55,13 +53,13 @@ public:
 
         token = strtok( buffer, seps );
         uint32 counter = 0;
-        while ((token != NULL) && (counter < size)) {
+        while ((token != nullptr) && (counter < size)) {
             //cout << token << endl;
             token[strlen(token) - 1] = 0;
-            string s = token;
+            std::string s = token;
             filelist.push_back(s);
             counter += strlen(token) + 2;
-            token = strtok(NULL, seps);
+            token = strtok(nullptr, seps);
         }
 
         delete[] buffer;
@@ -77,11 +75,11 @@ class MPQFile
     libmpq__off_t pointer,size;
 
     // disable copying
-    MPQFile(const MPQFile& /*f*/) {}
-    void operator=(const MPQFile& /*f*/) {}
+    MPQFile(MPQFile const& /*f*/) = delete;
+    void operator=(MPQFile const& /*f*/) = delete;
 
 public:
-    MPQFile(const char* filename);    // filenames are not case sensitive
+    MPQFile(char const* filename);    // filenames are not case sensitive
     ~MPQFile() { close(); }
     size_t read(void* dest, size_t bytes);
     size_t getSize() { return size; }

@@ -69,46 +69,61 @@ bool Model::open()
 
 bool Model::ConvertToVMAPModel(const char * outfilename)
 {
-    int N[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
-    FILE* output=fopen(outfilename, "wb");
+    int N[12] = { };
+    FILE* output = fopen(outfilename, "wb");
     if (!output)
     {
-        printf("Can't create the output file '%s'\n",outfilename);
+        printf("Can't create the output file '%s'\n", outfilename);
         return false;
     }
     fwrite(szRawVMAPMagic, 8, 1, output);
     uint32 nVertices = header.nBoundingVertices;
     fwrite(&nVertices, sizeof(int), 1, output);
     uint32 nofgroups = 1;
-    fwrite(&nofgroups,sizeof(uint32), 1, output);
-    fwrite(N,4*3,1,output);// rootwmoid, flags, groupid
-    fwrite(N,sizeof(float),3*2,output);//bbox, only needed for WMO currently
-    fwrite(N,4,1,output);// liquidflags
-    fwrite("GRP ",4,1,output);
+    fwrite(&nofgroups, sizeof(uint32), 1, output);
+    fwrite(N, 4 * 3, 1, output);// rootwmoid, flags, groupid
+    fwrite(N, sizeof(float), 3 * 2, output);//bbox, only needed for WMO currently
+    fwrite(N, 4, 1, output);// liquidflags
+    fwrite("GRP ", 4, 1, output);
     uint32 branches = 1;
     int wsize;
     wsize = sizeof(branches) + sizeof(uint32) * branches;
     fwrite(&wsize, sizeof(int), 1, output);
-    fwrite(&branches,sizeof(branches), 1, output);
+    fwrite(&branches, sizeof(branches), 1, output);
     uint32 nIndexes = header.nBoundingTriangles;
-    fwrite(&nIndexes,sizeof(uint32), 1, output);
-    fwrite("INDX",4, 1, output);
+    fwrite(&nIndexes, sizeof(uint32), 1, output);
+    fwrite("INDX", 4, 1, output);
     wsize = sizeof(uint32) + sizeof(unsigned short) * nIndexes;
     fwrite(&wsize, sizeof(int), 1, output);
     fwrite(&nIndexes, sizeof(uint32), 1, output);
-    if (nIndexes >0)
+    if (nIndexes > 0)
+    {
+        for (uint32 i = 0; i < nIndexes; ++i)
+        {
+            if ((i % 3) - 1 == 0 && i + 1 < nIndexes)
+            {
+                uint16 tmp = indices[i];
+                indices[i] = indices[i + 1];
+                indices[i + 1] = tmp;
+            }
+        }
         fwrite(indices, sizeof(unsigned short), nIndexes, output);
+    }
 
     fwrite("VERT", 4, 1, output);
     wsize = sizeof(int) + sizeof(float) * 3 * nVertices;
     fwrite(&wsize, sizeof(int), 1, output);
     fwrite(&nVertices, sizeof(int), 1, output);
-    if (nVertices >0)
+    if (nVertices > 0)
     {
-        for(uint32 vpos=0; vpos <nVertices; ++vpos)
-            std::swap(vertices[vpos].y, vertices[vpos].z);
+        for (uint32 vpos = 0; vpos < nVertices; ++vpos)
+        {
+            float tmp = vertices[vpos].y;
+            vertices[vpos].y = -vertices[vpos].z;
+            vertices[vpos].z = tmp;
+        }
 
-        fwrite(vertices, sizeof(float)*3, nVertices, output);
+        fwrite(vertices, sizeof(float) * 3, nVertices, output);
     }
 
     fclose(output);
@@ -128,6 +143,7 @@ Vec3D fixCoordSystem2(Vec3D v)
 }
 
 ModelInstance::ModelInstance(MPQFile& f, char const* ModelInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE *pDirfile)
+    : id(0), scale(0), flags(0)
 {
     float ff[3];
     f.read(&id, 4);
@@ -152,7 +168,7 @@ ModelInstance::ModelInstance(MPQFile& f, char const* ModelInstName, uint32 mapID
 
     fseek(input, 8, SEEK_SET); // get the correct no of vertices
     int nVertices;
-    int count = fread(&nVertices, sizeof (int), 1, input);
+    int count = fread(&nVertices, sizeof(int), 1, input);
     fclose(input);
 
     if (count != 1 || nVertices == 0)
@@ -173,7 +189,7 @@ ModelInstance::ModelInstance(MPQFile& f, char const* ModelInstName, uint32 mapID
     fwrite(&pos, sizeof(float), 3, pDirfile);
     fwrite(&rot, sizeof(float), 3, pDirfile);
     fwrite(&sc, sizeof(float), 1, pDirfile);
-    uint32 nlen=strlen(ModelInstName);
+    uint32 nlen = strlen(ModelInstName);
     fwrite(&nlen, sizeof(uint32), 1, pDirfile);
     fwrite(ModelInstName, sizeof(char), nlen, pDirfile);
 

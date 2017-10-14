@@ -40,6 +40,8 @@ enum LiquidType
 #define ADT_CELL_SIZE         8
 #define ADT_GRID_SIZE         (ADT_CELLS_PER_GRID*ADT_CELL_SIZE)
 
+#pragma pack(push, 1)
+
 //
 // Adt file height map chunk
 //
@@ -65,8 +67,8 @@ class adt_MCLQ
         uint32 fcc;
         char   fcc_txt[4];
     };
-    uint32 size;
 public:
+    uint32 size;
     float height1;
     float height2;
     struct liquid_data{
@@ -94,8 +96,8 @@ class adt_MCNK
         uint32 fcc;
         char   fcc_txt[4];
     };
-    uint32 size;
 public:
+    uint32 size;
     uint32 flags;
     uint32 ix;
     uint32 iy;
@@ -153,8 +155,8 @@ class adt_MCIN
         uint32 fcc;
         char   fcc_txt[4];
     };
-    uint32 size;
 public:
+    uint32 size;
     struct adt_CELLS{
         uint32 offsMCNK;
         uint32 size;
@@ -261,6 +263,28 @@ public:
 };
 
 //
+// Adt file min/max height chunk
+//
+class adt_MFBO
+{
+    union
+    {
+        uint32 fcc;
+        char   fcc_txt[4];
+    };
+public:
+    uint32 size;
+    struct plane
+    {
+        int16 coords[9];
+    };
+    plane max;
+    plane min;
+
+    bool prepareLoadedData();
+};
+
+//
 // Adt file header chunk
 //
 class adt_MHDR
@@ -269,14 +293,15 @@ class adt_MHDR
         uint32 fcc;
         char   fcc_txt[4];
     };
+public:
     uint32 size;
 
-    uint32 pad;
+    uint32 flags;
     uint32 offsMCIN;           // MCIN
-    uint32 offsTex;               // MTEX
-    uint32 offsModels;           // MMDX
-    uint32 offsModelsIds;       // MMID
-    uint32 offsMapObejcts;       // MWMO
+    uint32 offsTex;            // MTEX
+    uint32 offsModels;         // MMDX
+    uint32 offsModelsIds;      // MMID
+    uint32 offsMapObejcts;     // MWMO
     uint32 offsMapObejctsIds;  // MWID
     uint32 offsDoodsDef;       // MDDF
     uint32 offsObjectsDef;     // MODF
@@ -287,11 +312,23 @@ class adt_MHDR
     uint32 data3;
     uint32 data4;
     uint32 data5;
-public:
     bool prepareLoadedData();
-    adt_MCIN *getMCIN(){ return (adt_MCIN *)((uint8 *)&pad+offsMCIN);}
-    adt_MH2O *getMH2O(){ return offsMH2O ? (adt_MH2O *)((uint8 *)&pad+offsMH2O) : 0;}
-
+    adt_MCIN* getMCIN()
+    {
+        return reinterpret_cast<adt_MCIN*>(reinterpret_cast<uint8*>(&flags) + offsMCIN);
+    }
+    adt_MH2O* getMH2O()
+    {
+        if (offsMH2O)
+            return reinterpret_cast<adt_MH2O*>(reinterpret_cast<uint8*>(&flags) + offsMH2O);
+        return nullptr;
+    }
+    adt_MFBO* getMFBO()
+    {
+        if (flags & 1 && offsMFBO)
+            return reinterpret_cast<adt_MFBO*>(reinterpret_cast<uint8*>(&flags) + offsMFBO);
+        return nullptr;
+    }
 };
 
 class ADT_file : public FileLoader{
@@ -303,5 +340,7 @@ public:
 
     adt_MHDR *a_grid;
 };
+
+#pragma pack(pop)
 
 #endif
