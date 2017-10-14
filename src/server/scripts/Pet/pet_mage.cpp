@@ -62,7 +62,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
 
             uint32 selectionTimer;
             uint64 _ebonGarogyleGUID;
-            bool moved;
+            bool moved = false;
 
             void InitializeAI()
             {
