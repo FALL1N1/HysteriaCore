@@ -62,6 +62,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
 
             uint32 selectionTimer;
             uint64 _ebonGarogyleGUID;
+            bool moved;
 
             void InitializeAI()
             {
@@ -74,7 +75,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
                 owner->CastSpell(me, SPELL_MAGE_CLONE_ME, true);
 
                 // xinef: Glyph of Mirror Image (4th copy)
-                float angle = 0.0f;
+                /*float angle = 0.0f;
                 switch (me->GetUInt32Value(UNIT_CREATED_BY_SPELL))
                 {
                     case SPELL_SUMMON_MIRROR_IMAGE1:
@@ -88,7 +89,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
                         break;
                 }
 
-                ((Minion*)me)->SetFollowAngle(angle);
+                ((Minion*)me)->SetFollowAngle(angle);*/
                 me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
                 me->SetReactState(REACT_PASSIVE);
 
@@ -184,6 +185,40 @@ class npc_pet_mage_mirror_image : public CreatureScript
                 events.Update(diff);
                 if (events.GetTimer() < 1200)
                     return;
+
+                if (Unit* owner = me->GetOwner())
+                    if(me->GetPositionX() == owner->GetPositionX() && !moved)
+                    {
+                        moved = true;
+                        float angle = 0.0f;
+                        Position arroundPlayer = me->GetOwner()->GetPosition();
+                        switch (me->GetUInt32Value(UNIT_CREATED_BY_SPELL))
+                        {
+                        case SPELL_SUMMON_MIRROR_IMAGE1:
+                            angle = 0.5f * M_PI;
+                            me->GetNearPoint2D(arroundPlayer.m_positionX, arroundPlayer.m_positionY, 4.f, angle);
+                            break;
+                        case SPELL_SUMMON_MIRROR_IMAGE2:
+                            angle = M_PI;
+                            me->GetNearPoint2D(arroundPlayer.m_positionX, arroundPlayer.m_positionY, 4.f, angle);
+                            break;
+                        case SPELL_SUMMON_MIRROR_IMAGE3:
+                            angle = 1.5f * M_PI;
+                            me->GetNearPoint2D(arroundPlayer.m_positionX, arroundPlayer.m_positionY, 4.f, angle);
+                            break;
+                        default:
+                            angle = 0.0f;
+                            me->GetNearPoint2D(arroundPlayer.m_positionX, arroundPlayer.m_positionY, 4.f, angle);
+                            break;
+                        }
+                        me->GetMotionMaster()->MovePoint(0, arroundPlayer);
+                        ((Minion*)me)->SetFollowAngle(angle);
+                        if (!me->HasUnitState(UNIT_STATE_FOLLOW))
+                        {
+                            me->GetMotionMaster()->Clear(false);
+                            me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, me->GetFollowAngle(), MOTION_SLOT_ACTIVE);
+                        }
+                    }
 
                 if (!me->IsInCombat() || !me->GetVictim())
                 {
