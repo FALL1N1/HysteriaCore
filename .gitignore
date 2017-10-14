@@ -26,4 +26,6 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 Build/
 build/
+buildTools/
+BuildTools/
 Junks/
