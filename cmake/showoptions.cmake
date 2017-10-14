@@ -36,13 +36,6 @@ else()
   message("* Build Eluna LuaEngine   : No (default) - we don't need this garbage")
 endif()
 
-if( TOOLS )
-  message("* Build map/vmap tools   : Yes")
-  add_definitions(-DNO_CORE_FUNCS)
-else()
-  message("* Build map/vmap tools   : No  (default)")
-endif()
-
 if( USE_COREPCH )
   message("* Build core w/PCH       : Yes (default)")
 else()
