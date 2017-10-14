@@ -16,6 +16,7 @@ set(include_Dirs
     ${CMAKE_SOURCE_DIR}/dep/libmpq
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/loadlib
+    ${ACE_INCLUDE_DIR}
 )
 
 if( WIN32 )
