@@ -100,6 +100,10 @@ void WorldSession::HandleSendMail(WorldPacket & recvData)
 
     Player* player = _player;
 
+    // we don't want the players to bg in bg
+    if (_player->InBattleground())
+        return;
+
     uint32 plr_guild = 0;
     if (player->GetGuildId())
         plr_guild = player->GetGuildId();
@@ -149,13 +153,13 @@ void WorldSession::HandleSendMail(WorldPacket & recvData)
 
     Player* receive = ObjectAccessor::FindPlayerInOrOutOfWorld(rc);
 
-    uint32 rc_teamId = TEAM_NEUTRAL;
+    TeamId rc_teamId = TEAM_NEUTRAL;
     uint16 mails_count = 0;                                  //do not allow to send to one player more than 100 mails
     uint32 rc_guild = 0;
 
     if (receive)
     {
-        rc_teamId = receive->GetTeamId();
+        rc_teamId = receive->GetTeamId(true);
         mails_count = receive->GetMailSize();
         if (receive->GetGuildId())
             rc_guild = receive->GetGuildId();
@@ -196,7 +200,7 @@ void WorldSession::HandleSendMail(WorldPacket & recvData)
         ? receive->GetSession()->GetAccountId()
         : sObjectMgr->GetPlayerAccountIdByGUID(rc);
 
-    if (/*!accountBound*/ GetAccountId() != rc_account && !sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_MAIL) && player->GetTeamId() != rc_teamId && AccountMgr::IsPlayerAccount(GetSecurity()))
+    if (/*!accountBound*/ GetAccountId() != rc_account && !sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_MAIL) && player->GetTeamId(true) != rc_teamId && AccountMgr::IsPlayerAccount(GetSecurity()))
     {
         player->SendMailResult(0, MAIL_SEND, MAIL_ERR_NOT_YOUR_TEAM);
         return;
