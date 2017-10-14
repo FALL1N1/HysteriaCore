@@ -19,22 +19,20 @@
 #ifndef _MMAP_COMMON_H
 #define _MMAP_COMMON_H
 
+#include "Common.h"
 #include <string>
 #include <vector>
-#include <ace/OS_NS_sys_time.h>
-
-#include "Define.h"
 
 #ifndef _WIN32
-    #include <stddef.h>
+    #include <cstddef>
     #include <dirent.h>
+#else
+    #include <Windows.h>
 #endif
 
-#ifdef __linux__
-    #include <errno.h>
+#ifndef _WIN32
+    #include <cerrno>
 #endif
-
-#include "Database/DatabaseEnv.h"
 
 enum NavTerrain
 {
@@ -52,40 +50,7 @@ enum NavTerrain
 
 namespace MMAP
 {
-	struct OffMeshConnection
-    {
-        OffMeshConnection() {}
-
-        OffMeshConnection(uint32 mapID, uint32 tileX, uint32 tileY, float startX, float startY, float startZ,
-            float endX, float endY, float endZ, uint32 agentSize)
-        {
-            m_mapID = mapID;
-            m_tileX = tileX;
-            m_tileY = tileY;
-            m_start[0] = startX;
-            m_start[1] = startY;
-            m_start[2] = startZ;
-            m_end[0] = endX;
-            m_end[1] = endY;
-            m_end[2] = endZ;
-            m_agentSize = agentSize;
-        }
-
-        uint32 m_mapID;
-        uint32 m_tileX;
-        uint32 m_tileY;
-        float m_start[3];
-        float m_end[3];
-        uint32 m_agentSize;
-    };
-
-    static const std::vector<OffMeshConnection> DefaultOffMeshConnections =
-    {
-        { 562, 31, 20, 6230.59f, 251.90f, 11.19f, 6234.70f, 257.03f, 11.07f, 1 },
-        { 562, 31, 20, 6246.68f, 271.90f, 11.23f, 6242.68f, 267.07f, 11.09f, 1 }
-    };
-
-    inline bool matchWildcardFilter(const char* filter, const char* str)
+    inline bool matchWildcardFilter(char const* filter, char const* str)
     {
         if (!filter || !str)
             return false;
@@ -98,7 +63,7 @@ namespace MMAP
                 if (*++filter == '\0')   // wildcard at end of filter means all remaing chars match
                     return true;
 
-                while (true)
+                for (;;)
                 {
                     if (*filter == *str)
                         break;
@@ -153,7 +118,7 @@ namespace MMAP
         while (dirp)
         {
             errno = 0;
-            if ((dp = readdir(dirp)) != NULL)
+            if ((dp = readdir(dirp)) != nullptr)
             {
                 if (matchWildcardFilter(filter.c_str(), dp->d_name))
                     fileList.push_back(std::string(dp->d_name));
@@ -169,26 +134,6 @@ namespace MMAP
     #endif
 
         return LISTFILE_OK;
-    }
-
-    inline uint32 getMSTime()
-    {
-        static const ACE_Time_Value ApplicationStartTime = ACE_OS::gettimeofday();
-        return (ACE_OS::gettimeofday() - ApplicationStartTime).msec();
-    }
-
-    inline uint32 getMSTimeDiff(uint32 oldMSTime, uint32 newMSTime)
-    {
-        // getMSTime() have limited data range and this is case when it overflow in this tick
-        if (oldMSTime > newMSTime)
-            return (0xFFFFFFFF - oldMSTime) + newMSTime;
-        else
-            return newMSTime - oldMSTime;
-    }
-
-    inline uint32 GetMSTimeDiffToNow(uint32 oldMSTime)
-    {
-        return getMSTimeDiff(oldMSTime, getMSTime());
     }
 }
 
