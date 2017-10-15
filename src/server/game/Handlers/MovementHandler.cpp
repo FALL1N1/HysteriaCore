@@ -845,6 +845,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                  {
                      if (plrMover->IsAlive())
                     {
+                        plrMover->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_IS_OUT_OF_BOUNDS);
                         plrMover->EnvironmentalDamage(DAMAGE_FALL_TO_VOID, GetPlayer()->GetMaxHealth());
                         // player can be alive if GM
                         if (plrMover->IsAlive())
