@@ -185,6 +185,12 @@ class MotionMaster //: private std::stack<MovementGenerator *>
         void MovePoint(uint32 id, float x, float y, float z, bool generatePath = true, bool forceDestination = true, MovementSlot slot = MOTION_SLOT_ACTIVE);
         void MoveSplinePath(Movement::PointsArray* path);
 
+        /*  Makes the unit move toward the target until it is at a certain distance from it. The unit then stops. 
+            Only works in 2D.
+            This method doesn't account for any movement done by the target. in other words, it only works if the target is stationary.
+        */
+        void MoveCloserAndStop(uint32 id, Unit* target, float distance);
+
         // These two movement types should only be used with creatures having landing/takeoff animations
         void MoveLand(uint32 id, Position const& pos, float speed);
         void MoveLand(uint32 id, float x, float y, float z, float speed); // pussywizard: added for easy calling by passing 3 floats x, y, z

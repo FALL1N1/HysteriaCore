@@ -179,6 +179,9 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
             targetMoved = !i_target->IsWithinDist3d(dest.x, dest.y, dest.z, allowed_dist);
         else
             targetMoved = !i_target->IsWithinDist2d(dest.x, dest.y, allowed_dist);
+        
+        if (!targetMoved)
+            targetMoved = !i_target->IsWithinLOSInMap(owner);
 
         if (i_path && targetMoved)
             targetMoved = !i_path->IsOffMeshPoint(owner->movespline->currentPathIdx()) && !i_path->IsOffMeshPoint(owner->movespline->currentPathIdx() + 1);
