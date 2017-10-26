@@ -152,6 +152,9 @@ void Totem::UnSummon(uint32 msTime)
         }
     }
 
+    if (IsAlive())
+        setDeathState(DEAD);
+
     AddObjectToRemoveList();
 }
 

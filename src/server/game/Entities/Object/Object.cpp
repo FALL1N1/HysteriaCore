@@ -2849,7 +2849,14 @@ void WorldObject::DestroyForNearbyPlayers()
         if (isType(TYPEMASK_UNIT) && ((Unit*)this)->GetCharmerGUID() == player->GetGUID()) // TODO: this is for puppet
             continue;
 
-        DestroyForPlayer(player);
+        if (GetTypeId() == TYPEID_UNIT)
+        {
+            // at remove from world (destroy) show kill animation
+            DestroyForPlayer(player, ToUnit()->IsDuringRemoveFromWorld() && ToCreature()->isDead());
+        }
+        else
+            DestroyForPlayer(player);
+        
         player->m_clientGUIDs.erase(GetGUID());
     }
 }
