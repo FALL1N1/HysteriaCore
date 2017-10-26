@@ -15368,7 +15368,7 @@ void Unit::StopMovingOnCurrentPos() // pussywizard
 
     DisableSpline(); // pussywizard: required so Launch() won't recalculate position from previous spline
     Movement::MoveSplineInit init(this);
-    init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZ());
+    init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZ(), false);
     init.SetFacing(GetOrientation());
     init.Launch();
 }
@@ -18956,7 +18956,7 @@ void Unit::SetFacingToObject(WorldObject* object)
 
     /// @todo figure out under what conditions creature will move towards object instead of facing it where it currently is.
     Movement::MoveSplineInit init(this);
-    init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZ());
+    init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZ(), false);
     init.SetFacing(GetAngle(object));   // when on transport, GetAngle will still return global coordinates (and angle) that needs transforming
     init.Launch();
 }
