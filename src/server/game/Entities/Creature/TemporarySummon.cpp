@@ -218,6 +218,11 @@ void TempSummon::InitSummon()
         AI()->IsSummonedBy(owner);
 }
 
+void TempSummon::UpdateObjectVisibilityOnCreate()
+{
+    WorldObject::UpdateObjectVisibility(true);
+}
+
 void TempSummon::SetTempSummonType(TempSummonType type)
 { 
     m_type = type;
