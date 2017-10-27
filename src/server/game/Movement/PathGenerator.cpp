@@ -25,11 +25,11 @@
 #include "DetourNavMeshQuery.h"
 
 ////////////////// PathGenerator //////////////////
-PathGenerator::PathGenerator(const Unit* owner) :
+PathGenerator::PathGenerator(Unit const* owner) :
     _polyLength(0), _type(PATHFIND_BLANK), _useStraightPath(false),
     _forceDestination(false), _pointPathLimit(MAX_POINT_PATH_LENGTH), _straightLine(false),
-    _endPosition(G3D::Vector3::zero()), _sourceUnit(owner), _navMesh(NULL),
-    _navMeshQuery(NULL), _antiLoop(false), _complementPath(NULL)
+    _endPosition(G3D::Vector3::zero()), _sourceUnit(owner), _navMesh(nullptr),
+    _navMeshQuery(nullptr)
 {
     memset(_pathPolyRefs, 0, sizeof(_pathPolyRefs));
 
@@ -49,22 +49,12 @@ PathGenerator::PathGenerator(const Unit* owner) :
 PathGenerator::~PathGenerator()
 {
     //TC_LOG_DEBUG("maps", "++ PathGenerator::~PathGenerator() for %u \n", _sourceUnit->GetGUID().GetCounter());
-    delete _complementPath;
 }
 
-bool PathGenerator::CalculatePath(float destX, float destY, float destZ, bool forceDest, float startX, float startY, float startZ, bool straightLine)
+bool PathGenerator::CalculatePath(float destX, float destY, float destZ, bool forceDest, bool straightLine)
 {
-    Clear();
-
     float x, y, z;
-    if (startX == 0.0f || startY == 0.0f || startZ == 0.0f)
-        _sourceUnit->GetPosition(x, y, z);
-    else
-    {
-        x = startX;
-        y = startY;
-        z = startZ;
-    }
+    _sourceUnit->GetPosition(x, y, z);
 
     if (!Trinity::IsValidMapCoord(destX, destY, destZ) || !Trinity::IsValidMapCoord(x, y, z))
         return false;
@@ -83,7 +73,6 @@ bool PathGenerator::CalculatePath(float destX, float destY, float destZ, bool fo
     // make sure navMesh works - we can run on map w/o mmap
     // check if the start and end point have a .mmtile loaded (can we pass via not loaded tile on the way?)
     if (!_navMesh || !_navMeshQuery || _sourceUnit->HasUnitState(UNIT_STATE_IGNORE_PATHFINDING) ||
-        (_sourceUnit->ToCreature() && _sourceUnit->ToCreature()->IsIgnorePathfinding()) ||
         !HaveTile(start) || !HaveTile(dest))
     {
         BuildShortcut();
@@ -109,7 +98,7 @@ dtPolyRef PathGenerator::GetPathPolyByPosition(dtPolyRef const* polyPath, uint32
     for (uint32 i = 0; i < polyPathSize; ++i)
     {
         float closestPoint[VERTEX_SIZE];
-        if (dtStatusFailed(_navMeshQuery->closestPointOnPoly(polyPath[i], point, closestPoint, NULL)))
+        if (dtStatusFailed(_navMeshQuery->closestPointOnPoly(polyPath[i], point, closestPoint, nullptr)))
             continue;
 
         float d = dtVdist2DSqr(point, closestPoint);
@@ -240,7 +229,7 @@ void PathGenerator::BuildPolyPath(G3D::Vector3 const& startPos, G3D::Vector3 con
         {
             float closestPoint[VERTEX_SIZE];
             // we may want to use closestPointOnPolyBoundary instead
-            if (dtStatusSucceed(_navMeshQuery->closestPointOnPoly(endPoly, endPoint, closestPoint, NULL)))
+            if (dtStatusSucceed(_navMeshQuery->closestPointOnPoly(endPoly, endPoint, closestPoint, nullptr)))
             {
                 dtVcopy(endPoint, closestPoint);
                 SetActualEndPosition(G3D::Vector3(endPoint[2], endPoint[0], endPoint[1]));
@@ -339,13 +328,13 @@ void PathGenerator::BuildPolyPath(G3D::Vector3 const& startPos, G3D::Vector3 con
 
         // we need any point on our suffix start poly to generate poly-path, so we need last poly in prefix data
         float suffixEndPoint[VERTEX_SIZE];
-        if (dtStatusFailed(_navMeshQuery->closestPointOnPoly(suffixStartPoly, endPoint, suffixEndPoint, NULL)))
+        if (dtStatusFailed(_navMeshQuery->closestPointOnPoly(suffixStartPoly, endPoint, suffixEndPoint, nullptr)))
         {
             // we can hit offmesh connection as last poly - closestPointOnPoly() don't like that
             // try to recover by using prev polyref
             --prefixPolyLength;
             suffixStartPoly = _pathPolyRefs[prefixPolyLength-1];
-            if (dtStatusFailed(_navMeshQuery->closestPointOnPoly(suffixStartPoly, endPoint, suffixEndPoint, NULL)))
+            if (dtStatusFailed(_navMeshQuery->closestPointOnPoly(suffixStartPoly, endPoint, suffixEndPoint, nullptr)))
             {
                 // suffixStartPoly is still invalid, error state
                 BuildShortcut();
@@ -488,7 +477,7 @@ void PathGenerator::BuildPointPath(const float *startPoint, const float *endPoin
     {
         dtResult = DT_SUCCESS;
         pointCount = 1;
-        memcpy(&pathPoints[VERTEX_SIZE * 0], startPoint, sizeof(float) * 3); // first point
+        memcpy(&pathPoints[VERTEX_SIZE * 0], startPoint, sizeof(float)* 3); // first point
 
         // path has to be split into polygons with dist SMOOTH_PATH_STEP_SIZE between them
         G3D::Vector3 startVec = G3D::Vector3(startPoint[0], startPoint[1], startPoint[2]);
@@ -507,32 +496,32 @@ void PathGenerator::BuildPointPath(const float *startPoint, const float *endPoin
             ++pointCount;
         }
 
-        memcpy(&pathPoints[VERTEX_SIZE * pointCount], endPoint, sizeof(float) * 3); // last point
+        memcpy(&pathPoints[VERTEX_SIZE * pointCount], endPoint, sizeof(float)* 3); // last point
         ++pointCount;
     }
     else if (_useStraightPath)
     {
         dtResult = _navMeshQuery->findStraightPath(
-            startPoint,         // start position
-            endPoint,           // end position
-            _pathPolyRefs,     // current path
-            _polyLength,       // lenth of current path
-            pathPoints,         // [out] path corner points
-            NULL,               // [out] flags
-            NULL,               // [out] shortened path
-            (int*)&pointCount,
-            _pointPathLimit);   // maximum number of points/polygons to use
+                startPoint,         // start position
+                endPoint,           // end position
+                _pathPolyRefs,     // current path
+                _polyLength,       // lenth of current path
+                pathPoints,         // [out] path corner points
+                nullptr,               // [out] flags
+                nullptr,               // [out] shortened path
+                (int*)&pointCount,
+                _pointPathLimit);   // maximum number of points/polygons to use
     }
     else
     {
         dtResult = FindSmoothPath(
-            startPoint,         // start position
-            endPoint,           // end position
-            _pathPolyRefs,     // current path
-            _polyLength,       // length of current path
-            pathPoints,         // [out] path corner points
-            (int*)&pointCount,
-            _pointPathLimit);    // maximum number of points
+                startPoint,         // start position
+                endPoint,           // end position
+                _pathPolyRefs,     // current path
+                _polyLength,       // length of current path
+                pathPoints,         // [out] path corner points
+                (int*)&pointCount,
+                _pointPathLimit);    // maximum number of points
     }
 
     if (pointCount < 2 || dtStatusFailed(dtResult))
@@ -555,78 +544,32 @@ void PathGenerator::BuildPointPath(const float *startPoint, const float *endPoin
 
     _pathPoints.resize(pointCount);
     for (uint32 i = 0; i < pointCount; ++i)
-        _pathPoints[i] = G3D::Vector3(pathPoints[i*VERTEX_SIZE + 2], pathPoints[i*VERTEX_SIZE], pathPoints[i*VERTEX_SIZE + 1]);
+        _pathPoints[i] = G3D::Vector3(pathPoints[i*VERTEX_SIZE+2], pathPoints[i*VERTEX_SIZE], pathPoints[i*VERTEX_SIZE+1]);
 
     NormalizePath();
 
     // first point is always our current location - we need the next one
-    SetActualEndPosition(_pathPoints[pointCount - 1]);
+    SetActualEndPosition(_pathPoints[pointCount-1]);
 
     // force the given destination, if needed
-    if (_forceDestination && (!(_type & PATHFIND_NORMAL) || !InRange(GetEndPosition(), GetActualEndPosition(), 1.0f, 1.0f)))
+    if (_forceDestination &&
+        (!(_type & PATHFIND_NORMAL) || !InRange(GetEndPosition(), GetActualEndPosition(), 1.0f, 1.0f)))
     {
-        SetActualEndPosition(GetEndPosition());
-
-        if (_type & PATHFIND_INCOMPLETE)
+        // we may want to keep partial subpath
+        if (Dist3DSqr(GetActualEndPosition(), GetEndPosition()) < 0.3f * Dist3DSqr(GetStartPosition(), GetEndPosition()))
         {
-            ++pointCount;
-            _pathPoints.resize(pointCount);
-            _pathPoints[pointCount - 1] = GetEndPosition();
+            SetActualEndPosition(GetEndPosition());
+            _pathPoints[_pathPoints.size()-1] = GetEndPosition();
         }
         else
+        {
+            SetActualEndPosition(GetEndPosition());
             BuildShortcut();
+        }
 
         _type = PathType(PATHFIND_NORMAL | PATHFIND_NOT_USING_PATH);
     }
 
-    if (!_antiLoop && !_forceDestination && (_type & PATHFIND_INCOMPLETE))
-    {
-        if (int(32 - GetEndPosition().x / SIZE_OF_GRIDS) != int(32 - GetStartPosition().x / SIZE_OF_GRIDS) || int(32 - GetEndPosition().y / SIZE_OF_GRIDS) != int(32 - GetStartPosition().y / SIZE_OF_GRIDS))
-        {
-            float endMidTileX = (32 - int(32 - GetEndPosition().x / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-            float endMidTileY = (32 - int(32 - GetEndPosition().y / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-
-            float startMidTileX = (32 - int(32 - GetStartPosition().x / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-            float startMidTileY = (32 - int(32 - GetStartPosition().y / SIZE_OF_GRIDS)) * SIZE_OF_GRIDS - float(SIZE_OF_GRIDS / 2);
-
-            float dx = endMidTileX - startMidTileX;
-            float dy = endMidTileY - startMidTileY;
-            float angle = atan2(dy, dx);
-            angle = (angle >= 0) ? angle : 2 * M_PI + angle;
-
-            Position startPos;
-            startPos.Relocate(GetActualEndPosition().x, GetActualEndPosition().y, GetActualEndPosition().z);
-
-            _sourceUnit->MovePositionToFirstCollision(startPos, 1.0f, angle - _sourceUnit->GetOrientation());
-
-            float startX, startY, startZ;
-            startX = startPos.GetPositionX();
-            startY = startPos.GetPositionY();
-            startZ = startPos.GetPositionZ();
-
-            if (!_complementPath)
-                _complementPath = new PathGenerator(_sourceUnit);
-            _complementPath->SetAntiLoop();
-            _complementPath->SetPathLengthLimit((_pointPathLimit - pointCount) * SMOOTH_PATH_STEP_SIZE);
-            bool result = _complementPath->CalculatePath(GetEndPosition().x, GetEndPosition().y, GetEndPosition().z, false, startX, startY, startZ);
-            if (result && (_complementPath->GetPathType() & PATHFIND_NORMAL))
-            {
-                Movement::PointsArray pathPoints = _complementPath->GetPath();
-
-                uint32 i = pointCount, j = 1;
-
-                pointCount += pathPoints.size() - 1;
-                _pathPoints.resize(pointCount);
-
-                for (; i < pointCount; ++i, ++j)
-                    _pathPoints[i] = pathPoints[j];
-
-                _type = _complementPath->GetPathType();
-
-                SetActualEndPosition(_complementPath->GetActualEndPosition());
-            }
-        }
-    }
 }
 
 void PathGenerator::NormalizePath()
@@ -729,7 +672,7 @@ bool PathGenerator::HaveTile(const G3D::Vector3& p) const
     if (tx < 0 || ty < 0)
         return false;
 
-    return (_navMesh->getTileAt(tx, ty, 0) != NULL);
+    return (_navMesh->getTileAt(tx, ty, 0) != nullptr);
 }
 
 uint32 PathGenerator::FixupCorridor(dtPolyRef* path, uint32 npath, uint32 maxPath, dtPolyRef const* visited, uint32 nvisited)
@@ -820,7 +763,6 @@ dtStatus PathGenerator::FindSmoothPath(float const* startPos, float const* endPo
 {
     *smoothPathSize = 0;
     uint32 nsmoothPath = 0;
-    _offMeshIdPoints.clear();
 
     dtPolyRef polys[MAX_PATH_LENGTH];
     memcpy(polys, polyPath, sizeof(dtPolyRef)*polyPathSize);
@@ -913,11 +855,9 @@ dtStatus PathGenerator::FindSmoothPath(float const* startPos, float const* endPo
             {
                 if (nsmoothPath < maxSmoothPathSize)
                 {
-                    _offMeshIdPoints.insert(nsmoothPath);
                     dtVcopy(&smoothPath[nsmoothPath*VERTEX_SIZE], connectionStartPos);
                     nsmoothPath++;
                 }
-                _offMeshIdPoints.insert(nsmoothPath);
                 // Move position at the other side of the off-mesh link.
                 dtVcopy(iterPos, connectionEndPos);
                 _navMeshQuery->getPolyHeight(polys[0], iterPos, &iterPos[1]);
@@ -939,7 +879,7 @@ dtStatus PathGenerator::FindSmoothPath(float const* startPos, float const* endPo
     return nsmoothPath < MAX_POINT_PATH_LENGTH ? DT_SUCCESS : DT_FAILURE;
 }
 
-bool PathGenerator::InRangeYZX(const float* v1, const float* v2, float r, float h) const
+bool PathGenerator::InRangeYZX(float const* v1, float const* v2, float r, float h) const
 {
     const float dx = v2[0] - v1[0];
     const float dy = v2[1] - v1[1]; // elevation

@@ -19324,3 +19324,12 @@ void Unit::setRace(uint8 race)
     if (GetTypeId() == TYPEID_PLAYER)
         m_race = race;
 }
+
+float Unit::GetPositionZMinusOffset() const
+{
+    float offset = 0.0f;
+    if (HasUnitMovementFlag(MOVEMENTFLAG_HOVER))
+        offset = GetFloatValue(UNIT_FIELD_HOVERHEIGHT);
+
+    return GetPositionZ() - offset;
+}

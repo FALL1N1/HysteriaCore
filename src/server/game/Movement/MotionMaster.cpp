@@ -380,7 +380,6 @@ void MotionMaster::MoveSplinePath(Movement::PointsArray* path)
     }
 }
 
-
 void MotionMaster::MoveCloserAndStop(uint32 id, Unit* target, float distance)
 {
     float distanceToTravel = _owner->GetExactDist2d(target) - distance;
@@ -391,11 +390,11 @@ void MotionMaster::MoveCloserAndStop(uint32 id, Unit* target, float distance)
         float desty = _owner->GetPositionY() + distanceToTravel * std::sin(angle);
         MovePoint(id, destx, desty, target->GetPositionZ());
     }
-    else 
+    else
     {
         // we are already close enough. We just need to turn toward the target without changing position.
         Movement::MoveSplineInit init(_owner);
-//        init.MoveTo(_owner->GetPositionX(), _owner->GetPositionY(), _owner->GetPositionZMinusOffset()); // @emo
+        init.MoveTo(_owner->GetPositionX(), _owner->GetPositionY(), _owner->GetPositionZMinusOffset());
         init.SetFacing(target);
         init.Launch();
         Mutate(new EffectMovementGenerator(id), MOTION_SLOT_ACTIVE);
@@ -516,6 +515,73 @@ void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float spee
         init.SetFacing(target);
     init.Launch();
     Mutate(new EffectMovementGenerator(id), MOTION_SLOT_CONTROLLED);
+}
+
+
+void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount)
+{
+    float step = 2 * float(M_PI) / stepCount * (clockwise ? -1.0f : 1.0f);
+    Position const& pos = { x, y, z, 0.0f };
+    float angle = pos.GetAngle(_owner->GetPositionX(), _owner->GetPositionY());
+
+    Movement::MoveSplineInit init(_owner);
+
+    for (uint8 i = 0; i < stepCount; angle += step, ++i)
+    {
+        G3D::Vector3 point;
+        point.x = x + radius * cosf(angle);
+        point.y = y + radius * sinf(angle);
+
+        if (_owner->IsFlying())
+            point.z = z;
+        // @emo
+        //        else
+//            point.z = _owner->GetMap()->GetHeight(_owner->GetPhases(), point.x, point.y, z);
+
+        init.Path().push_back(point);
+    }
+
+    if (_owner->IsFlying())
+    {
+        init.SetFly();
+        init.SetCyclic();
+        init.SetAnimation(Movement::ToFly);
+    }
+    else
+    {
+        init.SetWalk(true);
+        init.SetCyclic();
+    }
+
+    init.Launch();
+}
+
+void MotionMaster::MoveSmoothPath(uint32 pointId, Position const* pathPoints, size_t pathSize, bool walk, bool fly)
+{
+    Movement::MoveSplineInit init(_owner);
+    if (fly)
+    {
+        init.SetFly();
+        //init.SetUncompressed();
+    }
+
+    Movement::PointsArray path;
+    path.reserve(pathSize);
+    std::transform(pathPoints, pathPoints + pathSize, std::back_inserter(path), [](Position const& point)
+    {
+        return G3D::Vector3(point.GetPositionX(), point.GetPositionY(), point.GetPositionZ());
+    });
+    init.MovebyPath(path);
+    init.SetSmooth();
+    init.SetWalk(walk);
+    init.Launch();
+
+    // This code is not correct
+    // EffectMovementGenerator does not affect UNIT_STATE_ROAMING | UNIT_STATE_ROAMING_MOVE
+    // need to call PointMovementGenerator with various pointIds
+    Mutate(new EffectMovementGenerator(pointId), MOTION_SLOT_ACTIVE);
+    //Position pos(pathPoints[pathSize - 1].x, pathPoints[pathSize - 1].y, pathPoints[pathSize - 1].z);
+    //MovePoint(EVENT_CHARGE_PREPATH, pos, false);
 }
 
 void MotionMaster::MoveFall(uint32 id /*=0*/, bool addFlagForNPC)

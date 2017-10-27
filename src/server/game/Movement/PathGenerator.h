@@ -49,8 +49,6 @@ enum PathType
     PATHFIND_SHORT          = 0x20,   // path is longer or equal to its limited path length
 };
 
-typedef std::set<int32> PointId;
-
 class PathGenerator
 {
     public:
@@ -59,7 +57,7 @@ class PathGenerator
 
         // Calculate the path from owner to given destination
         // return: true if new path was calculated, false otherwise (no change needed)
-        bool CalculatePath(float destX, float destY, float destZ, bool forceDest = false, float startX = 0.0f, float startY = 0.0f, float startZ = 0.0f, bool straightLine = false);
+        bool CalculatePath(float destX, float destY, float destZ, bool forceDest = false, bool straightLine = false);
         bool IsInvalidDestinationZ(Unit const* target) const;
 
         // option setters - use optional
@@ -79,12 +77,7 @@ class PathGenerator
         {
             _polyLength = 0;
             _pathPoints.clear();
-            _offMeshIdPoints.clear();
         }
-
-        bool IsOffMeshPoint(int32 id) { return _offMeshIdPoints.find(id) != _offMeshIdPoints.end(); }
-        void SetAntiLoop() { _antiLoop = true; }
-
         void ReducePathLenghtByDist(float dist); // path must be already built
 
     private:
@@ -110,10 +103,6 @@ class PathGenerator
 
         dtQueryFilter _filter;  // use single filter for all movements, update it when needed
 
-        PointId _offMeshIdPoints;
-        bool _antiLoop;
-        PathGenerator* _complementPath;
-
         void SetStartPosition(G3D::Vector3 const& point) { _startPosition = point; }
         void SetEndPosition(G3D::Vector3 const& point) { _actualEndPosition = point; _endPosition = point; }
         void SetActualEndPosition(G3D::Vector3 const& point) { _actualEndPosition = point; }
@@ -123,7 +112,7 @@ class PathGenerator
         float Dist3DSqr(G3D::Vector3 const& p1, G3D::Vector3 const& p2) const;
         bool InRangeYZX(float const* v1, float const* v2, float r, float h) const;
 
-        dtPolyRef GetPathPolyByPosition(dtPolyRef const* polyPath, uint32 polyPathSize, float const* Point, float* Distance = NULL) const;
+        dtPolyRef GetPathPolyByPosition(dtPolyRef const* polyPath, uint32 polyPathSize, float const* Point, float* Distance = nullptr) const;
         dtPolyRef GetPolyByLocation(float const* Point, float* Distance) const;
         bool HaveTile(G3D::Vector3 const& p) const;
 
