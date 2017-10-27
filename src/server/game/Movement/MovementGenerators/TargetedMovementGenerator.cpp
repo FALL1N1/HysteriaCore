@@ -120,7 +120,7 @@ void TargetedMovementGenerator<T, D>::SetTargetLocation(T* owner, bool updateDes
 
     if (owner->GetTypeId() == TYPEID_UNIT && !GetTarget()->isInAccessiblePlaceFor(owner->ToCreature()))
     {
-//        owner->ToCreature()->SetCannotReachTarget(true);
+        owner->ToCreature()->SetCannotReachTarget(true);
         return;
     }
 
@@ -171,8 +171,8 @@ void TargetedMovementGenerator<T, D>::SetTargetLocation(T* owner, bool updateDes
     {
         // can't reach target
         _recalculateTravel = true;
-//        if (owner->GetTypeId() == TYPEID_UNIT)
-//            owner->ToCreature()->SetCannotReachTarget(true);
+        if (owner->GetTypeId() == TYPEID_UNIT)
+            owner->ToCreature()->SetCannotReachTarget(true);
         return;
     }
 
@@ -182,8 +182,8 @@ void TargetedMovementGenerator<T, D>::SetTargetLocation(T* owner, bool updateDes
 
     AddUnitStateMove(owner);
 
-//    if (owner->GetTypeId() == TYPEID_UNIT)
-//        owner->ToCreature()->SetCannotReachTarget(false);
+    if (owner->GetTypeId() == TYPEID_UNIT)
+        owner->ToCreature()->SetCannotReachTarget(false);
 
     Movement::MoveSplineInit init(owner);
     init.MovebyPath(_path->GetPath());
@@ -260,8 +260,8 @@ void ChaseMovementGenerator<T>::ReachTarget(T* owner)
     if (owner->IsWithinMeleeRange(TargetedMovementGeneratorBase::GetTarget()))
         owner->Attack(TargetedMovementGeneratorBase::GetTarget(), true);
 
-//    if (owner->GetTypeId() == TYPEID_UNIT)
-//        owner->ToCreature()->SetCannotReachTarget(false);
+    if (owner->GetTypeId() == TYPEID_UNIT)
+        owner->ToCreature()->SetCannotReachTarget(false);
 }
 
 template<class T>
