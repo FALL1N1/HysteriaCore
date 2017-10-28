@@ -1860,6 +1860,8 @@ void GameObject::CastSpell(Unit* target, uint32 spellId)
     {
         trigger->SetLevel(owner->getLevel(), false);
         trigger->setFaction(owner->getFaction());
+        if (owner->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE))
+            trigger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
         // needed for GO casts for proper target validation checks
         trigger->SetOwnerGUID(owner->GetGUID());
         // xinef: fixes some duel bugs with traps]
