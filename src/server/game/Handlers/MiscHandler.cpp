@@ -1379,10 +1379,16 @@ void WorldSession::HandleSetTitleOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleTimeSyncResp(WorldPacket & recv_data)
 {
-    uint32 counter, clientTicks;
-    recv_data >> counter >> clientTicks;
-    //uint32 ourTicks = clientTicks + (World::GetGameTimeMS() - _player->m_timeSyncServer);
-    _player->m_timeSyncClient = clientTicks;
+    uint32 counter, clientTimestamp;
+    recvData >> counter >> clientTimestamp;
+
+    if (counter != _player->m_timeSyncCounter - 1)
+        return;
+
+    uint32 roundTripDuration = getMSTimeDiff(_player->m_timeSyncServer, getMSTime());
+    uint32 lagDelay = roundTripDuration / 2;
+    
+    _player->m_timeSyncClockDelta = (int64) (_player->m_timeSyncServer + lagDelay) - (int64) clientTimestamp;
 }
 
 void WorldSession::HandleResetInstancesOpcode(WorldPacket & /*recv_data*/)

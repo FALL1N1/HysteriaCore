@@ -45,8 +45,6 @@
 #define ANTICHEAT_EXCEPTION_INFO
 // End Movement anticheat defines
 
-#define MOVEMENT_PACKET_TIME_DELAY 0
-
 void WorldSession::HandleMoveWorldportAckOpcode(WorldPacket & /*recvData*/)
 {
     ;//sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: got MSG_MOVE_WORLDPORT_ACK.");
@@ -441,11 +439,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
     if (mover->GetGUID() != _player->GetGUID())
         movementInfo.flags &= ~MOVEMENTFLAG_WALKING;
 
-    uint32 mstime = World::GetGameTimeMS();
-    /*----------------------*/
-    if(m_clientTimeDelay == 0)
-        m_clientTimeDelay = mstime > movementInfo.time ? std::min(mstime - movementInfo.time, (uint32)100) : 0;
-
     // Xinef: do not allow to move with UNIT_FLAG_DISABLE_MOVE
     if (mover->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE))
     {
@@ -783,9 +776,12 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
     if (check_passed)
     {
         WorldPacket data(opcode, recvData.size());
-        //movementInfo.time = movementInfo.time + m_clientTimeDelay + MOVEMENT_PACKET_TIME_DELAY;
-        movementInfo.time = mstime; // pussywizard: set to time of relocation (server time), constant addition may smoothen movement clientside, but client sees target on different position than the real serverside position
-
+        
+        int64 movementTime = (int64) movementInfo.time + plrMover->m_timeSyncClockDelta;
+        if (movementTime < 0 || movementTime > 0xFFFFFFFF)
+            movementTime = getMSTime();
+        movementInfo.time = (uint32) movementTime;
+        
         movementInfo.guid = mover->GetGUID();
         WriteMovementInfo(&data, &movementInfo);
         mover->SendMessageToSet(&data, _player);
