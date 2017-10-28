@@ -35,7 +35,7 @@ enum RogueSpells
 {
     SPELL_ROGUE_BLADE_FLURRY_EXTRA_ATTACK       = 22482,
     SPELL_ROGUE_CHEAT_DEATH_COOLDOWN            = 31231,
-    SPELL_ROGUE_CHEATING_DEATH                    = 45182,
+    SPELL_ROGUE_CHEATING_DEATH                  = 45182,
     SPELL_ROGUE_GLYPH_OF_PREPARATION            = 56819,
     SPELL_ROGUE_KILLING_SPREE                   = 51690,
     SPELL_ROGUE_KILLING_SPREE_TELEPORT          = 57840,
@@ -45,7 +45,10 @@ enum RogueSpells
     SPELL_ROGUE_SHIV_TRIGGERED                  = 5940,
     SPELL_ROGUE_TRICKS_OF_THE_TRADE_DMG_BOOST   = 57933,
     SPELL_ROGUE_TRICKS_OF_THE_TRADE_PROC        = 59628,
-    SPELL_ROGUE_GOUGE                            = 1776,
+    SPELL_ROGUE_GOUGE                           = 1776,
+    SPELL_ROGUE_CRIPPLING_POISON                = 3409,
+    SPELL_ROGUE_STEALTH_SHAPESHIFT_AURA         = 1784,
+    SPELL_ROGUE_VANISH_AURA                     = 11327,
 };
 
 // Ours
@@ -851,6 +854,56 @@ public:
     }
 };
 
+// 1856 - Vanish
+class spell_rog_vanish : public SpellScriptLoader
+{
+public:
+    spell_rog_vanish() : SpellScriptLoader("spell_rog_vanish") { }
+
+    class spell_rog_vanish_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_rog_vanish_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/)
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_ROGUE_VANISH_AURA))
+                return false;
+            if (!sSpellMgr->GetSpellInfo(SPELL_ROGUE_STEALTH_SHAPESHIFT_AURA))
+                return false;
+            return true;
+        }
+
+        void OnLaunchTarget(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+
+            Unit* target = GetHitUnit();
+
+            target->RemoveAurasByType(SPELL_AURA_MOD_STALKED);
+            if (target->GetTypeId() != TYPEID_PLAYER)
+                return;
+
+            if (target->HasAura(SPELL_ROGUE_VANISH_AURA))
+                return;
+
+            target->CombatStop();
+
+            target->CastSpell(target, SPELL_ROGUE_VANISH_AURA, TRIGGERED_FULL_MASK);
+            target->CastSpell(target, SPELL_ROGUE_STEALTH_SHAPESHIFT_AURA, TRIGGERED_FULL_MASK);
+        }
+
+        void Register() override
+        {
+            OnEffectLaunchTarget += SpellEffectFn(spell_rog_vanish_SpellScript::OnLaunchTarget, EFFECT_1, SPELL_EFFECT_TRIGGER_SPELL);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_rog_vanish_SpellScript();
+    }
+};
+
 void AddSC_rogue_spell_scripts()
 {
     // Ours
@@ -870,4 +923,7 @@ void AddSC_rogue_spell_scripts()
     new spell_rog_shiv();
     new spell_rog_tricks_of_the_trade();
     new spell_rog_tricks_of_the_trade_proc();
+
+    // pb
+    new spell_rog_vanish();
 }
