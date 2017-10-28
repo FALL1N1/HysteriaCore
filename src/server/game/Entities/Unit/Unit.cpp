@@ -15211,7 +15211,14 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, u
         // xinef: take into account attribute6 of proc spell
         if (prepare && useCharges && takeCharges)
             if (!procSpell || isVictim || !procSpell->HasAttribute(SPELL_ATTR6_DONT_CONSUME_CHARGES))
-                i->aura->DropCharge();
+            {
+                if ((procExtra & PROC_EX_REFLECT) && target && procSpell && procSpell->Speed > 0.0f)
+                {
+                    uint32 delay = uint32(std::floor(std::max<float>(target->GetDistance(this), 5.0f) / procSpell->Speed * 1000.0f));
+                    i->aura->DropChargeDelayed(delay);
+                } else
+                    i->aura->DropCharge();
+            }
 
         i->aura->CallScriptAfterProcHandlers(aurApp, eventInfo);
 
