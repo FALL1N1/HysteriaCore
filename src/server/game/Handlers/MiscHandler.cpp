@@ -1380,7 +1380,7 @@ void WorldSession::HandleSetTitleOpcode(WorldPacket & recv_data)
 void WorldSession::HandleTimeSyncResp(WorldPacket & recv_data)
 {
     uint32 counter, clientTimestamp;
-    recvData >> counter >> clientTimestamp;
+    recv_data >> counter >> clientTimestamp;
 
     if (counter != _player->m_timeSyncCounter - 1)
         return;
