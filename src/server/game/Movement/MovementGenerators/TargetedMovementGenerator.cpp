@@ -77,8 +77,8 @@ bool TargetedMovementGenerator<T, D>::DoUpdate(T* owner, uint32 diff)
             targetMoved = !GetTarget()->IsWithinDist2d(destination.x, destination.y, distance);
 
         // then, if the target is in range, check also Line of Sight.
-        if (!targetMoved)
-            targetMoved = !GetTarget()->IsWithinLOSInMap(owner);
+        //if (!targetMoved)
+            //targetMoved = !GetTarget()->IsWithinLOSInMap(owner);
     }
 
     if (targetMoved)
