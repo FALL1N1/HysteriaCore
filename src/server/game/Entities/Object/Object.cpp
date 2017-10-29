@@ -2505,7 +2505,7 @@ void WorldObject::GetChargeContactPoint(const WorldObject* obj, float &x, float 
 }
 
 void WorldObject::MovePosition(Position &pos, float dist, float angle)
-{ 
+{
     angle += m_orientation;
     float destx, desty, destz, ground, floor;
     destx = pos.m_positionX + dist * cos(angle);
@@ -2527,7 +2527,7 @@ void WorldObject::MovePosition(Position &pos, float dist, float angle)
     for (uint8 j = 0; j < 10; ++j)
     {
         // do not allow too big z changes
-        if (fabs(pos.m_positionZ - destz) > 6.0f)
+        if (fabs(pos.m_positionZ - destz) > 6)
         {
             destx -= step * cos(angle);
             desty -= step * sin(angle);
@@ -2537,10 +2537,11 @@ void WorldObject::MovePosition(Position &pos, float dist, float angle)
         }
         // we have correct destz now
         else
+        {
+            pos.Relocate(destx, desty, destz);
             break;
+        }
     }
-
-    pos.Relocate(destx, desty, destz);
 
     Trinity::NormalizeMapCoord(pos.m_positionX);
     Trinity::NormalizeMapCoord(pos.m_positionY);
