@@ -5859,7 +5859,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                     else if (m_preGeneratedPath.IsInvalidDestinationZ(target)) // Check position z, if in a straight line
                             return SPELL_FAILED_NOPATH;
 
-                    m_preGeneratedPath.ReducePathLenghtByDist(objSize); // move back
+                    m_preGeneratedPath.ReducePathLenghtByDist(objSize, target); // move back
                 }
                 break;
             }

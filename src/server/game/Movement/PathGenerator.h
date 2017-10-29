@@ -78,7 +78,7 @@ class PathGenerator
             _polyLength = 0;
             _pathPoints.clear();
         }
-        void ReducePathLenghtByDist(float dist); // path must be already built
+        void ReducePathLenghtByDist(float dist, Unit* target); // path must be already built
 
     private:
 
@@ -131,6 +131,9 @@ class PathGenerator
         dtStatus FindSmoothPath(float const* startPos, float const* endPos,
                               dtPolyRef const* polyPath, uint32 polyPathSize,
                               float* smoothPath, int* smoothPathSize, uint32 smoothPathMaxSize);
+        bool IsValidFinalPoint(const G3D::Vector3 finalPoint, Unit* target, float dist) const;
+        uint32 SearchForFirstValidPoint(int startAtIndex, Unit* target, float dist) const;
+        void CutAtFirstValidPoint(int startAtIndex, Unit* target, float dist);
 };
 
 #endif

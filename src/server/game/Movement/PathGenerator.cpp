@@ -898,7 +898,7 @@ float PathGenerator::Dist3DSqr(G3D::Vector3 const& p1, G3D::Vector3 const& p2) c
     return (p1 - p2).squaredLength();
 }
 
-void PathGenerator::ReducePathLenghtByDist(float dist)
+void PathGenerator::ReducePathLenghtByDist(const float dist, Unit* target)
 {
     if (GetPathType() == PATHFIND_BLANK)
     {
@@ -909,35 +909,88 @@ void PathGenerator::ReducePathLenghtByDist(float dist)
     if (_pathPoints.size() < 2) // path building failure
         return;
 
-    uint32 i = _pathPoints.size();
-    G3D::Vector3 nextVec = _pathPoints[--i];
-    while (i > 0)
+    int idx = _pathPoints.size() - 2;
+    float totalLengthSoFar = 0.0f;
+    G3D::Vector3 diffVec;
+    for ( ; idx >= 0; idx--)
     {
-        G3D::Vector3 currVec = _pathPoints[--i];
-        G3D::Vector3 diffVec = (nextVec - currVec);
-        float len = diffVec.length();
-        if (len > dist)
-        {
-            float step = dist / len;
-            // same as nextVec
-            _pathPoints[i + 1] -= diffVec * step;
-            _sourceUnit->UpdateAllowedPositionZ(_pathPoints[i + 1].x, _pathPoints[i + 1].y, _pathPoints[i + 1].z);
-            _pathPoints.resize(i + 2);
+        diffVec = _pathPoints[idx + 1] - _pathPoints[idx];
+        totalLengthSoFar += diffVec.length();
+        if (totalLengthSoFar >= dist)
             break;
+    }
+
+    if (totalLengthSoFar > dist)
+    {
+        float delta = totalLengthSoFar - dist;
+        G3D::Vector3 newFinalPoint = _pathPoints[idx] + diffVec.unit() * delta;
+        _sourceUnit->UpdateAllowedPositionZ(newFinalPoint.x, newFinalPoint.y, newFinalPoint.z);
+        if (IsValidFinalPoint(newFinalPoint, target, dist))
+        {
+            _pathPoints[idx + 1] = newFinalPoint;
+            _pathPoints.resize(idx + 2);
         }
-        else if (i == 0) // at second point
+        else
+        {
+            CutAtFirstValidPoint(idx + 1, target, dist);
+        }
+    }
+    else if (totalLengthSoFar == dist && idx > 0)
+    {
+        if (IsValidFinalPoint(_pathPoints[idx], target, dist))
+        {
+            _pathPoints.resize(idx + 1);
+        }
+        else
+        {
+            CutAtFirstValidPoint(idx + 1, target, dist);
+        }
+    }
+    else
+    {
+        // if initial position is "valid", no need to move
+        if (IsValidFinalPoint(_pathPoints[0], target, dist))
         {
             _pathPoints[1] = _pathPoints[0];
             _pathPoints.resize(2);
-            break;
         }
-
-        dist -= len;
-        nextVec = currVec; // we're going backwards
+        else
+        {
+            CutAtFirstValidPoint(1, target, dist);
+        }
     }
 }
 
 bool PathGenerator::IsInvalidDestinationZ(Unit const* target) const
 {
     return (target->GetPositionZ() - GetActualEndPosition().z) > 5.0f;
+}
+
+bool PathGenerator::IsValidFinalPoint(const G3D::Vector3 finalPoint, Unit* target, float dist) const
+{
+    return target->GetExactDist(finalPoint.x, finalPoint.y, finalPoint.z) <= dist + 0.5f
+        && target->IsWithinLOS(finalPoint.x, finalPoint.y, finalPoint.z);
+}
+
+uint32 PathGenerator::SearchForFirstValidPoint(int startAtIndex, Unit* target, float dist) const
+{
+    uint32 index = startAtIndex;
+    for ( ; index < _pathPoints.size() ; index++)
+    {
+        if (IsValidFinalPoint(_pathPoints[index], target, dist))
+            break;
+    }
+    return index;
+}
+
+void PathGenerator::CutAtFirstValidPoint(int startAtIndex, Unit* target, float dist)
+{
+    if (!IsValidFinalPoint(_pathPoints[_pathPoints.size() - 1], target, dist))
+    {
+        _type = PATHFIND_NOPATH;
+        return;
+    }
+
+    uint32 indexToCutAt = SearchForFirstValidPoint(startAtIndex, target, dist); // should never return "_pathPoints.size" because of the check done above
+    _pathPoints.resize(indexToCutAt + 1);
 }
