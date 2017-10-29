@@ -329,11 +329,14 @@ void AnticheatMgr::BuildReport(Player* player,uint8 reportType)
                 case NONE:
                     break;
                 case KICK:
-                    player->GetSession()->KickPlayer();
-                    sLog->outString("PASSIVEANTICHEAT: [Player: %s (Guid: %u, Account: %u)] Kicked for exceeding maximum reports", player->GetName().c_str(), player->GetGUIDLow(), player->GetSession()->GetAccountId());
+                    if(player->GetSession()->GetSecurity() <= 0)
+                    {
+                        player->GetSession()->KickPlayer();
+                        sLog->outString("PASSIVEANTICHEAT: [Player: %s (Guid: %u, Account: %u)] Kicked for exceeding maximum reports", player->GetName().c_str(), player->GetGUIDLow(), player->GetSession()->GetAccountId());
 
-                    if (sWorld->getBoolConfig(CONFIG_ANTICHEAT_ACTION_ANNOUNCE))
-                        sWorld->SendWorldText(LANG_ANTICHEAT_KICKED_PLAYER, player->GetName().c_str());
+                        if (sWorld->getBoolConfig(CONFIG_ANTICHEAT_ACTION_ANNOUNCE))
+                            sWorld->SendWorldText(LANG_ANTICHEAT_KICKED_PLAYER, player->GetName().c_str());
+                    }
                     break;
                 case BAN:
                     std::stringstream duration;

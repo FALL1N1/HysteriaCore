@@ -669,8 +669,11 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
                                 ++(plrMover->m_anti_FreezeZ_Count);
                                 sLog->outString("[FreezeZ Failed] AreaID: %u | playerZ: %f | mapZ: %f | absolute_pos: %f", plrMover->GetAreaId(), playerZ, floorZ, absolute_pos);
                             }
-                        if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
-                            plrMover->GetSession()->KickPlayer();
+                        if (_player->GetSession()->GetSecurity() <= 0)
+                        {
+                            if (plrMover->m_anti_FreezeZ_Count >= 15) // if they rotate with rmb they will do insane amount of checks so >=15 should be ok i guess?
+                                plrMover->GetSession()->KickPlayer();
+                        }
                     }
                 // PB: custom fly / under map checks UNIT_STATE_CHARGING
                 if (plrMover)
@@ -947,9 +950,12 @@ void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recvData)
         }
         else                                                // must be lesser - cheating
         {
-            sLog->outBasic("Player %s from account id %u kicked for incorrect speed (must be %f instead %f)",
-                _player->GetName().c_str(), GetAccountId(), _player->GetSpeed(move_type), newspeed);
-            KickPlayer();
+            if (_player->GetSession()->GetSecurity() <= 0)
+            {
+                sLog->outBasic("Player %s from account id %u kicked for incorrect speed (must be %f instead %f)",
+                    _player->GetName().c_str(), GetAccountId(), _player->GetSpeed(move_type), newspeed);
+                KickPlayer();
+            }
         }
     }
 }
