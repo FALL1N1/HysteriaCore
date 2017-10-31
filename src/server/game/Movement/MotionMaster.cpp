@@ -535,8 +535,8 @@ void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool 
         if (_owner->IsFlying())
             point.z = z;
         // @emo
-        else
-            point.z = _owner->GetMap()->GetHeight(_owner->GetPhaseMask(), point.x, point.y, z);
+        //        else
+//            point.z = _owner->GetMap()->GetHeight(_owner->GetPhases(), point.x, point.y, z);
 
         init.Path().push_back(point);
     }
