@@ -652,15 +652,15 @@ void Eluna::ElunaBind::Insert(uint32 entryId, uint32 eventId, int funcRef)
         Bindings[entryId][eventId] = funcRef;
 }
 
-UNORDERED_MAP<uint64, Eluna::LuaEventMap*> Eluna::LuaEventMap::LuaEventMaps;
-UNORDERED_MAP<int, Eluna::LuaEventData*> Eluna::LuaEventData::LuaEvents;
-UNORDERED_MAP<uint64, std::set<int> > Eluna::LuaEventData::EventIDs;
+std::unordered_map<uint64, Eluna::LuaEventMap*> Eluna::LuaEventMap::LuaEventMaps;
+std::unordered_map<int, Eluna::LuaEventData*> Eluna::LuaEventData::LuaEvents;
+std::unordered_map<uint64, std::set<int> > Eluna::LuaEventData::EventIDs;
 
 void Eluna::LuaEventMap::ScriptEventsResetAll()
 {
     // GameObject events reset
     if (!LuaEventMaps.empty())
-        for (UNORDERED_MAP<uint64, LuaEventMap*>::const_iterator itr = LuaEventMaps.begin(); itr != LuaEventMaps.end(); ++itr)
+        for (std::unordered_map<uint64, LuaEventMap*>::const_iterator itr = LuaEventMaps.begin(); itr != LuaEventMaps.end(); ++itr)
             if (itr->second)
                 itr->second->ScriptEventsReset();
     // Global events reset

@@ -529,7 +529,7 @@ private:
     }
 };
 
-void AddSC_custom_scripts()
+void AddSC_ArenaSpectator()
 {
     new spectate_commandscript();
     new npc_arenamaster();

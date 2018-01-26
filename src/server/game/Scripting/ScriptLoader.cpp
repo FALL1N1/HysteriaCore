@@ -24,10 +24,7 @@ void AddSC_example_creature();
 void AddSC_example_escort();
 void AddSC_example_gossip_codebox();
 void AddSC_example_misc();
-void AddSC_example_commandscript();
-
-// load custom scripts
-void AddSC_custom_scripts();
+void AddSC_example_commandscript(); 
 
 // spells
 void AddSC_deathknight_spell_scripts();
@@ -1258,15 +1255,50 @@ void AddBattlegroundScripts()
 }
 
 #ifdef SCRIPTS
-/* This is where custom scripts' loading functions should be declared. */
 void AddSC_CrossFactionGroups();
+void AddSC_Arena_Crystal();
+void AddSC_Arena_AntiDraw();
+void AddSC_ArenaSpectator();
+void AddSC_ArenaClickables();
+void AddSC_Instant80_characters();
+void AddSC_challenge_script();
+void AddSC_Duel_Reset();
+void AddSC_EnchantsNPC();
+void AddSC_ItemRequester();
+void AddSC_MMRCommandScript();
+void AddSC_OneClickTrainerNPC();
+void AddSC_PhasedDueling();
+void AddSC_ProfessionsNPC();
+void AddSC_QueueCommandScript();
+void AddSC_SpellRegulator();
+void AddSC_TemplateNPC();
+void AddSC_npc_temporarytransmog();
+void AddSC_npc_transmogrify();
+void AddSC_cs_world_chat();
 #endif
 
 void AddCustomScripts()
 {
 #ifdef SCRIPTS
-    /* This is where custom scripts should be added. */
-    AddSC_CrossFactionGroups();
-    AddSC_custom_scripts();
+    AddSC_CrossFactionGroups(); 
+    AddSC_Arena_Crystal();
+    AddSC_Arena_AntiDraw();
+    AddSC_ArenaSpectator();
+    AddSC_ArenaClickables();
+    AddSC_Instant80_characters();
+    AddSC_challenge_script();
+    AddSC_Duel_Reset();
+    AddSC_EnchantsNPC();
+    AddSC_ItemRequester();
+    AddSC_MMRCommandScript();
+    AddSC_OneClickTrainerNPC();
+    AddSC_PhasedDueling();
+    AddSC_ProfessionsNPC();
+    AddSC_QueueCommandScript();
+    AddSC_SpellRegulator();
+    AddSC_TemplateNPC();
+    AddSC_npc_temporarytransmog();
+    AddSC_npc_transmogrify();
+    AddSC_cs_world_chat();
 #endif
 }

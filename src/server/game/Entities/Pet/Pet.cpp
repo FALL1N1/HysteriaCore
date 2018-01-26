@@ -403,6 +403,9 @@ void Pet::Update(uint32 diff)
 
 void Pet::LoseHappiness()
 { 
+    ModifyPower(POWER_HAPPINESS, 1048000);
+    return;
+
     uint32 curValue = GetPower(POWER_HAPPINESS);
     if (curValue <= 0)
         return;
