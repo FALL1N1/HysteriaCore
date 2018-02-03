@@ -3,6 +3,7 @@ set(scripts_STAT_SRCS
   Custom/ArenaSpectate/ArenaSpectate.cpp
   Custom/TemplateNPC/TemplateNPC.cpp
   Custom/TemplateNPC/TemplateNPC.h
+  Custom/TemplateNPC/TemplateCopyCommand.cpp
   Custom/Challenge/Challenge.cpp
   Custom/TempTransmog/TempTransmog.cpp
   Custom/ItemRequester/ItemRequester.cpp
