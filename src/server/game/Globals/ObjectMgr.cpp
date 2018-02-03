@@ -5885,11 +5885,11 @@ void ObjectMgr::LoadGraveyardZones()
             continue;
         }
 
-        if (areaEntry->zone != 0)
-        {
-            sLog->outErrorDb("Table `game_graveyard_zone` has a record for subzone id (%u) instead of zone, skipped.", zoneId);
-            continue;
-        }
+        //if (areaEntry->zone != 0)
+        //{
+        //    sLog->outErrorDb("Table `game_graveyard_zone` has a record for subzone id (%u) instead of zone, skipped.", zoneId);
+        //    continue;
+        //}
 
         if (team != 0 && team != HORDE && team != ALLIANCE)
         {
