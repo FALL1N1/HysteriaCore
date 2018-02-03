@@ -1,7 +1,10 @@
-#include "ScriptPch.h"
+#include "ScriptPch.h" 
 #include "ArenaTeam.h"
+#include "ArenaTeamMgr.h"
 #include "Player.h"
-#include "Battleground.h"
+#include "Battleground.h" 
+
+//#define sArenaTeamMgr ACE_Singleton<ArenaTeamMgr, ACE_Null_Mutex>::instance()
 
 class MMRCommandScript : public CommandScript
 {
@@ -25,9 +28,24 @@ public:
     
 	static bool HandleMMRResetCommand(ChatHandler* handler, const char* args)
     {
-        Player* me = handler->GetSession()->GetPlayer();
-        //me->SetArenaMatchmakerRating(sWorld->getIntConfig(CONFIG_ARENA_START_MATCHMAKER_RATING) - member->MatchMakerRating, slot);
-        me->GetSession()->SendNotification("Your MMR Rating has been reset!");
+        if (Player* me = handler->GetSession()->GetPlayer())
+        { 
+            for (uint8 slot = 0; slot <= 2; ++slot)
+                if (uint32 arenaTeamId = Player::GetArenaTeamIdFromStorage(me->GetGUIDLow(), slot))
+                { 
+                    if (ArenaTeam *team = sArenaTeamMgr->GetArenaTeamById(arenaTeamId))
+                    {
+                        if (ArenaTeamMember* member = team->GetMember(me->GetGUID()))
+                        {
+                            int32 mod = sWorld->getIntConfig(CONFIG_ARENA_START_MATCHMAKER_RATING) - member->MatchMakerRating;
+                            member->MatchMakerRating = mod;
+                            member->ModifyMatchmakerRating(mod, slot);
+                            team->SaveToDB();
+                        } 
+                    }
+                }
+            me->GetSession()->SendNotification("Your MMR Rating has been reset!");
+        }
         return true;
 	}
  
@@ -37,3 +55,13 @@ void AddSC_MMRCommandScript()
 {
     new MMRCommandScript();
 }
+
+
+
+
+
+
+
+
+
+
