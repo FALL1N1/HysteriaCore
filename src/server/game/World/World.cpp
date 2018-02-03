@@ -692,6 +692,7 @@ void World::LoadConfigSettings(bool reload)
     m_bool_configs[PREMIUM_CUSTOM_INSTANT_LOGOUT] = sConfigMgr->GetBoolDefault("Premiums.InstantLogout", true);
     m_bool_configs[PREMIUM_CUSTOM_MAX_SKILL_FOR_LEVEL] = sConfigMgr->GetBoolDefault("Premiums.MaxSkillForLevel", true);
     m_bool_configs[PREMIUM_CUSTOM_RATES_ENABLED] = sConfigMgr->GetBoolDefault("Premiums.RatesEnabled", true);
+    m_bool_configs[ARENA_DEMENTIA_ENABLED] = sConfigMgr->GetBoolDefault("ArenaAntiDraw.Enabled", true);
 
     //! ints
     m_int_configs[PREMIUM_CUSTOM_MOUNT_TAXI] = sConfigMgr->GetIntDefault("Premiums.CustomMountTaxi", 350);
