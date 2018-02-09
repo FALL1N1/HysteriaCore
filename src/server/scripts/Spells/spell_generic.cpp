@@ -4344,123 +4344,106 @@ enum Mounts
 
 class spell_gen_mount : public SpellScriptLoader
 {
+public:
+    spell_gen_mount(const char* name, uint32 mount0 = 0, uint32 mount60 = 0, uint32 mount100 = 0, uint32 mount150 = 0, uint32 mount280 = 0, uint32 mount310 = 0) : SpellScriptLoader(name),
+        _mount0(mount0), _mount60(mount60), _mount100(mount100), _mount150(mount150), _mount280(mount280), _mount310(mount310) { }
+
+    class spell_gen_mount_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_mount_SpellScript);
+
     public:
-        spell_gen_mount(const char* name, uint32 mount0 = 0, uint32 mount60 = 0, uint32 mount100 = 0, uint32 mount150 = 0, uint32 mount280 = 0, uint32 mount310 = 0) : SpellScriptLoader(name),
+        spell_gen_mount_SpellScript(uint32 mount0, uint32 mount60, uint32 mount100, uint32 mount150, uint32 mount280, uint32 mount310) : SpellScript(),
             _mount0(mount0), _mount60(mount60), _mount100(mount100), _mount150(mount150), _mount280(mount280), _mount310(mount310) { }
 
-        class spell_gen_mount_SpellScript : public SpellScript
+        bool Validate(SpellInfo const* /*spellInfo*/)
         {
-            PrepareSpellScript(spell_gen_mount_SpellScript);
+            if (_mount0 && !sSpellMgr->GetSpellInfo(_mount0))
+                return false;
+            if (_mount60 && !sSpellMgr->GetSpellInfo(_mount60))
+                return false;
+            if (_mount100 && !sSpellMgr->GetSpellInfo(_mount100))
+                return false;
+            if (_mount150 && !sSpellMgr->GetSpellInfo(_mount150))
+                return false;
+            if (_mount280 && !sSpellMgr->GetSpellInfo(_mount280))
+                return false;
+            if (_mount310 && !sSpellMgr->GetSpellInfo(_mount310))
+                return false;
+            return true;
+        }
 
-        public:
-            spell_gen_mount_SpellScript(uint32 mount0, uint32 mount60, uint32 mount100, uint32 mount150, uint32 mount280, uint32 mount310) : SpellScript(),
-                _mount0(mount0), _mount60(mount60), _mount100(mount100), _mount150(mount150), _mount280(mount280), _mount310(mount310) { }
+        void HandleMount(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
 
-            bool Validate(SpellInfo const* /*spellInfo*/)
+            if (Player* target = GetHitPlayer())
             {
-                if (_mount0 && !sSpellMgr->GetSpellInfo(_mount0))
-                    return false;
-                if (_mount60 && !sSpellMgr->GetSpellInfo(_mount60))
-                    return false;
-                if (_mount100 && !sSpellMgr->GetSpellInfo(_mount100))
-                    return false;
-                if (_mount150 && !sSpellMgr->GetSpellInfo(_mount150))
-                    return false;
-                if (_mount280 && !sSpellMgr->GetSpellInfo(_mount280))
-                    return false;
-                if (_mount310 && !sSpellMgr->GetSpellInfo(_mount310))
-                    return false;
-                return true;
-            }
+                uint32 petNumber = target->GetTemporaryUnsummonedPetNumber();
+                target->SetTemporaryUnsummonedPetNumber(0);
 
-            void HandleMount(SpellEffIndex effIndex)
-            {
-                PreventHitDefaultEffect(effIndex);
+                // Prevent stacking of mounts and client crashes upon dismounting
+                target->RemoveAurasByType(SPELL_AURA_MOUNTED, 0, GetHitAura());
 
-                if (Player* target = GetHitPlayer())
+                // Triggered spell id dependent on riding skill and zone
+                bool canFly = false;
+                uint32 map = GetVirtualMapForMapAndZone(target->GetMapId(), target->GetZoneId());
+                if (map == 530 || (map == 571 && target->HasSpell(SPELL_COLD_WEATHER_FLYING)))
+                    canFly = true;
+
+                AreaTableEntry const* area = sAreaTableStore.LookupEntry(target->GetAreaId());
+                // Xinef: add battlefield check
+                Battlefield* Bf = sBattlefieldMgr->GetBattlefieldToZoneId(target->GetZoneId());
+                if (!area || (canFly && ((area->flags & AREA_FLAG_NO_FLY_ZONE) || (Bf && !Bf->CanFlyIn()))))
+                    canFly = false;
+
+                uint32 mount = 0;
+                switch (target->GetBaseSkillValue(SKILL_RIDING))
                 {
-                    uint32 petNumber = target->GetTemporaryUnsummonedPetNumber();
-                    target->SetTemporaryUnsummonedPetNumber(0);
-
-                    // Prevent stacking of mounts and client crashes upon dismounting
-                    target->RemoveAurasByType(SPELL_AURA_MOUNTED, 0, GetHitAura());
-
-                    // Triggered spell id dependent on riding skill and zone
-                    bool canFly = false;
-                    uint32 map = GetVirtualMapForMapAndZone(target->GetMapId(), target->GetZoneId());
-                    if (map == 530 || (map == 571 && target->HasSpell(SPELL_COLD_WEATHER_FLYING)))
-                        canFly = true;
-
-                    float x, y, z;
-                    target->GetPosition(x, y, z);
-                    uint32 areaFlag = target->GetBaseMap()->GetAreaFlag(x, y, z);
-                    AreaTableEntry const* area = sAreaStore.LookupEntry(areaFlag);
-                    // Xinef: add battlefield check
-                    Battlefield* Bf = sBattlefieldMgr->GetBattlefieldToZoneId(target->GetZoneId());
-                    if (!area || (canFly && ((area->flags & AREA_FLAG_NO_FLY_ZONE) || (Bf && !Bf->CanFlyIn()))))
-                        canFly = false;
-
-                    uint32 mount = 0;
-                    switch (target->GetBaseSkillValue(SKILL_RIDING))
+                case 0:
+                    mount = _mount0;
+                    break;
+                case 75:
+                    mount = _mount60;
+                    break;
+                case 150:
+                    mount = _mount100;
+                    break;
+                case 225:
+                    if (canFly)
+                        mount = _mount150;
+                    else
+                        mount = _mount100;
+                    break;
+                case 300:
+                    if (canFly)
                     {
-                        case 0:
-                            mount = _mount0;
-                            break;
-                        case 75:
-                            mount = _mount60;
-                            break;
-                        case 150:
-                            mount = _mount100;
-                            break;
-                        case 225:
-                            if (canFly)
-                                mount = _mount150;
-                            else
-                                mount = _mount100;
-                            break;
-                        case 300:
-                            if (canFly)
-                            {
-                                if (_mount310 && target->Has310Flyer(false))
-                                    mount = _mount310;
-                                else
-                                    mount = _mount280;
-                            }
-                            else
-                                mount = _mount100;
-                            break;
-                        default:
-                            break;
+                        if (_mount310 && target->Has310Flyer(false))
+                            mount = _mount310;
+                        else
+                            mount = _mount280;
                     }
-
-                    if (mount)
-                    {
-                        PreventHitAura();
-                        target->CastSpell(target, mount, true);
-                    }
-
-                    if (petNumber)
-                        target->SetTemporaryUnsummonedPetNumber(petNumber);
+                    else
+                        mount = _mount100;
+                    break;
+                default:
+                    break;
                 }
+
+                if (mount)
+                {
+                    PreventHitAura();
+                    target->CastSpell(target, mount, true);
+                }
+
+                if (petNumber)
+                    target->SetTemporaryUnsummonedPetNumber(petNumber);
             }
+        }
 
-            void Register()
-            {
-                 OnEffectHitTarget += SpellEffectFn(spell_gen_mount_SpellScript::HandleMount, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
-            }
-
-        private:
-            uint32 _mount0;
-            uint32 _mount60;
-            uint32 _mount100;
-            uint32 _mount150;
-            uint32 _mount280;
-            uint32 _mount310;
-        };
-
-        SpellScript* GetSpellScript() const
+        void Register()
         {
-            return new spell_gen_mount_SpellScript(_mount0, _mount60, _mount100, _mount150, _mount280, _mount310);
+            OnEffectHitTarget += SpellEffectFn(spell_gen_mount_SpellScript::HandleMount, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
         }
 
     private:
@@ -4470,6 +4453,20 @@ class spell_gen_mount : public SpellScriptLoader
         uint32 _mount150;
         uint32 _mount280;
         uint32 _mount310;
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_gen_mount_SpellScript(_mount0, _mount60, _mount100, _mount150, _mount280, _mount310);
+    }
+
+private:
+    uint32 _mount0;
+    uint32 _mount60;
+    uint32 _mount100;
+    uint32 _mount150;
+    uint32 _mount280;
+    uint32 _mount310;
 };
 
 enum FoamSword

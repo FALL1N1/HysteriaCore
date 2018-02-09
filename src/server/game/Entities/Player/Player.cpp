@@ -5610,7 +5610,7 @@ void Player::RepopAtGraveyard()
     // note: this can be called also when the player is alive
     // for example from WorldSession::HandleMovementOpcodes
 
-    AreaTableEntry const* zone = GetAreaEntryByAreaID(GetAreaId());
+    AreaTableEntry const* zone = sAreaTableStore.LookupEntry(GetAreaId());
 
     // Such zones are considered unreachable as a ghost and the player must be automatically revived
     // Xinef: Get Transport Check is not needed
@@ -5707,7 +5707,7 @@ void Player::UpdateLocalChannels(uint32 newZone)
     if (GetSession()->PlayerLoading() && !IsBeingTeleportedFar())
         return;                                              // The client handles it automatically after loading, but not after teleporting
 
-    AreaTableEntry const* current_zone = GetAreaEntryByAreaID(newZone);
+    AreaTableEntry const* current_zone = sAreaTableStore.LookupEntry(newZone);
     if (!current_zone)
         return;
 
@@ -6897,7 +6897,7 @@ void Player::SendMovieStart(uint32 MovieId)
 }
 
 void Player::CheckAreaExploreAndOutdoor()
-{ 
+{
     if (!IsAlive())
         return;
 
@@ -6905,14 +6905,23 @@ void Player::CheckAreaExploreAndOutdoor()
         return;
 
     bool isOutdoor = IsOutdoors();
-    uint32 areaFlag = GetAreaFlagByAreaID(GetAreaId());
+    uint32 areaId = GetBaseMap()->GetAreaId(GetPositionX(), GetPositionY(), GetPositionZ(), &isOutdoor);
+    AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(areaId);
 
     if (sWorld->getBoolConfig(CONFIG_VMAP_INDOOR_CHECK) && !isOutdoor)
         RemoveAurasWithAttribute(SPELL_ATTR0_OUTDOORS_ONLY);
 
-    if (areaFlag == 0xffff)
+    if (!areaId)
         return;
-    int offset = areaFlag / 32;
+
+    if (!areaEntry)
+    {
+        sLog->outError("Player '%s' (%u) discovered unknown area (x: %f y: %f z: %f map: %u)",
+            GetName().c_str(), GetGUIDLow(), GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
+        return;
+    }
+
+    uint32 offset = areaEntry->exploreFlag / 32;
 
     if (offset >= PLAYER_EXPLORED_ZONES_SIZE)
     {
@@ -6920,28 +6929,20 @@ void Player::CheckAreaExploreAndOutdoor()
         return;
     }
 
-    uint32 val = (uint32)(1 << (areaFlag % 32));
+    uint32 val = (uint32)(1 << (areaEntry->exploreFlag % 32));
     uint32 currFields = GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset);
 
     if (!(currFields & val))
     {
         SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset, (uint32)(currFields | val));
 
-        UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA, GetAreaId());
-
-        AreaTableEntry const* areaEntry = GetAreaEntryByAreaFlagAndMap(areaFlag, GetMapId());
-        if (!areaEntry)
-        {
-            sLog->outError("Player %u discovered unknown area (x: %f y: %f z: %f map: %u", GetGUIDLow(), GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
-            return;
-        }
+        UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA, areaId);
 
         if (areaEntry->area_level > 0)
         {
-            uint32 area = areaEntry->ID;
             if (getLevel() >= sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
             {
-                SendExplorationExperience(area, 0);
+                SendExplorationExperience(areaId, 0);
             }
             else
             {
@@ -6949,17 +6950,17 @@ void Player::CheckAreaExploreAndOutdoor()
                 uint32 XP = 0;
                 if (diff < -5)
                 {
-                    XP = uint32(sObjectMgr->GetBaseXP(getLevel()+5)*sWorld->getRate(RATE_XP_EXPLORE));
+                    XP = uint32(sObjectMgr->GetBaseXP(getLevel() + 5)*sWorld->getRate(RATE_XP_EXPLORE));
                 }
                 else if (diff > 5)
                 {
-                    int32 exploration_percent = (100-((diff-5)*5));
+                    int32 exploration_percent = (100 - ((diff - 5) * 5));
                     if (exploration_percent > 100)
                         exploration_percent = 100;
                     else if (exploration_percent < 0)
                         exploration_percent = 0;
 
-                    XP = uint32(sObjectMgr->GetBaseXP(areaEntry->area_level)*exploration_percent/100*sWorld->getRate(RATE_XP_EXPLORE));
+                    XP = uint32(sObjectMgr->GetBaseXP(areaEntry->area_level)*exploration_percent / 100 * sWorld->getRate(RATE_XP_EXPLORE));
                 }
                 else
                 {
@@ -6967,7 +6968,7 @@ void Player::CheckAreaExploreAndOutdoor()
                 }
 
                 GiveXP(XP, NULL);
-                SendExplorationExperience(area, XP);
+                SendExplorationExperience(areaId, XP);
             }
             ;//sLog->outDetail("Player %u discovered a new area: %u", GetGUIDLow(), area);
         }
@@ -7508,7 +7509,7 @@ void Player::UpdateArea(uint32 newArea)
     // so apply them accordingly
     m_areaUpdateId = newArea;
 
-    AreaTableEntry const* area = GetAreaEntryByAreaID(newArea);
+    AreaTableEntry const* area = sAreaTableStore.LookupEntry(newArea);
     bool oldFFAPvPArea = pvpInfo.IsInFFAPvPArea;
     pvpInfo.IsInFFAPvPArea = area && (area->flags & AREA_FLAG_ARENA);
     UpdatePvPState(true);
@@ -7543,7 +7544,7 @@ void Player::UpdateArea(uint32 newArea)
     }
 
     // Xinef: area should inherit zone flags
-    AreaTableEntry const* zone = GetAreaEntryByAreaID(area->zone);
+    AreaTableEntry const* zone = sAreaTableStore.LookupEntry(area->zone);
     uint32 areaFlags = area->flags;
     bool isSanctuary = area->IsSanctuary();
     bool isInn = area->IsInn(GetTeamId(true));
@@ -7631,7 +7632,7 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
     // zone changed, so area changed as well, update it
     UpdateArea(newArea);
 
-    AreaTableEntry const* zone = GetAreaEntryByAreaID(newZone);
+    AreaTableEntry const* zone = sAreaTableStore.LookupEntry(newZone);
     if (!zone)
         return;
 

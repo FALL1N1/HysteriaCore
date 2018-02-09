@@ -179,7 +179,7 @@ bool AchievementCriteriaData::IsValid(AchievementCriteriaEntry const* criteria)
             return true;
         }
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_S_AREA:
-            if (!GetAreaEntryByAreaID(area.id))
+            if (!sAreaTableStore.LookupEntry(area.id))
             {
                 sLog->outErrorDb("Table `achievement_criteria_data` (Entry: %u Type: %u) for data type ACHIEVEMENT_CRITERIA_DATA_TYPE_S_AREA (%u) has wrong area id in value1 (%u), ignored.",
                     criteria->ID, criteria->requiredType, dataType, area.id);
@@ -1287,7 +1287,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                     if (!area_id)                            // array have 0 only in empty tail
                         break;
 
-                    int32 exploreFlag = GetAreaFlagByAreaID(area_id);
+                    AreaTableEntry const* area = sAreaTableStore.LookupEntry(area_id);
+                    int32 exploreFlag = area->exploreFlag;
                     if (exploreFlag < 0)
                         continue;
 

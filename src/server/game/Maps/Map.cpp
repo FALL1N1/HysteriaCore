@@ -226,7 +226,6 @@ _instanceResetPeriod(0), i_scriptLock(false), _defaultLight(GetDefaultMapLight(i
             setNGrid(NULL, idx, j);
         }
     }
-    _areaPlayerCountMap.clear();
     //lets initialize visibility distance for map
     Map::InitVisibilityDistance();
 
@@ -791,8 +790,7 @@ struct ResetNotifier
 };
 
 void Map::RemovePlayerFromMap(Player* player, bool remove)
-{ 
-    player->UpdateZone(0xFFFFFFFF, 0);
+{
     player->getHostileRefManager().deleteReferences(); // pussywizard: multithreading crashfix
 
     bool inWorld = player->IsInWorld();
@@ -1150,7 +1148,6 @@ void Map::RemoveAllPlayers()
                 // this is happening for bg
                 sLog->outError("Map::UnloadAll: player %s is still in map %u during unload, this should not happen!", player->GetName().c_str(), GetId());
                 player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, player->GetOrientation());
-                sLog->outString("TELEPORT BUG HERE #3! ");
             }
         }
     }
@@ -1748,12 +1745,12 @@ inline ZLiquidStatus GridMap::getLiquidStatus(float x, float y, float z, uint8 R
             uint32 liqTypeIdx = liquidEntry->Type;
             if (entry < 21)
             {
-                if (AreaTableEntry const* area = GetAreaEntryByAreaFlagAndMap(getArea(x, y), MAPID_INVALID))
+                if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(getArea(x, y)))
                 {
                     uint32 overrideLiquid = area->LiquidTypeOverride[liquidEntry->Type];
                     if (!overrideLiquid && area->zone)
                     {
-                        area = GetAreaEntryByAreaID(area->zone);
+                        area = sAreaTableStore.LookupEntry(area->zone);
                         if (area)
                             overrideLiquid = area->LiquidTypeOverride[liquidEntry->Type];
                     }
@@ -1962,7 +1959,7 @@ bool Map::IsOutdoors(float x, float y, float z) const
     if (wmoEntry)
     {
         ;//sLog->outStaticDebug("Got WMOAreaTableEntry! flag %u, areaid %u", wmoEntry->Flags, wmoEntry->areaId);
-        atEntry = GetAreaEntryByAreaID(wmoEntry->areaId);
+        atEntry = sAreaTableStore.LookupEntry(wmoEntry->areaId);
     }
     return IsOutdoorWMO(mogpFlags, adtId, rootId, groupId, wmoEntry, atEntry);
 }
@@ -1986,8 +1983,8 @@ bool Map::GetAreaInfo(float x, float y, float z, uint32 &flags, int32 &adtId, in
     return false;
 }
 
-uint16 Map::GetAreaFlag(float x, float y, float z, bool *isOutdoors) const
-{ 
+uint32 Map::GetAreaId(float x, float y, float z, bool *isOutdoors) const
+{
     uint32 mogpFlags;
     int32 adtId, rootId, groupId;
     WMOAreaTableEntry const* wmoEntry = 0;
@@ -1999,20 +1996,20 @@ uint16 Map::GetAreaFlag(float x, float y, float z, bool *isOutdoors) const
         haveAreaInfo = true;
         wmoEntry = GetWMOAreaTableEntryByTripple(rootId, adtId, groupId);
         if (wmoEntry)
-            atEntry = GetAreaEntryByAreaID(wmoEntry->areaId);
+            atEntry = sAreaTableStore.LookupEntry(wmoEntry->areaId);
     }
 
-    uint16 areaflag;
+    uint16 areaId = 0;
 
     if (atEntry)
-        areaflag = atEntry->exploreFlag;
+        areaId = atEntry->ID;
     else
     {
         if (GridMap* gmap = const_cast<Map*>(this)->GetGrid(x, y))
-            areaflag = gmap->getArea(x, y);
+            areaId = gmap->getArea(x, y);
         // this used while not all *.map files generated (instances)
-        else
-            areaflag = GetAreaFlagByMapId(i_mapEntry->MapID);
+        if (!areaId)
+            areaId = i_mapEntry->linked_zone;
     }
 
     if (isOutdoors)
@@ -2022,8 +2019,31 @@ uint16 Map::GetAreaFlag(float x, float y, float z, bool *isOutdoors) const
         else
             *isOutdoors = true;
     }
-    return areaflag;
- }
+    return areaId;
+}
+
+uint32 Map::GetAreaId(float x, float y, float z) const
+{
+    return GetAreaId(x, y, z, nullptr);
+}
+
+uint32 Map::GetZoneId(float x, float y, float z) const
+{
+    uint32 areaId = GetAreaId(x, y, z);
+    if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(areaId))
+        if (area->zone)
+            return area->zone;
+
+    return areaId;
+}
+
+void Map::GetZoneAndAreaId(uint32& zoneid, uint32& areaid, float x, float y, float z) const
+{
+    areaid = zoneid = GetAreaId(x, y, z);
+    if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(areaid))
+        if (area->zone)
+            zoneid = area->zone;
+}
 
 uint8 Map::GetTerrainType(float x, float y) const
 { 
@@ -2059,12 +2079,12 @@ ZLiquidStatus Map::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidTyp
 
                 if (liquid_type && liquid_type < 21)
                 {
-                    if (AreaTableEntry const* area = GetAreaEntryByAreaFlagAndMap(GetAreaFlag(x, y, z), GetId()))
+                    if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(GetAreaId(x, y, z)))
                     {
                         uint32 overrideLiquid = area->LiquidTypeOverride[liquidFlagType];
                         if (!overrideLiquid && area->zone)
                         {
-                            area = GetAreaEntryByAreaID(area->zone);
+                            area = sAreaTableStore.LookupEntry(area->zone);
                             if (area)
                                 overrideLiquid = area->LiquidTypeOverride[liquidFlagType];
                         }
@@ -2124,34 +2144,6 @@ float Map::GetWaterLevel(float x, float y) const
         return gmap->getLiquidLevel(x, y);
     else
         return 0;
-}
-
-uint32 Map::GetAreaIdByAreaFlag(uint16 areaflag, uint32 map_id)
-{
-    AreaTableEntry const* entry = GetAreaEntryByAreaFlagAndMap(areaflag, map_id);
-
-    if (entry)
-        return entry->ID;
-    else
-        return 0;
-}
-
-uint32 Map::GetZoneIdByAreaFlag(uint16 areaflag, uint32 map_id)
-{
-    AreaTableEntry const* entry = GetAreaEntryByAreaFlagAndMap(areaflag, map_id);
-
-    if (entry)
-        return (entry->zone != 0) ? entry->zone : entry->ID;
-    else
-        return 0;
-}
-
-void Map::GetZoneAndAreaIdByAreaFlag(uint32& zoneid, uint32& areaid, uint16 areaflag, uint32 map_id)
-{
-    AreaTableEntry const* entry = GetAreaEntryByAreaFlagAndMap(areaflag, map_id);
-
-    areaid = entry ? entry->ID : 0;
-    zoneid = entry ? ((entry->zone != 0) ? entry->zone : entry->ID) : 0;
 }
 
 bool Map::isInLineOfSight(float x1, float y1, float z1, float x2, float y2, float z2, uint32 phasemask) const
@@ -2526,15 +2518,6 @@ bool InstanceMap::CanEnter(Player* player, bool loginCheck)
         return false;
     }
 
-    const AccessRequirement* req = sObjectMgr->GetAccessRequirement(GetId(), GetDifficulty());
-
-    if (req)
-    {
-        if (player->getLevel() < req->levelMin)
-        {
-            return false;
-        }
-    }
     // allow GM's to enter
     if (player->IsGameMaster())
         return Map::CanEnter(player, loginCheck);

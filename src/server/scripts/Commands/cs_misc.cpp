@@ -467,8 +467,8 @@ public:
         object->GetZoneAndAreaId(zoneId, areaId);
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(object->GetMapId());
-        AreaTableEntry const* zoneEntry = GetAreaEntryByAreaID(zoneId);
-        AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(areaId);
+        AreaTableEntry const* zoneEntry = sAreaTableStore.LookupEntry(zoneId);
+        AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(areaId);
 
         float zoneX = object->GetPositionX();
         float zoneY = object->GetPositionY();
@@ -1344,7 +1344,7 @@ public:
 
         uint32 zoneId = player->GetZoneId();
 
-        AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(zoneId);
+        AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(zoneId);
         if (!areaEntry || areaEntry->zone !=0)
         {
             handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDWRONGZONE, graveyardId, zoneId);
@@ -1475,7 +1475,8 @@ public:
             return false;
         }
 
-        int32 area = GetAreaFlagByAreaID(atoi((char*)args));
+        AreaTableEntry const* areaX = sAreaTableStore.LookupEntry(atoi((char*)args));
+        int32 area = areaX->exploreFlag;
         int32 offset = area / 32;
         uint32 val = uint32((1 << (area % 32)));
 
@@ -1506,7 +1507,8 @@ public:
             return false;
         }
 
-        int32 area = GetAreaFlagByAreaID(atoi((char*)args));
+        AreaTableEntry const* areaX = sAreaTableStore.LookupEntry(atoi((char*)args));
+        int32 area = areaX->exploreFlag;
         int32 offset = area / 32;
         uint32 val = uint32((1 << (area % 32)));
 
@@ -2071,12 +2073,12 @@ public:
 
         MapEntry const* map = sMapStore.LookupEntry(mapId);
 
-        AreaTableEntry const* area = GetAreaEntryByAreaID(areaId);
+        AreaTableEntry const* area = sAreaTableStore.LookupEntry(areaId);
         if (area)
         {
             areaName = area->area_name[locale];
 
-            AreaTableEntry const* zone = GetAreaEntryByAreaID(area->zone);
+            AreaTableEntry const* zone = sAreaTableStore.LookupEntry(area->zone);
             if (zone)
                 zoneName = zone->area_name[locale];
         }
