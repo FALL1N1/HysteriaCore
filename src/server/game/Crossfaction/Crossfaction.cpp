@@ -450,10 +450,10 @@ private:
 
 void AddSC_CrossFactionGroups()
 {
-    // new CrossFactionGroup();
-    // new CrossFactionPlayer();
-    // new CrossFactionWorld();
-    // new CrossFactionVehicle();
+    new CrossFactionGroup();
+    new CrossFactionPlayer();
+    new CrossFactionWorld();
+    new CrossFactionVehicle();
 }
 
 
