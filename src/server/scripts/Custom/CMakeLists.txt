@@ -24,6 +24,8 @@ set(scripts_STAT_SRCS
   Custom/OneClickTrainerNPC/OneClickTrainerNPC.cpp
   Custom/ProfessionsNPC/ProfessionsNPC.cpp
   
+  # custom shit
+  Custom/Request.cpp
 )
 
 message("  -> Prepared: Custom")

@@ -1276,6 +1276,8 @@ void AddSC_npc_temporarytransmog();
 void AddSC_npc_transmogrify();
 void AddSC_cs_world_chat();
 void AddSC_CopyGearCommands();
+
+void AddSC_CustomRequest();
 #endif
 
 void AddCustomScripts()
@@ -1302,5 +1304,6 @@ void AddCustomScripts()
     AddSC_npc_transmogrify();
     AddSC_cs_world_chat();
     AddSC_CopyGearCommands();
+	AddSC_CustomRequest();
 #endif
 }
