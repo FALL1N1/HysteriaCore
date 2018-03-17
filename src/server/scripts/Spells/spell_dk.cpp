@@ -1557,6 +1557,7 @@ class spell_dk_death_grip : public SpellScriptLoader
 
             SpellCastResult CheckCast()
             {
+                Unit* caster = GetCaster();
                 Unit* target = GetExplTargetUnit();
 
                 if (target->GetTypeId() == TYPEID_PLAYER && caster->GetExactDist(target) < 8.0f) // xinef: should be 8.0f, but we have to add target size (1.5f)
@@ -1617,7 +1618,7 @@ class spell_dk_death_grip : public SpellScriptLoader
             {
                 if (m_scriptSpellId == 49576) // xinef: base death grip, add pvp range restriction
                 {
-                    OnCheckCast += SpellCheckCastFn(spell_dk_death_grip_SpellScript::CheckPvPRange);
+                    OnCheckCast += SpellCheckCastFn(spell_dk_death_grip_SpellScript::CheckCast);
                     OnEffectHitTarget += SpellEffectFn(spell_dk_death_grip_SpellScript::HandleBaseDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
                 }
                 else

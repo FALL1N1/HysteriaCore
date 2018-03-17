@@ -631,7 +631,7 @@ bool Unit::GetRandomContactPoint(const Unit* obj, float &x, float &y, float &z, 
         z = this->GetPositionZ();
         obj->UpdateAllowedPositionZ(x, y, z);
     }
-    float maxDist = MELEE_RANGE + GetMeleeReach() + obj->GetMeleeReach();
+    float maxDist = MELEE_RANGE + GetCombatReach() + obj->GetCombatReach();
     if (GetExactDistSq(x, y, z) >= maxDist*maxDist)
     {
         if (force)
@@ -13688,7 +13688,7 @@ void Unit::ModSpellCastTime(SpellInfo const* spellProto, int32 & castTime, Spell
     if (!spellProto || castTime < 0)
         return;
     
-    if (spellInfo->IsChanneled() && spellInfo->HasAura(SPELL_AURA_MOUNTED))
+    if (spellProto->IsChanneled() && spellProto->HasAura(SPELL_AURA_MOUNTED))
          return;
     
     // called from caster
