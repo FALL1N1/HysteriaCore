@@ -84,9 +84,6 @@ void LootItemStorage::AddNewStoredLoot(Loot* loot, Player* player)
     if (!loot->isLooted())
         for (LootItemList::const_iterator li = loot->items.begin(); li != loot->items.end(); li++)
         {
-            if (!li->AllowedForPlayer(player))
-                continue;
-
             const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(li->itemid);
             if (!itemTemplate || itemTemplate->IsCurrencyToken())
                 continue;
@@ -144,7 +141,7 @@ bool LootItemStorage::LoadStoredLoot(Item* item)
    return true;
 }
 
-void LootItemStorage::RemoveStoredLootItem(uint32 containerId, uint32 itemid, uint32 count)
+void LootItemStorage::RemoveStoredLootItem(uint32 containerId, uint32 itemid, uint32 count, Loot *loot)
 {
     LootItemContainer::iterator itr = lootItemStore.find(containerId);
     if (itr == lootItemStore.end())
@@ -159,11 +156,11 @@ void LootItemStorage::RemoveStoredLootItem(uint32 containerId, uint32 itemid, ui
             break;
         }
 
-    if (itemList.empty())
+    if (!loot->unlootedCount)
         lootItemStore.erase(itr);
 }
 
-void LootItemStorage::RemoveStoredLootMoney(uint32 containerId)
+void LootItemStorage::RemoveStoredLootMoney(uint32 containerId, Loot *loot)
 {
     LootItemContainer::iterator itr = lootItemStore.find(containerId);
     if (itr == lootItemStore.end())
@@ -178,7 +175,7 @@ void LootItemStorage::RemoveStoredLootMoney(uint32 containerId)
             break;
         }
 
-    if (itemList.empty())
+    if (!loot->unlootedCount)
         lootItemStore.erase(itr);
 }
 

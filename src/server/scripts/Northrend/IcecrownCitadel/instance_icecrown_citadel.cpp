@@ -157,6 +157,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                 LoadDoorData(doorData);
                 TeamIdInInstance = TEAM_NEUTRAL;
                 HeroicAttempts = MaxHeroicAttempts;
+                LadyDeathwhisperGUID = 0;
                 LadyDeathwisperElevatorGUID = 0;
                 GunshipGUID = 0;
                 EnemyGunshipGUID = 0;
@@ -343,6 +344,9 @@ class instance_icecrown_citadel : public InstanceMapScript
                             instance->SummonCreature(NPC_UTHER_THE_LIGHTBRINGER_QUEST, UtherSpawnPos);
                             instance->SummonCreature(NPC_LADY_SYLVANAS_WINDRUNNER_QUEST, SylvanasSpawnPos);
                         }
+                        break;
+                    case NPC_LADY_DEATHWHISPER:
+                        LadyDeathwhisperGUID = creature->GetGUID();
                         break;
                     case NPC_DEATHBRINGER_SAURFANG:
                         DeathbringerSaurfangGUID = creature->GetGUID();
@@ -925,6 +929,8 @@ class instance_icecrown_citadel : public InstanceMapScript
             {
                 switch (type)
                 {
+                    case DATA_LADY_DEATHWHISPER:
+                        return LadyDeathwhisperGUID;
                     case DATA_ICECROWN_GUNSHIP_BATTLE:
                         return GunshipGUID;
                     case DATA_ENEMY_GUNSHIP:
@@ -1548,7 +1554,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                 std::ostringstream saveStream;
                 saveStream << "I C " << GetBossSaveData() << HeroicAttempts << ' '
                     << ColdflameJetsState << ' ' << BloodQuickeningState << ' ' << BloodQuickeningMinutes << ' ' << WeeklyQuestId10 << ' ' << PutricideEventProgress << ' ' 
-                    << uint32(LichKingHeroicAvailable ? 1 : 0) << ' ' << BloodPrinceTrashCount;
+                    << uint32(LichKingHeroicAvailable ? 1 : 0) << ' ' << BloodPrinceTrashCount << ' ' << uint32(IsBuffAvailable ? 1 : 0);
 
                 OUT_SAVE_INST_DATA_COMPLETE;
                 return saveStream.str();
@@ -1600,6 +1606,8 @@ class instance_icecrown_citadel : public InstanceMapScript
                     loadStream >> temp;
                     LichKingHeroicAvailable = temp ? true : false;
                     loadStream >> BloodPrinceTrashCount;
+                    loadStream >> temp;
+                    SetData(DATA_BUFF_AVAILABLE, temp ? true : false);
                 }
                 else
                     OUT_LOAD_INST_DATA_FAIL;
@@ -1822,6 +1830,7 @@ class instance_icecrown_citadel : public InstanceMapScript
             uint64 ScourgeTransporterFirstGUID;
 
             EventMap Events;
+            uint64 LadyDeathwhisperGUID;
             uint64 LadyDeathwisperElevatorGUID;
             uint64 GunshipGUID;
             uint64 EnemyGunshipGUID;

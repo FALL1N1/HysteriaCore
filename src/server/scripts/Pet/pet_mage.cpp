@@ -63,6 +63,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
             uint32 selectionTimer;
             uint64 _ebonGarogyleGUID;
             bool moved = false;
+            uint32 checktarget;
 
             void InitializeAI()
             {
@@ -146,7 +147,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
                 }
             }
 
-            bool MySelectNextTarget()
+            void  MySelectNextTarget()
             {
                 if (_ebonGarogyleGUID)
                 {
@@ -163,21 +164,24 @@ class npc_pet_mage_mirror_image : public CreatureScript
                         // target has cc, search target without cc!
                         if (selection->HasBreakableByDamageCrowdControlAura() || !me->IsValidAttackTarget(selection))
                         {
-                            return false;
+                            EnterEvadeMode();
+                            return;
                         }
 
                         me->getThreatManager().resetAllAggro();
                         me->AddThreat(selection, 1000000.0f);
-                        AttackStart(selection);
-                        return true;
+                        if (owner->IsInCombat())
+                            AttackStart(selection);
                     }
                 }
-                return false;
+                if (!me->GetVictim() || !me->GetVictim()->IsAlive())
+                    return;
             }
 
             void Reset()
             {
                 selectionTimer = 0;
+                checktarget = 0;
             }
 
             void UpdateAI(uint32 diff)
@@ -226,12 +230,15 @@ class npc_pet_mage_mirror_image : public CreatureScript
                     return;
                 }
 
-                if (me->GetVictim()->HasBreakableByDamageCrowdControlAura() || !me->GetVictim()->IsAlive())
+                checktarget += diff;
+                if (checktarget >= 1000)
                 {
-                    me->InterruptNonMeleeSpells(false);
-                    if (!MySelectNextTarget())
-                        EnterEvadeMode();
-                    return;
+                    if (me->GetVictim()->HasBreakableByDamageCrowdControlAura() || !me->GetVictim()->IsAlive())
+                    {
+                        MySelectNextTarget();
+                        me->InterruptNonMeleeSpells(true); // Stop casting if target is C or not Alive.
+                        return;
+                    }
                 }
 
                 selectionTimer += diff;
