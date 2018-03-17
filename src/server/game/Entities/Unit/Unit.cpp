@@ -578,7 +578,7 @@ bool Unit::IsWithinMeleeRange(const Unit* obj, float dist) const
     float dz = GetPositionZ() - obj->GetPositionZ();
     float distsq = dx*dx + dy*dy + dz*dz;
 
-    float sizefactor = GetMeleeReach() + obj->GetMeleeReach();
+    float sizefactor = GetCombatReach() + obj->GetCombatReach() + 4.0f / 3.0f;
     float maxdist = dist + sizefactor;
 
     return distsq < maxdist * maxdist;
