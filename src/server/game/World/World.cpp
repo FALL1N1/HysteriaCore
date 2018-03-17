@@ -2112,10 +2112,7 @@ void World::Update(uint32 diff)
 
     if (m_gameTime > m_NextRandomBGReset)
         ResetRandomBG();
-
-    if (m_gameTime > m_NextGuildReset)
-        ResetGuildCap();
-
+     
     // pussywizard:
     // acquire mutex now, this is kind of waiting for listing thread to finish it's work (since it can't process next packet)
     // so we don't have to do it in every packet that modifies auctions
@@ -3091,16 +3088,6 @@ void World::ResetRandomBG()
 
     m_NextRandomBGReset = GetNextTimeWithDayAndHour(-1, 6);
     sWorld->setWorldState(WS_BG_DAILY_RESET_TIME, uint64(m_NextRandomBGReset));
-}
-
-void World::ResetGuildCap()
-{
-    sLog->outString("Guild Daily Cap reset.");
-
-    m_NextGuildReset = GetNextTimeWithDayAndHour(-1, 6);
-    sWorld->setWorldState(WS_GUILD_DAILY_RESET_TIME, uint64(m_NextGuildReset));
-
-    sGuildMgr->ResetTimes();
 }
 
 void World::UpdateMaxSessionCounters()
