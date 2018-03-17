@@ -646,7 +646,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
     public:
         explicit GameObject();
         ~GameObject();
-
+        uint32      m_despawnDelay;
         void BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, Player* target) const;
 
         void AddToWorld();
@@ -725,6 +725,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Mov
         void SetSpawnedByDefault(bool b) { m_spawnedByDefault = b; }
         uint32 GetRespawnDelay() const { return m_respawnDelayTime; }
         void Refresh();
+        void DespawnOrUnsummon(uint32 delay);
         void Delete();
         void getFishLoot(Loot* loot, Player* loot_owner);
         void getFishLootJunk(Loot* loot, Player* loot_owner);

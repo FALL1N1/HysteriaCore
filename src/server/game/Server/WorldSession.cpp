@@ -1267,3 +1267,39 @@ void WorldSession::InitWarden(BigNumber* k, std::string const& os)
         // _warden->Init(this, k);
     }
 }
+
+void WorldSession::HandleGroupSwapSubGroupOpcode(WorldPacket& recv_data)
+{
+    std::string playerName1, playerName2;
+
+    recv_data >> playerName1;
+    recv_data >> playerName2;
+
+    Group* group = GetPlayer()->GetGroup();
+    if (!group || !group->isRaidGroup())
+        return;
+
+    if (!group->IsLeader(GetPlayer()->GetGUID()) &&
+        !group->IsAssistant(GetPlayer()->GetGUID()))
+        return;
+
+    auto getGuid = [&group](std::string const& playerName)
+    { 
+            if (uint64 guid = sObjectMgr->GetPlayerGUIDByName(playerName))
+                return guid;
+            else
+                return uint64(0);
+    };
+
+    uint64 guid1 = getGuid(playerName1);
+    uint64 guid2 = getGuid(playerName2);
+
+    uint8 groupId1 = group->GetMemberGroup(guid1);
+    uint8 groupId2 = group->GetMemberGroup(guid2);
+
+    if (groupId1 == MAX_RAID_SUBGROUPS + 1 || groupId2 == MAX_RAID_SUBGROUPS + 1)
+        return;
+
+    group->ChangeMembersGroup(guid1, groupId2);
+    group->ChangeMembersGroup(guid2, groupId1);
+}

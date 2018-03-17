@@ -20,6 +20,7 @@
 #include "CellImpl.h"
 #include "CreatureTextMgr.h"
 #include "DatabaseEnv.h"
+#include "GameObject.h"
 #include "GameEventMgr.h"
 #include "GossipDef.h"
 #include "GridDefines.h"
@@ -1119,10 +1120,23 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
 
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             {
-                if (IsCreature(*itr))
+                /*if (IsCreature(*itr))
                     (*itr)->ToCreature()->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
                 else if (IsGameObject(*itr))
-                    (*itr)->ToGameObject()->Delete();
+                    (*itr)->ToGameObject()->Delete();*/
+                
+                if (Creature* creature = (*itr)->ToCreature())
+                {
+                    if (SmartAI* smartAI = CAST_AI(SmartAI, creature->AI()))
+                    {
+                        smartAI->SetDespawnTime(e.action.forceDespawn.delay + 1);
+                        smartAI->StartDespawn();
+                    }
+                    else
+                        creature->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
+                }
+                else if (GameObject* goTarget = (*itr)->ToGameObject())
+                    goTarget->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
             }
 
             delete targets;
