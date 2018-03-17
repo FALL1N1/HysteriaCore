@@ -752,6 +752,7 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         float m_respawnradius;
         uint16 m_transportCheckTimer;
         uint32 lootPickPocketRestoreTime;
+        uint32 m_advanceMovementTime;                       // (msecs) remaining time for next reposition update to avoid creatures standing inside each other
 
         ReactStates m_reactState;                           // for AI, not charmInfo
         void RegenerateHealth();
