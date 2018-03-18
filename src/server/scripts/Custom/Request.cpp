@@ -1196,9 +1196,9 @@ public:
 
 void AddSC_CustomRequest()
 {
-	new custom_itemleveltoken();
-	new custom_renametoken();
-    new custom_onlogin(); // level token
-    new c_npc_hogger();
-    new cs_w_chat();
+	//new custom_itemleveltoken();
+	//new custom_renametoken();
+    //new custom_onlogin(); // level token
+    //new c_npc_hogger();
+    //new cs_w_chat();
 }
