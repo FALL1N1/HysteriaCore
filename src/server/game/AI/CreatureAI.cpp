@@ -258,6 +258,9 @@ void CreatureAI::CheckMeleeRepositionRequirements()
 {
     if (Unit* victim = me->GetVictim())
     {
+        if (me->isWorldBoss() && me->IsWithinMeleeRange(victim))
+            return;
+
         Position victimPos;
         victimPos.Relocate(victim->GetPosition());
 
