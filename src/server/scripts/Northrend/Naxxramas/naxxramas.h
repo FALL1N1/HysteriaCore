@@ -4,7 +4,7 @@ REWRITTEN FROM SCRATCH BY XINEF, IT OWNS NOW!
 
 #ifndef DEF_NAXXRAMAS_H
 #define DEF_NAXXRAMAS_H
-
+ 
 enum NXEncounter
 {
     EVENT_PATCHWERK = 0,
@@ -52,6 +52,7 @@ enum NXData
     DATA_THADDIUS_TESLA_TWO = 123,
     DATA_HORSEMAN_GATE = 124,
     DATA_KELTHUZAD_GATE = 125,
+    DATA_PATCHWERK_BOSS = 126,
 };
 
 enum NXGOs
@@ -124,7 +125,15 @@ enum NXNPCs
     // Frogger
     NPC_LIVING_POISON = 16027,
     NPC_NAXXRAMAS_TRIGGER = 16082,
-    NPC_MR_BIGGLESWORTH = 16998
+    NPC_MR_BIGGLESWORTH = 16998,
+
+    // Patchwerk
+    NPC_PATCHWERK               = 16028,
+    NPC_PATCHWORK_GOLEM         = 16017,
+    NPC_BILE_RETCHER            = 16018,
+    NPC_MAD_SCIENTIST           = 16020,
+    NPC_LIVING_MONSTROSITY      = 16021,
+    NPC_SURGICAL_ASSIST         = 16022,
 };
 
 enum NXMisc
@@ -156,4 +165,3 @@ enum NXSounds
     SOUND_SCREAM_4 = 8876,
 };
 #endif
-

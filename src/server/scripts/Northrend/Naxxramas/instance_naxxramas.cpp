@@ -89,6 +89,7 @@ public:
 
 
             // NPCs
+            _patchwerkGUID = 0;
             _thaddiusGUID = 0;
             _stalaggGUID = 0;
             _feugenGUID = 0;
@@ -161,6 +162,8 @@ public:
 
 
         // NPCs
+        std::list<uint64> PatchwerkRoomTrash; // patchwerk trash list
+        uint64 _patchwerkGUID;
         uint64 _thaddiusGUID;
         uint64 _stalaggGUID;
         uint64 _feugenGUID;
@@ -218,6 +221,9 @@ public:
         {
             switch (creature->GetEntry())
             {
+            case NPC_PATCHWERK:
+                _patchwerkGUID = creature->GetGUID();
+                return;
             case NPC_THADDIUS:
                 _thaddiusGUID = creature->GetGUID();
                 return;
@@ -247,6 +253,23 @@ public:
                 return;
             case NPC_LICH_KING:
                 _lichkingGUID = creature->GetGUID();
+                return;
+            // patchwerk trash
+            case NPC_PATCHWORK_GOLEM:
+                PatchwerkRoomTrash.push_back(creature->GetGUID());
+                return;
+            case NPC_BILE_RETCHER:
+                if (creature->GetPositionY() > -3258.0f)
+                    PatchwerkRoomTrash.push_back(creature->GetGUID());
+                return;
+            case NPC_MAD_SCIENTIST:
+                PatchwerkRoomTrash.push_back(creature->GetGUID());
+                return;
+            case NPC_LIVING_MONSTROSITY:
+                PatchwerkRoomTrash.push_back(creature->GetGUID());
+                return;
+            case NPC_SURGICAL_ASSIST:
+                PatchwerkRoomTrash.push_back(creature->GetGUID());
                 return;
             }
         }
@@ -500,6 +523,26 @@ public:
             switch (id)
             {
             case EVENT_PATCHWERK:
+                if (data == IN_PROGRESS)
+                {
+                    sLog->outString("1");
+                    // pull all the trash if not killed
+                    if (Creature* patch = instance->GetCreature(_patchwerkGUID))
+                    {
+                        sLog->outString("2");
+                        if (!PatchwerkRoomTrash.empty())
+                        {
+                            sLog->outString("3");
+                            for (std::list<uint64>::iterator itr = PatchwerkRoomTrash.begin(); itr != PatchwerkRoomTrash.end(); ++itr)
+                            {
+                                sLog->outString("4");
+                                Creature* trash = ObjectAccessor::GetCreature(*patch, *itr);
+                                if (trash && trash->IsAlive() && !trash->IsInCombat())
+                                    trash->AI()->AttackStart(patch->GetVictim()); 
+                            }
+                        }
+                    }
+                }
             case EVENT_GROBBULUS:
             case EVENT_GLUTH:
             case EVENT_NOTH:
@@ -923,6 +966,8 @@ public:
                 return _kelthuzadGateGUID;
 
                 // NPCs
+            case DATA_PATCHWERK_BOSS:
+                return _patchwerkGUID;
             case DATA_THADDIUS_BOSS:
                 return _thaddiusGUID;
             case DATA_STALAGG_BOSS:

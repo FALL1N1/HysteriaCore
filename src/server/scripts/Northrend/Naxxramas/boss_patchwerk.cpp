@@ -85,14 +85,14 @@ public:
         {
             Talk(SAY_DEATH);
             if (pInstance)
-                pInstance->SetData(EVENT_PATCHWERK, DONE);
+                pInstance->SetData(EVENT_PATCHWERK, DONE); 
         }
 
         void EnterCombat(Unit *who)
         {
             Talk(SAY_AGGRO);
             
-            me->CallForHelp(250.0f);
+            //me->CallForHelp(250.0f);
             me->SetInCombatWithZone();
             events.ScheduleEvent(EVENT_SPELL_HATEFUL_STRIKE, 1200);
             events.ScheduleEvent(EVENT_SPELL_BERSERK, 360000);
