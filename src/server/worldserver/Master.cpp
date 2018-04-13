@@ -460,6 +460,23 @@ bool Master::_StartDB()
         return false;
     }
 
+    async_threads = uint8(sConfigMgr->GetIntDefault("APIDatabase.WorkerThreads", 1));
+    synch_threads = uint8(sConfigMgr->GetIntDefault("APIDatabase.SynchThreads", 1));
+
+    if (async_threads < 1 || async_threads > 32)
+    {
+        sLog->outError("Login database: invalid number of worker threads specified. "
+            "Please pick a value between 1 and 32.");
+        return false;
+    }
+
+    if (!APIDatabase.Open(dbstring, async_threads, synch_threads))
+    {
+        sLog->outError("Cannot connect to the API database ' %s '", dbstring.c_str());
+        return false;
+    }
+
+
     ///- Get the realm Id from the configuration file
     realmID = sConfigMgr->GetIntDefault("RealmID", 0);
     if (!realmID || realmID > 8) // pussywizard: above 8 spoils 8-bit online mask for the accounts
@@ -489,6 +506,7 @@ void Master::_StopDB()
     CharacterDatabase.Close();
     WorldDatabase.Close();
     LoginDatabase.Close();
+    APIDatabase.Close();
 
     MySQL::Library_End();
 }

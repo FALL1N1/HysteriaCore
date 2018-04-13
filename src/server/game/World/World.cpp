@@ -2222,6 +2222,7 @@ void World::Update(uint32 diff)
         CharacterDatabase.KeepAlive();
         LoginDatabase.KeepAlive();
         WorldDatabase.KeepAlive();
+        APIDatabase.KeepAlive();
     }
 
     // update the instance reset times

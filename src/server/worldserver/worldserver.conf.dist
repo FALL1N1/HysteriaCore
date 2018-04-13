@@ -90,6 +90,7 @@ LogsDir = ""
 LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
 WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
 CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
+APIDatabaseInfo       = "127.0.0.1;3306;trinity;trinity;balnazzar_api"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -105,6 +106,7 @@ CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
 LoginDatabase.WorkerThreads     = 1
 WorldDatabase.WorkerThreads     = 1
 CharacterDatabase.WorkerThreads = 1
+APIDatabase.WorkerThreads = 1
 
 #
 #    LoginDatabase.SynchThreads
@@ -118,6 +120,7 @@ CharacterDatabase.WorkerThreads = 1
 LoginDatabase.SynchThreads     = 1
 WorldDatabase.SynchThreads     = 1
 CharacterDatabase.SynchThreads = 2
+APIDatabase.SynchThreads = 1
 
 #
 #    MaxPingTime
