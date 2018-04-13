@@ -155,6 +155,9 @@ public:
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
+            if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+                return false;
+
             return HandleEnchants(player, creature, MENU_ENCHANTS);
         }
 

@@ -28,6 +28,9 @@ public:
     
 	static bool HandleQueueSoloCommand(ChatHandler* handler, const char* args)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         Player* me = handler->GetSession()->GetPlayer(); 
         uint32 err = 0;
         
@@ -54,6 +57,9 @@ public:
     
     static bool HandleQueue2v2Command(ChatHandler* handler, const char* args)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         Player* me = handler->GetSession()->GetPlayer();
         if(me->GetArenaTeamId(1) != 0)
         {
@@ -68,6 +74,9 @@ public:
     
 	static bool HandleQueue3v3Command(ChatHandler* handler, const char* args)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         Player* me = handler->GetSession()->GetPlayer();
         if(me->GetArenaTeamId(2) != 0)
         {

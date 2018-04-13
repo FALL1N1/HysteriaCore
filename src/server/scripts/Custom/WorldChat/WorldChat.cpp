@@ -147,6 +147,9 @@ public:
 
 	static bool HandleWorldChatCommand(ChatHandler * handler, const char * args)
 	{
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
 
 		if (!handler->GetSession()->GetPlayer()->CanSpeak())
 			return false;

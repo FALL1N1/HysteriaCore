@@ -7,6 +7,9 @@ public:
  
     void OnUpdateZone(Player* player, uint32 zone, uint32 area)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         uint32 entry = 0;
         if (player->getClass() == CLASS_MAGE)
             entry = 193061;

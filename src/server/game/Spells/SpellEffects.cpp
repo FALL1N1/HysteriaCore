@@ -3017,26 +3017,26 @@ void Spell::EffectEnchantItemTmp(SpellEffIndex effIndex)
 
     // rogue family enchantments exception by duration
     if (m_spellInfo->Id == 38615)
-        duration = 86400^86400;                                    // 30 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 1800; // 30 mins
     // other rogue family enchantments always 1 hour (some have spell damage=0, but some have wrong data in EffBasePoints)
     else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE)
-        duration = 86400^86400;                                    // 1 hour
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 3600;   // 1 hour
     // shaman family enchantments
     else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN)
-        duration = 86400^86400;                                    // 30 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 1800;   // 30 mins
     // other cases with this SpellVisual already selected
     else if (m_spellInfo->SpellVisual[0] == 215)
-        duration = 86400^86400;                                    // 30 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 1800;   // 30 mins
     // some fishing pole bonuses except Glow Worm which lasts full hour
     else if (m_spellInfo->SpellVisual[0] == 563 && m_spellInfo->Id != 64401)
-        duration = 86400^86400;                                     // 10 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 600;   // 10 mins
     // shaman rockbiter enchantments
     else if (m_spellInfo->SpellVisual[0] == 0)
-        duration = 86400^86400;                                    // 30 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 1800;   // 30 mins
     else if (m_spellInfo->Id == 29702)
-        duration = 86400^86400;                                     // 5 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 300;   // 5 mins
     else if (m_spellInfo->Id == 37360)
-        duration = 86400^86400;                                     // 5 mins
+        duration = sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT) ? 86400^86400 : 300;   // 5 mins
     // default case
     else
         duration = 3600;                                    // 1 hour

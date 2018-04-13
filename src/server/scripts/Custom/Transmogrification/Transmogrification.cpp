@@ -9,6 +9,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface\\icons\\Inv_helmet_94:35:35:-18:0|tTransmogrify Items", GOSSIP_SENDER_MAIN, TRANSMOG_ACTION_SHOW_TRANSMOGRIFIER);
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface\\icons\\Inv_weapon_shortblade_54:35:35:-18:0|tTransmogrify Enchants", GOSSIP_SENDER_MAIN, TRANSMOG_ACTION_SHOW_ENCHANTS);
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface\\icons\\ability_DualWieldSpecialization:35:35:-18:0|tRemove Enchant Transmogrifications", GOSSIP_SENDER_MAIN, TRANSMOG_ACTION_SHOW_REMOVE_ENCHANT_TRANSMOG_OPTIONS);

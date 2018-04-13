@@ -43,6 +43,9 @@ class ItemRequester : public CreatureScript
 		
 		bool OnGossipHello(Player *pPlayer, Creature *pCreature) 
 		{ 
+            if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+                return false;
+
 			pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(8, 0, REQUESTER_MENU_REQUEST_ITEM, ITEM_REQUESTER_MENU_SELECT_ITEM, GOSSIP_ACTION_INFO_DEF + 1, REQUESTER_MENU_REQUEST_CONFIRMATION, 0, true);
 			pPlayer->PlayerTalkClass->GetGossipMenu().AddMenuItem(8, 0, REQUESTER_MENU_EXIT, ITEM_REQUESTER_MENU_EXIT, GOSSIP_ACTION_INFO_DEF + 1, "", false);
 			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());

@@ -42,6 +42,9 @@ public:
 
     static bool HandleSetViewpointCommand(ChatHandler* handler, const char* /*args*/)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         sLog->outString("HandleSetViewpointCommand");
         Player* player = handler->GetSession()->GetPlayer();
         if (!player)
@@ -91,6 +94,9 @@ public:
 
     static bool HandleRestoreViewpointCommand(ChatHandler* handler, const char* /*args*/)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         Player* player = handler->GetSession()->GetPlayer();
         if (!player)
             return false;
@@ -188,6 +194,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         page = 1;
         CreateArenasMap();
 
@@ -203,6 +212,9 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         player->PlayerTalkClass->ClearMenus();
 
         switch (sender)

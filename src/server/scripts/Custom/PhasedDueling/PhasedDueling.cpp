@@ -7,6 +7,9 @@ public:
 
     void OnDuelStart(Player* firstplayer, Player* secondplayer) override
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+        
         if (!sWorld->getBoolConfig(CONFIG_DUEL_PHASING))
             return;
         

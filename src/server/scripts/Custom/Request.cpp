@@ -19,6 +19,9 @@ public:
 
     bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override // Any hook here
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         if (player->getLevel() < 255)
         {
             player->SetLevel(player->getLevel() + 1);
@@ -36,6 +39,9 @@ public:
 
     bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override // Any hook here
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         player->SetAtLoginFlag(AT_LOGIN_RENAME);
         player->GetSession()->SendNotification("Your character is ready to be renamed, please relog.");
         item->DestroyForPlayer(player);
@@ -805,6 +811,9 @@ class custom_onlogin : public PlayerScript
 
 		void OnLogin(Player* player)
         {
+            if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+                return;
+
             if (player->getLevel() < 80)
             { 
                 StripPlayer(player);

@@ -28,6 +28,9 @@ public:
     
 	static bool HandleMMRResetCommand(ChatHandler* handler, const char* args)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         if (Player* me = handler->GetSession()->GetPlayer())
         { 
             for (uint8 slot = 0; slot <= 2; ++slot)

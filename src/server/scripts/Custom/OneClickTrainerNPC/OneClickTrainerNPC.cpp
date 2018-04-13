@@ -9,6 +9,9 @@ public:
 
   bool OnGossipHello(Player* player, Creature* creature)
   {
+      if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
     player->ADD_GOSSIP_ITEM(3, "|TInterface\\icons\\inv_misc_book_11:40:40:-18:0|t|r Train me / Max out skills", GOSSIP_SENDER_MAIN, 1);
     player->ADD_GOSSIP_ITEM(1, "|TInterface\\icons\\trade_engineering:40:40:-18:0|t|rReset Talents", GOSSIP_SENDER_MAIN, 3);
     if(player->getClass() == CLASS_HUNTER) 

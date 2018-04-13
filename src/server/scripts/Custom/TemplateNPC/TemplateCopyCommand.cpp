@@ -52,6 +52,9 @@ public:
 
 	static bool HandleCopyGearCommand(ChatHandler* handler, const char* args)
 	{
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
 		std::string name;
 		Player* player = handler->GetSession()->GetPlayer();
 		Player* target;
@@ -103,6 +106,9 @@ public:
 
 	static bool HandleCopyTalentsCommand(ChatHandler* handler, const char* args)
 	{
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
 		std::string name;
 		Player* player = handler->GetSession()->GetPlayer();
 		Player* target;
@@ -150,6 +156,9 @@ public:
 
 	static bool HandleCopyGearAndTalentsCommand(ChatHandler* handler, const char* args)
 	{
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
 		std::string name;
 		Player* player = handler->GetSession()->GetPlayer();
 		Player* target;

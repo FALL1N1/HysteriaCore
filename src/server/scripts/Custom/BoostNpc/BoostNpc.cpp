@@ -709,6 +709,9 @@ public:
 
     bool OnGossipHello(Player *player, Creature *_creature)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         if (player->IsInCombat()) // chceck if player is in combat
         {
             player->GetSession()->SendNotification("Leave combat first!");
@@ -1991,6 +1994,9 @@ public:
 
     bool OnGossipHello(Player *player, Creature *_creature)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         if (player->IsInCombat()) // chceck if player is in combat
         {
             player->GetSession()->SendNotification("Leave combat first!");
@@ -2620,6 +2626,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* me)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "By clicking this option you agree that you will recieve your token WHICH IS NOT REFUNDABLE and the purchase you do trough it is NON REFUNDABLE EITHER.", GOSSIP_SENDER_MAIN, 1);
         player->SEND_GOSSIP_MENU(68, me->GetGUID());
         return true;

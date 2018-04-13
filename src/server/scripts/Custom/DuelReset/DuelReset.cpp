@@ -9,6 +9,9 @@ class Duel_Reset : public PlayerScript
 
     void OnDuelEnd(Player* pWinner, Player* pLoser, DuelCompleteType /*type*/)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         pWinner->RemoveAllSpellCooldown();
         pLoser->RemoveAllSpellCooldown();
         pWinner->SetHealth(pWinner->GetMaxHealth());

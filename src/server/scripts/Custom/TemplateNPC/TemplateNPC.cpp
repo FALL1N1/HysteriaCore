@@ -512,6 +512,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         switch (player->getClass())
         {
         case CLASS_PRIEST:

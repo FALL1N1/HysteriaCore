@@ -10,6 +10,9 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         if (Battleground *bg = player->GetBattleground())
             if (bg->isArena())
             {

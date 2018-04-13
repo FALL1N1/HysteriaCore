@@ -7,6 +7,9 @@ public:
 
     bool OnGossipHello(Player *player, Creature *creature)
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         player->ADD_GOSSIP_ITEM( 3, "|cffBB0000Legendaries", GOSSIP_SENDER_MAIN, 1);
         player->ADD_GOSSIP_ITEM( 3, "|cffFF0000No, thanks! I dont want to transform my gear.",GOSSIP_SENDER_MAIN, 999); 
 

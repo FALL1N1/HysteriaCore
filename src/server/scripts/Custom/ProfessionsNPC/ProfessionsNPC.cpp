@@ -39,6 +39,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return false;
+
         if (player->GetSession()->IsPremium() || (player->HasSkill(SKILL_TAILORING) && player->GetSkillValue(SKILL_TAILORING) >= 400)) player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TABARD, "Tailoring", GOSSIP_SENDER_MAIN, OPTION_TAILORING);
         if (player->GetSession()->IsPremium() || (player->HasSkill(SKILL_JEWELCRAFTING) && player->GetSkillValue(SKILL_JEWELCRAFTING) >= 400)) player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TABARD, "Jewelcrafting", GOSSIP_SENDER_MAIN, OPTION_JEWELCRAFTING);
         if (player->GetSession()->IsPremium() || (player->HasSkill(SKILL_ENGINEERING) && player->GetSkillValue(SKILL_ENGINEERING) >= 400)) player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TABARD, "Engineering", GOSSIP_SENDER_MAIN, OPTION_ENGINEERING);

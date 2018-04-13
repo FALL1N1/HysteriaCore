@@ -3609,3 +3609,9 @@ Pooling.CreatureMaxMinRespawn    = 15
 Pooling.GameObjectMaxMinRespawn  = 15
 
 ###################################################################################################
+#
+#   Global switch for custom scripts (are they enabled or not?) 
+#           Default: 0 (disabled)
+#
+
+AreCustomScripts.Enabled = 0

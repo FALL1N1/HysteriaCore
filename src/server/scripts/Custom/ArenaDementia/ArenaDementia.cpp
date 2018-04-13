@@ -9,6 +9,9 @@ public:
 
 	void OnUpdateZone(Player* player, uint32 newZone, uint32 newArea)
 	{
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
 		// Remove Dementia on updating zone
 		if (player->HasAura(SPELL_DEMENTIA))
 			player->RemoveAura(SPELL_DEMENTIA);
@@ -16,6 +19,9 @@ public:
 
 	void OnLogin(Player* player)
 	{
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
 		// Remove Dementia on player login
 		if (player->HasAura(SPELL_DEMENTIA))
 			player->RemoveAura(SPELL_DEMENTIA);
