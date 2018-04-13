@@ -1,1 +1,0 @@
-REPLACE INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `VerifiedBuild`) VALUES (268968, 191446, 571, 1, 1, 5804.72, 640.837, 647.627, -0.680677, 0, 0, -0.333807, 0.942641, 180, 255, 1, 0);

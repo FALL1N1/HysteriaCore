@@ -38,10 +38,6 @@ if(SERVERS)
   add_subdirectory(gsoap)
 endif()
 
-if(TOOLS)
-  add_subdirectory(libmpq)
-endif()
-
 if (ELUNA)
   add_subdirectory(lualib)
 endif()
