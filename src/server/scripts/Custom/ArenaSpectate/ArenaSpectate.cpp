@@ -195,7 +195,7 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
-            return;
+            return false;
 
         page = 1;
         CreateArenasMap();
@@ -213,7 +213,7 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
         if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
-            return;
+            return false;
 
         player->PlayerTalkClass->ClearMenus();
 

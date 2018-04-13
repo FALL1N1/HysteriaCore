@@ -8,7 +8,7 @@ class APIDatabaseConnection : public MySQLConnection
 {
     public: 
         APIDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo) { }
-        APIDatabaseConnection(ACE_Activation_Queue* q, MySQLConnectionInfo& connInfo) : MySQLConnection(q, connInfo) { } 
+        APIDatabaseConnection(ACE_Activation_Queue* q, MySQLConnectionInfo& connInfo) : MySQLConnection(q, connInfo) { }
         void DoPrepareStatements();
 };
 

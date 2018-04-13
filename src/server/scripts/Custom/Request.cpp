@@ -1038,21 +1038,21 @@ public:
         case 3:
 
 
-            if (player->GetSession()->GetSecurity() >= SEC_VIPONE)
+            if (player->GetSession()->GetSecurity() >= SEC_CONSOLE) // SEC_VIPONE
             {
-                if (player->GetSession()->GetSecurity() > SEC_VIPONE)
+                if (player->GetSession()->GetSecurity() > SEC_CONSOLE) // SEC_VIPONE
                 {
-                    if (player->GetSession()->GetSecurity() == SEC_VIPONE)
+                    if (player->GetSession()->GetSecurity() == SEC_CONSOLE) // SEC_VIPONE
                     {
                         ssMsg << "|cff00ff00[World]|r[|cffC0C0C0VIP-PvP|r]|r" << GetFactionLink(player) << GetClassLink(player) << GetNameLink(player) << "|r: ";
                         ssMsg << msg;
                     }
-                    if (player->GetSession()->GetSecurity() == SEC_VIPTWO)
+                    if (player->GetSession()->GetSecurity() == SEC_CONSOLE) // SEC_VIPONE
                     {
                         ssMsg << "|cff00ff00[World]|r[|cffD4A017VIP-PvE|r]|r" << GetFactionLink(player) << GetClassLink(player) << GetNameLink(player) << "|r: ";
                         ssMsg << msg;
                     }
-                    if (player->GetSession()->GetSecurity() == SEC_VIPTHR)
+                    if (player->GetSession()->GetSecurity() == SEC_CONSOLE) // SEC_VIPONE
                     {
                         ssMsg << "|cff00ff00[World]|r[|cffE5E4E2VIP-Deluxe|r]|r" << GetFactionLink(player) << GetClassLink(player) << GetNameLink(player) << "|r: ";
                         ssMsg << msg;

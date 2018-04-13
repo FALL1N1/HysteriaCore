@@ -1,6 +1,6 @@
 #include "APIDatabase.h"
 
-void APIDatabase::DoPrepareStatements()
+void APIDatabaseConnection::DoPrepareStatements()
 {
     if (!m_reconnecting)
         m_stmts.resize(MAX_APIDATABASE_STATEMENTS);

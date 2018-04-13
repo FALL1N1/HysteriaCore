@@ -459,7 +459,8 @@ bool Master::_StartDB()
         sLog->outError("Cannot connect to login database %s", dbstring.c_str());
         return false;
     }
-
+    
+    dbstring = sConfigMgr->GetStringDefault("APIDatabaseInfo", "");
     async_threads = uint8(sConfigMgr->GetIntDefault("APIDatabase.WorkerThreads", 1));
     synch_threads = uint8(sConfigMgr->GetIntDefault("APIDatabase.SynchThreads", 1));
 
@@ -467,6 +468,12 @@ bool Master::_StartDB()
     {
         sLog->outError("Login database: invalid number of worker threads specified. "
             "Please pick a value between 1 and 32.");
+        return false;
+    }
+
+    if (dbstring.empty())
+    {
+        sLog->outError("Login database not specified in configuration file");
         return false;
     }
 
