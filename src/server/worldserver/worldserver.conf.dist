@@ -87,6 +87,12 @@ LogsDir = ""
 #                     "127.0.0.1;3306;trinity;trinity;world"      - (WorldDatabaseInfo)
 #                     "127.0.0.1;3306;trinity;trinity;characters" - (CharacterDatabaseInfo)
 
+#
+#Is the API Database and overall logging enabled?
+#
+
+APIDatabase.Enabled = 0
+
 LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
 WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
 CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
