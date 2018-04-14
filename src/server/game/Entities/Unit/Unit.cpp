@@ -995,6 +995,8 @@ uint32 Unit::DealDamage(Unit* attacker, Unit* victim, uint32 damage, CleanDamage
     }
 
     ;//sLog->outStaticDebug("DealDamageEnd returned %d damage", damage);
+    if(damage > 100000)
+        sLog->outHack("[BUGABUSE] Player %s(%u) has dealt %u damage to %s(%u)", attacker->GetName().c_str(), attacker->GetGUID(), damage, victim->GetName().c_str(), victim->GetGUID());
 
     return damage;
 }

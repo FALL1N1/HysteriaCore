@@ -2195,6 +2195,18 @@ void WorldObject::SetZoneScript()
 
 TempSummon* WorldObject::SummonCreature(uint32 entry, const Position &pos, TempSummonType spwtype, uint32 duration, uint32 vehId, SummonPropertiesEntry const *properties) const
 { 
+    if (m_lastEntrySummon != entry)
+    {
+        m_lastEntrySummon = entry;
+        m_summonCounter = 1;
+    }
+    else
+    {
+        m_summonCounter++;
+        if (m_summonCounter > 20 && isType(TYPEMASK_PLAYER))
+            sLog->outHack("[BUGABUSE] Player %u spam summon of creature %u [counter %u]", GetGUIDLow(), entry, m_summonCounter);
+    }
+    
     if (Map* map = FindMap())
     {
         if (TempSummon* summon = map->SummonCreature(entry, pos, properties, duration, isType(TYPEMASK_UNIT) ? (Unit*)this : NULL))

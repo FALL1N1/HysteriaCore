@@ -33,7 +33,7 @@ extern LoginDatabaseWorkerPool LoginDatabase;
 Log::Log() :
     raLogfile(NULL), logfile(NULL), gmLogfile(NULL), charLogfile(NULL),
     dberLogfile(NULL), chatLogfile(NULL), sqlLogFile(NULL), sqlDevLogFile(NULL),
-    miscLogFile(NULL),
+    miscLogFile(NULL), historyLogFile(NULL), hackLogFile(NULL),
     m_gmlog_per_account(false), m_enableLogDB(false), m_colored(false)
 {
     Initialize();
@@ -76,6 +76,14 @@ Log::~Log()
     if (miscLogFile != NULL)
         fclose(miscLogFile);
     miscLogFile = NULL;
+
+    if (historyLogFile != NULL)
+        fclose(historyLogFile);
+    historyLogFile = NULL;
+
+    if (hackLogFile != NULL)
+        fclose(hackLogFile);
+    hackLogFile = NULL;
 }
 
 void Log::SetLogLevel(char *Level)
@@ -157,7 +165,9 @@ void Log::Initialize()
     sqlLogFile = openLogFile("SQLDriverLogFile", NULL, "a");
     sqlDevLogFile = openLogFile("SQLDeveloperLogFile", NULL, "a");
     chatLogfile = openLogFile("ChatLogFile", "ChatLogTimestamp", "a");
-    miscLogFile = fopen((m_logsDir+"Misc.log").c_str(), "a");
+    miscLogFile = fopen((m_logsDir+"Misc.log").c_str(), "a"); 
+    historyLogFile = fopen((m_logsDir + "History.log").c_str(), "a");
+    hackLogFile = fopen((m_logsDir + "Hack.log").c_str(), "a");
 
     // Main log file settings
     m_logLevel     = sConfigMgr->GetIntDefault("LogLevel", LOGL_NORMAL);
@@ -986,8 +996,25 @@ void Log::outMisc(const char * str, ...)
         va_list ap;
         va_start(ap, str);
         vfprintf(miscLogFile, str, ap);
-        fprintf(miscLogFile, "\n" );
+        fprintf(miscLogFile, "\n");
         fflush(miscLogFile);
+        va_end(ap);
+    }
+}
+
+void Log::outHistory(const char * str, ...)
+{
+    if (!str)
+        return;
+
+    if (historyLogFile)
+    {
+        outTimestamp(historyLogFile);
+        va_list ap;
+        va_start(ap, str);
+        vfprintf(historyLogFile, str, ap);
+        fprintf(historyLogFile, "\n");
+        fflush(historyLogFile);
         va_end(ap);
     }
 }
@@ -1015,6 +1042,24 @@ void Log::outChat(const char * str, ...)
         vfprintf(chatLogfile, str, ap);
         fprintf(chatLogfile, "\n");
         fflush(chatLogfile);
+        va_end(ap);
+    }
+    fflush(stdout);
+}
+
+void Log::outHack(const char * str, ...)
+{
+    if (!str)
+        return; 
+
+    if (hackLogFile)
+    {
+        outTimestamp(hackLogFile);
+        va_list ap;
+        va_start(ap, str);
+        vfprintf(hackLogFile, str, ap);
+        fprintf(hackLogFile, "\n");
+        fflush(hackLogFile);
         va_end(ap);
     }
     fflush(stdout);

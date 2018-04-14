@@ -298,6 +298,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 sender->TextEmote(msg);
             else if (type == CHAT_MSG_YELL)
                 sender->Yell(msg, lang);
+            sLog->outChat("[N][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_WHISPER:
         {
@@ -341,6 +342,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 sender->AddWhisperWhiteList(receiver->GetGUID());
 
             GetPlayer()->Whisper(msg, lang, receiver->GetGUID());
+            sLog->outChat("[Whisper][%s > %s]: %s", sender->GetName().c_str(), receiver->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_PARTY:
         case CHAT_MSG_PARTY_LEADER:
@@ -360,6 +362,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             WorldPacket data;
             ChatHandler::BuildChatPacket(data, ChatMsg(type), Language(lang), sender, NULL, msg);
             group->BroadcastPacket(&data, false, group->GetMemberGroup(GetPlayer()->GetGUID()));
+            sLog->outChat("[Party][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_GUILD:
         {
@@ -368,6 +371,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 if (Guild* guild = sGuildMgr->GetGuildById(GetPlayer()->GetGuildId()))
                 {
                     guild->BroadcastToGuild(this, false, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
+                    sLog->outChat("[Guild > '%s'][%s]: %s", guild->GetName().c_str(), sender->GetName().c_str(), msg.c_str());
                 }
             }
         } break;
@@ -378,7 +382,8 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 if (Guild* guild = sGuildMgr->GetGuildById(GetPlayer()->GetGuildId()))
                 {
                     guild->BroadcastToGuild(this, true, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
-                }
+                    sLog->outChat("[Officer > '%s'][%s]: %s", guild->GetName().c_str(), sender->GetName().c_str(), msg.c_str());
+                } 
             }
         } break;
         case CHAT_MSG_RAID:
@@ -395,6 +400,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             WorldPacket data;
             ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID, Language(lang), sender, NULL, msg);
             group->BroadcastPacket(&data, false);
+            sLog->outChat("[Raid > %u][%s]: %s", group->GetGUID(), sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_RAID_LEADER:
         {
@@ -410,6 +416,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             WorldPacket data;
             ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID_LEADER, Language(lang), sender, NULL, msg);
             group->BroadcastPacket(&data, false);
+            sLog->outChat("[RaidLeader > %u][%s]: %s", group->GetGUID(), sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_RAID_WARNING:
         {
@@ -421,6 +428,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             //in battleground, raid warning is sent only to players in battleground - code is ok
             ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID_WARNING, Language(lang), sender, NULL, msg);
             group->BroadcastPacket(&data, false);
+            sLog->outChat("[RAIDWARNING][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_BATTLEGROUND:
         {
@@ -432,6 +440,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             WorldPacket data;
             ChatHandler::BuildChatPacket(data, CHAT_MSG_BATTLEGROUND, Language(lang), sender, NULL, msg);
             group->BroadcastPacket(&data, false);
+            sLog->outChat("[Battleground][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_BATTLEGROUND_LEADER:
         {
@@ -443,6 +452,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             WorldPacket data;
             ChatHandler::BuildChatPacket(data, CHAT_MSG_BATTLEGROUND_LEADER, Language(lang), sender, NULL, msg);
             group->BroadcastPacket(&data, false);
+            sLog->outChat("[BG Leader][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_CHANNEL:
         {
@@ -460,6 +470,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 if (Channel* chn = cMgr->GetChannel(channel, sender))
                 {
                     chn->Say(sender->GetGUID(), msg.c_str(), lang);
+                    sLog->outChat("[%s][%s]: %s", chn->GetName().c_str(), sender->GetName().c_str(), msg.c_str());
                 }
             }
         } break;
