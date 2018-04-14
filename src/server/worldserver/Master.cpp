@@ -473,15 +473,16 @@ bool Master::_StartDB()
 
     if (dbstring.empty())
     {
-        sLog->outError("Login database not specified in configuration file");
+        sLog->outError("API database is not specified in the configuration file");
         return false;
     }
 
-    if (!APIDatabase.Open(dbstring, async_threads, synch_threads))
-    {
-        sLog->outError("Cannot connect to the API database ' %s '", dbstring.c_str());
-        return false;
-    }
+    if(sConfigMgr->GetBoolDefault("APIDatabase.Enabled", true))
+        if (!APIDatabase.Open(dbstring, async_threads, synch_threads))
+        {
+            sLog->outError("Cannot connect to the API database ' %s '", dbstring.c_str());
+            return false;
+        }
 
 
     ///- Get the realm Id from the configuration file
@@ -513,7 +514,8 @@ void Master::_StopDB()
     CharacterDatabase.Close();
     WorldDatabase.Close();
     LoginDatabase.Close();
-    APIDatabase.Close();
+    if (sConfigMgr->GetBoolDefault("APIDatabase.Enabled", true))
+        APIDatabase.Close();
 
     MySQL::Library_End();
 }

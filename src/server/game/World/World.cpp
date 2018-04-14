@@ -450,6 +450,7 @@ void World::LoadConfigSettings(bool reload)
 
     ///- Read ticket system setting from the config file
     m_bool_configs[CONFIG_ALLOW_TICKETS] = sConfigMgr->GetBoolDefault("AllowTickets", true);
+    m_bool_configs[CONFIG_API_DB_ENABLED] = sConfigMgr->GetBoolDefault("APIDatabase.Enabled", true);
 
     m_bool_configs[CONFIG_ARENA_QUEUE_ANNOUNCER_ENABLE] = sConfigMgr->GetBoolDefault("Custom.ArenaAnnounce", true);
     m_bool_configs[CONFIG_BATTLEGROUND_QUEUE_ANNOUNCER_PLAYERONLY] = sConfigMgr->GetBoolDefault("Custom.BGAnnounce.PlayerOnly", true);
