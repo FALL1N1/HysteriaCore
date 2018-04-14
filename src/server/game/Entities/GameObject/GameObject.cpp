@@ -1278,6 +1278,7 @@ void GameObject::SwitchDoorOrButton(bool activate, bool alternative /* = false *
 
 void GameObject::Use(Unit* user)
 {
+    bool tmpfish = false;
     // Xinef: we cannot use go with not selectable flags
     if (HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE))
         return;
@@ -1436,6 +1437,7 @@ void GameObject::Use(Unit* user)
         //big gun, its a spell/aura
         case GAMEOBJECT_TYPE_GOOBER:                        //10
         {
+            tmpfish = true;
             GameObjectTemplate const* info = GetGOInfo();
             //sLog->outString("it is gobber");
             // xinef: Goober cannot be used with this flag, skip
@@ -1524,6 +1526,7 @@ void GameObject::Use(Unit* user)
         //fishing bobber
         case GAMEOBJECT_TYPE_FISHINGNODE:                   //17
         {
+            tmpfish = true;
             Player* player = user->ToPlayer();
             if (!player)
                 return;
@@ -1599,7 +1602,10 @@ void GameObject::Use(Unit* user)
                 }
             }
 
-            player->InterruptSpell(CURRENT_CHANNELED_SPELL, true, true, true);
+            if(tmpfish)
+                player->FinishSpell(CURRENT_CHANNELED_SPELL, true);
+            else
+                player->InterruptSpell(CURRENT_CHANNELED_SPELL, true, true, true);
             return;
         }
 
