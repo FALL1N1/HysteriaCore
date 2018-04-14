@@ -993,11 +993,12 @@ uint32 Unit::DealDamage(Unit* attacker, Unit* victim, uint32 damage, CleanDamage
             he->DuelComplete(DUEL_WON);
         }
     }
-
-    ;//sLog->outStaticDebug("DealDamageEnd returned %d damage", damage);
-    if(damage > 100000)
-        sLog->outHack("[BUGABUSE] Player %s(%u) has dealt %u damage to %s(%u)", attacker->GetName().c_str(), attacker->GetGUID(), damage, victim->GetName().c_str(), victim->GetGUID());
-
+ 
+    if (damage > 100000)
+    {
+        sLog->outHack("[BUGABUSE] Unit %s(%u) has dealt %u damage to %s(%u)", attacker->GetName().c_str(), attacker->GetGUID(), damage, victim->GetName().c_str(), victim->GetGUID());
+        sLog->outString("[BUGABUSE] Unit %s(%u) has dealt %u damage to %s(%u)", attacker->GetName().c_str(), attacker->GetGUID(), damage, victim->GetName().c_str(), victim->GetGUID());
+    }
     return damage;
 }
 
@@ -1469,6 +1470,12 @@ void Unit::CalculateMeleeDamage(Unit* victim, uint32 damage, CalcDamageInfo* dam
     }
     else // Impossible get negative result but....
         damageInfo->damage = 0;
+        
+    if (damageInfo->damage > 100000)
+    { 
+        sLog->outHack("[BUGABUSE] Unit %s(%u) has dealt %u damage to %s(%u)", damageInfo->attacker->GetName().c_str(), damageInfo->attacker->GetGUID(), damage, damageInfo->target->GetName().c_str(), damageInfo->target->GetGUID());
+        sLog->outString("[BUGABUSE] Unit %s(%u) has dealt %u damage to %s(%u)", damageInfo->attacker->GetName().c_str(), damageInfo->attacker->GetGUID(), damage, damageInfo->target->GetName().c_str(), damageInfo->target->GetGUID());
+    }
 }
 
 void Unit::DealMeleeDamage(CalcDamageInfo* damageInfo, bool durabilityLoss)

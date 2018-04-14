@@ -2537,6 +2537,9 @@ class Player : public Unit, public GridObject<Player>
         void ResyncRunes(uint8 count);
         void AddRunePower(uint8 index);
         void InitRunes();
+        
+        bool GetLastCompletedQuest() { return lastcompletedquest; }
+        void SetLastCompletedQuest(uint32 id) { lastcompletedquest = id; }
 
         void SendRespondInspectAchievements(Player* player) const;
         bool HasAchieved(uint32 achievementId) const;
@@ -3002,6 +3005,7 @@ class Player : public Unit, public GridObject<Player>
         SpellCooldowns m_spellCooldowns;
 
         uint32 m_ChampioningFaction;
+        uint32 lastcompletedquest;
 
         uint32 m_timeSyncCounter;
         uint32 m_timeSyncTimer;

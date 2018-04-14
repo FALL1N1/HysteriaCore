@@ -155,22 +155,17 @@ void CrossFaction::UpdatePlayerTeam(Group* group, uint64 guid, bool reset /* = f
                 if (Battleground * bg = player->GetBattleground())
                 {
                     if (player->GetTeamId(true) != player->GetBgTeamId())
-                    {
-                        sLog->outString("player %s switched faction!", player->GetName().c_str());
-
+                    { 
                         SetMorph(player, true); // setup the new display ID for the player, and the new race
                         player->setTeamId(player->GetBgTeamId());
                         player->setFaction(player->GetTeamId() == TEAM_ALLIANCE ? 1 : 2);
-                        DoForgetPlayersInBG(bg, player); // force to resend race information for this player
-                        sLog->outString("Crossfaction: Battleground team id set for player %s", player->GetName().c_str());
+                        DoForgetPlayersInBG(bg, player); // force to resend race information for this player 
                     }
                 }
                 return;
             }
 
-            SetMorph(player, false); // reset morph if not in bg
-
-            sLog->outString("reset morph for player", player->GetGUIDLow());
+            SetMorph(player, false); // reset morph if not in bg 
 
             // standard group
             uint64 leaderGuid = group ? group->GetLeaderGUID() : player->GetGUID();
@@ -204,11 +199,7 @@ void CrossFaction::UpdatePlayerTeam(Group* group, uint64 guid, bool reset /* = f
         player->setTeamId(player->GetTeamId(true));
         ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(player->getRace(true));
         player->setFaction(rEntry ? rEntry->FactionID : 0);
-        SetMorph(player, false); // reset morph if not in bg
-
-        sLog->outString("reset morph done for player %u", player->GetGUIDLow());
-
-        sLog->outString("Crossfaction: reset done for player %s", player->GetName().c_str());
+        SetMorph(player, false); // reset morph if not in bg 
     }
     else
         sLog->outString("CrossFaction: tried to update faction of player %u but he's not online... ", GUID_LOPART(guid));

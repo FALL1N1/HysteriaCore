@@ -467,6 +467,8 @@ void WorldSession::HandleQuestgiverCompleteQuest(WorldPacket& recvData)
         {
             sLog->outError("Possible hacking attempt: Player %s [guid: %u] tried to complete quest [entry: %u] without being in possession of the quest!",
                           _player->GetName().c_str(), _player->GetGUIDLow(), questId);
+            sLog->outHack("[BUGABUSE]: Player %s [guid: %u] tried to complete quest [entry: %u] without being in possession of the quest!",
+                _player->GetName().c_str(), _player->GetGUIDLow(), questId);
             return;
         }
 
@@ -488,6 +490,15 @@ void WorldSession::HandleQuestgiverCompleteQuest(WorldPacket& recvData)
             else                                            // no items required
                 _player->PlayerTalkClass->SendQuestGiverOfferReward(quest, guid, true);
         }
+
+        sLog->outMisc("[COMPLETEDQUEST]: Player %s [guid: %u] completed quest [entry: %u]", _player->GetName().c_str(), _player->GetGUIDLow(), questId);
+
+        if (_player->GetLastCompletedQuest() == questId)
+        {
+            sLog->outHack("[POSSIBLE]: Player %s [guid: %u] completed quest [entry: %u] more than once, investigate it!", _player->GetName().c_str(), _player->GetGUIDLow(), questId);
+        }
+
+        _player->SetLastCompletedQuest(questId);
     }
 }
 

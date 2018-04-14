@@ -984,6 +984,9 @@ class WorldObject : public Object, public WorldLocation
 
         uint16 m_notifyflags;
         uint16 m_executed_notifies;
+        
+        mutable uint32 m_lastEntrySummon;
+        mutable uint32 m_summonCounter;
 
         virtual bool _IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D) const;
 
