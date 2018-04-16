@@ -15,9 +15,15 @@ file(GLOB_RECURSE sources_realms Realms/*.cpp Realms/*.h)
 file(GLOB_RECURSE sources_server Server/*.cpp Server/*.h)
 file(GLOB sources_localdir *.cpp *.h)
 
-if (USE_COREPCH)
-  set(authserver_PCH_HDR PrecompiledHeaders/authPCH.h)
-  set(authserver_PCH_SRC PrecompiledHeaders/authPCH.cpp)
+if( USE_COREPCH )
+  include_directories(${CMAKE_CURRENT_BINARY_DIR})
+endif()
+
+if ( USE_COREPCH AND MSVC )
+  set(authserver_SRCS
+    PrecompiledHeaders/authPCH.cpp
+    PrecompiledHeaders/authPCH.h
+  )
 endif()
 
 set(authserver_SRCS
@@ -105,6 +111,11 @@ elseif( WIN32 )
 endif()
 
 # Generate precompiled header
-if (USE_COREPCH)
-  add_cxx_pch(authserver ${authserver_PCH_HDR} ${authserver_PCH_SRC})
+if( USE_COREPCH )
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    add_precompiled_header(authserver ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/authPCH.h)
+  elseif(MSVC)
+    add_native_precompiled_header(authserver ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/authPCH)
+  endif()
 endif()
+

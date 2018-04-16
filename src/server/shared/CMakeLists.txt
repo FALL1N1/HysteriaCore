@@ -33,9 +33,11 @@ set(sources_Debugging Debugging/Errors.cpp Debugging/Errors.h)
 # Build shared sourcelist
 #
 
-if (USE_COREPCH)
-  set(shared_STAT_PCH_HDR PrecompiledHeaders/sharedPCH.h)
-  set(shared_STAT_PCH_SRC PrecompiledHeaders/sharedPCH.cpp)
+if( USE_COREPCH AND MSVC )
+  set(shared_STAT_SRCS
+    PrecompiledHeaders/sharedPCH.cpp
+    PrecompiledHeaders/sharedPCH.h
+  )
 endif()
 
 set(shared_STAT_SRCS
@@ -78,16 +80,18 @@ include_directories(
   ${OPENSSL_INCLUDE_DIR}
 )
 
-add_library(shared STATIC
-  ${shared_STAT_SRCS}
-  ${shared_STAT_PCH_SRC}
-)
+add_library(shared STATIC ${shared_STAT_SRCS})
 
 target_link_libraries(shared
   ${ACE_LIBRARY}
 )
 
 # Generate precompiled header
-if (USE_COREPCH)
-  add_cxx_pch(shared ${shared_STAT_PCH_HDR} ${shared_STAT_PCH_SRC})
-endif ()
+if( USE_COREPCH )
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    add_precompiled_header(shared ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/sharedPCH.h)
+  elseif(MSVC)
+    add_native_precompiled_header(shared ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders/sharedPCH)
+  endif()
+endif()
+
