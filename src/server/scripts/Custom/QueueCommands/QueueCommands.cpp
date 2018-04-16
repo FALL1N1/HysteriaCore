@@ -1,4 +1,4 @@
-#include "ScriptPch.h"
+#include "ScriptPCH.h"
 #include "Battleground.h"
 #include "ArenaTeam.h"
 #include "BattlegroundMgr.h"
