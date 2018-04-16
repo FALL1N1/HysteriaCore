@@ -980,6 +980,11 @@ std::vector<ChatCommand*> ScriptMgr::GetChatCommands()
 
     FOR_SCRIPTS_RET(CommandScript, itr, end, table)
         table.push_back(itr->second->GetCommands());
+        
+    std::sort(table.begin(), table.end(), [](const ChatCommand& a, const ChatCommand&b)
+    {
+        return strcmp(a.Name, b.Name) < 0;
+    });
 
     return table;
 }

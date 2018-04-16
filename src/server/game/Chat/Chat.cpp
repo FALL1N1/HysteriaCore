@@ -304,9 +304,6 @@ bool ChatHandler::ExecuteCommandInTable(ChatCommand* table, const char* text, st
         {
             for (uint32 j = 0; table[j].Name != NULL; ++j)
             {
-                if (table[j].Name == nullptr)
-                    continue;
-
                 if (!hasStringAbbr(table[j].Name, cmd.c_str()))
                     continue;
 
