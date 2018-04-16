@@ -984,7 +984,7 @@ public:
         static std::vector<ChatCommand> WorldChatCommandTable =
         {
             { "chat",	SEC_PLAYER,		true,		&HandleWorldChatCommand,	""}, 
-            { NULL,		170,				false,		NULL,						""}
+            // { NULL,		170,				false,		NULL,						""}
         };
 
         return WorldChatCommandTable;

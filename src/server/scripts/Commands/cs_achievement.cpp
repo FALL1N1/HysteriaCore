@@ -38,12 +38,12 @@ public:
         {
             { "add",            SEC_ADMINISTRATOR,  false,  &HandleAchievementAddCommand,      ""},
             { "checkall",       SEC_ADMINISTRATOR,  false,  &HandleAchievementCheckAllCommand, ""},
-            { NULL,             0,                  false,  NULL,                              ""}
+            // { NULL,             0,                  false,  NULL,                              ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "achievement",    SEC_ADMINISTRATOR,  false, NULL,            "", achievementCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

@@ -42,28 +42,28 @@ public:
         {
             { "cancel",         SEC_ADMINISTRATOR,  true,  &HandleServerShutDownCancelCommand,      ""},
             { ""   ,            SEC_ADMINISTRATOR,  true,  &HandleServerIdleRestartCommand,         ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
 
         static std::vector<ChatCommand> serverIdleShutdownCommandTable =
         {
             { "cancel",         SEC_ADMINISTRATOR,  true,  &HandleServerShutDownCancelCommand,      ""},
             { ""   ,            SEC_ADMINISTRATOR,  true,  &HandleServerIdleShutDownCommand,        ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
 
         static std::vector<ChatCommand> serverRestartCommandTable =
         {
             { "cancel",         SEC_ADMINISTRATOR,  true,  &HandleServerShutDownCancelCommand,      ""},
             { ""   ,            SEC_ADMINISTRATOR,  true,  &HandleServerRestartCommand,             ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
 
         static std::vector<ChatCommand> serverShutdownCommandTable =
         {
             { "cancel",         SEC_ADMINISTRATOR,  true,  &HandleServerShutDownCancelCommand,      ""},
             { ""   ,            SEC_ADMINISTRATOR,  true,  &HandleServerShutDownCommand,            ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
 
         static std::vector<ChatCommand> serverSetCommandTable =
@@ -73,7 +73,7 @@ public:
             { "logfilelevel",   SEC_CONSOLE,        true,  &HandleServerSetLogFileLevelCommand,     ""},
             { "motd",           SEC_ADMINISTRATOR,  true,  &HandleServerSetMotdCommand,             ""},
             { "closed",         SEC_ADMINISTRATOR,  true,  &HandleServerSetClosedCommand,           ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
 
         static std::vector<ChatCommand> serverCommandTable =
@@ -88,13 +88,13 @@ public:
             { "shutdown",       SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverShutdownCommandTable },
             { "set",            SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverSetCommandTable },
             { "togglequerylog", SEC_CONSOLE,        true,  &HandleServerToggleQueryLogging,         ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
 
          static std::vector<ChatCommand> CommandTable =
         {
             { "server",         SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverCommandTable },
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
         return CommandTable;
     }

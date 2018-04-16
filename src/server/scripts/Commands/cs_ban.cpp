@@ -43,21 +43,21 @@ public:
             { "character",      SEC_ADMINISTRATOR,  true,  &HandleUnBanCharacterCommand,        ""},
             { "playeraccount",  SEC_ADMINISTRATOR,  true,  &HandleUnBanAccountByCharCommand,    ""},
             { "ip",             SEC_ADMINISTRATOR,  true,  &HandleUnBanIPCommand,               ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> banlistCommandTable =
         {
             { "account",        SEC_ADMINISTRATOR,  true,  &HandleBanListAccountCommand,        ""},
             { "character",      SEC_ADMINISTRATOR,  true,  &HandleBanListCharacterCommand,      ""},
             { "ip",             SEC_ADMINISTRATOR,  true,  &HandleBanListIPCommand,             ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> baninfoCommandTable =
         {
             { "account",        SEC_ADMINISTRATOR,  true,  &HandleBanInfoAccountCommand,        ""},
             { "character",      SEC_ADMINISTRATOR,  true,  &HandleBanInfoCharacterCommand,      ""},
             { "ip",             SEC_ADMINISTRATOR,  true,  &HandleBanInfoIPCommand,             ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> banCommandTable =
         {
@@ -65,7 +65,7 @@ public:
             { "character",      SEC_ADMINISTRATOR,  true,  &HandleBanCharacterCommand,          ""},
             { "playeraccount",  SEC_ADMINISTRATOR,  true,  &HandleBanAccountByCharCommand,      ""},
             { "ip",             SEC_ADMINISTRATOR,  true,  &HandleBanIPCommand,                 ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
@@ -73,7 +73,7 @@ public:
             { "baninfo",        SEC_ADMINISTRATOR,  true,  NULL,                                "", baninfoCommandTable },
             { "banlist",        SEC_ADMINISTRATOR,  true,  NULL,                                "", banlistCommandTable },
             { "unban",          SEC_ADMINISTRATOR,  true,  NULL,                                "", unbanCommandTable },
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         return CommandTable;
     }

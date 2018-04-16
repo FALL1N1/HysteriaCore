@@ -49,13 +49,11 @@ public:
             { "xyz",            SEC_GAMEMASTER,      false, &HandleGoXYZCommand,               ""},
             { "ticket",         SEC_GAMEMASTER,      false, &HandleGoTicketCommand,            ""},
             { "",               SEC_GAMEMASTER,      false, &HandleGoXYZCommand,               ""},
-            { NULL,             0,                  false, NULL,                              ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "go",             SEC_GAMEMASTER,      false, NULL,                     "", goCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

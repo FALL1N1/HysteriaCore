@@ -39,13 +39,13 @@ public:
 			{ "gear",        SEC_PLAYER, false, &HandleCopyGearCommand,           ""},
 			{ "talents",     SEC_PLAYER, false, &HandleCopyTalentsCommand,        ""},
 			{ "all",         SEC_PLAYER, false, &HandleCopyGearAndTalentsCommand, ""},
-			{ NULL, 0, false, NULL, ""}
+			// { NULL, 0, false, NULL, ""}
 		};
 
 		static std::vector<ChatCommand> CommandTable =
 		{
 			{ "copy",        SEC_PLAYER, true, NULL, "", HandleCopyGearCommandTable },
-			{ NULL, 0, false, NULL, ""}
+			// { NULL, 0, false, NULL, ""}
 		};
 		return CommandTable;
 	}

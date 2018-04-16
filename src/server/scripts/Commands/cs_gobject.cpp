@@ -45,13 +45,11 @@ public:
         {
             { "temp",           SEC_GAMEMASTER,     false, &HandleGameObjectAddTempCommand,   ""},
             { "",               SEC_GAMEMASTER,     false, &HandleGameObjectAddCommand,       ""},
-            { NULL,             0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> gobjectSetCommandTable =
         {
             { "phase",          SEC_GAMEMASTER,     false, &HandleGameObjectSetPhaseCommand,  ""},
             { "state",          SEC_GAMEMASTER,     false, &HandleGameObjectSetStateCommand,  ""},
-            { NULL,             0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> gobjectCommandTable =
         {
@@ -64,12 +62,10 @@ public:
             { "turn",           SEC_GAMEMASTER,     false, &HandleGameObjectTurnCommand,      ""},
             { "add",            SEC_GAMEMASTER,     false, NULL,            "", gobjectAddCommandTable },
             { "set",            SEC_GAMEMASTER,     false, NULL,            "", gobjectSetCommandTable },
-            { NULL,             0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "gobject",        SEC_GAMEMASTER,     false, NULL,                "", gobjectCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

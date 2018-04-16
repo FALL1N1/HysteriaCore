@@ -15,12 +15,12 @@ public:
             { "2v2", SEC_PLAYER, true, &HandleQueue2v2Command, ""},
             { "3v3", SEC_PLAYER, true, &HandleQueue3v3Command, ""},
             { "solo", SEC_PLAYER, true, &HandleQueueSoloCommand, ""},
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "join", SEC_PLAYER, true, NULL, "", queueCTB },
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
         return CommandTable;
     }

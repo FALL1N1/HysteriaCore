@@ -15,13 +15,13 @@ public:
         static std::vector<ChatCommand> mmrCTB =
         {
             { "reset", SEC_PLAYER, true, &HandleMMRResetCommand, ""}, 
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "mmr", SEC_PLAYER, true, NULL, "", mmrCTB },
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
 
         return CommandTable;

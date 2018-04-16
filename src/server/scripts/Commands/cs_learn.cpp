@@ -44,7 +44,6 @@ public:
             { "pettalents",     SEC_ADMINISTRATOR,  false, &HandleLearnAllMyPetTalentsCommand,  ""},
             { "spells",         SEC_ADMINISTRATOR,  false, &HandleLearnAllMySpellsCommand,      ""},
             { "talents",        SEC_ADMINISTRATOR,  false, &HandleLearnAllMyTalentsCommand,     ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
 
         static std::vector<ChatCommand> learnAllCommandTable =
@@ -55,21 +54,18 @@ public:
             { "default",        SEC_GAMEMASTER,      false, &HandleLearnAllDefaultCommand,       ""},
             { "lang",           SEC_GAMEMASTER,      false, &HandleLearnAllLangCommand,          ""},
             { "recipes",        SEC_GAMEMASTER,     false, &HandleLearnAllRecipesCommand,       ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
 
         static std::vector<ChatCommand> learnCommandTable =
         {
             { "all",            SEC_ADMINISTRATOR,  false, NULL,                                "",  learnAllCommandTable },
             { "",               SEC_ADMINISTRATOR,  false, &HandleLearnCommand,                 ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "learn",          SEC_GAMEMASTER,      false, NULL,                                "", learnCommandTable },
             { "unlearn",        SEC_ADMINISTRATOR,  false, &HandleUnLearnCommand,               ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
         return CommandTable;
     }

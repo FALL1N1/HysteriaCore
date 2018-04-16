@@ -43,12 +43,10 @@ public:
             { "invite",         SEC_GAMEMASTER,     true,  &HandleGuildInviteCommand,           ""},
             { "uninvite",       SEC_GAMEMASTER,     true,  &HandleGuildUninviteCommand,         ""},
             { "rank",           SEC_GAMEMASTER,     true,  &HandleGuildRankCommand,             ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "guild",          SEC_ADMINISTRATOR,  true, NULL,                                 "", guildCommandTable },
-            { NULL,             0,                  false, NULL,                                ""}
         };
         return CommandTable;
     }

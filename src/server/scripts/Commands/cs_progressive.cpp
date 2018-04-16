@@ -18,12 +18,12 @@ public:
             { "object",               SEC_GAMEMASTER,     false, &HandleWpAddCommand,                "", NULL },
             { "item",                 SEC_GAMEMASTER,     false, &HandleWpAddCommand,                "", NULL },
             { "quest",                SEC_GAMEMASTER,     false, &HandleWpAddCommand,                "", NULL },
-            { NULL,             0,                  false, NULL,                               "", NULL }
+            // { NULL,             0,                  false, NULL,                               "", NULL }
         };
         static ChatCommand commandTable[] =
         {
             { "progressive",             SEC_GAMEMASTER,     false, NULL,                     "", progressiveCT },
-            { NULL,             0,                  false, NULL,                               "", NULL }
+            // { NULL,             0,                  false, NULL,                               "", NULL }
         };
         return commandTable;
     }

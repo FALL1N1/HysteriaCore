@@ -41,12 +41,12 @@ public:
             { "complete",       SEC_ADMINISTRATOR,  false, &HandleQuestComplete,               ""},
             { "remove",         SEC_ADMINISTRATOR,  false, &HandleQuestRemove,                 ""},
             { "reward",         SEC_ADMINISTRATOR,  false, &HandleQuestReward,                 ""},
-            { NULL,             SEC_PLAYER,         false, NULL,                               ""}
+            // { NULL,             SEC_PLAYER,         false, NULL,                               ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "quest",          SEC_ADMINISTRATOR,  false, NULL,                  "", questCommandTable },
-            { NULL,             SEC_PLAYER,         false, NULL,                               ""}
+            // { NULL,             SEC_PLAYER,         false, NULL,                               ""}
         };
         return CommandTable;
     }

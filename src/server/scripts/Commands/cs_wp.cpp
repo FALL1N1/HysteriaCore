@@ -45,12 +45,12 @@ public:
             { "unload",         SEC_GAMEMASTER,     false, &HandleWpUnLoadCommand,             ""},
             { "reload",         SEC_ADMINISTRATOR,  false, &HandleWpReloadCommand,             ""},
             { "show",           SEC_GAMEMASTER,     false, &HandleWpShowCommand,               ""},
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "wp",             SEC_GAMEMASTER,     false, NULL,                     "", wpCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

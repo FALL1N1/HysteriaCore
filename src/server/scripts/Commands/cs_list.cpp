@@ -43,12 +43,10 @@ public:
             { "item",           SEC_ADMINISTRATOR,  true,  &HandleListItemCommand,              ""},
             { "object",         SEC_ADMINISTRATOR,  true,  &HandleListObjectCommand,            ""},
             { "auras",          SEC_ADMINISTRATOR,  false, &HandleListAurasCommand,             ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "list",          SEC_ADMINISTRATOR,   true, NULL,                                 "", listCommandTable },
-            { NULL,            0,                   false, NULL,                                ""}
         };
         return CommandTable;
     }

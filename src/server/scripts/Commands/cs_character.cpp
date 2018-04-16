@@ -41,7 +41,6 @@ public:
         {
             { "load",           SEC_ADMINISTRATOR,  true,  &HandlePDumpLoadCommand,                 ""},
             { "write",          SEC_ADMINISTRATOR,  true,  &HandlePDumpWriteCommand,                ""},
-            { NULL,             0,                  false, NULL,                                    ""}
         };
 
         static std::vector<ChatCommand> characterCommandTable =
@@ -53,7 +52,6 @@ public:
             { "rename",         SEC_GAMEMASTER,     true,  &HandleCharacterRenameCommand,          ""},
             { "reputation",     SEC_GAMEMASTER,     true,  &HandleCharacterReputationCommand,      ""},
             { "titles",         SEC_GAMEMASTER,     true,  &HandleCharacterTitlesCommand,          ""},
-            { NULL,             0,                  false, NULL,                                   ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
@@ -61,7 +59,6 @@ public:
             { "character",      SEC_GAMEMASTER,     true,  NULL,                                   "", characterCommandTable },
             { "levelup",        SEC_ADMINISTRATOR,  false, &HandleLevelUpCommand,                  ""},
             { "pdump",          SEC_ADMINISTRATOR,  true,  NULL,                                   "", pdumpCommandTable },
-            { NULL,             0,                  false, NULL,                                   ""}
         };
         return CommandTable;
     }

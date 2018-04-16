@@ -41,12 +41,10 @@ public:
             { "start",          SEC_GAMEMASTER,     true,  &HandleEventStartCommand,          ""},
             { "stop",           SEC_GAMEMASTER,     true,  &HandleEventStopCommand,           ""},
             { "",               SEC_GAMEMASTER,     true,  &HandleEventInfoCommand,           ""},
-            { NULL,             0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "event",          SEC_GAMEMASTER,     false, NULL,                  "", eventCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

@@ -53,14 +53,14 @@ public:
             { "remove",         SEC_ADMINISTRATOR,          false,  &HandleGroupRemoveCommand,          ""},
             { "join",           SEC_ADMINISTRATOR,          false,  &HandleGroupJoinCommand,            ""},
             { "list",           SEC_ADMINISTRATOR,          false,  &HandleGroupListCommand,            ""},
-            { NULL,             0,                          false,  NULL,                               ""}
+            
         };
         static std::vector<ChatCommand> petCommandTable =
         {
             { "create",             SEC_GAMEMASTER,         false, &HandleCreatePetCommand,             ""},
             { "learn",              SEC_GAMEMASTER,         false, &HandlePetLearnCommand,              ""},
             { "unlearn",            SEC_GAMEMASTER,         false, &HandlePetUnlearnCommand,            ""},
-            { NULL,                 0,                      false, NULL,                                ""}
+            
         };
         static std::vector<ChatCommand> sendCommandTable =
         {
@@ -68,18 +68,16 @@ public:
             { "mail",               SEC_GAMEMASTER,         true,  &HandleSendMailCommand,              ""},
             { "message",            SEC_ADMINISTRATOR,      true,  &HandleSendMessageCommand,           ""},
             { "money",              SEC_ADMINISTRATOR,      true,  &HandleSendMoneyCommand,             ""},
-            { NULL,                 0,                      false, NULL,                                ""}
+            
         };
         static std::vector<ChatCommand> fakeCommandTable =
         {
             { "account",  SEC_GAMEMASTER,                   true,  &HandleFakeAccount,                  ""},
-            { "player",   SEC_GAMEMASTER,                   true,  &HandleFakePlayer,                   ""},
-            { NULL,                    0,                   false, NULL,                                ""}
+            { "player",   SEC_GAMEMASTER,                   true,  &HandleFakePlayer,                   ""}, 
         };
         static std::vector<ChatCommand> arenaCommandTable =
         {
-            { "queue",  SEC_ADMINISTRATOR,                  true, &HandleArenaQueueCommand,             ""},
-            { NULL,                    0,                   false, NULL,                                ""}
+            { "queue",  SEC_ADMINISTRATOR,                  true, &HandleArenaQueueCommand,             ""}, 
         };
 
         static std::vector<ChatCommand> CommandTable =
@@ -142,7 +140,7 @@ public:
             { "playall",            SEC_GAMEMASTER,         false, HandlePlayAllCommand,                ""},
             { "skirmish",           SEC_ADMINISTRATOR,      false, HandleSkirmishCommand,               ""},
             { "mailbox",            SEC_ADMINISTRATOR,      false, &HandleMailBoxCommand,               ""},
-            { NULL,                 0,                      false, NULL,                                ""}
+            
         };
         return CommandTable;
     }

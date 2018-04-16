@@ -19,13 +19,12 @@ public:
             { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMaxLevel,   ""},
             { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMinLevel,   ""},
             { "statistics",                         SEC_PLAYER,        false, &HandleWestmereStatistics, ""},
-            { NULL,                                 0,                 false, NULL,                     ""}
+            
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
-            { "help",            SEC_PLAYER,             true,  NULL,                                "", westmereCommandTable },
-            {  NULL,                SEC_PLAYER,             false, NULL,                                ""}
+            { "help",            SEC_PLAYER,             true,  NULL,                                "", westmereCommandTable }, 
         };
         
         return CommandTable;

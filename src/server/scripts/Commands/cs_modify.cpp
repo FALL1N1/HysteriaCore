@@ -45,7 +45,7 @@ public:
             { "backwalk",       SEC_GAMEMASTER,      false, &HandleModifyBWalkCommand,         ""},
             { "swim",           SEC_GAMEMASTER,      false, &HandleModifySwimCommand,          ""},
             { "",               SEC_GAMEMASTER,      false, &HandleModifyASpeedCommand,        ""},
-            { NULL,             0,                  false, NULL,                              ""}
+            // { NULL,             0,                  false, NULL,                              ""}
         };
 
         static std::vector<ChatCommand> modifyCommandTable =
@@ -70,14 +70,14 @@ public:
             { "phase",          SEC_ADMINISTRATOR,  false, &HandleModifyPhaseCommand,         ""},
             { "gender",         SEC_GAMEMASTER,     false, &HandleModifyGenderCommand,        ""},
             { "speed",          SEC_GAMEMASTER,      false, NULL,           "", modifyspeedCommandTable },
-            { NULL,             0,                  false, NULL,                                           ""}
+            // { NULL,             0,                  false, NULL,                                           ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "morph",          SEC_GAMEMASTER,     false, &HandleModifyMorphCommand,          ""},
             { "demorph",        SEC_GAMEMASTER,     false, &HandleDeMorphCommand,              ""},
             { "modify",         SEC_GAMEMASTER,      false, NULL,                 "", modifyCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

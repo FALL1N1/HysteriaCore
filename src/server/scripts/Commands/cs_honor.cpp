@@ -39,20 +39,17 @@ public:
         {
             { "kill",           SEC_GAMEMASTER,     false, &HandleHonorAddKillCommand,         ""},
             { "",               SEC_GAMEMASTER,     false, &HandleHonorAddCommand,             ""},
-            { NULL,             0,                  false, NULL,                               ""}
         };
 
         static std::vector<ChatCommand> honorCommandTable =
         {
             { "add",            SEC_GAMEMASTER,     false, NULL,               "", honorAddCommandTable },
             { "update",         SEC_GAMEMASTER,     false, &HandleHonorUpdateCommand,          ""},
-            { NULL,             0,                  false, NULL,                               ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "honor",          SEC_GAMEMASTER,     false, NULL,                  "", honorCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

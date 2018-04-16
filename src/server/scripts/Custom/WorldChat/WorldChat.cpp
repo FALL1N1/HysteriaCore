@@ -140,7 +140,7 @@ public:
         static std::vector<ChatCommand> CommandTable =
         {
             { "chat", SEC_PLAYER, true, &HandleWorldChatCommand, ""},
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
         return CommandTable;
     }

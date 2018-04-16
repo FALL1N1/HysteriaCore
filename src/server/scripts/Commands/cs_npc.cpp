@@ -86,19 +86,19 @@ public:
             { "weapon",         SEC_ADMINISTRATOR,  false, &HandleNpcAddWeaponCommand,         ""},
             //}
             { "",               SEC_GAMEMASTER,     false, &HandleNpcAddCommand,               ""},
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> npcDeleteCommandTable =
         {
             { "item",           SEC_GAMEMASTER,     false, &HandleNpcDeleteVendorItemCommand,  ""},
             { "",               SEC_GAMEMASTER,     false, &HandleNpcDeleteCommand,            ""},
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> npcFollowCommandTable =
         {
             { "stop",           SEC_GAMEMASTER,     false, &HandleNpcUnFollowCommand,          ""},
             { "",               SEC_GAMEMASTER,     false, &HandleNpcFollowCommand,            ""},
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> npcSetCommandTable =
         {
@@ -118,7 +118,7 @@ public:
             { "name",           SEC_GAMEMASTER,     false, &HandleNpcSetNameCommand,           ""},
             { "subname",        SEC_GAMEMASTER,     false, &HandleNpcSetSubNameCommand,        ""},
             //}
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> npcCommandTable =
         {
@@ -135,12 +135,12 @@ public:
             { "delete",         SEC_GAMEMASTER,     false, NULL,              "", npcDeleteCommandTable },
             { "follow",         SEC_GAMEMASTER,     false, NULL,              "", npcFollowCommandTable },
             { "set",            SEC_GAMEMASTER,     false, NULL,                 "", npcSetCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "npc",            SEC_GAMEMASTER,      false, NULL,                    "", npcCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

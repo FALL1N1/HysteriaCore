@@ -33,13 +33,13 @@ public:
             { "handle",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatHandleCommand,         ""},
             { "jail",           SEC_GAMEMASTER,     true,  &HandleAnticheatJailCommand,         ""},
             { "warn",           SEC_GAMEMASTER,     true,  &HandleAnticheatWarnCommand,         ""},
-            { NULL,             0,                     false, NULL,                                           ""}
+            // { NULL,             0,                     false, NULL,                                           ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "anticheat",      SEC_GAMEMASTER,     true, NULL,                     "",  anticheatCommandTable},
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
 
         return CommandTable;

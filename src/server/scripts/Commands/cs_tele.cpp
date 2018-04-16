@@ -44,12 +44,12 @@ public:
             { "name",           SEC_GAMEMASTER,      true,  &HandleTeleNameCommand,            ""},
             { "group",          SEC_GAMEMASTER,      false, &HandleTeleGroupCommand,           ""},
             { "",               SEC_GAMEMASTER,      false, &HandleTeleCommand,                ""},
-            { NULL,             0,                  false, NULL,                              ""}
+            // { NULL,             0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "tele",           SEC_GAMEMASTER,      false, NULL,                   "", teleCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

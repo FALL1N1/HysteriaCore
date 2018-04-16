@@ -22,14 +22,12 @@ public:
             { "status", SEC_GAMEMASTER, false, &HandleCheatStatusCommand, ""},
             { "taxi", SEC_GAMEMASTER, false, &HandleTaxiCheatCommand, ""},
             { "explore", SEC_GAMEMASTER, false, &HandleExploreCheatCommand, ""},
-            { NULL,             0,                                 false, NULL,                         ""}
 
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "cheat", SEC_GAMEMASTER, false, NULL, "", cheatCommandTable },
-            { NULL,             0,                       false, NULL, ""}
         };
         return CommandTable;
     }

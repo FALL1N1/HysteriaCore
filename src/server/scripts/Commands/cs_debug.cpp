@@ -47,7 +47,6 @@ public:
             { "cinematic",      SEC_GAMEMASTER,      false, &HandleDebugPlayCinematicCommand,   ""},
             { "movie",          SEC_GAMEMASTER,      false, &HandleDebugPlayMovieCommand,       ""},
             { "sound",          SEC_GAMEMASTER,      false, &HandleDebugPlaySoundCommand,       ""},
-            { NULL,             SEC_PLAYER,     false, NULL,                               ""}
         };
         static std::vector<ChatCommand> debugSendCommandTable =
         {
@@ -62,7 +61,6 @@ public:
             { "sellerror",      SEC_ADMINISTRATOR,  false, &HandleDebugSendSellErrorCommand,      ""},
             { "setphaseshift",  SEC_ADMINISTRATOR,  false, &HandleDebugSendSetPhaseShiftCommand,  ""},
             { "spellfail",      SEC_ADMINISTRATOR,  false, &HandleDebugSendSpellFailCommand,      ""},
-            { NULL,             SEC_PLAYER,         false, NULL,                                  ""}
         };
         static std::vector<ChatCommand> debugCommandTable =
         {
@@ -92,13 +90,11 @@ public:
             { "los",            SEC_GAMEMASTER,      false, &HandleDebugLoSCommand,             ""},
             { "moveflags",      SEC_ADMINISTRATOR,  false, &HandleDebugMoveflagsCommand,       ""},
             { "unitstate",      SEC_ADMINISTRATOR,  false, &HandleDebugUnitStateCommand,       ""},
-            { NULL,             SEC_PLAYER,         false, NULL,                               ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "debug",          SEC_GAMEMASTER,      true,  NULL,                  "", debugCommandTable },
             { "wpgps",          SEC_ADMINISTRATOR,  false, &HandleWPGPSCommand,   ""},
-            { NULL,             SEC_PLAYER,         false, NULL,                  ""}
         };
         return CommandTable;
     }

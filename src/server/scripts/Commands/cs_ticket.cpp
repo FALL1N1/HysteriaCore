@@ -42,7 +42,7 @@ public:
         {
             { "append",         SEC_GAMEMASTER,      true,  &HandleGMTicketResponseAppendCommand,    ""},
             { "appendln",       SEC_GAMEMASTER,      true,  &HandleGMTicketResponseAppendLnCommand,  ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
         static std::vector<ChatCommand> ticketCommandTable =
         {
@@ -62,12 +62,12 @@ public:
             { "unassign",       SEC_GAMEMASTER,     true,  &HandleGMTicketUnAssignCommand,          ""},
             { "viewid",         SEC_GAMEMASTER,      true,  &HandleGMTicketGetByIdCommand,           ""},
             { "viewname",       SEC_GAMEMASTER,      true,  &HandleGMTicketGetByNameCommand,         ""},
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "ticket",         SEC_GAMEMASTER,      false, NULL,                                    "", ticketCommandTable },
-            { NULL,             0,                  false, NULL,                                    ""}
+            // { NULL,             0,                  false, NULL,                                    ""}
         };
         return CommandTable;
     }

@@ -15,14 +15,14 @@ public:
 		{
 			{ "players",        SEC_MODERATOR,      false, &HandleChallengePlayersCommand,      ""},
 			{ "",               SEC_PLAYER,         false, &HandleChallengeCommand,             ""},
-			{ NULL,             0,                  false, NULL,                                ""}
+			// { NULL,             0,                  false, NULL,                                ""}
 		};
 
 
 		static std::vector<ChatCommand> CommandTable =
 		{
 			{ "challenge",      SEC_PLAYER,         false, NULL,                                "", challengeCommandTable },
-			{ NULL,             0,                  false, NULL,                                ""}
+			// { NULL,             0,                  false, NULL,                                ""}
 		};
 		return CommandTable;
 	}

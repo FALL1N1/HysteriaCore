@@ -39,12 +39,12 @@ public:
         {
             { "addon", SEC_CONSOLE, true, &HandleAccountSetAddonCommand, ""},
             { "password", SEC_CONSOLE, true, &HandleAccountSetPasswordCommand, ""},
-            { NULL,             0,                                         false, NULL,                              ""}
+            // { NULL,             0,                                         false, NULL,                              ""}
         };
         static std::vector<ChatCommand> accountLockCommandTable =
         {
             { "ip", SEC_CONSOLE, true, &HandleAccountLockIpCommand, ""},
-            { NULL,             0,                                         false, NULL,                              ""}
+            // { NULL,             0,                                         false, NULL,                              ""}
         };
         static std::vector<ChatCommand> accountCommandTable =
         {
@@ -56,12 +56,12 @@ public:
             { "set", SEC_CONSOLE, true, NULL, "", accountSetCommandTable },
             { "password", SEC_CONSOLE, false, &HandleAccountPasswordCommand, ""},
             { "", SEC_CONSOLE, false, &HandleAccountCommand, ""},
-            { NULL,             0,                                         false, NULL,                              ""}
+            // { NULL,             0,                                         false, NULL,                              ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "account", SEC_CONSOLE, true, NULL, "", accountCommandTable },
-            { NULL,             0,                                         false, NULL,                              ""}
+            // { NULL,             0,                                         false, NULL,                              ""}
         };
         return CommandTable;
     }

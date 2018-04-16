@@ -46,12 +46,12 @@ public:
             { "stats",          SEC_ADMINISTRATOR,  true,  &HandleResetStatsCommand,            ""},
             { "talents",        SEC_ADMINISTRATOR,  true,  &HandleResetTalentsCommand,          ""},
             { "all",            SEC_ADMINISTRATOR,  true,  &HandleResetAllCommand,              ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "reset",          SEC_ADMINISTRATOR,  true, NULL,                                 "", resetCommandTable },
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         return CommandTable;
     }

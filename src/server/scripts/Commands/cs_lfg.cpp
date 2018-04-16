@@ -50,13 +50,11 @@ public:
             {   "queue",     SEC_GAMEMASTER, false,  &HandleLfgQueueInfoCommand, ""},
             {   "clean",  SEC_ADMINISTRATOR, false,      &HandleLfgCleanCommand, ""},
             { "options",  SEC_ADMINISTRATOR, false,    &HandleLfgOptionsCommand, ""},
-            {      NULL,         SEC_PLAYER, false,                        NULL, ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             {       "lfg",   SEC_GAMEMASTER, false,                        NULL, "", lfgCommandTable },
-            {  NULL,             SEC_PLAYER, false,                        NULL, ""}
         };
         return CommandTable;
     }

@@ -30,12 +30,12 @@ public:
         {
             { "setviewpoint", SEC_PLAYER, false, &HandleSetViewpointCommand, ""},
             { "restoreviewpoint", SEC_PLAYER, false, &HandleRestoreViewpointCommand, ""},
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "spectate", SEC_PLAYER, false, NULL, "", pvpCommandTable },
-            { NULL, 0, false, NULL, ""}
+            // { NULL, 0, false, NULL, ""}
         };
         return CommandTable;
     }

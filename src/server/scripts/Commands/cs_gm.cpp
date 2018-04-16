@@ -46,12 +46,10 @@ public:
             { "list",           SEC_ADMINISTRATOR,  true,  &HandleGMListFullCommand,          ""},
             { "visible",        SEC_GAMEMASTER,      false, &HandleGMVisibleCommand,           ""},
             { "",               SEC_GAMEMASTER,      false, &HandleGMCommand,                  ""},
-            { NULL,             0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "gm",             SEC_GAMEMASTER,      false, NULL,                     "", gmCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

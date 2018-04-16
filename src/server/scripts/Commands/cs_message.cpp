@@ -44,7 +44,7 @@ public:
             { "notify",         SEC_GAMEMASTER,      true,   &HandleNotifyCommand,               ""},
             { "gmnotify",       SEC_GAMEMASTER,      true,   &HandleGMNotifyCommand,             ""},
             { "whispers",       SEC_GAMEMASTER,      false,  &HandleWhispersCommand,             ""},
-            { NULL,             0,                  false,  NULL,                               ""}
+            // { NULL,             0,                  false,  NULL,                               ""}
         };
         return CommandTable;
     }

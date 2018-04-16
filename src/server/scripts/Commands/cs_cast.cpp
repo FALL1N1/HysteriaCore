@@ -43,12 +43,10 @@ public:
             { "target",         SEC_ADMINISTRATOR,  false, &HandleCastTargetCommad,             ""},
             { "dest",           SEC_ADMINISTRATOR,  false, &HandleCastDestCommand,              ""},
             { "",               SEC_ADMINISTRATOR,  false, &HandleCastCommand,                  ""},
-            { NULL,             0,                  false, NULL,                                ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "cast",           SEC_ADMINISTRATOR,  false, NULL,                                "", castCommandTable },
-            { NULL,             0,                  false, NULL,                                ""}
         };
         return CommandTable;
     }

@@ -61,7 +61,7 @@ public:
             { "scripts",    SEC_ADMINISTRATOR,  true,  &HandleReloadAllScriptsCommand,    ""},
             { "spell",      SEC_ADMINISTRATOR,  true,  &HandleReloadAllSpellCommand,      ""},
             { "",           SEC_ADMINISTRATOR,  true,  &HandleReloadAllCommand,           ""},
-            { NULL,         0,                  false, NULL,                              ""}
+            // { NULL,         0,                  false, NULL,                              ""}
         };
         static std::vector<ChatCommand> reloadCommandTable =
         {
@@ -151,13 +151,13 @@ public:
             { "waypoint_data",                SEC_ADMINISTRATOR, true,  &HandleReloadWpCommand,                         ""},
             { "vehicle_accessory",            SEC_ADMINISTRATOR, true,  &HandleReloadVehicleAccessoryCommand,           ""},
             { "vehicle_template_accessory",   SEC_ADMINISTRATOR, true,  &HandleReloadVehicleTemplateAccessoryCommand,   ""},
-            { NULL,                           0,                 false, NULL,                                           ""}
+            // { NULL,                           0,                 false, NULL,                                           ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "reload",         SEC_ADMINISTRATOR,  true,  NULL,                 "", reloadCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

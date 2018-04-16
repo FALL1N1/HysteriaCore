@@ -40,12 +40,12 @@ public:
             { "switch",         SEC_ADMINISTRATOR,  false, &HandleBattlefieldSwitch,           ""},
             { "timer",          SEC_ADMINISTRATOR,  false, &HandleBattlefieldTimer,            ""},
             { "enable",         SEC_ADMINISTRATOR,  false, &HandleBattlefieldEnable,           ""},
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> CommandTable =
         {
             { "bf",             SEC_ADMINISTRATOR,  false, NULL,            "", battlefieldCommandTable },
-            { NULL,             0,                  false, NULL,                               ""}
+            // { NULL,             0,                  false, NULL,                               ""}
         };
         return CommandTable;
     }

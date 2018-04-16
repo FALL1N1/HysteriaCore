@@ -44,14 +44,14 @@ public:
             { "ip",             SEC_GAMEMASTER,     true,  &HandleLookupPlayerIpCommand,        ""},
             { "account",        SEC_GAMEMASTER,     true,  &HandleLookupPlayerAccountCommand,   ""},
             { "email",          SEC_GAMEMASTER,     true,  &HandleLookupPlayerEmailCommand,     ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
 
         static std::vector<ChatCommand> lookupSpellCommandTable =
         {
             { "id",             SEC_ADMINISTRATOR,  true,  &HandleLookupSpellIdCommand,         ""},
             { "",               SEC_ADMINISTRATOR,  true,  &HandleLookupSpellCommand,           ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
 
         static std::vector<ChatCommand> lookupCommandTable =
@@ -71,13 +71,13 @@ public:
             { "tele",           SEC_GAMEMASTER,      true,  &HandleLookupTeleCommand,            ""},
             { "title",          SEC_GAMEMASTER,     true,  &HandleLookupTitleCommand,           ""},
             { "map",            SEC_ADMINISTRATOR,  true,  &HandleLookupMapCommand,             ""},
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "lookup",         SEC_ADMINISTRATOR,  true,  NULL,                                "", lookupCommandTable },
-            { NULL,             0,                  false, NULL,                                ""}
+            // { NULL,             0,                  false, NULL,                                ""}
         };
         return CommandTable;
     }

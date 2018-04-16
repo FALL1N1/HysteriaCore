@@ -28,7 +28,7 @@ public:
             { "orange",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_ORANGE>,   ""},
             { "yellow",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_YELLOW>,   ""},
             { "",                SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountCommand,                                  ""},
-            { NULL,             0,                  true,  NULL,                                                                                    ""}
+            // { NULL,             0,                  true,  NULL,                                                                                    ""}
         };
 
         static std::vector<ChatCommand> ahbotItemsRatioCommandTable =
@@ -37,7 +37,7 @@ public:
             { "horde",           SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_HORDE>,       ""},
             { "neutral",         SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_NEUTRAL>,     ""},
             { "",                SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioCommand,                                 ""},
-            { NULL,             0,                   true,  NULL,                                                                                    ""}
+            // { NULL,             0,                   true,  NULL,                                                                                    ""}
         };
 
         static std::vector<ChatCommand> ahbotCommandTable =
@@ -47,13 +47,13 @@ public:
             { "rebuild",         SEC_ADMINISTRATOR, true,   &HandleAHBotRebuildCommand, ""},
             { "reload",          SEC_ADMINISTRATOR, true,   &HandleAHBotReloadCommand,  ""},
             { "status",          SEC_ADMINISTRATOR, true,   &HandleAHBotStatusCommand,  ""},
-            { NULL,             0,                  true,   NULL,                       ""}
+            // { NULL,             0,                  true,   NULL,                       ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "ahbot",           SEC_ADMINISTRATOR,  false, NULL,    "", ahbotCommandTable },
-            { NULL,             0,                   false, NULL,    ""}
+            // { NULL,             0,                   false, NULL,    ""}
         };
 
         return CommandTable;

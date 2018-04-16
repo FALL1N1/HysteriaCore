@@ -43,13 +43,11 @@ public:
             { "unbind",         SEC_ADMINISTRATOR,  false,  &HandleInstanceUnbindCommand,       ""},
             { "stats",          SEC_ADMINISTRATOR,  true,   &HandleInstanceStatsCommand,        ""},
             { "savedata",       SEC_ADMINISTRATOR,  false,  &HandleInstanceSaveDataCommand,     ""},
-            { NULL,             0,                  false,  NULL,                               ""}
         };
 
         static std::vector<ChatCommand> CommandTable =
         {
             { "instance",       SEC_ADMINISTRATOR,  true,   NULL,                               "", instanceCommandTable },
-            { NULL,             0,                  false,  NULL,                               ""}
         };
 
         return CommandTable;
