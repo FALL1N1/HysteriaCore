@@ -19,5 +19,5 @@ MySQL ≥ 5.1.0
 OpenSSL ≥ 1.0.x
 CMake ≥ 3.2.0
 
-GCC ≥ 6.5.0
+GCC ≥ 6.2.0
 MVC(Visual Studio) ≥ 15 (2017)
