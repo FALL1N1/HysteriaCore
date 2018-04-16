@@ -135,14 +135,14 @@ class cs_world_chat : public CommandScript
 public:
 	cs_world_chat() : CommandScript("cs_world_chat") {}
 
-    ChatCommand* GetCommands() const override
+    std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
-            { "chat", SEC_PLAYER, true, &HandleWorldChatCommand, "", NULL },
-            { NULL, 0, false, NULL, "", NULL }
+            { "chat", SEC_PLAYER, true, &HandleWorldChatCommand, ""},
+            { NULL, 0, false, NULL, ""}
         };
-        return commandTable;
+        return CommandTable;
     }
 
 	static bool HandleWorldChatCommand(ChatHandler * handler, const char * args)

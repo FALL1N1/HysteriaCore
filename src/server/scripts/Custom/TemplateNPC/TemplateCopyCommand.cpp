@@ -32,22 +32,22 @@ class CopyGearCommands : public CommandScript
 public:
 	CopyGearCommands() : CommandScript("CopyGearCommands") { }
 
-	ChatCommand* GetCommands() const
+	std::vector<ChatCommand> GetCommands() const override
 	{
-		static ChatCommand HandleCopyGearCommandTable[] =
+		static std::vector<ChatCommand> HandleCopyGearCommandTable =
 		{
-			{ "gear",        SEC_PLAYER, false, &HandleCopyGearCommand,           "", NULL },
-			{ "talents",     SEC_PLAYER, false, &HandleCopyTalentsCommand,        "", NULL },
-			{ "all",         SEC_PLAYER, false, &HandleCopyGearAndTalentsCommand, "", NULL },
-			{ NULL, 0, false, NULL, "", NULL }
+			{ "gear",        SEC_PLAYER, false, &HandleCopyGearCommand,           ""},
+			{ "talents",     SEC_PLAYER, false, &HandleCopyTalentsCommand,        ""},
+			{ "all",         SEC_PLAYER, false, &HandleCopyGearAndTalentsCommand, ""},
+			{ NULL, 0, false, NULL, ""}
 		};
 
-		static ChatCommand commandTable[] =
+		static std::vector<ChatCommand> CommandTable =
 		{
 			{ "copy",        SEC_PLAYER, true, NULL, "", HandleCopyGearCommandTable },
-			{ NULL, 0, false, NULL, "", NULL }
+			{ NULL, 0, false, NULL, ""}
 		};
-		return commandTable;
+		return CommandTable;
 	}
 
 	static bool HandleCopyGearCommand(ChatHandler* handler, const char* args)

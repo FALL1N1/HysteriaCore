@@ -13,9 +13,9 @@ class disable_commandscript : public CommandScript
 public:
     disable_commandscript() : CommandScript("disable_commandscript") { }
 
-   ChatCommand* GetCommands() const
+   std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand removeDisableCommandTable[] =
+        static std::vector<ChatCommand> removeDisableCommandTable =
         {
             { "spell",                SEC_ADMINISTRATOR,    true, &HandleRemoveDisableSpellCommand,               "" },
             { "quest",                SEC_ADMINISTRATOR,    true, &HandleRemoveDisableQuestCommand,               "" },
@@ -25,7 +25,7 @@ public:
             { "vmap",                 SEC_ADMINISTRATOR,    true, &HandleRemoveDisableVmapCommand,                "" },
         };
 
-        static ChatCommand addDisableCommandTable[] =
+        static std::vector<ChatCommand> addDisableCommandTable =
         {
             { "spell",                SEC_ADMINISTRATOR,    true, &HandleAddDisableSpellCommand,                  "" },
             { "quest",                SEC_ADMINISTRATOR,    true, &HandleAddDisableQuestCommand,                  "" },
@@ -35,18 +35,18 @@ public:
             { "vmap",                 SEC_ADMINISTRATOR,    true, &HandleAddDisableVmapCommand,                   "" },
         };
 
-        static ChatCommand disableCommandTable[] =
+        static std::vector<ChatCommand> disableCommandTable =
         {
             { "add",    SEC_ADMINISTRATOR,  true, NULL, "", addDisableCommandTable },
             { "remove", SEC_ADMINISTRATOR,  true, NULL, "", removeDisableCommandTable },
         };
 
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "disable", SEC_ADMINISTRATOR, false, NULL, "", disableCommandTable },
         };
 
-        return commandTable;
+        return CommandTable;
     }
 
     static bool HandleAddDisables(ChatHandler* handler, char const* args, uint8 disableType)

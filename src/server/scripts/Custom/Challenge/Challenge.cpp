@@ -9,22 +9,22 @@ class challenge_commands : public CommandScript
 public:
 	challenge_commands() : CommandScript("challenge_commands") { }
 
-	ChatCommand* GetCommands() const
+	std::vector<ChatCommand> GetCommands() const override
 	{
-		static ChatCommand challengeCommandTable[] =
+		static std::vector<ChatCommand> challengeCommandTable =
 		{
-			{ "players",        SEC_MODERATOR,      false, &HandleChallengePlayersCommand,      "", NULL },
-			{ "",               SEC_PLAYER,         false, &HandleChallengeCommand,             "", NULL },
-			{ NULL,             0,                  false, NULL,                                "", NULL }
+			{ "players",        SEC_MODERATOR,      false, &HandleChallengePlayersCommand,      ""},
+			{ "",               SEC_PLAYER,         false, &HandleChallengeCommand,             ""},
+			{ NULL,             0,                  false, NULL,                                ""}
 		};
 
 
-		static ChatCommand commandTable[] =
+		static std::vector<ChatCommand> CommandTable =
 		{
 			{ "challenge",      SEC_PLAYER,         false, NULL,                                "", challengeCommandTable },
-			{ NULL,             0,                  false, NULL,                                "", NULL }
+			{ NULL,             0,                  false, NULL,                                ""}
 		};
-		return commandTable;
+		return CommandTable;
 	}
 
 	static bool HandleChallengeCommand(ChatHandler* handler, const char* args)

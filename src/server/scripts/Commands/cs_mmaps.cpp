@@ -17,9 +17,9 @@ class mmaps_commandscript : public CommandScript
 public:
     mmaps_commandscript() : CommandScript("mmaps_commandscript") { }
 
-    ChatCommand* GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand  mmapCommandTable[] =
+        static std::vector<ChatCommand>  mmapCommandTable =
         {
             { "loadedtiles", SEC_ADMINISTRATOR, false, &HandleMmapLoadedTilesCommand, "" },
             { "loc",         SEC_ADMINISTRATOR,         false, &HandleMmapLocCommand,         "" },
@@ -28,11 +28,11 @@ public:
             { "testarea",    SEC_ADMINISTRATOR,    false, &HandleMmapTestArea,           "" },
         };
 
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "mmap", SEC_ADMINISTRATOR, true, NULL, "", mmapCommandTable },
         };
-        return commandTable;
+        return CommandTable;
     }
 
     static bool HandleMmapPathCommand(ChatHandler* handler, char const* args)

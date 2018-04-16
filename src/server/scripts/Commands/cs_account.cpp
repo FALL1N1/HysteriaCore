@@ -33,37 +33,37 @@ class account_commandscript : public CommandScript
 public:
     account_commandscript() : CommandScript("account_commandscript") { }
 
-    ChatCommand* GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand accountSetCommandTable[] =
+        static std::vector<ChatCommand> accountSetCommandTable =
         {
-            { "addon", SEC_CONSOLE, true, &HandleAccountSetAddonCommand, "", NULL },
-            { "password", SEC_CONSOLE, true, &HandleAccountSetPasswordCommand, "", NULL },
-            { NULL,             0,                                         false, NULL,                              "", NULL }
+            { "addon", SEC_CONSOLE, true, &HandleAccountSetAddonCommand, ""},
+            { "password", SEC_CONSOLE, true, &HandleAccountSetPasswordCommand, ""},
+            { NULL,             0,                                         false, NULL,                              ""}
         };
-        static ChatCommand accountLockCommandTable[] =
+        static std::vector<ChatCommand> accountLockCommandTable =
         {
-            { "ip", SEC_CONSOLE, true, &HandleAccountLockIpCommand, "", NULL },
-            { NULL,             0,                                         false, NULL,                              "", NULL }
+            { "ip", SEC_CONSOLE, true, &HandleAccountLockIpCommand, ""},
+            { NULL,             0,                                         false, NULL,                              ""}
         };
-        static ChatCommand accountCommandTable[] =
+        static std::vector<ChatCommand> accountCommandTable =
         {
-            { "addon", SEC_CONSOLE, false, &HandleAccountAddonCommand, "", NULL },
-            { "create", SEC_CONSOLE, true, &HandleAccountCreateCommand, "", NULL },
-            { "delete", SEC_CONSOLE, true, &HandleAccountDeleteCommand, "", NULL },
-            { "onlinelist", SEC_CONSOLE, true, &HandleAccountOnlineListCommand, "", NULL },
+            { "addon", SEC_CONSOLE, false, &HandleAccountAddonCommand, ""},
+            { "create", SEC_CONSOLE, true, &HandleAccountCreateCommand, ""},
+            { "delete", SEC_CONSOLE, true, &HandleAccountDeleteCommand, ""},
+            { "onlinelist", SEC_CONSOLE, true, &HandleAccountOnlineListCommand, ""},
             { "lock", SEC_CONSOLE, false, NULL, "", accountLockCommandTable },
             { "set", SEC_CONSOLE, true, NULL, "", accountSetCommandTable },
-            { "password", SEC_CONSOLE, false, &HandleAccountPasswordCommand, "", NULL },
-            { "", SEC_CONSOLE, false, &HandleAccountCommand, "", NULL },
-            { NULL,             0,                                         false, NULL,                              "", NULL }
+            { "password", SEC_CONSOLE, false, &HandleAccountPasswordCommand, ""},
+            { "", SEC_CONSOLE, false, &HandleAccountCommand, ""},
+            { NULL,             0,                                         false, NULL,                              ""}
         };
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "account", SEC_CONSOLE, true, NULL, "", accountCommandTable },
-            { NULL,             0,                                         false, NULL,                              "", NULL }
+            { NULL,             0,                                         false, NULL,                              ""}
         };
-        return commandTable;
+        return CommandTable;
     }
 
     static bool HandleAccountAddonCommand(ChatHandler* handler, char const* args)

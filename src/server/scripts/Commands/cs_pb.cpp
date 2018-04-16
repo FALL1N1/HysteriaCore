@@ -11,24 +11,24 @@ class PB_commandscript : public CommandScript
 public:
     PB_commandscript() : CommandScript("PB_commandscript") { }
     /* ------------------------------------------------------------------------- */
-    ChatCommand* GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
-        ChatCommand static westmereCommandTable[] =
+        ChatCommand static westmereCommandTable =
         {
-            { "damage",                             SEC_ADMINISTRATOR, false, &HandleWestmereDamage,     "", NULL },
-            { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMaxLevel,   "", NULL },
-            { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMinLevel,   "", NULL },
-            { "statistics",                         SEC_PLAYER,        false, &HandleWestmereStatistics, "", NULL },
-            { NULL,                                 0,                 false, NULL,                     "", NULL }
+            { "damage",                             SEC_ADMINISTRATOR, false, &HandleWestmereDamage,     ""},
+            { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMaxLevel,   ""},
+            { "minlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMinLevel,   ""},
+            { "statistics",                         SEC_PLAYER,        false, &HandleWestmereStatistics, ""},
+            { NULL,                                 0,                 false, NULL,                     ""}
         };
 
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "help",            SEC_PLAYER,             true,  NULL,                                "", westmereCommandTable },
-            {  NULL,                SEC_PLAYER,             false, NULL,                                "", NULL }
+            {  NULL,                SEC_PLAYER,             false, NULL,                                ""}
         };
         
-        return commandTable;
+        return CommandTable;
     }
 
     /* ------------------------------------------------------------------------- */

@@ -24,20 +24,20 @@ class spectate_commandscript : public CommandScript
 public:
     spectate_commandscript() : CommandScript("spectate_commandscript") { }
 
-    ChatCommand* GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand pvpCommandTable[] =
+        static std::vector<ChatCommand> pvpCommandTable =
         {
-            { "setviewpoint", SEC_PLAYER, false, &HandleSetViewpointCommand, "", NULL },
-            { "restoreviewpoint", SEC_PLAYER, false, &HandleRestoreViewpointCommand, "", NULL },
-            { NULL, 0, false, NULL, "", NULL }
+            { "setviewpoint", SEC_PLAYER, false, &HandleSetViewpointCommand, ""},
+            { "restoreviewpoint", SEC_PLAYER, false, &HandleRestoreViewpointCommand, ""},
+            { NULL, 0, false, NULL, ""}
         };
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "spectate", SEC_PLAYER, false, NULL, "", pvpCommandTable },
-            { NULL, 0, false, NULL, "", NULL }
+            { NULL, 0, false, NULL, ""}
         };
-        return commandTable;
+        return CommandTable;
     }
 
     static bool HandleSetViewpointCommand(ChatHandler* handler, const char* /*args*/)

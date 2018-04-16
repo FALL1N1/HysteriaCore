@@ -23,26 +23,26 @@ class anticheat_commandscript : public CommandScript
 public:
     anticheat_commandscript() : CommandScript("anticheat_commandscript") { }
 
-    ChatCommand* GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand anticheatCommandTable[] =
+        static std::vector<ChatCommand> anticheatCommandTable =
         {
-            { "global",         SEC_GAMEMASTER,     true,  &HandleAntiCheatGlobalCommand,         "", NULL },
-            { "player",         SEC_GAMEMASTER,     true,  &HandleAntiCheatPlayerCommand,         "", NULL },
-            { "delete",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatDeleteCommand,         "", NULL },
-            { "handle",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatHandleCommand,         "", NULL },
-            { "jail",           SEC_GAMEMASTER,     true,  &HandleAnticheatJailCommand,         "", NULL },
-            { "warn",           SEC_GAMEMASTER,     true,  &HandleAnticheatWarnCommand,         "", NULL },
-            { NULL,             0,                     false, NULL,                                           "", NULL }
+            { "global",         SEC_GAMEMASTER,     true,  &HandleAntiCheatGlobalCommand,         ""},
+            { "player",         SEC_GAMEMASTER,     true,  &HandleAntiCheatPlayerCommand,         ""},
+            { "delete",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatDeleteCommand,         ""},
+            { "handle",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatHandleCommand,         ""},
+            { "jail",           SEC_GAMEMASTER,     true,  &HandleAnticheatJailCommand,         ""},
+            { "warn",           SEC_GAMEMASTER,     true,  &HandleAnticheatWarnCommand,         ""},
+            { NULL,             0,                     false, NULL,                                           ""}
         };
 
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "anticheat",      SEC_GAMEMASTER,     true, NULL,                     "",  anticheatCommandTable},
-            { NULL,             0,                  false, NULL,                               "", NULL }
+            { NULL,             0,                  false, NULL,                               ""}
         };
 
-        return commandTable;
+        return CommandTable;
     }
 
     static bool HandleAnticheatWarnCommand(ChatHandler* handler, const char* args)

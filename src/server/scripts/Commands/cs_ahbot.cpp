@@ -16,47 +16,47 @@ class ahbot_commandscript : public CommandScript
 public:
     ahbot_commandscript(): CommandScript("ahbot_commandscript") {}
 
-    ChatCommand* GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
-        static ChatCommand ahbotItemsAmountCommandTable[] =
+        static std::vector<ChatCommand> ahbotItemsAmountCommandTable =
         {
-            { "gray",            SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_GRAY>,     "", NULL },
-            { "white",           SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_WHITE>,    "", NULL },
-            { "green",           SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_GREEN>,    "", NULL },
-            { "blue",            SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_BLUE>,     "", NULL },
-            { "purple",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_PURPLE>,   "", NULL },
-            { "orange",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_ORANGE>,   "", NULL },
-            { "yellow",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_YELLOW>,   "", NULL },
-            { "",                SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountCommand,                                  "", NULL },
-            { NULL,             0,                  true,  NULL,                                                                                    "", NULL }
+            { "gray",            SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_GRAY>,     ""},
+            { "white",           SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_WHITE>,    ""},
+            { "green",           SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_GREEN>,    ""},
+            { "blue",            SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_BLUE>,     ""},
+            { "purple",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_PURPLE>,   ""},
+            { "orange",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_ORANGE>,   ""},
+            { "yellow",          SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountQualityCommand<AUCTION_QUALITY_YELLOW>,   ""},
+            { "",                SEC_ADMINISTRATOR, true,  &HandleAHBotItemsAmountCommand,                                  ""},
+            { NULL,             0,                  true,  NULL,                                                                                    ""}
         };
 
-        static ChatCommand ahbotItemsRatioCommandTable[] =
+        static std::vector<ChatCommand> ahbotItemsRatioCommandTable =
         {
-            { "alliance",        SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_ALLIANCE>,    "", NULL },
-            { "horde",           SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_HORDE>,       "", NULL },
-            { "neutral",         SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_NEUTRAL>,     "", NULL },
-            { "",                SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioCommand,                                 "", NULL },
-            { NULL,             0,                   true,  NULL,                                                                                    "", NULL }
+            { "alliance",        SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_ALLIANCE>,    ""},
+            { "horde",           SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_HORDE>,       ""},
+            { "neutral",         SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioHouseCommand<AUCTION_HOUSE_NEUTRAL>,     ""},
+            { "",                SEC_ADMINISTRATOR,  true,  &HandleAHBotItemsRatioCommand,                                 ""},
+            { NULL,             0,                   true,  NULL,                                                                                    ""}
         };
 
-        static ChatCommand ahbotCommandTable[] =
+        static std::vector<ChatCommand> ahbotCommandTable =
         {
             { "items",           SEC_ADMINISTRATOR, true,   NULL,                       "", ahbotItemsAmountCommandTable },
             { "ratio",           SEC_ADMINISTRATOR, true,   NULL,                       "", ahbotItemsRatioCommandTable },
-            { "rebuild",         SEC_ADMINISTRATOR, true,   &HandleAHBotRebuildCommand, "", NULL },
-            { "reload",          SEC_ADMINISTRATOR, true,   &HandleAHBotReloadCommand,  "", NULL },
-            { "status",          SEC_ADMINISTRATOR, true,   &HandleAHBotStatusCommand,  "", NULL },
-            { NULL,             0,                  true,   NULL,                       "", NULL }
+            { "rebuild",         SEC_ADMINISTRATOR, true,   &HandleAHBotRebuildCommand, ""},
+            { "reload",          SEC_ADMINISTRATOR, true,   &HandleAHBotReloadCommand,  ""},
+            { "status",          SEC_ADMINISTRATOR, true,   &HandleAHBotStatusCommand,  ""},
+            { NULL,             0,                  true,   NULL,                       ""}
         };
 
-        static ChatCommand commandTable[] =
+        static std::vector<ChatCommand> CommandTable =
         {
             { "ahbot",           SEC_ADMINISTRATOR,  false, NULL,    "", ahbotCommandTable },
-            { NULL,             0,                   false, NULL,    "", NULL }
+            { NULL,             0,                   false, NULL,    ""}
         };
 
-        return commandTable;
+        return CommandTable;
     }
 
     static bool HandleAHBotItemsAmountCommand(ChatHandler* handler, const char* args)
