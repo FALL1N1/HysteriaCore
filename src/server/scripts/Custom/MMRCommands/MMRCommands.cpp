@@ -12,16 +12,18 @@ public:
 	MMRCommandScript() : CommandScript("MMRCommandScript") {}
     std::vector<ChatCommand> GetCommands() const override
     {
-        static std::vector<ChatCommand> mmrCTB[] =
+        static std::vector<ChatCommand> mmrCTB =
         {
             { "reset", SEC_PLAYER, true, &HandleMMRResetCommand, ""}, 
             { NULL, 0, false, NULL, ""}
         };
+
         static std::vector<ChatCommand> CommandTable =
         {
             { "mmr", SEC_PLAYER, true, NULL, "", mmrCTB },
             { NULL, 0, false, NULL, ""}
         };
+
         return CommandTable;
     }
 

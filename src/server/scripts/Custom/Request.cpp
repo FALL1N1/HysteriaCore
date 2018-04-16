@@ -979,7 +979,7 @@ class cs_w_chat : public CommandScript
 public:
     cs_w_chat() : CommandScript("cs_w_chat") {}
 
-    ChatCommand * GetCommands() const
+    std::vector<ChatCommand> GetCommands() const override
     {
         static std::vector<ChatCommand> WorldChatCommandTable =
         {
