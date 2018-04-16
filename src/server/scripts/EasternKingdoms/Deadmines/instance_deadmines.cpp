@@ -24,7 +24,7 @@ class instance_deadmines : public InstanceMapScript
                 {
                     case GO_FACTORY_DOOR:
                         if (_encounters[TYPE_RHAHK_ZOR] == DONE)
-                            HandleGameObject(30533, true, gameobject);
+                            HandleGameObject(0, true, gameobject);
                         break;
                     case GO_IRON_CLAD_DOOR:
                         if (_encounters[TYPE_CANNON] == DONE)
