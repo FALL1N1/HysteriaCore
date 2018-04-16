@@ -10,7 +10,7 @@ public:
 	QueueCommandScript() : CommandScript("QueueCommandScript") {}
     std::vector<ChatCommand> GetCommands() const override
     {
-        static std::vector<ChatCommand> queueCTB[] =
+        static std::vector<ChatCommand> queueCTB =
         {
             { "2v2", SEC_PLAYER, true, &HandleQueue2v2Command, ""},
             { "3v3", SEC_PLAYER, true, &HandleQueue3v3Command, ""},

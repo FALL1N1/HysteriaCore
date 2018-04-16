@@ -97,8 +97,8 @@ public:
         static std::vector<ChatCommand> CommandTable =
         {
             { "debug",          SEC_GAMEMASTER,      true,  NULL,                  "", debugCommandTable },
-            { "wpgps",          SEC_ADMINISTRATOR,  false, &HandleWPGPSCommand,   "",              NULL },
-            { NULL,             SEC_PLAYER,         false, NULL,                  "",              NULL }
+            { "wpgps",          SEC_ADMINISTRATOR,  false, &HandleWPGPSCommand,   ""},
+            { NULL,             SEC_PLAYER,         false, NULL,                  ""}
         };
         return CommandTable;
     }

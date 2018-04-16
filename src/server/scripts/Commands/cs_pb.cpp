@@ -13,7 +13,7 @@ public:
     /* ------------------------------------------------------------------------- */
     std::vector<ChatCommand> GetCommands() const override
     {
-        ChatCommand static westmereCommandTable =
+        static std::vector<ChatCommand> westmereCommandTable =
         {
             { "damage",                             SEC_ADMINISTRATOR, false, &HandleWestmereDamage,     ""},
             { "maxlevel",                           SEC_ADMINISTRATOR, false, &HandleWestmereMaxLevel,   ""},
