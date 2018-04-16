@@ -89,4 +89,6 @@ void LoginDatabaseConnection::DoPrepareStatements()
 
     // PB
     PrepareStatement(LOGIN_UPD_UPTIME_PLAYERS, "UPDATE uptime SET uptime = ?, maxplayers = ? WHERE realmid = ? AND starttime = ?", CONNECTION_ASYNC);
+    PrepareStatement(LOGIN_SEL_MAX_PLAYERS, "SELECT maxplayers FROM uptime WHERE realmid = ?", CONNECTION_SYNCH);
+
 }

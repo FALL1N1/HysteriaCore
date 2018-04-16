@@ -551,4 +551,7 @@ void CharacterDatabaseConnection::DoPrepareStatements()
     PrepareStatement(CHAR_DEL_CHAR_PET_BY_ID, "DELETE FROM character_pet WHERE id = ?", CONNECTION_ASYNC);
     PrepareStatement(CHAR_DEL_CHAR_PET_BY_SLOT, "DELETE FROM character_pet WHERE owner = ? AND (slot = ? OR slot > ?)", CONNECTION_ASYNC);
     PrepareStatement(CHAR_REP_CHAR_PET, "REPLACE INTO character_pet (id, entry, owner, modelid, CreatedBySpell, PetType, level, exp, Reactstate, name, renamed, slot, curhealth, curmana, curhappiness, savetime, abdata) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+
+    PrepareStatement(CHAR_SEL_HORDE_ALLIANCE_ONLINE, "SELECT(SELECT COUNT(guid) FROM characters where online = 1 and race in(1,2,3,4,5)) AS alliance,(SELECT COUNT(guid)FROM characters where online = 1 and race in(2,5,6,8,10)) AS horde", CONNECTION_SYNCH);
+
 }

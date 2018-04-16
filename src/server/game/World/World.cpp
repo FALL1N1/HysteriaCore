@@ -2173,6 +2173,30 @@ void World::Update(uint32 diff)
         stmt->setUInt32(3, uint32(m_startTime));
 
         LoginDatabase.Execute(stmt);
+
+        // balnazzar
+        if (maxOnlinePlayers > GetMaxRealmPlayers())
+        {
+            PreparedStatement* stmtx = LoginDatabase.GetPreparedStatement(LOGIN_SEL_MAX_PLAYERS);
+            stmtx->setUInt32(0, realmID);
+            PreparedQueryResult resultx = LoginDatabase.Query(stmtx);
+            if (resultx)
+            {
+                Field* fieldsx = resultx->Fetch();
+                SetMaxRealmPlayers(fieldsx[0].GetUInt8());
+            }
+        }
+         
+        PreparedStatement* stmtAH = CharacterDatabase.GetPreparedStatement(CHAR_SEL_HORDE_ALLIANCE_ONLINE);
+        PreparedQueryResult resultAH = CharacterDatabase.Query(stmtAH);
+        if (resultAH)
+        {
+            Field* fieldsAH = resultAH->Fetch();
+            SetHordeAllianceOnline(true, fieldsAH[0].GetUInt32()); // alliance is first
+            SetHordeAllianceOnline(false, fieldsAH[1].GetUInt32()); // horde second
+        }
+
+
     }
 
     sLFGMgr->Update(diff, 0); // pussywizard: remove obsolete stuff before finding compatibility during map update

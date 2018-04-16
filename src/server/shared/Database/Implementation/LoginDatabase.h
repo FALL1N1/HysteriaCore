@@ -109,6 +109,7 @@ enum LoginDatabaseStatements
 
     // PB
     LOGIN_UPD_UPTIME_PLAYERS,
+    LOGIN_SEL_MAX_PLAYERS,
 
     MAX_LOGINDATABASE_STATEMENTS
 };

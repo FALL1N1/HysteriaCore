@@ -34,11 +34,11 @@
 
 #if PLATFORM == PLATFORM_WINDOWS
 # ifdef _WIN64
-#  define _FULLVERSION _PACKAGENAME " ver. " VER_PRODUCTVERSION_STR " (Win64, ???)" // "_BUILD_DIRECTIVE ")" @todo
+#  define _FULLVERSION "Project \"Balnazzar\" ver. " VER_PRODUCTVERSION_STR " (Linux, CentOS-7 MariaDB100_Galera)" // "_BUILD_DIRECTIVE ")" @todo
 # else
-#  define _FULLVERSION _PACKAGENAME " ver. " VER_PRODUCTVERSION_STR " (Win32, ???)"  // "_BUILD_DIRECTIVE ")" @todo
+#  define _FULLVERSION "Project \"Balnazzar\" ver. " VER_PRODUCTVERSION_STR " (Linux, CentOS-7 MariaDB100_Galera)"  // "_BUILD_DIRECTIVE ")" @todo
 # endif
 #else
-#  define _FULLVERSION _PACKAGENAME " ver. " VER_PRODUCTVERSION_STR " (Unix, ???)"  // "_BUILD_DIRECTIVE ")" @todo
+#  define _FULLVERSION "Project \"Balnazzar\" ver. " VER_PRODUCTVERSION_STR " (Linux, CentOS-7 MariaDB100_Galera)"  // "_BUILD_DIRECTIVE ")" @todo
 #endif
 #endif

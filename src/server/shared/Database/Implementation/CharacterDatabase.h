@@ -41,7 +41,7 @@ enum CharacterDatabaseStatements
         When updating more than one field, consider looking at the calling function
         name for a suiting suffix.
     */
-
+    CHAR_SEL_HORDE_ALLIANCE_ONLINE,
     CHAR_DEL_QUEST_POOL_SAVE,
     CHAR_INS_QUEST_POOL_SAVE,
     CHAR_DEL_NONEXISTENT_GUILD_BANK_ITEM,

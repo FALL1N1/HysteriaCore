@@ -858,6 +858,15 @@ class World
         void SetRealmName(std::string name) { _realmName = name; } // pussywizard
         bool IsInCurrentContent(ContentPatches patchSince = PATCH_MIN, ContentPatches patchTo = PATCH_MAX) const;
 
+        // balnazzar
+        uint32 maxrealmplayers;
+        uint8 GetMaxRealmPlayers() { return maxrealmplayers; }
+        void SetMaxRealmPlayers(uint8 v) { maxrealmplayers = v; }
+        uint32 hordeonline;
+        uint32 allianceonline;
+        uint32 GetHordeAllianceOnline(bool alliance) { return alliance ? allianceonline : hordeonline; }
+        void SetHordeAllianceOnline(bool alliance, uint32 v) { alliance ? allianceonline : hordeonline = v; }
+
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters

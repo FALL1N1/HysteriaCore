@@ -83,6 +83,7 @@ public:
             { "idlerestart",    SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverIdleRestartCommandTable },
             { "idleshutdown",   SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverIdleShutdownCommandTable },
             { "info",           SEC_PLAYER,         true,  &HandleServerInfoCommand,                ""},
+            {"stats",           SEC_PLAYER,         true,  &HandleServerStatsCommand, ""},
             { "motd",           SEC_PLAYER,         true,  &HandleServerMotdCommand,                ""},
             { "restart",        SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverRestartCommandTable },
             { "shutdown",       SEC_ADMINISTRATOR,  true,  NULL,                                    "", serverShutdownCommandTable },
@@ -98,6 +99,36 @@ public:
         };
         return CommandTable;
     }
+
+
+    static bool HandleServerStatsCommand(ChatHandler* handler, char const* args)
+    {
+        std::string realmName = sWorld->GetRealmName();
+        uint32 playerCount = sWorld->GetPlayerCount();
+        uint32 activeSessionCount = sWorld->GetActiveSessionCount();
+        uint32 queuedSessionCount = sWorld->GetQueuedSessionCount();
+        uint8 maxplrs = sWorld->GetMaxRealmPlayers();
+        uint32 connPeak = sWorld->GetMaxActiveSessionCount();
+
+        uint32 int_h = sWorld->GetHordeAllianceOnline(false);
+        uint32 int_a = sWorld->GetHordeAllianceOnline(true);
+
+        std::string uptime = secsToTimeString(sWorld->GetUptime()).append(".");
+        uint32 updateTime = sWorld->GetUpdateTime();
+        uint32 avgUpdateTime = avgDiffTracker.getAverage();
+        /* let's generate our output */
+        handler->PSendSysMessage("%s", _FULLVERSION);
+        handler->PSendSysMessage("Current Patch: 3.0 - Echoes of Doom (Naxxramas)");
+        handler->PSendSysMessage("Total: |cff3E9448%u|r | Ingame: |cff3E9448%u|r | Ever: |cff3E9448%u|r | Today: |cff3E9448%u|r", activeSessionCount, playerCount, maxplrs, connPeak);
+        handler->PSendSysMessage("Horde has |cffFF0000%u|r online. Alliance has |cff0000FF%u|r online.", int_h, int_a);
+        handler->PSendSysMessage("Server uptime is: |cff3E9448%s|r", uptime.c_str());
+        handler->PSendSysMessage("|cffFF0000*|rNote: Players information is cached and updated once every 5 - 10 minutes.");
+
+        if (sWorld->IsShuttingDown())
+            handler->PSendSysMessage("Realm will be |cffFF0000taken down for updates|r, time left till restart: |cffFF0000%s|r", secsToTimeString(sWorld->GetShutDownTimeLeft()).append(".").c_str());
+        return true;
+    }
+
 
     // Triggering corpses expire check in world
     static bool HandleServerCorpsesCommand(ChatHandler* /*handler*/, char const* /*args*/)
