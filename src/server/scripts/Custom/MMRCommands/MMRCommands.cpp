@@ -1,4 +1,4 @@
-#include "ScriptPch.h" 
+#include "ScriptPCH.h" 
 #include "ArenaTeam.h"
 #include "ArenaTeamMgr.h"
 #include "Player.h"
