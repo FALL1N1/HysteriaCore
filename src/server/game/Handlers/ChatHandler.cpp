@@ -39,6 +39,7 @@
 #include "AccountMgr.h"
 #include "Define.h"
 
+std::string BALNAZZAR_GM_CHAT = "|cff4fdeff";
 std::string GenerateGMResponse(std::string msg, Player* plr)
 {
     if (plr->IsGameMaster())

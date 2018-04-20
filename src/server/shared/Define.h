@@ -28,7 +28,6 @@
 
 #define TRINITY_LITTLEENDIAN 0
 #define TRINITY_BIGENDIAN    1
-std::string BALNAZZAR_GM_CHAT = "|cff4fdeff";
 
 #if !defined(TRINITY_ENDIAN)
 #  if defined (ACE_BIG_ENDIAN)
