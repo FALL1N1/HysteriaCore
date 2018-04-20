@@ -13112,10 +13112,9 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
 
         if (creature->HasUnitTypeMask(UNIT_MASK_MINION) && !creature->IsInCombat())
         {
-            MovementGenerator* top = creature->GetMotionMaster()->top();
-            if (top && top->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+            if(GetOwnerGUID())
             {
-                Unit* followed = ASSERT_NOTNULL(dynamic_cast<AbstractFollower*>(top))->GetTarget();
+                Unit* const followed = creature->GetOwner();
                 if (followed && followed->GetGUID() == GetOwnerGUID() && !followed->IsInCombat())
                 {
                     float ownerSpeed = followed->GetSpeedRate(mtype);
