@@ -37,6 +37,16 @@
 #include "Util.h"
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
+#include "Define.h"
+
+std::string GenerateGMResponse(std::string msg, Player* plr)
+{
+    if (plr->IsGameMaster())
+    {
+        return BALNAZZAR_GM_CHAT + msg + "|r";
+    }
+    else return msg;
+}
 
 void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
 {
@@ -274,8 +284,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 return;
         }
     }
-
-
+     
     switch (type)
     {
         case CHAT_MSG_SAY:
@@ -293,11 +302,11 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             }
 
             if (type == CHAT_MSG_SAY)
-                sender->Say(msg, lang);
+                sender->Say(GenerateGMResponse(msg, sender), lang);
             else if (type == CHAT_MSG_EMOTE)
-                sender->TextEmote(msg);
+                sender->TextEmote(GenerateGMResponse(msg, sender));
             else if (type == CHAT_MSG_YELL)
-                sender->Yell(msg, lang);
+                sender->Yell(GenerateGMResponse(msg, sender), lang);
             sLog->outChat("[N][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_WHISPER:
@@ -341,7 +350,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             if (!senderIsPlayer && !sender->isAcceptWhispers() && !sender->IsInWhisperWhiteList(receiver->GetGUID()))
                 sender->AddWhisperWhiteList(receiver->GetGUID());
 
-            GetPlayer()->Whisper(msg, lang, receiver->GetGUID());
+            GetPlayer()->Whisper(GenerateGMResponse(msg, sender), lang, receiver->GetGUID());
             sLog->outChat("[Whisper][%s > %s]: %s", sender->GetName().c_str(), receiver->GetName().c_str(), msg.c_str());
         } break;
         case CHAT_MSG_PARTY:
@@ -360,7 +369,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 return;
 
             WorldPacket data;
-            ChatHandler::BuildChatPacket(data, ChatMsg(type), Language(lang), sender, NULL, msg);
+            ChatHandler::BuildChatPacket(data, ChatMsg(type), Language(lang), sender, NULL, GenerateGMResponse(msg, sender));
             group->BroadcastPacket(&data, false, group->GetMemberGroup(GetPlayer()->GetGUID()));
             sLog->outChat("[Party][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
@@ -370,7 +379,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             {
                 if (Guild* guild = sGuildMgr->GetGuildById(GetPlayer()->GetGuildId()))
                 {
-                    guild->BroadcastToGuild(this, false, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
+                    guild->BroadcastToGuild(this, false, GenerateGMResponse(msg, sender), lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
                     sLog->outChat("[Guild > '%s'][%s]: %s", guild->GetName().c_str(), sender->GetName().c_str(), msg.c_str());
                 }
             }
@@ -381,7 +390,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             {
                 if (Guild* guild = sGuildMgr->GetGuildById(GetPlayer()->GetGuildId()))
                 {
-                    guild->BroadcastToGuild(this, true, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
+                    guild->BroadcastToGuild(this, true, GenerateGMResponse(msg, sender), lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
                     sLog->outChat("[Officer > '%s'][%s]: %s", guild->GetName().c_str(), sender->GetName().c_str(), msg.c_str());
                 } 
             }
@@ -398,7 +407,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             }
 
             WorldPacket data;
-            ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID, Language(lang), sender, NULL, msg);
+            ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID, Language(lang), sender, NULL, GenerateGMResponse(msg, sender));
             group->BroadcastPacket(&data, false);
             sLog->outChat("[Raid > %u][%s]: %s", group->GetGUID(), sender->GetName().c_str(), msg.c_str());
         } break;
@@ -414,7 +423,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             }
 
             WorldPacket data;
-            ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID_LEADER, Language(lang), sender, NULL, msg);
+            ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID_LEADER, Language(lang), sender, NULL, GenerateGMResponse(msg, sender));
             group->BroadcastPacket(&data, false);
             sLog->outChat("[RaidLeader > %u][%s]: %s", group->GetGUID(), sender->GetName().c_str(), msg.c_str());
         } break;
@@ -426,7 +435,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
 
             WorldPacket data;
             //in battleground, raid warning is sent only to players in battleground - code is ok
-            ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID_WARNING, Language(lang), sender, NULL, msg);
+            ChatHandler::BuildChatPacket(data, CHAT_MSG_RAID_WARNING, Language(lang), sender, NULL, GenerateGMResponse(msg, sender));
             group->BroadcastPacket(&data, false);
             sLog->outChat("[RAIDWARNING][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
@@ -438,7 +447,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 return;
 
             WorldPacket data;
-            ChatHandler::BuildChatPacket(data, CHAT_MSG_BATTLEGROUND, Language(lang), sender, NULL, msg);
+            ChatHandler::BuildChatPacket(data, CHAT_MSG_BATTLEGROUND, Language(lang), sender, NULL, GenerateGMResponse(msg, sender));
             group->BroadcastPacket(&data, false);
             sLog->outChat("[Battleground][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
@@ -450,7 +459,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 return;
 
             WorldPacket data;
-            ChatHandler::BuildChatPacket(data, CHAT_MSG_BATTLEGROUND_LEADER, Language(lang), sender, NULL, msg);
+            ChatHandler::BuildChatPacket(data, CHAT_MSG_BATTLEGROUND_LEADER, Language(lang), sender, NULL, GenerateGMResponse(msg, sender));
             group->BroadcastPacket(&data, false);
             sLog->outChat("[BG Leader][%s]: %s", sender->GetName().c_str(), msg.c_str());
         } break;
@@ -469,7 +478,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             {
                 if (Channel* chn = cMgr->GetChannel(channel, sender))
                 {
-                    chn->Say(sender->GetGUID(), msg.c_str(), lang);
+                    chn->Say(sender->GetGUID(), GenerateGMResponse(msg, sender).c_str(), lang);
                     sLog->outChat("[%s][%s]: %s", chn->GetName().c_str(), sender->GetName().c_str(), msg.c_str());
                 }
             }
@@ -487,7 +496,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 }
                 else                                        // New AFK mode
                 {
-                    sender->autoReplyMsg = msg.empty() ? GetTrinityString(LANG_PLAYER_AFK_DEFAULT) : msg;
+                    sender->autoReplyMsg = msg.empty() ? GetTrinityString(LANG_PLAYER_AFK_DEFAULT) : GenerateGMResponse(msg, sender);
 
                     if (sender->isDND())
                         sender->ToggleDND();
@@ -504,11 +513,11 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 if (msg.empty())
                     sender->ToggleDND();                   // Remove DND
                 else
-                    sender->autoReplyMsg = msg;            // Update message
+                    sender->autoReplyMsg = GenerateGMResponse(msg, sender); // Update message
             }
             else                                            // New DND mode
             {
-                sender->autoReplyMsg = msg.empty() ? GetTrinityString(LANG_PLAYER_DND_DEFAULT) : msg;
+                sender->autoReplyMsg = msg.empty() ? GetTrinityString(LANG_PLAYER_DND_DEFAULT) : GenerateGMResponse(msg, sender);
 
                 if (sender->isAFK())
                     sender->ToggleAFK();
