@@ -4,17 +4,25 @@ add_definitions(-D_BUILD_DIRECTIVE='"${CMAKE_BUILD_TYPE}"')
 set(GCC_EXPECTED_VERSION 6.3.0)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS GCC_EXPECTED_VERSION)
-  message(FATAL_ERROR "GCC: SunwellCore requires version ${GCC_EXPECTED_VERSION} to build but found ${CMAKE_CXX_COMPILER_VERSION}")
+  message(FATAL_ERROR "GCC: ProjectBalnaZZar requires version ${GCC_EXPECTED_VERSION} to build but found ${CMAKE_CXX_COMPILER_VERSION}")
+endif()
+ 
+# Check for standard to use
+check_cxx_compiler_flag(-std=c++17 HAVE_FLAG_STD_CXX17)
+if(HAVE_FLAG_STD_CXX17)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+	message(STATUS "GCC: Enabled c++17 support")
+else()
+    check_cxx_compiler_flag(-std=c++1z HAVE_FLAG_STD_CXX1Z)
+    if(HAVE_FLAG_STD_CXX1Z)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+		message(STATUS "GCC: Enabled c++1z support")
+    else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+		message(STATUS "GCC: Enabled c++14 support")
+    endif()
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-message(STATUS "GCC: Enabled c++14 support")
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-message(STATUS "GCC: Enabled c++11 support")
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
-message(STATUS "GCC: Enabled C99 support")
 
 if(PLATFORM EQUAL 32)
   # Required on 32-bit systems to enable SSE2 (standard on x64)
