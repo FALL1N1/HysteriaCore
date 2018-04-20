@@ -1,5 +1,23 @@
 # set up output paths for executable binaries (.exe-files, and .dll-files on DLL-capable platforms)
+include(CheckCXXCompilerFlag)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Check for standard to use
+check_cxx_compiler_flag(-std=c++17 HAVE_FLAG_STD_CXX17)
+if(HAVE_FLAG_STD_CXX17)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+	message(STATUS "GCC: Enabled c++17 support")
+else()
+    check_cxx_compiler_flag(-std=c++1z HAVE_FLAG_STD_CXX1Z)
+    if(HAVE_FLAG_STD_CXX1Z)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+		message(STATUS "GCC: Enabled c++1z support")
+    else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+		message(STATUS "GCC: Enabled c++14 support")
+    endif()
+endif()
+
 
 set(MSVC_EXPECTED_VERSION 19.0.24210) # MSVC 2015 Update 3
 

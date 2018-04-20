@@ -78,7 +78,7 @@ bool FollowMovementGenerator::Update(Unit* owner, uint32 diff)
         owner->ClearUnitState(UNIT_STATE_FOLLOW_MOVE);
     }
 
-    if (_lastTargetPosition.GetExactDistSq(&target->GetPosition()) > 0.0f)
+    if (_lastTargetPosition.GetExactDistSq(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ()) > 0.0f)
     {
         _lastTargetPosition = target->GetPosition();
         if (owner->HasUnitState(UNIT_STATE_FOLLOW_MOVE) || !PositionOkay(owner, target, _range + FOLLOW_RANGE_TOLERANCE))
