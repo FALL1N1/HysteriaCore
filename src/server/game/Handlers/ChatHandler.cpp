@@ -38,13 +38,12 @@
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
 #include "Define.h"
-
-std::string BALNAZZAR_GM_CHAT = "|cff4fdeff";
+ 
 std::string GenerateGMResponse(std::string msg, Player* plr)
 {
     if (plr->IsGameMaster())
     {
-        return BALNAZZAR_GM_CHAT + msg + "|r";
+        return "|cff4fdeff" /* light blue */ + msg + "|r";
     }
     else return msg;
 }
