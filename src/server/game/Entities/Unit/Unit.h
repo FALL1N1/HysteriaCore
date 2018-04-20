@@ -20,8 +20,6 @@
 #define __UNIT_H
 
 #include "EventProcessor.h"
-#include "FollowerReference.h"
-#include "FollowerRefManager.h"
 #include "HostileRefManager.h"
 #include "MotionMaster.h"
 #include "Object.h"
@@ -304,6 +302,7 @@ enum InventorySlot
     NULL_SLOT                  = 255
 };
 
+struct AbstractFollower;
 struct FactionTemplateEntry;
 struct SpellValue;
 
@@ -1404,7 +1403,9 @@ class Unit : public WorldObject
         virtual void SetCanDualWield(bool value) { m_canDualWield = value; }
         float GetCombatReach() const { return m_floatValues[UNIT_FIELD_COMBATREACH]; }
         bool IsWithinCombatRange(const Unit* obj, float dist2compare) const;
-        bool IsWithinMeleeRange(const Unit* obj, float dist = MELEE_RANGE) const;
+        bool IsWithinMeleeRange(Unit const* obj) const { return IsWithinMeleeRangeAt(GetPosition(), obj); }
+        bool IsWithinMeleeRangeAt(Position const& pos, Unit const* obj) const;
+		float GetMeleeRange(Unit const* target) const;
         bool GetRandomContactPoint(const Unit* target, float &x, float &y, float &z, bool force = false) const;
         uint32 m_extraAttacks;
         bool m_canDualWield;
@@ -2253,8 +2254,9 @@ class Unit : public WorldObject
         void  ModSpellCastTime(SpellInfo const* spellProto, int32 & castTime, Spell * spell=NULL);
         float CalculateLevelPenalty(SpellInfo const* spellProto) const;
 
-        void addFollower(FollowerReference* pRef) { m_FollowingRefManager.insertFirst(pRef); }
-        void removeFollower(FollowerReference* /*pRef*/) { /* nothing to do yet */ }
+        void FollowerAdded(AbstractFollower* f) { m_followingMe.insert(f); }
+        void FollowerRemoved(AbstractFollower* f) { m_followingMe.erase(f); }
+        void RemoveAllFollowers();
 
         MotionMaster* GetMotionMaster() { return i_motionMaster; }
         const MotionMaster* GetMotionMaster() const { return i_motionMaster; }
@@ -2551,7 +2553,7 @@ class Unit : public WorldObject
         // Manage all Units that are threatened by us
         HostileRefManager m_HostileRefManager;
 
-        FollowerRefManager m_FollowingRefManager;
+        std::unordered_set<AbstractFollower*> m_followingMe;
 
         ComboPointHolderSet m_ComboPointHolders;
 

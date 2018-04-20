@@ -31,6 +31,7 @@
 #include "Totem.h"
 #include "Spell.h"
 #include "DynamicObject.h"
+#include "G3DPosition.hpp"
 #include "Group.h"
 #include "UpdateData.h"
 #include "MapManager.h"
@@ -5879,7 +5880,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                     else if (m_preGeneratedPath.IsInvalidDestinationZ(target)) // Check position z, if in a straight line
                             return SPELL_FAILED_NOPATH;
 
-                    m_preGeneratedPath.ReducePathLenghtByDist(objSize, target); // move back
+					m_preGeneratedPath.ShortenPathUntilDist(PositionToVector3(target), objSize); // move back
                 }
                 break;
             }

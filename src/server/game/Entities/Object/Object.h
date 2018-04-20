@@ -459,9 +459,17 @@ struct Position
 
     float GetAngle(const Position* pos) const;
     float GetAngle(float x, float y) const;
-    float GetRelativeAngle(const Position* pos) const
-        { return GetAngle(pos) - m_orientation; }
+    float GetRelativeAngle(const Position* pos) const { return GetAngle(pos) - m_orientation; }
     float GetRelativeAngle(float x, float y) const { return GetAngle(x, y) - m_orientation; }
+    float GetAbsoluteAngle(float x, float y) const
+    {
+        float dx = x - m_positionX;
+        float dy = y - m_positionY;
+        return NormalizeOrientation(std::atan2(dy, dx));
+    }
+    float GetAbsoluteAngle(Position const& pos) const { return GetAbsoluteAngle(pos.m_positionX, pos.m_positionY); }
+    float GetAbsoluteAngle(Position const* pos) const { return GetAbsoluteAngle(*pos); }
+	float ToAbsoluteAngle(float relAngle) const { return NormalizeOrientation(relAngle + m_orientation); }
     void GetSinCos(float x, float y, float &vsin, float &vcos) const;
 
     bool IsInDist2d(float x, float y, float dist) const

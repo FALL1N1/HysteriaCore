@@ -232,7 +232,7 @@ struct boss_twin_valkyrAI : public ScriptedAI
             return;
 
         float allowedDist = sqrt(MELEE_RANGE * MELEE_RANGE + 6.0f * 6.0f);
-        if (!me->IsWithinMeleeRange(victim, allowedDist))
+        if (!me->IsWithinMeleeRange(victim))
             return;
 
         if (me->isAttackReady())

@@ -898,67 +898,50 @@ float PathGenerator::Dist3DSqr(G3D::Vector3 const& p1, G3D::Vector3 const& p2) c
     return (p1 - p2).squaredLength();
 }
 
-void PathGenerator::ReducePathLenghtByDist(const float dist, Unit* target)
+void PathGenerator::ShortenPathUntilDist(G3D::Vector3 const& target, float dist)
 {
-    if (GetPathType() == PATHFIND_BLANK)
+    if (GetPathType() == PATHFIND_BLANK || _pathPoints.size() < 2)
     {
-        //TC_LOG_ERROR("maps", "PathGenerator::ReducePathLenghtByDist called before path was built");
+        sLog->outError("PathGenerator::ReducePathLengthByDist called before path was successfully built");
         return;
     }
 
-    if (_pathPoints.size() < 2) // path building failure
+    float const distSq = dist * dist;
+
+    // the first point of the path must be outside the specified range
+    // (this should have really been checked by the caller...)
+    if ((_pathPoints[0] - target).squaredLength() < distSq)
         return;
 
-    int idx = _pathPoints.size() - 2;
-    float totalLengthSoFar = 0.0f;
-    G3D::Vector3 diffVec;
-    for ( ; idx >= 0; idx--)
-    {
-        diffVec = _pathPoints[idx + 1] - _pathPoints[idx];
-        totalLengthSoFar += diffVec.length();
-        if (totalLengthSoFar >= dist)
-            break;
-    }
+    // check if we even need to do anything
+    if ((*_pathPoints.rbegin() - target).squaredLength() >= distSq)
+        return;
 
-    if (totalLengthSoFar > dist)
+    size_t i = _pathPoints.size()-1;
+    // find the first i s.t.:
+    //  - _pathPoints[i] is still too close
+    //  - _pathPoints[i-1] is too far away
+    // => the end point is somewhere on the line between the two
+    while (1)
     {
-        float delta = totalLengthSoFar - dist;
-        G3D::Vector3 newFinalPoint = _pathPoints[idx] + diffVec.unit() * delta;
-        _sourceUnit->UpdateAllowedPositionZ(newFinalPoint.x, newFinalPoint.y, newFinalPoint.z);
-        if (IsValidFinalPoint(newFinalPoint, target, dist))
+        // we know that pathPoints[i] is too close already (from the previous iteration)
+        if ((_pathPoints[i-1] - target).squaredLength() >= distSq)
+            break; // bingo!
+
+        if (!--i)
         {
-            _pathPoints[idx + 1] = newFinalPoint;
-            _pathPoints.resize(idx + 2);
-        }
-        else
-        {
-            CutAtFirstValidPoint(idx + 1, target, dist);
-        }
-    }
-    else if (totalLengthSoFar == dist && idx > 0)
-    {
-        if (IsValidFinalPoint(_pathPoints[idx], target, dist))
-        {
-            _pathPoints.resize(idx + 1);
-        }
-        else
-        {
-            CutAtFirstValidPoint(idx + 1, target, dist);
-        }
-    }
-    else
-    {
-        // if initial position is "valid", no need to move
-        if (IsValidFinalPoint(_pathPoints[0], target, dist))
-        {
-            _pathPoints[1] = _pathPoints[0];
+            // no point found that fulfills the condition
+            _pathPoints[0] = _pathPoints[1];
             _pathPoints.resize(2);
-        }
-        else
-        {
-            CutAtFirstValidPoint(1, target, dist);
+            return;
         }
     }
+
+    // ok, _pathPoints[i] is too close, _pathPoints[i-1] is not, so our target point is somewhere between the two...
+    //   ... settle for a guesstimate since i'm not confident in doing trig on every chase motion tick...
+    // (@todo review this)
+    _pathPoints[i] += (_pathPoints[i - 1] - _pathPoints[i]).direction() * (dist - (_pathPoints[i] - target).length());
+    _pathPoints.resize(i+1);
 }
 
 bool PathGenerator::IsInvalidDestinationZ(Unit const* target) const

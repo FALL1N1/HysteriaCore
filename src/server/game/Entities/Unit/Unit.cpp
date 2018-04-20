@@ -66,6 +66,8 @@
 #include "ArenaSpectator.h"
 #include "DynamicVisibility.h"
 #include "MMapFactory.h"
+#include "AbstractFollower.h"
+#include "MovementGenerator.h"
 
 #include <math.h>
 
@@ -590,20 +592,25 @@ bool Unit::IsWithinCombatRange(const Unit* obj, float dist2compare) const
     return distsq < maxdist * maxdist;
 }
 
-bool Unit::IsWithinMeleeRange(const Unit* obj, float dist) const
+bool Unit::IsWithinMeleeRangeAt(Position const& pos, Unit const* obj) const
 {
     if (!obj || !IsInMap(obj) || !InSamePhase(obj))
         return false;
 
-    float dx = GetPositionX() - obj->GetPositionX();
-    float dy = GetPositionY() - obj->GetPositionY();
-    float dz = GetPositionZ() - obj->GetPositionZ();
-    float distsq = dx*dx + dy*dy + dz*dz;
+    float dx = pos.GetPositionX() - obj->GetPositionX();
+    float dy = pos.GetPositionY() - obj->GetPositionY();
+    float dz = pos.GetPositionZ() - obj->GetPositionZ();
+    float distsq = dx * dx + dy * dy + dz * dz;
 
-    float sizefactor = GetCombatReach() + obj->GetCombatReach() + 4.0f / 3.0f;
-    float maxdist = dist + sizefactor;
+    float maxdist = obj->GetMeleeRange(obj);
 
-    return distsq < maxdist * maxdist;
+    return distsq <= maxdist * maxdist;
+}
+
+float Unit::GetMeleeRange(Unit const* target) const
+{
+    float range = GetCombatReach() + target->GetCombatReach() + 4.0f / 3.0f;
+    return std::max(range, NOMINAL_MELEE_RANGE);
 }
 
 bool Unit::GetRandomContactPoint(const Unit* obj, float &x, float &y, float &z, bool force) const
@@ -13075,25 +13082,7 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
     {
         // Set creature speed rate from CreatureInfo
         if (GetTypeId() == TYPEID_UNIT)
-        {
-            Unit* pOwner = GetCharmerOrOwner();
-            if (pOwner && !IsInCombat() && !IsVehicle() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && (IsPet() || IsGuardian() || GetGUID() == pOwner->GetCritterGUID() || GetCharmerGUID() == pOwner->GetGUID()))
-            {
-                // For every yard over 5, increase speed by 0.01
-                //  to help prevent pet from lagging behind and despawning
-                float dist = GetDistance(pOwner->GetPositionX(), pOwner->GetPositionY(), pOwner->GetPositionZ());
-                float base_rate = 1.00f; // base speed is 100% of owner speed
-
-                if (dist < 5)
-                    dist = 5;
-
-                float mult = base_rate + ((dist - 5) * 0.01f);
-
-                speed *= GetCharmerOrOwner()->GetSpeedRate(mtype) * mult; // pets default to owner's speed when not in combat
-            }
-            else
-                speed *= ToCreature()->GetCreatureTemplate()->speed_run;    // at this point, MOVE_WALK is never reached
-        }
+			speed *= ToCreature()->GetCreatureTemplate()->speed_run;    // at this point, MOVE_WALK is never reached
         
         // Normalize speed by 191 aura SPELL_AURA_USE_NORMAL_MOVEMENT_SPEED if need
         // TODO: possible affect only on MOVE_RUN
@@ -13115,11 +13104,27 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
         break;
     }
 
-    // for creature case, we check explicit if mob searched for assistance
-    if (GetTypeId() == TYPEID_UNIT)
+    if (Creature* creature = ToCreature())
     {
-        if (ToCreature()->HasSearchedAssistance())
+        // for creature case, we check explicit if mob searched for assistance
+        if (creature->HasSearchedAssistance())
             speed *= 0.66f;                                 // best guessed value, so this will be 33% reduction. Based off initial speed, mob can then "run", "walk fast" or "walk".
+
+        if (creature->HasUnitTypeMask(UNIT_MASK_MINION) && !creature->IsInCombat())
+        {
+            MovementGenerator* top = creature->GetMotionMaster()->top();
+            if (top && top->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE)
+            {
+                Unit* followed = ASSERT_NOTNULL(dynamic_cast<AbstractFollower*>(top))->GetTarget();
+                if (followed && followed->GetGUID() == GetOwnerGUID() && !followed->IsInCombat())
+                {
+                    float ownerSpeed = followed->GetSpeedRate(mtype);
+                    if (speed < ownerSpeed || creature->IsWithinDist3d(followed, 10.0f))
+                        speed = ownerSpeed;
+                    speed *= std::min(std::max(1.0f, 0.75f + (GetDistance(followed) - PET_FOLLOW_DIST) * 0.05f), 1.3f);
+                }
+            }
+        }
     }
 
     // Apply strongest slow aura mod to speed
@@ -13135,6 +13140,12 @@ void Unit::UpdateSpeed(UnitMoveType mtype, bool forced)
         }
     }
     SetSpeed(mtype, speed, forced);
+}
+
+void Unit::RemoveAllFollowers()
+{
+    while (!m_followingMe.empty())
+        (*m_followingMe.begin())->SetTarget(nullptr);
 }
 
 float Unit::GetSpeed(UnitMoveType mtype) const
@@ -14308,6 +14319,7 @@ void Unit::RemoveFromWorld()
         RemoveAllControlled();
 
         RemoveAreaAurasDueToLeaveWorld();
+		RemoveAllFollowers();
 
         if (GetCharmerGUID())
         {

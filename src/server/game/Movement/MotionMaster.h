@@ -23,7 +23,9 @@
 #include <vector>
 #include "SharedDefines.h"
 #include "Object.h"
+#include "Optional.h"
 #include "Spline/MoveSpline.h"
+#include "ObjectDefines.h"
 
 class MovementGenerator;
 class Unit;
@@ -55,6 +57,36 @@ enum MovementGeneratorType
     EFFECT_MOTION_TYPE    = 16,
     ESCORT_MOTION_TYPE    = 17,                             // xinef: EscortMovementGenerator.h
     NULL_MOTION_TYPE      = 18
+};
+
+ 
+struct ChaseRange
+{
+    ChaseRange(float range) : MinRange(range > CONTACT_DISTANCE ? 0 : range - CONTACT_DISTANCE), MinTolerance(range), MaxRange(range + CONTACT_DISTANCE), MaxTolerance(range) {}
+    ChaseRange(float min, float max) : MinRange(min), MinTolerance(std::min(min + CONTACT_DISTANCE, (min + max) / 2)), MaxRange(max), MaxTolerance(std::max(max - CONTACT_DISTANCE, MinTolerance)) {}
+    ChaseRange(float min, float tMin, float tMax, float max) : MinRange(min), MinTolerance(tMin), MaxRange(max), MaxTolerance(tMax) {}
+
+    // this contains info that informs how we should path!
+    float MinRange;     // we have to move if we are within this range...    (min. attack range)
+    float MinTolerance; // ...and if we are, we will move this far away
+    float MaxRange;     // we have to move if we are outside this range...   (max. attack range)
+    float MaxTolerance; // ...and if we are, we will move into this range
+};
+
+struct ChaseAngle
+{
+    ChaseAngle(float angle, float tol = M_PI/4) : RelativeAngle(Position::NormalizeOrientation(angle)), Tolerance(tol) {}
+
+    float RelativeAngle; // we want to be at this angle relative to the target (0 = front, M_PI = back)
+    float Tolerance;     // but we'll tolerate anything within +- this much
+
+    float UpperBound() const { return Position::NormalizeOrientation(RelativeAngle + Tolerance); }
+    float LowerBound() const { return Position::NormalizeOrientation(RelativeAngle - Tolerance); }
+    bool IsAngleOkay(float relAngle) const
+    {
+        float const diff = std::abs(relAngle - RelativeAngle);
+        return (std::min(diff, float(2 * M_PI) - diff) <= Tolerance);
+    }
 };
 
 enum MovementSlot
@@ -176,8 +208,9 @@ class MotionMaster //: private std::stack<MovementGenerator *>
         void MoveIdle();
         void MoveTargetedHome();
         void MoveRandom(float spawndist = 0.0f);
-        void MoveFollow(Unit* target, float dist, float angle, MovementSlot slot = MOTION_SLOT_ACTIVE);
-        void MoveChase(Unit* target, float dist = 0.0f, float angle = 0.0f);
+        void MoveFollow(Unit* target, float dist, ChaseAngle angle, MovementSlot slot = MOTION_SLOT_ACTIVE);
+        void MoveChase(Unit* target, Optional<ChaseRange> dist = {}, Optional<ChaseAngle> angle = {});
+        void MoveChase(Unit* target, float dist, float angle = 0.0f) { MoveChase(target, Optional<ChaseRange>(dist), Optional<ChaseAngle>(angle)); }
         void MoveConfused();
         void MoveFleeing(Unit* enemy, uint32 time = 0);
         void MovePoint(uint32 id, const Position &pos, bool generatePath = true, bool forceDestination = true)

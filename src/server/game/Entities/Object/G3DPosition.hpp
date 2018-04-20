@@ -1,6 +1,5 @@
 /*
-
-
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -16,19 +15,15 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _FOLLOWERREFERENCE_H
-#define _FOLLOWERREFERENCE_H
+#ifndef TRINITY_G3DPOSITION_HPP
+#define TRINITY_G3DPOSITION_HPP
 
-#include "Reference.h"
+#include "Object.h"
+#include <G3D/Vector3.h>
+#include "Errors.h"
 
-class TargetedMovementGeneratorBase;
-class Unit;
+inline G3D::Vector3 PositionToVector3(Position p) { return { p.m_positionX, p.m_positionY, p.m_positionZ }; }
+inline G3D::Vector3 PositionToVector3(Position const* p) { return { ASSERT_NOTNULL(p)->m_positionX, p->m_positionY, p->m_positionZ }; }
+inline Position Vector3ToPosition(G3D::Vector3 v) { return { v.x, v.y, v.z }; }
 
-class FollowerReference : public Reference<Unit, TargetedMovementGeneratorBase>
-{
-    protected:
-        void targetObjectBuildLink();
-        void targetObjectDestroyLink();
-        void sourceObjectDestroyLink();
-};
 #endif

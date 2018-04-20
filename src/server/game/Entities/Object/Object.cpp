@@ -34,7 +34,6 @@
 #include "ObjectAccessor.h"
 #include "Log.h"
 #include "Transport.h"
-#include "TargetedMovementGenerator.h"
 #include "WaypointMovementGenerator.h"
 #include "VMapFactory.h"
 #include "CellImpl.h"

@@ -306,7 +306,7 @@ bool SpellTargetSelector::operator()(Unit const* target) const
         if (range_type == SPELL_RANGE_MELEE)
         {
             // Because of lag, we can not check too strictly here.
-            if (!_caster->IsWithinMeleeRange(target, max_range))
+            if (!_caster->IsWithinMeleeRange(target))
                 return false;
         }
         else if (!_caster->IsWithinCombatRange(target, max_range))

@@ -78,7 +78,8 @@ class PathGenerator
             _polyLength = 0;
             _pathPoints.clear();
         }
-        void ReducePathLenghtByDist(float dist, Unit* target); // path must be already built
+
+        void ShortenPathUntilDist(G3D::Vector3 const& point, float dist); // shortens the path until the destination is the specified distance from the target point
 
     private:
 
