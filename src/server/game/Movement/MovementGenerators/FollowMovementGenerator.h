@@ -40,9 +40,9 @@ class FollowMovementGenerator : public MovementGenerator, public AbstractFollowe
         void UnitSpeedChanged() { _lastTargetPosition.Relocate(0.0f, 0.0f, 0.0f); }
 
     private:
-        static constexpr uint32 CHECK_INTERVAL = 100;
+        static constexpr uint32 CHECK_INTERVAL = 10;
 // static inline const when?
-#define FOLLOW_RANGE_TOLERANCE 0.1f
+#define FOLLOW_RANGE_TOLERANCE 0.01f
 
         void UpdatePetSpeed(Unit* owner);
 
