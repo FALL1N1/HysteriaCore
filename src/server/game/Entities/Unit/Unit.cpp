@@ -13180,7 +13180,7 @@ void Unit::SetSpeed(UnitMoveType mtype, float rate, bool forced)
             return;
         }
 
-		data << GetPackGUID();
+        data.append(GetPackGUID());
         BuildMovementPacket(&data);
         data << float(GetSpeed(mtype));
         SendMessageToSet(&data, true);

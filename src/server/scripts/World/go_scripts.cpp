@@ -1215,6 +1215,14 @@ enum BellHourlyMisc
     EVENT_RING_BELL        = 1
 };
 
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__))
+struct tm* localtime_r(const time_t* time, struct tm *result)
+{
+    localtime_s(result, time);
+    return result;
+}
+#endif
+
 class go_bells : public GameObjectScript
 {
 public:
@@ -1258,7 +1266,7 @@ public:
                 uint8 _rings = (localTm.tm_hour - 1) % 12 + 1;
 
                 for (auto i = 0; i < _rings; ++i)
-                    _events.ScheduleEvent(EVENT_RING_BELL, Seconds(i * 4 + 1));
+                    _events.ScheduleEvent(EVENT_RING_BELL, (i * 4 + 1) * IN_MILLISECONDS);
             }
         }
 
