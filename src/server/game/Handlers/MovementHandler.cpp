@@ -462,6 +462,11 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
 
     if (plrMover)
     {
+        if (Pet* tmpPet = plrMover->GetPet())
+            if(!tmpPet->IsInCombat() && !plrMover->IsInCombat())
+            {
+                tmpPet->GetMotionMaster()->UpdateMotion(10);
+            }
         if (World::GetEnableMvAnticheat() && !plrMover->IsGameMaster() && !plrMover->GetCharmerOrOwnerPlayerOrPlayerItself()->IsGameMaster() && !plrMover->GetCharmerOrOwnerPlayerOrPlayerItself()->GetVehicle())
         {
             // calc time deltas
