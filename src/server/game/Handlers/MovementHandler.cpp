@@ -464,7 +464,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
     {
         if (World::GetEnableMvAnticheat() && !plrMover->IsGameMaster() && !plrMover->GetCharmerOrOwnerPlayerOrPlayerItself()->IsGameMaster() && !plrMover->GetCharmerOrOwnerPlayerOrPlayerItself()->GetVehicle())
         {
-			if(Pet* pet = plrMover->GetPet()
+			if(Pet* pet = plrMover->GetPet())
 				if(!pet->IsInCombat())
 				{
 					pet->GetMotionMaster()->MoveFollow(plrMover);
