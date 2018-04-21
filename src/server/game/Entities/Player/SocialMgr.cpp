@@ -234,6 +234,8 @@ void SocialMgr::GetFriendInfo(Player* player, uint32 friendGUID, FriendInfo &fri
     if (pFriend && (!AccountMgr::IsPlayerAccount(security) || ((pFriend->GetTeamId() == teamId || allowTwoSideWhoList) && pFriend->GetSession()->GetSecurity() <= gmLevelInWhoList)) && pFriend->IsVisibleGloballyFor(player))
     {
         friendInfo.Status = FRIEND_STATUS_ONLINE;
+		if (pFriend->GetSession()->GetRecruiterId() == player->GetSession()->GetAccountId() || pFriend->GetSession()->GetAccountId() == player->GetSession()->GetRecruiterId())
+			friendInfo.Status = FriendStatus(uint32(friendInfo.Status) | FRIEND_STATUS_RAF);
         if (pFriend->isAFK())
             friendInfo.Status = FRIEND_STATUS_AFK;
         if (pFriend->isDND())
