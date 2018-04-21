@@ -92,7 +92,7 @@ bool FollowMovementGenerator::Update(Unit* owner, uint32 diff)
             float tAngle;
             float const curAngle = target->GetRelativeAngle(owner);
             if (_angle.IsAngleOkay(curAngle))
-                tAngle = curAngle;
+                tAngle = 270.0f; // curAngle;
             else
             {
                 float const diffUpper = Position::NormalizeOrientation(curAngle - _angle.UpperBound());
