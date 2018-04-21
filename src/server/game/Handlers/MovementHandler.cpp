@@ -464,11 +464,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recvData)
     {
         if (World::GetEnableMvAnticheat() && !plrMover->IsGameMaster() && !plrMover->GetCharmerOrOwnerPlayerOrPlayerItself()->IsGameMaster() && !plrMover->GetCharmerOrOwnerPlayerOrPlayerItself()->GetVehicle())
         {
-			if(Pet* pet = plrMover->GetPet())
-				if(!pet->IsInCombat())
-				{
-					pet->GetMotionMaster()->MoveFollow(plrMover);
-				}
             // calc time deltas
             int32 cClientTimeDelta = 1500;
             if (plrMover->m_anti_LastClientTime != 0)
