@@ -386,6 +386,10 @@ void PetAI::AttackStart(Unit* target)
 
     // Only chase if not commanded to stay or if stay but commanded to attack
     DoAttack(target, (!me->GetCharmInfo()->HasCommandState(COMMAND_STAY) || me->GetCharmInfo()->IsCommandAttack()));
+
+    me->UpdateSpeed(MOVE_RUN, true);
+    me->UpdateSpeed(MOVE_WALK, true);
+    me->UpdateSpeed(MOVE_FLIGHT, true);
 }
 
 void PetAI::OwnerAttackedBy(Unit* attacker)
@@ -530,6 +534,10 @@ void PetAI::HandleReturnMovement()
     // xinef: remember that npcs summoned by npcs can also be pets
     me->DeleteThreatList();
     me->ClearInPetCombat();
+
+    me->UpdateSpeed(MOVE_RUN, true);
+    me->UpdateSpeed(MOVE_WALK, true);
+    me->UpdateSpeed(MOVE_FLIGHT, true);
 }
 
 void PetAI::SpellHit(Unit* caster, const SpellInfo* spellInfo)
@@ -744,4 +752,8 @@ void PetAI::AttackedBy(Unit* attacker)
 
     // Continue to evaluate and attack if necessary
     AttackStart(attacker);
+
+    me->UpdateSpeed(MOVE_RUN, true);
+    me->UpdateSpeed(MOVE_WALK, true);
+    me->UpdateSpeed(MOVE_FLIGHT, true);
 }
