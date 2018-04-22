@@ -899,9 +899,9 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         return -1;
     }
     
-    QueryResult premresult = LoginDatabase.PQuery ("SELECT 1 FROM account_premium WHERE id = '%u' AND active = 1", id);
-    if (premresult) // if account premium 
-        isPremium = true; 
+    //QueryResult premresult = LoginDatabase.PQuery ("SELECT 1 FROM account_premium WHERE id = '%u' AND active = 1", id);
+    //if (premresult) // if account premium 
+        //isPremium = true; 
 
     // Check locked state for server
     AccountTypes allowedAccountType = sWorld->GetPlayerSecurityLimit();

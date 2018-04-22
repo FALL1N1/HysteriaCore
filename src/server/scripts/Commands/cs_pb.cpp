@@ -46,7 +46,7 @@ public:
     static bool HandleBalnazzarMaxSkill(ChatHandler* handler, const char* args)
     {
         Player* player = handler->GetSession()->GetPlayer();
-
+        return true;
     }
 
     static bool HandleBalnazzarNoCD(ChatHandler* handler, const char* args)
