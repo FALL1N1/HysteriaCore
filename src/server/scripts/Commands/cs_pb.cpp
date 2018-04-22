@@ -924,7 +924,7 @@ public:
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(1);
-            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".Balnazzar maxlevel\".");
+            handler->PSendSysMessage("Your level has been set to 1, if you want to be 80 please use the command \".test maxlevel\".");
         }
 
         return true;
@@ -935,7 +935,7 @@ public:
         if (Player* plr = handler->GetSession()->GetPlayer())
         {
             plr->SetLevel(80);
-            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".Balnazzar minlevel\".");
+            handler->PSendSysMessage("Your level has been set to 80, if you want to be 1 please use the command \".test minlevel\".");
         }
 
         return true;
