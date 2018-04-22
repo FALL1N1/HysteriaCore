@@ -2183,7 +2183,7 @@ void World::Update(uint32 diff)
             if (resultx)
             {
                 Field* fieldsx = resultx->Fetch();
-                SetMaxRealmPlayers(fieldsx[0].GetUInt8());
+                SetMaxRealmPlayers(fieldsx[0].GetUInt32());
             }
         }
          
