@@ -107,7 +107,7 @@ public:
         uint32 playerCount = sWorld->GetPlayerCount();
         uint32 activeSessionCount = sWorld->GetActiveSessionCount();
         uint32 queuedSessionCount = sWorld->GetQueuedSessionCount();
-        uint8 maxplrs = sWorld->GetMaxRealmPlayers();
+        uint32 maxplrs = sWorld->GetMaxRealmPlayers();
         uint32 connPeak = sWorld->GetMaxActiveSessionCount();
 
         uint32 int_h = sWorld->GetHordeAllianceOnline(false);

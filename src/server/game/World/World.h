@@ -860,7 +860,7 @@ class World
 
         // balnazzar
         uint32 maxrealmplayers;
-        uint8 GetMaxRealmPlayers() { return maxrealmplayers; }
+        uint32 GetMaxRealmPlayers() { return maxrealmplayers; }
         void SetMaxRealmPlayers(uint8 v) { maxrealmplayers = v; }
         uint32 hordeonline;
         uint32 allianceonline;
