@@ -708,7 +708,7 @@ void Channel::List(Player const* player)
     uint32 count  = 0;
     if (!(_channelRights.flags & CHANNEL_RIGHT_CANT_SPEAK))
         for (PlayerContainer::const_iterator i = playersStore.begin(); i != playersStore.end(); ++i)
-            if (AccountMgr::IsPlayerAccount(i->second.plrPtr->GetSession()->GetSecurity()))
+            if (!i->second.plrPtr->IsGameMaster()) // @emo
             {
                 data << uint64(i->first);
                 data << uint8(i->second.flags); // flags seems to be changed...
