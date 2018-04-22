@@ -4903,7 +4903,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
                 {
                     if (Player* pFriend = ObjectAccessor::FindPlayerInOrOutOfWorld(MAKE_NEW_GUID((*resultFriends)[0].GetUInt32(), 0, HIGHGUID_PLAYER)))
                     {
-                        pFriend->GetSocial()->RemoveFromSocialList(guid, false);
+                        pFriend->GetSocial()->RemoveFromSocialList(guid, false, false);
                         sSocialMgr->SendFriendStatus(pFriend, FRIEND_REMOVED, guid, false);
                     }
                 } while (resultFriends->NextRow());

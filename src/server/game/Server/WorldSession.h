@@ -701,7 +701,7 @@ class WorldSession
 
         void HandleJoinChannel(WorldPacket& recvPacket);
         void HandleLeaveChannel(WorldPacket& recvPacket);
-        void HandleChannelList(WorldPacket& recvPacket);
+        void HandleChannelList(WorldPacket& recvPacket); 
         void HandleChannelPassword(WorldPacket& recvPacket);
         void HandleChannelSetOwner(WorldPacket& recvPacket);
         void HandleChannelOwner(WorldPacket& recvPacket);
@@ -847,6 +847,12 @@ class WorldSession
         void HandleItemRefund(WorldPacket& recvData);
 
         /* VOICE CHAT */
+        // - CMSG 
+        void HandleChannelVoiceOnOpcode(WorldPacket& recvData);
+        void HandleChannelVoiceOffOpcode(WorldPacket& recvData);
+        void HandleVoiceIgnorePlayerByName(WorldPacket& recvData);
+        void HandleVoiceUnIgnorePlayerByName(WorldPacket& recvData);
+        // - SMSG
         void HandleEnableMicrophoneOpcode(WorldPacket& recvData);
         void HandleChannelVoiceQueryOpcode(WorldPacket& recvData);
         void HandleVoiceChatQueryOpcode(WorldPacket& recvData);

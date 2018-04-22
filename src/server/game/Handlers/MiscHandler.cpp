@@ -568,7 +568,7 @@ void WorldSession::HandleAddFriendOpcode(WorldPacket & recv_data)
                     friendResult = FRIEND_ADDED_ONLINE;
                 else
                     friendResult = FRIEND_ADDED_OFFLINE;
-                if (!GetPlayer()->GetSocial()->AddToSocialList(guidLow, false))
+                if (!GetPlayer()->GetSocial()->AddToSocialList(guidLow, false, false))
                 {
                     friendResult = FRIEND_LIST_FULL;
                     ;//sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: %s's friend list is full.", GetPlayer()->GetName().c_str());
@@ -591,7 +591,7 @@ void WorldSession::HandleDelFriendOpcode(WorldPacket & recv_data)
 
     recv_data >> FriendGUID;
 
-    _player->GetSocial()->RemoveFromSocialList(GUID_LOPART(FriendGUID), false);
+    _player->GetSocial()->RemoveFromSocialList(GUID_LOPART(FriendGUID), false, false);
 
     sSocialMgr->SendFriendStatus(GetPlayer(), FRIEND_REMOVED, GUID_LOPART(FriendGUID), false);
 
@@ -627,7 +627,7 @@ void WorldSession::HandleAddIgnoreOpcode(WorldPacket & recv_data)
         ignoreResult = FRIEND_IGNORE_ADDED;
 
         // ignore list full
-        if (!GetPlayer()->GetSocial()->AddToSocialList(lowGuid, true))
+        if (!GetPlayer()->GetSocial()->AddToSocialList(lowGuid, true, true))
             ignoreResult = FRIEND_IGNORE_FULL;
     }
 
@@ -682,7 +682,7 @@ void WorldSession::HandleDelIgnoreOpcode(WorldPacket & recv_data)
 
     recv_data >> IgnoreGUID;
 
-    _player->GetSocial()->RemoveFromSocialList(GUID_LOPART(IgnoreGUID), true);
+    _player->GetSocial()->RemoveFromSocialList(GUID_LOPART(IgnoreGUID), true, false);
 
     sSocialMgr->SendFriendStatus(GetPlayer(), FRIEND_IGNORE_REMOVED, GUID_LOPART(IgnoreGUID), false);
 

@@ -43,7 +43,7 @@ void PacketLog::Initialize()
 
     std::string logname = sConfigMgr->GetStringDefault("PacketLogFile", "");
     if (!logname.empty())
-        _file = fopen((logsDir + logname).c_str(), "wb");
+        _file = fopen((logsDir + "World.bin").c_str(), "wb");
 }
 
 void PacketLog::LogPacket(WorldPacket const& packet, Direction direction)

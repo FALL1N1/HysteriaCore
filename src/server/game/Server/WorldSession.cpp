@@ -60,6 +60,14 @@ bool MapSessionFilter::Process(WorldPacket* packet)
 
     OpcodeHandler const& opHandle = opcodeTable[packet->GetOpcode()];
 
+    /*if(opHandle.name == "SMSG_VOICE_SESSION_ROSTER_UPDATE" || opHandle.name == "SMSG_VOICE_SESSION_LEAVE" || opHandle.name == "SMSG_VOICE_SESSION_ADJUST_PRIORITY" || opHandle.name == "CMSG_VOICE_SET_TALKER_MUTED_REQUEST" || 
+    opHandle.name == "SMSG_VOICE_SET_TALKER_MUTED" || opHandle.name == "CMSG_VOICE_SESSION_ENABLE" || opHandle.name == "SMSG_VOICE_SESSION_ENABLE" || opHandle.name == "SMSG_VOICE_PARENTAL_CONTROLS" || 
+    opHandle.name == "CMSG_SET_ACTIVE_VOICE_CHANNEL" || opHandle.name == "CMSG_CHANNEL_VOICE_ON" || opHandle.name == "CMSG_CHANNEL_VOICE_OFF" || opHandle.name == "SMSG_AVAILABLE_VOICE_CHANNEL" || 
+    opHandle.name == "CMSG_ADD_VOICE_IGNORE" || opHandle.name == "CMSG_DEL_VOICE_IGNORE" || opHandle.name == "SMSG_VOICE_CHAT_STATUS")*/
+ 
+    if (opHandle.name != "CMSG_TIME_SYNC_RESP" && opHandle.name != "CMSG_WORLD_STATE_UI_TIMER_UPDATE")
+        sLog->outString("OPCODE: %u, %s", packet->GetOpcode(), opHandle.name);
+
     if (opHandle.packetProcessing == PROCESS_INPLACE)
         return true;
 
@@ -79,6 +87,13 @@ bool WorldSessionFilter::Process(WorldPacket* packet)
         return true;
 
     OpcodeHandler const& opHandle = opcodeTable[packet->GetOpcode()];
+
+    /*if(opHandle.name == "SMSG_VOICE_SESSION_ROSTER_UPDATE" || opHandle.name == "SMSG_VOICE_SESSION_LEAVE" || opHandle.name == "SMSG_VOICE_SESSION_ADJUST_PRIORITY" || opHandle.name == "CMSG_VOICE_SET_TALKER_MUTED_REQUEST" || 
+    opHandle.name == "SMSG_VOICE_SET_TALKER_MUTED" || opHandle.name == "CMSG_VOICE_SESSION_ENABLE" || opHandle.name == "SMSG_VOICE_SESSION_ENABLE" || opHandle.name == "SMSG_VOICE_PARENTAL_CONTROLS" || 
+    opHandle.name == "CMSG_SET_ACTIVE_VOICE_CHANNEL" || opHandle.name == "CMSG_CHANNEL_VOICE_ON" || opHandle.name == "CMSG_CHANNEL_VOICE_OFF" || opHandle.name == "SMSG_AVAILABLE_VOICE_CHANNEL" || 
+    opHandle.name == "CMSG_ADD_VOICE_IGNORE" || opHandle.name == "CMSG_DEL_VOICE_IGNORE" || opHandle.name == "SMSG_VOICE_CHAT_STATUS")*/
+    if (opHandle.name != "CMSG_TIME_SYNC_RESP" && opHandle.name != "CMSG_WORLD_STATE_UI_TIMER_UPDATE")
+        sLog->outString("OPCODE: %u, %s", packet->GetOpcode(), opHandle.name);
 
     if (opHandle.packetProcessing == PROCESS_INPLACE)
         return true;
@@ -316,11 +331,11 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
             catch(ByteBufferException &)
             {
                 sLog->outError("WorldSession::Update ByteBufferException occured while parsing a packet (opcode: %u) from client %s, accountid=%i. Skipped packet.", packet->GetOpcode(), GetRemoteAddress().c_str(), GetAccountId());
-                if (sLog->IsOutDebug())
-                {
-                    sLog->outDebug(LOG_FILTER_NETWORKIO, "Dumping error causing packet:");
-                    packet->hexlike();
-                }
+                //if (sLog->IsOutDebug())
+                //{
+                    sLog->outString("Dumping error causing packet:");
+                    packet->hexlike(true);
+                //}
             }
         }
 

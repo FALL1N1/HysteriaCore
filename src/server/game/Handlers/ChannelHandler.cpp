@@ -86,13 +86,15 @@ void WorldSession::HandleChannelList(WorldPacket& recvPacket)
     std::string channelName;
     recvPacket >> channelName;
 
-    ;//sLog->outDebug(LOG_FILTER_CHATSYS, "%s %s Channel: %s",
-    //    recvPacket.GetOpcode() == CMSG_CHANNEL_DISPLAY_LIST ? "CMSG_CHANNEL_DISPLAY_LIST" : "CMSG_CHANNEL_LIST",
-    //    GetPlayerInfo().c_str(), channelName.c_str());
+   //sLog->outString("%s %s Channel: %s",
+        //recvPacket.GetOpcode() == CMSG_CHANNEL_DISPLAY_LIST ? "CMSG_CHANNEL_DISPLAY_LIST" : "CMSG_CHANNEL_LIST",
+        //GetPlayerInfo().c_str(), channelName.c_str());
 
     if (ChannelMgr* cMgr = ChannelMgr::forTeam(GetPlayer()->GetTeamId()))
         if (Channel* channel = cMgr->GetChannel(channelName, GetPlayer()))
             channel->List(GetPlayer());
+
+    //recvPacket.hexlike(true);
 }
 
 void WorldSession::HandleChannelPassword(WorldPacket& recvPacket)
@@ -302,7 +304,7 @@ void WorldSession::HandleGetChannelMemberCount(WorldPacket &recvPacket)
             sLog->outDebug(LOG_FILTER_CHATSYS, "SMSG_CHANNEL_MEMBER_COUNT %s Channel: %s Count: %u",
                 GetPlayerInfo().c_str(), channelName.c_str(), channel->GetNumPlayers());
 
-            WorldPacket data(SMSG_CHANNEL_MEMBER_COUNT, channel->GetName().size() + 1 + 4);
+            WorldPacket data(SMSG_CHANNEL_MEMBER_COUNT, channel->GetName().size() + 1 + 1 + 4);
             data << channel->GetName();
             data << uint8(channel->GetFlags());
             data << uint32(channel->GetNumPlayers());
@@ -323,7 +325,25 @@ void WorldSession::HandleSetChannelWatch(WorldPacket &recvPacket)
 
     if (ChannelMgr* cMgr = ChannelMgr::forTeam(GetPlayer()->GetTeamId()))
         if (Channel* channel = cMgr->GetChannel(channelName, NULL, false))
+        {
+            channel->JoinNotify(GetPlayer());
             channel->AddWatching(GetPlayer());
+
+            if (/*channel->voice_enabled == false || */ channel->HasFlag(CHANNEL_FLAG_LFG)
+                || channel->HasFlag(CHANNEL_FLAG_GENERAL) || channel->HasFlag(CHANNEL_FLAG_TRADE) || channel->HasFlag(CHANNEL_FLAG_CITY))
+                recvPacket.rfinish();
+            else
+            {
+                WorldPacket data(SMSG_AVAILABLE_VOICE_CHANNEL, 17 + channel->GetName().size());
+                data << uint32(0x00002e57);
+                data << uint32(0xe0e10000);
+                data << uint8(00);		// 00=custom,03=party,04=raid
+                data << channel->GetName();
+                data << GetPlayer()->GetGUID();
+                SendPacket(&data);
+            }
+        } 
+    recvPacket.rfinish();
 }
 
 void WorldSession::HandleClearChannelWatch(WorldPacket &recvPacket)

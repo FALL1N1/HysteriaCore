@@ -5,20 +5,20 @@
 */
 
 #include "ScriptPCH.h"
+#include "VoiceChatClientSocket.h"
+#include "VoiceChatHandler.h"
 
-/*
-VoiceChatClientSocket::VoiceChatClientSocket(uint32 fd) : Socket(fd, 250000, 250000)
+VoiceChatClientSocket::VoiceChatClientSocket(uint32 fd)
 {
 
 }
 
 void VoiceChatClientSocket::OnDisconnect()
 {
-    sVoiceChatHandler.SocketDisconnected();
+
 }
 
 void VoiceChatClientSocket::OnRead()
 {
-    sVoiceChatHandler.OnRead(GetReadBuffer(0), GetReadBufferSize());
+
 }
-*/

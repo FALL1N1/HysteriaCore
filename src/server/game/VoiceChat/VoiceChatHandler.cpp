@@ -26,50 +26,22 @@
 #include "Vehicle.h"
 #include "Chat.h"
 #include "Language.h"
+#include "World.h"
+#include "ByteBuffer.h"
 
-void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
+void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket& revData)
 {
-    uint8 enabled, unk;
-    recv_data >> enabled;
-    recv_data >> unk;
-
-    if(!enabled)
-    {
-        /*
-        {SERVER} Packet: (0x039F) SMSG_VOICE_SESSION_LEAVE PacketSize = 16
-        |------------------------------------------------|----------------|
-        |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-        |------------------------------------------------|----------------|
-        |F3 0D 13 01 00 00 00 00 4A C5 00 00 00 00 D1 E1 |........J.......|
-        -------------------------------------------------------------------
-        */
-        //uint64 player_guid;
-        //uint64 channel_id;
-        
-    }
-    else
-    {
-        /*
-        {SERVER} Packet: (0x03D8) UNKNOWN PacketSize = 24
-        |------------------------------------------------|----------------|
-        |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-        |------------------------------------------------|----------------|
-        |4B C5 00 00 00 00 D1 E1 00 6D 6F 6F 63 6F 77 00 |K........moocow.|
-        |F3 0D 13 01 00 00 00 00                         |........        |
-        -------------------------------------------------------------------
-        uint8 channel_id?
-        uint8 channel_type (00=custom channel, 03=party, 04=raid?)
-        string channel_name (not applicable to party/raid)
-        uint64 player_guid
-        */
-    }
+    bool voiceEnabled, micEnabled;
+    revData >> voiceEnabled;
+    revData >> micEnabled;
+    revData.rfinish();
 }
 
-void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & recv_data)
+void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket& revData)
 {
     return;
     std::string name;
-    recv_data >> name;
+    revData >> name;
 
     // custom channel
     ChannelMgr* cMgr = ChannelMgr::forTeam(_player->GetTeamId()); // crashy thrashy (crash here) @todo
@@ -87,16 +59,17 @@ void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & recv_data)
     data << chn->GetName();
     data << _player->GetGUID();
     SendPacket(&data);
+    sLog->outString("WorldSession::HandleChannelVoiceQueryOpcode");
 }
 
-void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
+void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket& revData)
 {
     //if(!sVoiceChatHandler.CanUseVoiceChat())
         //return;
 
     uint32 type;
     std::string name;
-    recv_data >> type >> name;
+    revData >> type >> name;
     if(type == 0)
     {
         // custom channel
@@ -111,186 +84,125 @@ void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
         //if(!chn->Voice())
             //return;
 
-        //chn->JoinVoiceChannel(_player);
+        if (ChannelMgr* cMgr = ChannelMgr::forTeam(GetPlayer()->GetTeamId()))
+            if (Channel* channel = cMgr->GetChannel(name.c_str(), GetPlayer()))
+                channel->List(GetPlayer());
+
+        chn->JoinVoiceChannel(_player);
     }
+    sLog->outString("WorldSession::HandleVoiceChatQueryOpcode");
+    //revData.hexlike(true);
 }
 
+void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket& revData)
+{
+    sLog->outString("WORLD: Received CMSG_CHANNEL_VOICE_ON");
+    revData.hexlike(true);
+}
 
+void WorldSession::HandleChannelVoiceOffOpcode(WorldPacket& revData)
+{
+    sLog->outString("WORLD: Received CMSG_CHANNEL_VOICE_OFF");
+    revData.hexlike(true);
+}
 
-/************************************************************************/
-/* Singleton Stuff                                                      */
-/************************************************************************/
-//initialiseSingleton(VoiceChatHandler);
+void WorldSession::HandleVoiceIgnorePlayerByName(WorldPacket& recvData)
+{
+    std::string name;
+    recvData >> name;
+     
+    Player* ignored = sObjectAccessor->FindPlayerByName(name);
+    _player->GetSocial()->AddToSocialList(ignored->GetGUIDLow(), false, true);
+    _player->GetSocial()->SendSocialList(_player);
+    
+    recvData.rfinish();
+}
+void WorldSession::HandleVoiceUnIgnorePlayerByName(WorldPacket& recvData)
+{
+    uint64 guid;
+    recvData >> guid;
+
+    Player* ignored = sObjectAccessor->FindPlayerInOrOutOfWorld(guid);
+
+    _player->GetSocial()->RemoveFromSocialList(ignored->GetGUIDLow(), false, true);
+    _player->GetSocial()->SendSocialList(_player);
+
+    recvData.rfinish();
+}
+
+// BEGIN VOICE CHAT IMPLEMENTATION
 
 VoiceChatHandler::VoiceChatHandler()
 {
-    request_high=1;
-    next_connect = 0;
-    m_client = 0;
-    port =0;
-    ip = 0;
-    enabled=false;
-}
+    request_high = 1; 
+} 
 
-void VoiceChatHandler::OnRead(const uint8 * bytes, uint32 len)
+void VoiceChatHandler::CreateVoiceChannel(Channel* chn, Player* player)
 {
-    if(len<4) return;
-
-    int cmd = *(int*)bytes;
-    sLog->outString("VoiceChatHandler", "Got Packet %u", cmd);
-    switch(cmd)
-    {
-    case VOICECHAT_SMSG_CHANNEL_CREATED:
-        {
-            uint32 request_id = *(uint32*)&bytes[4];
-            uint32 channel_id = *(uint32*)&bytes[8];
-            sLog->outString("VoiceChatHandler", "Request ID %u, channel id %u", request_id, channel_id);
-
-            for(std::vector<VoiceChatChannelRequest>::iterator itr = m_requests.begin(); itr != m_requests.end(); ++itr)
-            {
-                if(itr->id == request_id)
-                {
-                    if( itr->groupid == 0 )
-                    {
-                        //Channel* chn = cMgr->GetChannel(itr->channel_name.c_str(), itr->team);
-                        //if(chn != NULL)
-                            //chn->VoiceChannelCreated((uint16)channel_id);
-                    }
-                    else
-                    {
-                        // write function for group finding
-                        /*Group * grp = sObjectMgr.GetGroupById( itr->groupid );
-                        if( grp != NULL )
-                            grp->VoiceChannelCreated( (uint16) channel_id );*/
-                    }
-                    m_requests.erase(itr);
-                    break;
-                }
-            }
-        }break;
-    }
-}
-
-void VoiceChatHandler::SocketDisconnected()
-{
-    sLog->outString("VoiceChatHandler", "SocketDisconnected");
-    m_client = NULL;
-    m_requests.clear();
-    //channelmgr.VoiceDied();
-
-    WorldPacket data(SMSG_VOICE_CHAT_STATUS, 2);
-    data << uint8(2);
-    data << uint8(0);
-    sWorld->SendGlobalMessage(&data, NULL);
-    next_connect += 5;
-}
-
-bool VoiceChatHandler::CanUseVoiceChat()
-{
-    return (enabled && m_client != NULL);
-}
-
-void VoiceChatHandler::CreateVoiceChannel(Channel* chn)
-{
-    if(m_client == NULL)
+    if (!player)
         return;
 
-    sLog->outString("VoiceChatHandler", "CreateVoiceChannel %s", chn->GetName().c_str());
-    ByteBuffer buf(50);
-    VoiceChatChannelRequest req;
-
-    //m_lock.Acquire(); // todo: mutex
-
-    req.id = request_high++;
-    req.channel_name = chn->GetName();
-    //req.team = chn->team;
-    req.groupid = 0;
-    m_requests.push_back(req);
-
-    buf << uint32(VOICECHAT_CMSG_CREATE_CHANNEL);
-    buf << uint32(0);
-    buf << req.id;
-    //m_client->Send(buf.contents(), 12);
-    //m_lock.Release();
-}
-
-void VoiceChatHandler::CreateGroupChannel(Group* pGroup)
-{
-    /*if( m_client == NULL )
-        return;
-
-    sLog->outString("VoiceChatHandler", "CreateGroupChannel for group %u", pGroup->GetID());
-    ByteBuffer buf(50);
+    sLog->outString("VoiceChatHandler::CreateVoiceChannel %s", chn->GetName());
     VoiceChatChannelRequest req;
 
     //m_lock.Acquire();
 
     req.id = request_high++;
-    req.groupid = pGroup->GetID();
-    req.team = 0;
+    req.channel_name = chn->GetName();
+    req.team = TEAM_ALLIANCE;
+    req.groupid = 0;
+    m_requests.push_back(req);
 
-    m_requests.push_back( req );
-    buf << uint32(VOICECHAT_CMSG_CREATE_CHANNEL);
-    buf << uint32(3);
-    buf << req.id;
-    //m_client->Send(buf.contents(), 12);
-    SendPacket(&buf);
-    
+    WorldPacket data(CMSG_CHANNEL_VOICE_ON, 5);
+    data << (uint8)0;
+    data << req.id;
+    player->GetSession()->SendPacket(&data);
     //m_lock.Release();
-    */
-}
-
-void VoiceChatHandler::DestroyVoiceChannel(Channel * chn)
-{
-    /*Log.Debug("VoiceChatHandler", "DestroyVoiceChannel %s", chn->m_name.c_str());
-
-    if(chn->i_voice_channel_id != (uint16)-1 && m_client)
-    {
-        ByteBuffer buf(15);
-        buf << uint32(VOICECHAT_CMSG_DELETE_CHANNEL);
-        buf << uint32(chn->i_voice_channel_id);
-        m_client->Send(buf.contents(), 8);
-    }
-
-    chn->VoiceDied();*/
-}
-
-void VoiceChatHandler::Startup()
-{
-    /*ip_s = Config.MainConfig.GetStringDefault("VoiceChat", "ServerIP", "127.0.0.1");
-    port = Config.MainConfig.GetIntDefault("VoiceChat", "ServerPort", 3727);
-    enabled = Config.MainConfig.GetBoolDefault("VoiceChat", "Enabled", false);
-    if(!enabled)
-        return;
-
-    ip = inet_addr(ip_s.c_str());
-    next_connect = 0;
-    Update();*/
-}
+} 
 
 void VoiceChatHandler::Update()
-{
-    if(!enabled || m_client)
-        return;
-
-    /*if(UNIXTIME > next_connect)
+{ 
+    if (m_client == NULL)
     {
-        Log.Notice("VoiceChatHandler", "Attempting to connect to voicechat server %s:%u", ip_s.c_str(), port);
-        VoiceChatClientSocket * s = ConnectTCPSocket<VoiceChatClientSocket>(ip_s.c_str(), port);
-        if(s != NULL)
+        if (sWorld->GetGameTime() > next_connect)
         {
-            // connected!
-            m_client = s;
-            Log.Notice("VoiceChatHandler", "Connected to %s:%u.", ip_s.c_str(), port);
-            WorldPacket data(SMSG_VOICE_SYSTEM_STATUS, 2);
-            data << uint8(2) << uint8(1);
-            sWorld.SendGlobalMessage(&data, NULL);
+            sLog->outString("VoiceChatHandler Attempting to connect to voicechat server %s:%u", ip_s.c_str(), port);
+            //VoiceChatClientSocket * s = ConnectTCPSocket<VoiceChatClientSocket>(ip_s.c_str(), port);
+            //if (s != NULL)
+            //{
+                // connected!
+                //m_client = s;
+                sLog->outString("VoiceChatHandler Connected to %s:%u.", ip_s.c_str(), port);
+                WorldPacket data1(SMSG_VOICE_CHAT_STATUS, 2);
+                data1 << uint8(2) << uint8(1);
+                sWorld->SendGlobalMessage(&data1, NULL);
+
+                //objmgr.GroupVoiceReconnected();
+                sLog->outString("Voice services are back online.");
+            //}
+            //else
+            //{
+                sLog->outString("VoiceChatHandler: Could not connect. Will try again later.");
+                m_client = NULL;
+                next_connect = sWorld->GetGameTime() + 10;
+            //}
         }
-        else
+    }
+    else
+    {
+        if (sWorld->GetGameTime() >= m_client->next_ping)
         {
-            Log.Notice("VoiceChatHandler", "Could not connect. Will try again later.");
-            m_client = NULL;
-            next_connect = UNIXTIME + 10;
+            //m_client->next_ping = sWorld->GetGameTime() + 15;
+            //WorldPacket data2(VOICECHAT_CMSG_PING, 4);
+            //data2 << uint32(0);
+            //m_client->SendPacket(&data2);
         }
-    }*/
+        // because the above might kill m_client
+        if (m_client != NULL && (sWorld->GetGameTime() - m_client->last_pong) > (15 * 3))
+        {
+            // ping timeout
+            //printf("ping timeout on voice socket\n");
+            //m_client->Disconnect();
+        }
+    }
 }

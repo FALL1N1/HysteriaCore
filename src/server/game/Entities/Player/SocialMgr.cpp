@@ -47,7 +47,7 @@ uint32 PlayerSocial::GetNumberOfSocialsWithFlag(SocialFlag flag) const
     return counter;
 }
 
-bool PlayerSocial::AddToSocialList(uint32 friendGuid, bool ignore)
+bool PlayerSocial::AddToSocialList(uint32 friendGuid, bool ignore, bool mute)
 {
     // check client limits
     if (ignore)
@@ -64,6 +64,8 @@ bool PlayerSocial::AddToSocialList(uint32 friendGuid, bool ignore)
     uint8 flag = SOCIAL_FLAG_FRIEND;
     if (ignore)
         flag = SOCIAL_FLAG_IGNORED;
+    if (mute)
+        flag = SOCIAL_FLAG_MUTED;
 
     PlayerSocialMap::const_iterator itr = m_playerSocialMap.find(friendGuid);
     if (itr != m_playerSocialMap.end())
@@ -95,7 +97,7 @@ bool PlayerSocial::AddToSocialList(uint32 friendGuid, bool ignore)
     return true;
 }
 
-void PlayerSocial::RemoveFromSocialList(uint32 friendGuid, bool ignore)
+void PlayerSocial::RemoveFromSocialList(uint32 friendGuid, bool ignore, bool mute)
 {
     PlayerSocialMap::iterator itr = m_playerSocialMap.find(friendGuid);
     if (itr == m_playerSocialMap.end())                     // not exist
@@ -104,6 +106,8 @@ void PlayerSocial::RemoveFromSocialList(uint32 friendGuid, bool ignore)
     uint8 flag = SOCIAL_FLAG_FRIEND;
     if (ignore)
         flag = SOCIAL_FLAG_IGNORED;
+    if (mute)
+        flag = SOCIAL_FLAG_MUTED;
 
     itr->second.Flags &= ~flag;
     if (itr->second.Flags == 0)

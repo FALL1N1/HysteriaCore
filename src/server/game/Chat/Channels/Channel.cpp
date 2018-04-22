@@ -24,6 +24,7 @@
 #include "DatabaseEnv.h"
 #include "AccountMgr.h"
 #include "Player.h"
+#include "VoiceChatHandler.h"
 
 Channel::Channel(std::string const& name, uint32 channelId, uint32 channelDBId, TeamId teamId, bool announce):
     _announce(announce),
@@ -1245,4 +1246,67 @@ void Channel::RemoveWatching(Player* p)
     PlayersWatchingContainer::iterator itr = playersWatchingStore.find(p);
     if (itr != playersWatchingStore.end())
         playersWatchingStore.erase(itr);
+}
+ 
+/*
+void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
+{
+	sLog->outString("Received CMSG_VOICE_SESSION_ENABLE");
+	uint8 voice, mic;
+	recv_data >> voice >> mic;
+}
+
+void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket & recv_data)
+{
+    sLog->outString("WORLD: Received CMSG_CHANNEL_VOICE_ON");
+	recv_data.hexlike();
+}
+*/
+void Channel::JoinVoiceChannel(Player* plr)
+{
+	//m_lock.acquire();
+        for (std::vector<Player*>::const_iterator itr = m_VoiceMembers.begin(); itr != m_VoiceMembers.end(); ++itr)
+        {
+            m_VoiceMembers.push_back(plr);
+            if (m_VoiceMembers.size() == 1)		// create channel
+                sVoiceChatHandler->CreateVoiceChannel(this, plr);
+
+            if (i_voice_channel_id != (uint16)-1)
+                SendVoiceUpdate();
+        }
+	//m_lock.release();
+}
+
+void Channel::SendVoiceUpdate()
+{
+    WorldPacket data(SMSG_VOICE_SESSION_ENABLE, 300);
+    uint8 m_encryptionKey[16] = { 0xba, 0x4d, 0x45, 0x60, 0x63, 0xcc, 0x12, 0xBC, 0x73, 0x94, 0x90, 0x03, 0x18, 0x14, 0x45, 0x1F };
+    uint8 counter = 1;
+   // m_lock.Acquire();
+    std::vector<Player*> playervector;
+
+    data << uint64(0xe0e10000000032abULL);
+    data << uint16(0x5e26);		// used in header of udp packets
+    data << uint8(0);
+    data << this->GetName();
+    data.append(m_encryptionKey, 16);
+    data << uint32(0);
+    data << uint16(0);
+    data << uint8(m_VoiceMembers.size());
+
+    //for (itr = m_VoiceMembers.begin(); itr != m_VoiceMembers.end(); ++itr)
+    //for (Player* itr = playervector->GetFirstMember(); itr != NULL; itr = itr->next())
+    for (std::vector<Player*>::iterator i = m_VoiceMembers.begin(); i != m_VoiceMembers.end(); ++i)
+    {
+        data << (*i)->GetGUID();
+        data << counter;
+        data << uint8(1); // itr->second 
+    }
+
+    data << uint8(6);
+
+    for (std::vector<Player*>::iterator i = m_VoiceMembers.begin(); i != m_VoiceMembers.end(); ++i)
+        (*i)->GetSession()->SendPacket(&data);
+
+   // m_lock.Release();
 }

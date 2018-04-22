@@ -8,14 +8,19 @@
 #define _VOICECHATCLIENTSOCKET_H
 
 #include "ScriptPCH.h"
-/*
-class VoiceChatClientSocket : public Socket
+
+class VoiceChatClientSocket
 {
+    uint16 op;
+    uint16 remaining;
 public:
     VoiceChatClientSocket(uint32 fd);
     void OnDisconnect();
     void OnRead();
+    void SendPacket(WorldPacket* data);
+    time_t next_ping;
+    time_t last_pong;
 };
-*/
+
 #endif        // _VOICECHATCLIENTSOCKET_H
 

@@ -231,6 +231,16 @@ class Channel
         // pussywizard:
         void AddWatching(Player* p);
         void RemoveWatching(Player* p);
+        
+        // voice chat
+        void VoiceChannelCreated(uint16 id);
+        void JoinVoiceChannel(Player* player);
+        void PartVoiceChannel(Player* player);
+        void SendVoiceUpdate();
+        void VoiceDied();
+        bool voice_enabled;
+        uint16 i_voice_channel_id;
+        std::vector<Player*> m_VoiceMembers;
 
     private:
         // initial packet data (notify type and channel name)
