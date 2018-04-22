@@ -41,7 +41,7 @@
  
 std::string GenerateGMResponse(std::string msg, Player* plr)
 {
-    if (plr->IsGameMaster())
+    if (plr->isGMChat())
     {
         return "|cff4fdeff" /* light blue */ + msg + "|r";
     }
