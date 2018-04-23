@@ -1125,8 +1125,11 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 {
                     if (target->IsAlive() && IsSmart(target))
                     {
-                        smartAI->SetDespawnTime(e.action.forceDespawn.delay + 1);
-                        smartAI->StartDespawn();
+                        if (SmartAI* smartAI = CAST_AI(SmartAI, target->AI()))
+                        {
+                            smartAI->SetDespawnTime(e.action.forceDespawn.delay + 1);
+                            smartAI->StartDespawn();
+                        }
                     }
                     else
                         target->DespawnOrUnsummon(e.action.forceDespawn.delay);
