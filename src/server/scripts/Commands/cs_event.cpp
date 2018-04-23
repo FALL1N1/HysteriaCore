@@ -213,5 +213,5 @@ public:
 
 void AddSC_event_commandscript()
 {
-    //new event_commandscript();
+    new event_commandscript();
 }
