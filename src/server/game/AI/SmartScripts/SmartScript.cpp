@@ -1115,28 +1115,24 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
         case SMART_ACTION_FORCE_DESPAWN:
         {
             ObjectList* targets = GetTargets(e, unit);
+
             if (!targets)
                 break;
 
             for (ObjectList::const_iterator itr = targets->begin(); itr != targets->end(); ++itr)
             {
-                /*if (IsCreature(*itr))
-                    (*itr)->ToCreature()->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
-                else if (IsGameObject(*itr))
-                    (*itr)->ToGameObject()->Delete();*/
-                
-                if (Creature* creature = (*itr)->ToCreature())
+                if (Creature* target = (*itr)->ToCreature())
                 {
-                    if (SmartAI* smartAI = CAST_AI(SmartAI, creature->AI()))
+                    if (target->IsAlive() && IsSmart(target))
                     {
                         smartAI->SetDespawnTime(e.action.forceDespawn.delay + 1);
                         smartAI->StartDespawn();
                     }
                     else
-                        creature->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
+                        target->DespawnOrUnsummon(e.action.forceDespawn.delay);
                 }
                 else if (GameObject* goTarget = (*itr)->ToGameObject())
-                    goTarget->DespawnOrUnsummon(e.action.forceDespawn.delay + 1);
+                    goTarget->SetRespawnTime(e.action.forceDespawn.delay + 1);
             }
 
             delete targets;
