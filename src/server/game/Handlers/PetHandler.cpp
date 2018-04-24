@@ -511,6 +511,7 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
                     if (pet->ToPet())
                         pet->ToPet()->ClearCastWhenWillAvailable();
 
+
                     charmInfo->SetForcedSpell(0);
                     charmInfo->SetForcedTargetGUID(0);
                     break;
@@ -521,9 +522,9 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
                     pet->InterruptNonMeleeSpells(false);
                     pet->ClearInPetCombat();
                     pet->GetMotionMaster()->MoveFollow(_player, PET_FOLLOW_DIST, pet->GetFollowAngle());
-                    charmInfo->SetCommandState(COMMAND_FOLLOW);
                     if (pet->ToPet())
                         pet->ToPet()->ClearCastWhenWillAvailable();
+                    charmInfo->SetCommandState(COMMAND_FOLLOW);
 
                     charmInfo->SetIsCommandAttack(false);
                     charmInfo->SetIsAtStay(false);
@@ -531,7 +532,6 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
                     charmInfo->SetIsCommandFollow(true);
                     charmInfo->SetIsFollowing(false);
                     charmInfo->RemoveStayPosition();
-
                     charmInfo->SetForcedSpell(0);
                     charmInfo->SetForcedTargetGUID(0);
                     break;
@@ -647,9 +647,9 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
             {
                 case REACT_PASSIVE:                         //passive
                     pet->AttackStop();
-                    pet->ClearInPetCombat();
                     if (pet->ToPet())
                         pet->ToPet()->ClearCastWhenWillAvailable();
+                    pet->ClearInPetCombat();
 
                 case REACT_DEFENSIVE:                       //recovery
                 case REACT_AGGRESSIVE:                      //activete
@@ -673,12 +673,12 @@ void WorldSession::HandlePetActionHelper(Unit* pet, uint64 guid1, uint16 spellid
                 sLog->outError("WORLD: unknown PET spell id %i", spellid);
                 return;
             }
-            
+
             if (guid2)
                 unit_target = ObjectAccessor::GetUnit(*_player, guid2);
             else if (!spellInfo->IsPositive())
                 return;
-            
+
             for (uint32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
             {
                 if (spellInfo->Effects[i].TargetA.GetTarget() == TARGET_UNIT_SRC_AREA_ENEMY || spellInfo->Effects[i].TargetA.GetTarget() == TARGET_UNIT_DEST_AREA_ENEMY || spellInfo->Effects[i].TargetA.GetTarget() == TARGET_DEST_DYNOBJ_ENEMY)

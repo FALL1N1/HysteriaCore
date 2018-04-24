@@ -3096,14 +3096,21 @@ void Player::SetGameMaster(bool on)
 }
 
 void Player::SetGMVisible(bool on)
-{ 
+{
+    const uint32 VISUAL_AURA = 37800;
+
     if (on)
     {
+        if (HasAura(VISUAL_AURA, 0))
+            RemoveAurasDueToSpell(VISUAL_AURA);
+
         m_ExtraFlags &= ~PLAYER_EXTRA_GM_INVISIBLE;         //remove flag
         m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
     }
     else
     {
+        AddAura(VISUAL_AURA, this);
+
         m_ExtraFlags |= PLAYER_EXTRA_GM_INVISIBLE;          //add flag
 
         SetAcceptWhispers(false);
@@ -6379,8 +6386,8 @@ void Player::UpdateCombatSkills(Unit* victim, WeaponAttackType attType, bool def
     uint8 plevel = getLevel();                              // if defense than victim == attacker
     uint8 greylevel = Trinity::XP::GetGrayLevel(plevel);
     uint8 moblevel = victim->getLevelForTarget(this);
-    if (moblevel < greylevel)
-        return;
+    /*if (moblevel < greylevel)
+        return;*/ // Patch 3.0.8 (2009-01-20): You can no longer skill up weapons on mobs that are immune to damage.
 
     if (moblevel > plevel + 5)
         moblevel = plevel + 5;
