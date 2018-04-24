@@ -81,6 +81,9 @@ class PathGenerator
 
         void ShortenPathUntilDist(G3D::Vector3 const& point, float dist); // shortens the path until the destination is the specified distance from the target point
 
+        void popPoint(void) { _pathPoints.pop_back(); };
+        void addPoint(G3D::Vector3 point) { _pathPoints.push_back(point); };
+        void addPoint(Position pos) { _pathPoints.push_back(G3D::Vector3(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ())); };
     private:
 
         dtPolyRef _pathPolyRefs[MAX_PATH_LENGTH];   // array of detour polygon references

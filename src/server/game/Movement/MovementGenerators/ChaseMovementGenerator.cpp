@@ -175,7 +175,43 @@ bool ChaseMovementGenerator::Update(Unit* owner, uint32 diff)
                 cOwner->SetCannotReachTarget(false);
             owner->AddUnitState(UNIT_STATE_CHASE_MOVE);
 
+            // Fan Creatures.
+            Unit* target = GetTarget();
             Movement::MoveSplineInit init(owner);
+            int chaserCount = target->getAttackers().size();
+            if (owner->ToCreature() && chaserCount > 1)
+            {
+                float radius = MIN_MELEE_REACH;
+
+                // Get the Attackers index.
+                int chaserIndex = 0;
+                std::unordered_set<Unit*>::iterator it;
+                for (it = target->getAttackers().begin(); it != target->getAttackers().end(); ++it)
+                {
+                    if ((*it) == owner)
+                        break;
+                    chaserIndex++;
+                }
+
+                int position = ceil((float) chaserIndex / 2) * (chaserIndex % 2 ? -1 : 1);
+                float step = float(M_PI) / chaserCount;
+                Position const& pos = target->GetPosition();
+                float angle = pos.GetAngle(owner->GetPositionX(), owner->GetPositionY());
+                angle += step * position;
+
+                G3D::Vector3 point;
+                point.x = pos.m_positionX + radius * cosf(angle);
+                point.y = pos.m_positionY + radius * sinf(angle);
+
+                if (owner->IsFlying())
+                    point.z = pos.m_positionZ;
+                else
+                    //point.z = owner->GetMapHeight(point.x, point.y, pos.m_positionZ);
+                    point.z = owner->GetMap()->GetHeight(owner->GetPhaseMask(), x, y, z, true);
+
+                _path->popPoint();
+                _path->addPoint(point);
+            }
             init.MovebyPath(_path->GetPath());
             init.SetWalk(false);
             init.SetFacing(target);
