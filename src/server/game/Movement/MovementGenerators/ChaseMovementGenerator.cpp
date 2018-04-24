@@ -185,7 +185,7 @@ bool ChaseMovementGenerator::Update(Unit* owner, uint32 diff)
 
                 // Get the Attackers index.
                 int chaserIndex = 0;
-                std::unordered_set<Unit*>::iterator it;
+                std::unordered_set<Unit*>::const_iterator it;
                 for (it = target->getAttackers().begin(); it != target->getAttackers().end(); ++it)
                 {
                     if ((*it) == owner)
