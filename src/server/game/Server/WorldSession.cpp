@@ -65,8 +65,8 @@ bool MapSessionFilter::Process(WorldPacket* packet)
     opHandle.name == "CMSG_SET_ACTIVE_VOICE_CHANNEL" || opHandle.name == "CMSG_CHANNEL_VOICE_ON" || opHandle.name == "CMSG_CHANNEL_VOICE_OFF" || opHandle.name == "SMSG_AVAILABLE_VOICE_CHANNEL" || 
     opHandle.name == "CMSG_ADD_VOICE_IGNORE" || opHandle.name == "CMSG_DEL_VOICE_IGNORE" || opHandle.name == "SMSG_VOICE_CHAT_STATUS")*/
  
-    if (opHandle.name != "CMSG_TIME_SYNC_RESP" && opHandle.name != "CMSG_WORLD_STATE_UI_TIMER_UPDATE")
-        sLog->outString("OPCODE: %u, %s", packet->GetOpcode(), opHandle.name);
+    //if (opHandle.name != "CMSG_TIME_SYNC_RESP" && opHandle.name != "CMSG_WORLD_STATE_UI_TIMER_UPDATE")
+        //sLog->outString("OPCODE: %u, %s", packet->GetOpcode(), opHandle.name);
 
     if (opHandle.packetProcessing == PROCESS_INPLACE)
         return true;
@@ -92,8 +92,8 @@ bool WorldSessionFilter::Process(WorldPacket* packet)
     opHandle.name == "SMSG_VOICE_SET_TALKER_MUTED" || opHandle.name == "CMSG_VOICE_SESSION_ENABLE" || opHandle.name == "SMSG_VOICE_SESSION_ENABLE" || opHandle.name == "SMSG_VOICE_PARENTAL_CONTROLS" || 
     opHandle.name == "CMSG_SET_ACTIVE_VOICE_CHANNEL" || opHandle.name == "CMSG_CHANNEL_VOICE_ON" || opHandle.name == "CMSG_CHANNEL_VOICE_OFF" || opHandle.name == "SMSG_AVAILABLE_VOICE_CHANNEL" || 
     opHandle.name == "CMSG_ADD_VOICE_IGNORE" || opHandle.name == "CMSG_DEL_VOICE_IGNORE" || opHandle.name == "SMSG_VOICE_CHAT_STATUS")*/
-    if (opHandle.name != "CMSG_TIME_SYNC_RESP" && opHandle.name != "CMSG_WORLD_STATE_UI_TIMER_UPDATE")
-        sLog->outString("OPCODE: %u, %s", packet->GetOpcode(), opHandle.name);
+    //if (opHandle.name != "CMSG_TIME_SYNC_RESP" && opHandle.name != "CMSG_WORLD_STATE_UI_TIMER_UPDATE")
+        //sLog->outString("OPCODE: %u, %s", packet->GetOpcode(), opHandle.name);
 
     if (opHandle.packetProcessing == PROCESS_INPLACE)
         return true;

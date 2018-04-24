@@ -496,7 +496,6 @@ void Unit::MoveAdvanceTo(Unit* target)
         GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
         return;
  
-        sLog->outString("3");
         float x, y, z;
         GetNearPoint(target, x, y, z, 0.0f, 0.0f, target->GetAngle(this));
         Movement::MoveSplineInit init(this);
