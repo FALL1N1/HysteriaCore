@@ -330,6 +330,13 @@ void PetAI::UpdateAllies()
     //owner is in group; group members filled in already (no raid -> subgroupcount = whole count)
     if (group && !group->isRaidGroup() && m_AllySet.size() == (group->GetMembersCount() + 2))
         return;
+    
+    //if Pet is in combat put player in combat
+    if (owner->HasAuraType(SPELL_AURA_MOD_STEALTH) || owner->HasAuraType(SPELL_AURA_FEIGN_DEATH))
+        return;
+    else if (me->IsInCombat())
+        owner->IsInCombat();
+
 
     m_AllySet.clear();
     m_AllySet.insert(me->GetGUID());
@@ -501,16 +508,18 @@ void PetAI::HandleReturnMovement()
     {
         if (!me->GetCharmInfo()->IsAtStay() && !me->GetCharmInfo()->IsReturning())
         {
-            // Return to previous position where stay was clicked
-            if (me->GetMotionMaster()->GetMotionSlotType(MOTION_SLOT_CONTROLLED) == NULL_MOTION_TYPE)
+            if (me->GetCharmInfo()->HasStayPosition())
             {
-                float x, y, z;
-
-                me->GetCharmInfo()->GetStayPosition(x, y, z);
-                ClearCharmInfoFlags();
-                me->GetCharmInfo()->SetIsReturning(true);
-                me->GetMotionMaster()->Clear();
-                me->GetMotionMaster()->MoveFollow(me->GetCharmerOrOwner(), PET_FOLLOW_DIST, me->GetFollowAngle());
+                // Return to previous position where stay was clicked
+                if (me->GetMotionMaster()->GetMotionSlotType(MOTION_SLOT_CONTROLLED) == NULL_MOTION_TYPE)
+                {
+                    float x, y, z;
+                    me->GetCharmInfo()->GetStayPosition(x, y, z);
+                    ClearCharmInfoFlags();
+                    me->GetCharmInfo()->SetIsReturning(true);
+                    me->GetMotionMaster()->Clear();
+                    me->GetMotionMaster()->MovePoint(me->GetUInt32Value(OBJECT_FIELD_GUID), x, y, z);
+                }
             }
         }
     }
