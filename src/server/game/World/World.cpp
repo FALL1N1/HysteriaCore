@@ -1623,6 +1623,7 @@ void World::SetInitialWorldSettings()
     sPoolMgr->LoadFromDB();
 
     sLog->outString("Loading Game Event Data...");               // must be after loading pools fully
+    sGameEventMgr->LoadHolidayDates();
     sGameEventMgr->LoadFromDB();
 
     sLog->outString("Loading UNIT_NPC_FLAG_SPELLCLICK Data..."); // must be after LoadQuests

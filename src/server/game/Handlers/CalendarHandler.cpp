@@ -46,6 +46,7 @@ Copied events should probably have a new owner
 #include "GuildMgr.h"
 #include "ArenaTeamMgr.h"
 #include "WorldSession.h"
+#include "GameEventMgr.h"
 
 void WorldSession::HandleCalendarGetCalendar(WorldPacket& /*recvData*/)
 {
@@ -153,44 +154,27 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket& /*recvData*/)
 
     uint32 holidayCount = MAX_HOLIDAY_DATES;
 
-    data << uint32(holidayCount);
-
-    /* Now correctly sends the Start Date, End Date, Textures etc. Only thing broken is the start time which is still defaulting to 12:10am*/
-    CalendarDatesContainer const& calendarDates = sCalendarMgr->GetCalendarDates();
-    for (CalendarDatesContainer::value_type const& holidayData : calendarDates)
+    data << uint32(sGameEventMgr->modifiedHolidays.size());
+    for (uint32 entry : sGameEventMgr->modifiedHolidays)
     {
-        HolidaysEntry const* holiday = sHolidaysStore.LookupEntry(holidayData.first);
-        if (!holiday)
-            continue;
-        data << uint32(holiday->Id);
-        data << uint32(holiday->Region);
-        data << uint32(holiday->Looping);
-        data << uint32(holiday->Priority);
-        data << uint32(holiday->CalendarFilterType);
+        HolidaysEntry const* holiday = sHolidaysStore.LookupEntry(entry);
 
-        uint8 j = 0;
-        for (uint32 startTime : holidayData.second.start)
-        {
-            ++j;
-            if (j > MAX_HOLIDAY_DATES)
-                break;
-            data.AppendPackedTime(startTime);
-        }
-        // Fill gap
-        for (; j < MAX_HOLIDAY_DATES; ++j)
-            data << uint32(0);
+        data << uint32(holiday->Id);                        // m_ID
+        data << uint32(holiday->Region);                    // m_region, might be looping
+        data << uint32(holiday->Looping);                   // m_looping, might be region
+        data << uint32(holiday->Priority);                  // m_priority
+        data << uint32(holiday->CalendarFilterType);        // m_calendarFilterType
 
-        data << uint32(holidayData.second.duration);
-        data << uint32(0);
-        for (uint8 j = 2; j < MAX_HOLIDAY_DURATIONS; ++j)
-            data << uint32(0);
+        for (uint8 j = 0; j < MAX_HOLIDAY_DATES; ++j)
+            data << uint32(holiday->Date[j]);               // 26 * m_date -- WritePackedTime ?
 
-        data << uint32(3);
-        data << uint32(0);
-        for (uint8 j = 2; j < MAX_HOLIDAY_FLAGS; ++j)
-            data << uint32(0);
-        data << holiday->TextureFilename;
-        ++boundCounter;
+        for (uint8 j = 0; j < MAX_HOLIDAY_DURATIONS; ++j)
+            data << uint32(holiday->Duration[j]);           // 10 * m_duration
+
+        for (uint8 j = 0; j < MAX_HOLIDAY_FLAGS; ++j)
+            data << uint32(holiday->CalendarFlags[j]);      // 10 * m_calendarFlags
+
+        data << holiday->TextureFilename;                   // m_textureFilename (holiday name)
     }
 
     SendPacket(&data);
