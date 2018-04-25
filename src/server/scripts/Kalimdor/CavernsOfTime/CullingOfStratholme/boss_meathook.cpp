@@ -70,7 +70,8 @@ public:
             Talk(SAY_AGGRO);
             events.RescheduleEvent(EVENT_SPELL_CONSTRICTING_CHAINS, 15000);
             events.RescheduleEvent(EVENT_SPELL_DISEASE_EXPULSION, 4000);
-            events.RescheduleEvent(EVENT_SPELL_FRENZY, 20000);
+            if(IsHeroic())
+                events.RescheduleEvent(EVENT_SPELL_FRENZY, 20000);
         }
 
         void JustDied(Unit* /*killer*/)
@@ -103,8 +104,11 @@ public:
                     events.RepeatEvent(6000);
                     break;
                 case EVENT_SPELL_FRENZY:
-                    me->CastSpell(me, SPELL_FRENZY, false);
-                    events.RepeatEvent(20000);
+                    if (IsHeroic()) 
+                    {
+                        me->CastSpell(me, SPELL_FRENZY, false);
+                        events.RepeatEvent(20000);
+                    }
                     break;
                 case EVENT_SPELL_CONSTRICTING_CHAINS:
                     if (Unit *pTarget = SelectTarget(SELECT_TARGET_BOTTOMAGGRO, 0, 50.0f, true))
