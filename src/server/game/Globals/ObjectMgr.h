@@ -39,7 +39,6 @@
 #include "VehicleDefines.h"
 #include "ConditionMgr.h"
 #include "DBCStores.h"
-#include "ZoneScript.h"
 #include <string>
 //#include <tuple>
 #include <map>
@@ -1272,9 +1271,6 @@ class ObjectMgr
         void LoadFactionChangeReputations();
         void LoadFactionChangeSpells();
         void LoadFactionChangeTitles();
-        typedef std::unordered_map<uint32, LocationScript*> LocationScriptContainer;
-        void LoadLocationScripts();
-        LocationScript* GetLocationScript(uint32 zoneId);
 
     private:
         // first free id for selected id type
@@ -1345,7 +1341,6 @@ class ObjectMgr
         PageTextContainer _pageTextStore;
         InstanceTemplateContainer _instanceTemplateStore;
         CreatureOutfitContainer _creatureOutfitStore;
-        LocationScriptContainer _locationScriptsStore;
 
     private:
         void LoadScripts(ScriptsType type);
