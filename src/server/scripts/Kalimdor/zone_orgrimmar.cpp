@@ -307,14 +307,14 @@ public:
             inProgress = false;
         }
 
-        void Reset() 
+        void Reset() override
         {
             inProgress = false;
             me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow() * 10, true);
             events.Reset();
         }
 
-        void MoveInLineOfSight(Unit* who) 
+        void MoveInLineOfSight(Unit* who) override
         {
             if (who->GetTypeId() == TYPEID_PLAYER && who->IsWithinDist(me, 20.0f) && !inProgress)
             {
@@ -323,7 +323,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) 
+        void UpdateAI(uint32 diff) override
         {
             events.Update(diff);
 
@@ -416,8 +416,7 @@ public:
                 Trinity::AnyFriendlyUnitInObjectRangeCheck checker(me, me, 25.0f);
                 Trinity::UnitListSearcher<Trinity::AnyFriendlyUnitInObjectRangeCheck> searcher(me, citizenList, checker);
                 me->VisitNearbyObject(20.0f, searcher);
-                // req C++11 support or rewrite :(
-                /*for (Unit* target : citizenList)
+                for (Unit* target : citizenList)
                 {
                     switch (target->GetEntry())
                     {
@@ -442,7 +441,7 @@ public:
                     default:
                         break;
                     }
-                }*/
+                }
             }
         }
 
@@ -457,7 +456,7 @@ public:
         uint64 kajaGUID;
     };
 
-    CreatureAI* GetAI(Creature* creature) const 
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_overlord_runthak_orgrimmarAI(creature);
     }
@@ -570,7 +569,7 @@ public:
             sceneInProgress = false;
         }
 
-        void Reset() 
+        void Reset() override
         {
             events.Reset();
             me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow() * 10, true);
@@ -587,7 +586,7 @@ public:
             }
         }
 
-        void MovementInform(uint32 type, uint32 pointId) 
+        void MovementInform(uint32 type, uint32 pointId) override
         {
             if (type != POINT_MOTION_TYPE)
                 return;
@@ -596,7 +595,7 @@ public:
                 me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow() * 10, true);
         }
 
-        void DoAction(int32 actionId) 
+        void DoAction(int32 actionId) override
         {
             if (actionId == ACTION_START_SCENE && !sceneInProgress)
             {
@@ -633,7 +632,7 @@ public:
             }
         }
 
-        void UpdateAI(uint32 diff) 
+        void UpdateAI(uint32 diff) override
         {
             events.Update(diff);
 
@@ -769,7 +768,7 @@ public:
         bool sceneInProgress;
     };
 
-    CreatureAI* GetAI(Creature* creature) const 
+    CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_thrall_herald_of_warAI(creature);
     }
@@ -780,7 +779,7 @@ class areatrigger_orgrimmar_herald_of_war : public AreaTriggerScript
 public:
     areatrigger_orgrimmar_herald_of_war() : AreaTriggerScript("areatrigger_orgrimmar_herald_of_war") { }
 
-    bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/)
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
     {
         if (player->IsAlive() && player->GetQuestStatus(QUEST_HERALD_OF_WAR) == QUEST_STATUS_COMPLETE)
         {

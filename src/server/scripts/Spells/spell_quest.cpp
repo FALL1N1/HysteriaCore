@@ -3119,7 +3119,6 @@ public:
 };
 
 // herald of war and life without regret portal spells
-/*
 class spell_59064_59439_portals : public SpellScriptLoader
 {
 public:
@@ -3129,7 +3128,7 @@ public:
     {
         PrepareSpellScript(spell_59064_59439_portals_SpellScript);
 
-        void HandleScript(SpellEffIndex effIndex)
+        void HandleScript(SpellEffIndex /*effIndex*/)
         {
             GetHitUnit()->CastSpell(GetHitUnit(), uint32(GetEffectValue()));
         }
@@ -3145,7 +3144,7 @@ public:
         return new spell_59064_59439_portals_SpellScript();
     }
 };
-*/
+
 void AddSC_quest_spell_scripts()
 {
     // Ours
@@ -3219,5 +3218,7 @@ void AddSC_quest_spell_scripts()
     new spell_q12619_emblazon_runeblade_effect();
     new spell_q12919_gymers_grab();
     new spell_q12919_gymers_throw();
-    // new spell_59064_59439_portals();
+    
+    // balnazzar
+    new spell_59064_59439_portals();
 }
