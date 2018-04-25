@@ -63,6 +63,7 @@ class Vehicle;
 class WorldPacket;
 class WorldSocket;
 class WorldObject;
+class LocationScript;
 
 struct AchievementCriteriaData;
 struct AuctionEntry;
@@ -338,6 +339,18 @@ class WorldMapScript : public ScriptObject, public MapScript<Map>
     protected:
 
         WorldMapScript(const char* name, uint32 mapId);
+};
+
+
+class WorldMapZoneScript : public ScriptObject
+{
+    protected:
+    
+        WorldMapZoneScript(const char* name);
+
+    public:
+    
+        virtual LocationScript* GetLocationScript() const { return nullptr; }
 };
 
 class InstanceMapScript : public ScriptObject, public MapScript<InstanceMap>
@@ -859,6 +872,10 @@ class ScriptMgr
         void OnPlayerLeaveMap(Map* map, Player* player);
         void OnMapUpdate(Map* map, uint32 diff);
 
+
+    public: /* WorldMapZoneScript */
+        LocationScript* CreateLocationScript(uint32 scriptId);
+        
     public: /* InstanceMapScript */
 
         InstanceScript* CreateInstanceScript(InstanceMap* map);

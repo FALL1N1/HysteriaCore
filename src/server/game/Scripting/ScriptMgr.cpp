@@ -226,6 +226,7 @@ void ScriptMgr::Unload()
     SCR_CLEAR(PlayerScript);
     SCR_CLEAR(GuildScript);
     SCR_CLEAR(GroupScript);
+    SCR_CLEAR(WorldMapZoneScript);
 
     #undef SCR_CLEAR
 }
@@ -1394,6 +1395,12 @@ void ScriptMgr::OnGroupDisband(Group* group)
     FOREACH_SCRIPT(GroupScript)->OnDisband(group);
 }
 
+LocationScript* ScriptMgr::CreateLocationScript(uint32 scriptId)
+{
+    GET_SCRIPT_RET(WorldMapZoneScript, scriptId, tmpscript, nullptr);
+    return tmpscript->GetLocationScript();
+}
+
 SpellScriptLoader::SpellScriptLoader(const char* name)
     : ScriptObject(name)
 {
@@ -1547,6 +1554,12 @@ GroupScript::GroupScript(const char* name)
     ScriptRegistry<GroupScript>::AddScript(this);
 }
 
+WorldMapZoneScript::WorldMapZoneScript(const char* name)
+    : ScriptObject(name)
+{
+    ScriptRegistry<WorldMapZoneScript>::AddScript(this);
+}
+
 // Instantiate static members of ScriptRegistry.
 template<class TScript> std::map<uint32, TScript*> ScriptRegistry<TScript>::ScriptPointerList;
 template<class TScript> uint32 ScriptRegistry<TScript>::_scriptIdCounter = 0;
@@ -1576,6 +1589,7 @@ template class ScriptRegistry<AchievementCriteriaScript>;
 template class ScriptRegistry<PlayerScript>;
 template class ScriptRegistry<GuildScript>;
 template class ScriptRegistry<GroupScript>;
+template class ScriptRegistry<WorldMapZoneScript>;
 
 // Undefine utility macros.
 #undef GET_SCRIPT_RET
