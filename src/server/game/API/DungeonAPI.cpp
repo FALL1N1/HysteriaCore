@@ -9,7 +9,7 @@ void DungeonAPI::StartLogging()
     
 }
  
-void DungeonAPI::StopLogging(s)
+void DungeonAPI::StopLogging()
 {  
 
 }

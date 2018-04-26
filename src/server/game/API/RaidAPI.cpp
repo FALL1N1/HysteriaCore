@@ -9,7 +9,7 @@ void RaidAPI::StartLogging()
     startTime = getMSTime();
 }
  
-void RaidAPI::StopLogging(s)
+void RaidAPI::StopLogging()
 {  
 
 }

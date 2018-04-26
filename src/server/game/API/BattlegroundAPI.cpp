@@ -9,7 +9,7 @@ void BattlegroundAPI::StartLogging()
     
 }
  
-void BattlegroundAPI::StopLogging(s)
+void BattlegroundAPI::StopLogging()
 {  
 
 }
