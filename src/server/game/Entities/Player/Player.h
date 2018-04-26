@@ -2918,6 +2918,7 @@ class Player : public Unit, public GridObject<Player>
         time_t m_resetTalentsTime;
         uint32 m_usedTalentCount;
         uint32 m_questRewardTalentCount;
+        uint32 achPts = 0;
 
         // Social
         PlayerSocial *m_social;

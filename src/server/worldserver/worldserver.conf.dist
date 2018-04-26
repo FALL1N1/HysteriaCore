@@ -113,6 +113,7 @@ LoginDatabase.WorkerThreads     = 1
 WorldDatabase.WorkerThreads     = 1
 CharacterDatabase.WorkerThreads = 1
 APIDatabase.WorkerThreads = 1
+APIDatabase.Enabled = 1
 
 #
 #    LoginDatabase.SynchThreads

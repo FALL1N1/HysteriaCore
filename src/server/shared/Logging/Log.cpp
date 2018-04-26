@@ -33,7 +33,7 @@ extern LoginDatabaseWorkerPool LoginDatabase;
 Log::Log() :
     raLogfile(NULL), logfile(NULL), gmLogfile(NULL), charLogfile(NULL),
     dberLogfile(NULL), chatLogfile(NULL), sqlLogFile(NULL), sqlDevLogFile(NULL),
-    miscLogFile(NULL), historyLogFile(NULL), hackLogFile(NULL),
+    miscLogFile(NULL), historyLogFile(NULL), hackLogFile(NULL), APILogFile(NULL),
     m_gmlog_per_account(false), m_enableLogDB(false), m_colored(false)
 {
     Initialize();
@@ -84,6 +84,10 @@ Log::~Log()
     if (hackLogFile != NULL)
         fclose(hackLogFile);
     hackLogFile = NULL;
+
+    if (APILogFile != NULL)
+        fclose(APILogFile);
+    APILogFile = NULL;
 }
 
 void Log::SetLogLevel(char *Level)
@@ -168,6 +172,7 @@ void Log::Initialize()
     miscLogFile = fopen((m_logsDir+"Misc.log").c_str(), "a"); 
     historyLogFile = fopen((m_logsDir + "History.log").c_str(), "a");
     hackLogFile = fopen((m_logsDir + "Hack.log").c_str(), "a");
+    APILogFile = fopen((m_logsDir + "APILog.log").c_str(), "a");
 
     // Main log file settings
     m_logLevel     = sConfigMgr->GetIntDefault("LogLevel", LOGL_NORMAL);
@@ -1050,7 +1055,7 @@ void Log::outChat(const char * str, ...)
 void Log::outHack(const char * str, ...)
 {
     if (!str)
-        return; 
+        return;
 
     if (hackLogFile)
     {
@@ -1060,6 +1065,31 @@ void Log::outHack(const char * str, ...)
         vfprintf(hackLogFile, str, ap);
         fprintf(hackLogFile, "\n");
         fflush(hackLogFile);
+        va_end(ap);
+    }
+    fflush(stdout);
+}
+
+void Log::outAPI(const char * str, ...)
+{
+    if (!str)
+        return;
+
+    SetColor(true, LGREEN);
+    va_list ap;
+    va_start(ap, str);
+    vutf8printf(stdout, str, &ap);
+    va_end(ap);
+    ResetColor(true);
+
+    if (APILogFile)
+    {
+        outTimestamp(APILogFile);
+        va_list ap;
+        va_start(ap, str);
+        vfprintf(APILogFile, str, ap);
+        fprintf(APILogFile, "\n");
+        fflush(APILogFile);
         va_end(ap);
     }
     fflush(stdout);

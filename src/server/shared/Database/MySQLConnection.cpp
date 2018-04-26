@@ -124,8 +124,8 @@ bool MySQLConnection::Open()
     {
         if (!m_reconnecting)
         {
-            sLog->outSQLDriver("MySQL client library: %s", mysql_get_client_info());
-            sLog->outSQLDriver("MySQL server ver: %s ", mysql_get_server_info(m_Mysql));
+            //sLog->outSQLDriver("MySQL client library: %s", mysql_get_client_info());
+            //sLog->outSQLDriver("MySQL server ver: %s ", mysql_get_server_info(m_Mysql));
             // MySQL version above 5.1 IS required in both client and server and there is no known issue with different versions above 5.1
             // if (mysql_get_server_version(m_Mysql) != mysql_get_client_version())
             //     sLog->outInfo(LOG_FILTER_SQL, "[WARNING] MySQL client/server version mismatch; may conflict with behaviour of prepared statements.");

@@ -16,7 +16,8 @@ typedef DatabaseWorkerPool<APIDatabaseConnection> APIDatabaseWorkerPool;
 
 enum APIDatabaseStatements
 { 
-    //API_SEL_XXX,
+    API_DEL_CHAR_STATS,
+    API_INS_CHAR_STATS,
     MAX_APIDATABASE_STATEMENTS,
 };
 

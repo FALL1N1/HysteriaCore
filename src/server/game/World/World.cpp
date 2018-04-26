@@ -658,6 +658,9 @@ void World::LoadConfigSettings(bool reload)
     ///- Read other configuration items from the config file
 
     m_bool_configs[CONFIG_DURABILITY_LOSS_IN_PVP] = sConfigMgr->GetBoolDefault("DurabilityLoss.InPvP", false);
+    
+    
+    m_bool_configs[CONFIG_API_LOGGING_ENABLED] = sConfigMgr->GetBoolDefault("APIDatabase.Enabled", true);
 
     m_int_configs[CONFIG_COMPRESSION] = sConfigMgr->GetIntDefault("Compression", 1);
     if (m_int_configs[CONFIG_COMPRESSION] < 1 || m_int_configs[CONFIG_COMPRESSION] > 9)

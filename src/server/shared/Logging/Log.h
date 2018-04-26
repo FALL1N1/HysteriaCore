@@ -137,6 +137,7 @@ class Log
         void outMisc(const char * str, ...)                     ATTR_PRINTF(2, 3); // pussywizard
         void outHistory(const char * str, ...)                  ATTR_PRINTF(2, 3);
         void outHack(const char * str, ...)                     ATTR_PRINTF(2, 3);
+        void outAPI(const char * str, ...)                      ATTR_PRINTF(2, 3);
         void outCharDump(const char * str, uint32 account_id, uint32 guid, const char * name);
 
         static void outTimestamp(FILE* file);
@@ -168,6 +169,7 @@ class Log
         FILE* miscLogFile;
         FILE* historyLogFile;
         FILE* hackLogFile;
+        FILE* APILogFile;
 
         // cache values for after initilization use (like gm log per account case)
         std::string m_logsDir;

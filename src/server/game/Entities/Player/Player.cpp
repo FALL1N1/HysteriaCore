@@ -85,6 +85,7 @@
 #include "GameObjectAI.h"
 #include "PoolMgr.h"
 #include "SavingSystem.h"
+#include "PlayerAPI.h"
 
 #define ZONE_UPDATE_INTERVAL (2*IN_MILLISECONDS)
 
@@ -4756,6 +4757,9 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     // for not existed account avoid update realm
     if (accountId == 0)
         updateRealmChars = false;
+
+    if (sWorld->getBoolConfig(CONFIG_API_LOGGING_ENABLED))
+        sPlayerAPI->DeletePlayer(playerguid);
 
     uint32 charDelete_method = sWorld->getIntConfig(CONFIG_CHARDELETE_METHOD);
     uint32 charDelete_minLvl = sWorld->getIntConfig(CONFIG_CHARDELETE_MIN_LEVEL);
@@ -19477,6 +19481,9 @@ void Player::SaveToDB(bool create, bool logout)
     // save stats can be out of transaction
     if (m_session->isLogingOut() || !sWorld->getBoolConfig(CONFIG_STATS_SAVE_ONLY_ON_LOGOUT))
         _SaveStats(trans);
+
+    if (m_session->isLogingOut() && sWorld->getBoolConfig(CONFIG_API_LOGGING_ENABLED))
+        sPlayerAPI->UpdatePlayer(this, m_achievementMgr->CalculateAchievementPoints());
 
     _SaveTransmogItems();
     CharacterDatabase.CommitTransaction(trans);
