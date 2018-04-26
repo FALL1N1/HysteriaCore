@@ -61,6 +61,9 @@ public:
     // Restore phases
     void OnDuelEnd(Player* firstplayer, Player* secondplayer, DuelCompleteType type) override
     {
+        if (!sWorld->getBoolConfig(CUSTOM_SCRIPTS_ENABLED_OR_NOT))
+            return;
+
         // Phase players, dont update visibility yet
         firstplayer->SetPhaseMask(GetNormalPhase(firstplayer), false);
         secondplayer->SetPhaseMask(GetNormalPhase(secondplayer), false);
