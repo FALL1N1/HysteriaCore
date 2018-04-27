@@ -10,7 +10,8 @@ REWRITTEN FROM SCRATCH BY PUSSYWIZARD, IT OWNS NOW!
 #include "icecrown_citadel.h"
 #include "PassiveAI.h"
 #include "Player.h"
-#include "Vehicle.h"
+#include "Vehicle.h" 
+#include "RaidAPI.h"
 
 enum ScriptTexts
 {
@@ -114,14 +115,24 @@ class boss_lord_marrowgar : public CreatureScript
                 memset(_lastBoneSliceTargets, 0, 3 * sizeof(uint64));
 
                 instance->SetData(DATA_BONED_ACHIEVEMENT, uint32(true));
+                sRaidAPI->ResetLogging(me->GetMap()->ToInstanceMap(), me);
             }
 
-            void EnterCombat(Unit* /*who*/)
+            void EnterCombat(Unit* unit)
             {
                 Talk(SAY_AGGRO);
                 me->setActive(true);
                 DoZoneInCombat();
                 instance->SetBossState(DATA_LORD_MARROWGAR, IN_PROGRESS);
+
+                sRaidAPI->StartLogging(me->GetMap()->ToInstanceMap(), me);
+            }
+
+            void DamageTaken(Unit* unit, uint32& damage, DamageEffectType, SpellSchoolMask)
+            {
+                if(unit->GetTypeId() == TYPEID_PLAYER)
+                    if(unit->ToPlayer()->StartLogPlayer)
+                        unit->ToPlayer()->SetAPIDamage(damage);
             }
 
             void SpellHitTarget(Unit* target, const SpellInfo* spell)
@@ -263,6 +274,7 @@ class boss_lord_marrowgar : public CreatureScript
 
             void JustDied(Unit* /*killer*/)
             {
+                sRaidAPI->FinishLogging(me->GetMap()->ToInstanceMap(), me);
                 Talk(SAY_DEATH);
                 _JustDied();
             }
@@ -276,7 +288,10 @@ class boss_lord_marrowgar : public CreatureScript
             void KilledUnit(Unit* victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
+                {
+                    victim->ToPlayer()->SetAPIDeaths(1);
                     Talk(SAY_KILL);
+                }
             }
 
             void MoveInLineOfSight(Unit* who)

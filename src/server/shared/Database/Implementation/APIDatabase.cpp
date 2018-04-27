@@ -23,4 +23,7 @@ void APIDatabaseConnection::DoPrepareStatements()
     PrepareStatement(API_INS_ARENA_MEMBERSTATS, "REPLACE INTO arena_memberstats  (fight_id, member_id, name, guid, team, account, ip, damage, heal, kblows) VALUES("
                                          "?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", CONNECTION_ASYNC);
 
+    // RaidAPI
+    PrepareStatement(API_INS_PVE_KILL, "INSERT INTO pve_fight (start, plrguid, plrname, healer, healingdone, damagedone, boss, bossname, bosshp, finish, fightEntry) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? )", CONNECTION_ASYNC);
+
 }

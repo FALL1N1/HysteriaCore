@@ -1140,6 +1140,26 @@ class Player : public Unit, public GridObject<Player>
         explicit Player(WorldSession* session);
         ~Player();
 
+        ////////////////////API System/////////////////////
+
+        uint32 api_damageDone;
+        uint32 api_healingDone;
+        uint32 api_deaths;
+
+        void SetAPIDamage(uint32 add) { api_damageDone += add; };
+        void SetAPIHealing(uint32 add) { api_healingDone += add; };
+        void SetAPIDeaths(uint32 add) { api_deaths += add; };
+        uint32 GetAPIDamage() { return api_damageDone; }
+        uint32 GetAPIHealing() { return api_healingDone; }
+        uint32 GetAPIDeaths() { return api_healingDone; }
+
+
+        bool StartLogPlayer;
+        void ResetAPIVars() { api_damageDone = 0; api_healingDone = 0; api_deaths = 0; StartLogPlayer = false; };
+
+        ////////////////////API System/////////////////////
+
+
         void CleanupsBeforeDelete(bool finalCleanup = true);
 
         void AddToWorld();
