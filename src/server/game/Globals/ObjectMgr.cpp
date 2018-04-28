@@ -6217,23 +6217,14 @@ void ObjectMgr::LoadAccessRequirements()
     {
         Field* fields = result->Fetch();
 
+        ++count;
+
         uint32 mapid = fields[0].GetUInt32();
-        if (!sMapStore.LookupEntry(mapid))
-        {
-            sLog->outError("Map %u referenced in `access_requirement` does not exist, skipped.", mapid);
-            continue;
-        }
-
-        uint32 difficulty = fields[1].GetUInt8();
-        if (!GetMapDifficultyData(mapid, Difficulty(difficulty)))
-        {
-            sLog->outError("Map %u referenced in `access_requirement` does not have difficulty %u, skipped", mapid, difficulty);
-            continue;
-        }
-
-        uint64 requirement_ID = MAKE_PAIR64(mapid, difficulty);
+        uint8 difficulty = fields[1].GetUInt8();
+        uint32 requirement_ID = MAKE_PAIR32(mapid, difficulty);
 
         AccessRequirement* ar = new AccessRequirement();
+
         ar->levelMin                 = fields[2].GetUInt8();
         ar->levelMax                 = fields[3].GetUInt8();
         ar->item                     = fields[4].GetUInt32();
@@ -6292,8 +6283,6 @@ void ObjectMgr::LoadAccessRequirements()
         }
 
         _accessRequirementStore[requirement_ID] = ar;
-        ++count;
-
     } while (result->NextRow());
 
     sLog->outString(">> Loaded %u access requirement definitions in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
