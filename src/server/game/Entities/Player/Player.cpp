@@ -193,6 +193,7 @@ void PlayerTaxi::InitTaxiNodesForLevel(uint32 race, uint32 chrClass, uint8 level
     {
         case TEAM_ALLIANCE: SetTaximaskNode(100); break;
         case TEAM_HORDE:    SetTaximaskNode(99);  break;
+        default: break;
     }
     // level dependent taxi hubs
     if (level >= 68)
@@ -19262,22 +19263,13 @@ bool Player::Satisfy(AccessRequirement const* ar, uint32 target_map, bool report
         if (!mapEntry)
             return false;
 
-        //if (!sWorld->getBoolConfig(CONFIG_INSTANCE_IGNORE_LEVEL))
-        //{
+        if (!sWorld->getBoolConfig(CONFIG_INSTANCE_IGNORE_LEVEL))
+        {
             if (ar->levelMin && getLevel() < ar->levelMin)
                 LevelMin = ar->levelMin;
             if (ar->levelMax && getLevel() > ar->levelMax)
                 LevelMax = ar->levelMax;
-        //}
-            if (!ar->levelMin)
-                LevelMin = 80;
-
-        // mapid 608+
-            if (mapEntry->IsRaid() && target_map >= 608)
-                LevelMin = 80;
-
-        // custom rule end --
-
+        }
 
         uint32 missingItem = 0;
         if (ar->item)
@@ -22410,7 +22402,7 @@ void Player::SetEntryPoint()
     {
         m_entryPointData.mountSpell  = 0;
         m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
-        sLog->outString("PB Teleport Bug EmptyTaxiPath");
+
         std::vector<uint32> const& taxi = m_taxi.GetPath();
         for (std::vector<uint32>::const_iterator itr = taxi.begin(); itr != taxi.end(); ++itr)
             m_entryPointData.taxiPath.push_back(*itr);
@@ -22432,20 +22424,13 @@ void Player::SetEntryPoint()
         {
             if (const WorldSafeLocsEntry* entry = sObjectMgr->GetClosestGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId(), GetTeamId()))
                 m_entryPointData.joinPos = WorldLocation(entry->map_id, entry->x, entry->y, entry->z, 0.0f);
-            sLog->outString("PB Teleport Bug ItsDungeon");
         }
-        else if (!GetMap()->IsBattlegroundOrArena()) 
-        {
+        else if (!GetMap()->IsBattlegroundOrArena())
             m_entryPointData.joinPos = WorldLocation(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
-            sLog->outString("PB Teleport Bug ItsBattleground");
-        }
     }
 
     if (m_entryPointData.joinPos.m_mapId == MAPID_INVALID)
-    {
         m_entryPointData.joinPos = WorldLocation(m_homebindMapId, m_homebindX, m_homebindY, m_homebindZ, 0.0f);
-        sLog->outString("PB Teleport Bug InvalidMap");
-    }
 }
 
 void Player::LeaveBattleground(Battleground* bg)
