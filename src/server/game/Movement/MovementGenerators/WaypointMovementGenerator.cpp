@@ -164,22 +164,54 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
 
     float finalOrient = 0.0f;
     uint8 finalMove = WAYPOINT_MOVE_TYPE_WALK;
+    int32 currentMaxPoints = i_path->size();
+    bool pathLengthValid = false;
 
     Movement::PointsArray pathing;
-    pathing.reserve((i_path->size() - i_currentNode) + 1);
-
-    pathing.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
-    for (uint32 i = i_currentNode; i < i_path->size(); ++i)
+    while (!pathLengthValid)
     {
-        WaypointData const waypoint = i_path->at(i);
+        pathing.clear();
 
-        pathing.push_back(G3D::Vector3(waypoint.x, waypoint.y, waypoint.z));
+        pathing.push_back(G3D::Vector3(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ()));
 
-        finalOrient = waypoint.orientation;
-        finalMove = waypoint.move_type;
+        for (int32 i = i_currentNode; i < currentMaxPoints; ++i)
+        {
+            WaypointData const& waypoint = i_path->at(i);
 
-        if (waypoint.delay)
-            break;
+            pathing.push_back(G3D::Vector3(waypoint.x, waypoint.y, waypoint.z));
+
+            finalOrient = waypoint.orientation;
+            finalMove = waypoint.move_type;
+
+            if (waypoint.delay)
+                break;
+        }
+
+        pathLengthValid = true;
+
+        if (pathing.size() > 2)
+        {
+            G3D::Vector3 middle = (pathing[0] + pathing[pathing.size() - 1]) / 2.f;
+
+            for (uint32 i = 1; i < pathing.size(); ++i)
+            {
+                G3D::Vector3 offset = middle - pathing[i];
+                if (std::fabs(offset.x) >= 0xFF || std::fabs(offset.y) >= 0xFF || std::fabs(offset.z) >= 0x7F)
+                {
+                    --currentMaxPoints;
+                    // if currentMaxPoints <= i_currentNode, then we have no more valid points in path - return immediately
+                    if (currentMaxPoints < 0 || currentMaxPoints <= int32(i_currentNode))
+                    {
+                        sLog->outError("WaypointMovementGenerator::StartMove: creature %s (%u) has invalid point (%u), which is too far away from other points in path. Creature stops pathing!",
+                            creature->GetName().c_str(), creature->GetGUID(), pathing[i]);
+                        return false;
+                    }
+
+                    pathLengthValid = false;
+                    break;
+                }
+            }
+        }
     }
 
     // if we have only 1 point, only current position, we shall return
@@ -305,7 +337,7 @@ bool WaypointMovementGenerator<Creature>::DoUpdate(Creature* creature, uint32 di
 void WaypointMovementGenerator<Creature>::MovementInform(Creature* creature)
 {
     if (creature->AI())
-        creature->AI()->MovementInform(WAYPOINT_MOTION_TYPE, i_currentNode);
+        creature->AI()->MovementInform(WAYPOINT_MOTION_TYPE, i_path->at(i_currentNode).id);
 }
 
 bool WaypointMovementGenerator<Creature>::GetResetPos(Creature*, float& x, float& y, float& z)
