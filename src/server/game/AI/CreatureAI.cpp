@@ -254,19 +254,6 @@ bool CreatureAI::_EnterEvadeMode()
     return true;
 }
 
-void CreatureAI::CheckMeleeRepositionRequirements()
-{
-    if (Unit* victim = me->GetVictim())
-    {
-        Position victimPos;
-        victimPos.Relocate(victim->GetPosition());
-
-        // If we are closer than 50% of the combat reach we are going to reposition ourself
-        if (me->GetDistance(victimPos) < CalculatePct(me->GetCombatReach(), 50))
-            me->MoveAdvanceTo(victim);
-    }
-}
-
 Creature* CreatureAI::DoSummon(uint32 entry, const Position& pos, uint32 despawnTime, TempSummonType summonType)
 {
     return me->SummonCreature(entry, pos, summonType, despawnTime);

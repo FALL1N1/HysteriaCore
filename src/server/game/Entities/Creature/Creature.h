@@ -751,7 +751,6 @@ class Creature : public Unit, public GridObject<Creature>, public MovableMapObje
         uint32 m_corpseDelay;                               // (secs) delay between death and corpse disappearance
         uint32 m_baseCorpseDelay;
         float m_respawnradius;
-        uint32 m_advanceMovementTime;                       // (msecs) remaining time for next reposition update to avoid creatures standing inside each other
         uint16 m_transportCheckTimer;
         uint32 lootPickPocketRestoreTime;
 

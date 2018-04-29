@@ -170,9 +170,6 @@ class CreatureAI : public UnitAI
         virtual bool CanSeeAlways(WorldObject const* /*obj*/) { return false; }
 
         virtual bool CanBeSeen(Player const* /*seer*/) { return true; }
-        
-        // Called every 3 Seconds to check if the creature needs to reposition itself
-        void CheckMeleeRepositionRequirements();
 
     protected:
         virtual void MoveInLineOfSight(Unit* /*who*/);
