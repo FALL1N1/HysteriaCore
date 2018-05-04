@@ -7,6 +7,8 @@ class PlayerAPI
 
         void UpdatePlayer(Player* player, uint16 achPts);
         void DeletePlayer(uint64 guid);
+        void UpdateInventory(Player* player); 
+
 };
 
 #define sPlayerAPI ACE_Singleton<PlayerAPI, ACE_Null_Mutex>::instance()

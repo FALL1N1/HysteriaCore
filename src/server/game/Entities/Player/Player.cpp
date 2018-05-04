@@ -26371,6 +26371,9 @@ void Player::_SaveTalents(SQLTransaction& trans)
 { 
     PreparedStatement* stmt = NULL;
 
+    PreparedStatement* APIStmt = NULL;
+    SQLTransaction& APItrans = APIDatabase.BeginTransaction();
+
     for (PlayerTalentMap::iterator itr = m_talents.begin(); itr != m_talents.end();)
     {        
         // xinef: skip temporary spells
@@ -26386,7 +26389,12 @@ void Player::_SaveTalents(SQLTransaction& trans)
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_TALENT_BY_SPELL);
             stmt->setUInt32(0, GetGUIDLow());
             stmt->setUInt32(1, itr->first);
-            trans->Append(stmt);
+            APItrans->Append(stmt);
+
+            APIStmt = CharacterDatabase.GetPreparedStatement(API_DEL_PLAYER_TALENT_BY_SPELL);
+            APIStmt->setUInt32(0, GetGUIDLow());
+            APIStmt->setUInt32(1, itr->first);
+            APItrans->Append(APIStmt);
         }
 
         // xinef: insert statement for new / updated spell
@@ -26397,6 +26405,13 @@ void Player::_SaveTalents(SQLTransaction& trans)
             stmt->setUInt32(1, itr->first);
             stmt->setUInt8(2, itr->second->specMask);
             trans->Append(stmt);
+
+            APIStmt = APIDatabase.GetPreparedStatement(API_INS_PLAYER_TALENT);
+            APIStmt->setUInt32(0, GetGUIDLow());
+            APIStmt->setUInt32(1, itr->first);
+            APIStmt->setUInt8(2, itr->second->specMask);
+            APItrans->Append(APIStmt);
+
         }
 
         if (itr->second->State == PLAYERSPELL_REMOVED)
@@ -26410,6 +26425,9 @@ void Player::_SaveTalents(SQLTransaction& trans)
             ++itr;
         }
     }
+
+    // everything done
+    APIDatabase.CommitTransaction(APItrans);
 }
 
 void Player::UpdateSpecCount(uint8 count)
