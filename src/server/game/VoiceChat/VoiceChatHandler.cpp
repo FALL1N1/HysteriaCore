@@ -112,6 +112,9 @@ void WorldSession::HandleVoiceIgnorePlayerByName(WorldPacket& recvData)
     recvData >> name;
      
     Player* ignored = sObjectAccessor->FindPlayerByName(name);
+    if(!ignored)
+        return;
+    
     _player->GetSocial()->AddToSocialList(ignored->GetGUIDLow(), false, true);
     _player->GetSocial()->SendSocialList(_player);
     
