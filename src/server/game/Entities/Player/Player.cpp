@@ -26389,7 +26389,7 @@ void Player::_SaveTalents(SQLTransaction& trans)
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_TALENT_BY_SPELL);
             stmt->setUInt32(0, GetGUIDLow());
             stmt->setUInt32(1, itr->first);
-            APItrans->Append(stmt);
+            trans->Append(stmt);
 
             APIStmt = CharacterDatabase.GetPreparedStatement(API_DEL_PLAYER_TALENT_BY_SPELL);
             APIStmt->setUInt32(0, GetGUIDLow());
