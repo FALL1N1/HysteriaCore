@@ -26372,7 +26372,7 @@ void Player::_SaveTalents(SQLTransaction& trans)
     PreparedStatement* stmt = NULL;
 
     PreparedStatement* APIStmt = NULL;
-    SQLTransaction& APItrans = APIDatabase.BeginTransaction();
+    SQLTransaction APItrans = APIDatabase.BeginTransaction();
 
     for (PlayerTalentMap::iterator itr = m_talents.begin(); itr != m_talents.end();)
     {        
