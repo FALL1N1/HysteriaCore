@@ -19,15 +19,15 @@ void PlayerAPI::UpdateLastLootedItems(Player* player)
     uint8 queryid, index = 0;
 
     // check how many items should we update?
-    if (player->GetAPILastLootedItem(1) != "0" || player->GetAPILastLootedItem(1) != "")
+    if (player->GetAPILastLootedItem(1) != "0" && player->GetAPILastLootedItem(1) != "")
         queryid = 1;
-    if (player->GetAPILastLootedItem(2) != "0" || player->GetAPILastLootedItem(2) != "")
+    if (player->GetAPILastLootedItem(2) != "0" && player->GetAPILastLootedItem(2) != "")
         queryid = 2;
-    if (player->GetAPILastLootedItem(3) != "0" || player->GetAPILastLootedItem(3) != "")
+    if (player->GetAPILastLootedItem(3) != "0" && player->GetAPILastLootedItem(3) != "")
         queryid = 3;
-    if (player->GetAPILastLootedItem(4) != "0" || player->GetAPILastLootedItem(4) != "")
+    if (player->GetAPILastLootedItem(4) != "0" && player->GetAPILastLootedItem(4) != "")
         queryid = 4;
-    if (player->GetAPILastLootedItem(5) != "0" || player->GetAPILastLootedItem(5) != "")
+    if (player->GetAPILastLootedItem(5) != "0" && player->GetAPILastLootedItem(5) != "")
         queryid = 5;
 
     if (queryid == 0)
