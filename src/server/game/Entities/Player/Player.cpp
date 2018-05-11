@@ -14758,6 +14758,17 @@ void Player::SendNewItem(Item* item, uint32 count, bool received, bool created, 
         GetGroup()->BroadcastPacket(&data, true);
     else
         GetSession()->SendPacket(&data);
+
+
+    sLog->outString("NEW ITEM!! entry: %u", item->GetEntry());
+    std::string generateVar = std::to_string(item->GetEntry()) + ":" + std::to_string(time(0)); 
+    SetAPILastLootedItem(5, GetAPILastLootedItem(4));
+    SetAPILastLootedItem(4, GetAPILastLootedItem(3));
+    SetAPILastLootedItem(3, GetAPILastLootedItem(2));
+    SetAPILastLootedItem(2, GetAPILastLootedItem(1));
+    SetAPILastLootedItem(1, generateVar);
+
+    sLog->outString("PLR ITEMS: (1)%s   (2)%s  (3)%s   (4)%s   (5)%s", GetAPILastLootedItem(1), GetAPILastLootedItem(2), GetAPILastLootedItem(3), GetAPILastLootedItem(4), GetAPILastLootedItem(5));
 }
 
 /*********************************************************/

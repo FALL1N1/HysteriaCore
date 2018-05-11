@@ -13,8 +13,8 @@ void APIDatabaseConnection::DoPrepareStatements()
         "resArcane, blockPct, dodgePct, parryPct, critPct, rangedCritPct, spellCritPct, attackPower, rangedAttackPower, spellPower, "
         "resilience, achievementPoints, name, guildname, guildid, activespec, map, zone, area, lastseen, "
         "2v2, 3v3, 5v5, race, class, gender, glyph1, glyph2, glyph3, glyph4, "
-        "glyph5, glyph6, level, totaltime, leveltime, money)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+        "glyph5, glyph6, level, totaltime, leveltime, money, ach1, ach2, ach3, ach4, ach5)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(API_INS_PLAYER_TALENT, "INSERT INTO characters_talents (guid, spell, specMask) VALUES (?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(API_DEL_PLAYER_TALENT_BY_SPELL, "DELETE FROM characters_talents WHERE guid = ? and spell = ?", CONNECTION_ASYNC);
 
@@ -69,5 +69,26 @@ void APIDatabaseConnection::DoPrepareStatements()
 
     // RaidAPI
     PrepareStatement(API_INS_PVE_KILL, "INSERT INTO pve_fight (start, plrguid, plrname, healer, healingdone, damagedone, boss, bossname, bosshp, finish, fightEntry) VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? )", CONNECTION_ASYNC);
+
+
+
+
+
+
+
+
+    // Player last looted items
+
+    // one item
+    PrepareStatement(API_UPD_PLAYER_LOOTED_ITEMS_1, "update characters set item5 = item4, item4 = item3, item3 = item2, item2 = item1, item1 = ? where guid = ?", CONNECTION_ASYNC);
+    // two items
+    PrepareStatement(API_UPD_PLAYER_LOOTED_ITEMS_2, "update characters set item5 = item4, item4 = item3, item3 = item2, item2 = ?, item1 = ? where guid = ?", CONNECTION_ASYNC);
+    // three items
+    PrepareStatement(API_UPD_PLAYER_LOOTED_ITEMS_3, "update characters set item5 = item4, item4 = item3, item3 = ?, item2 = ?, item1 = ? where guid = ?", CONNECTION_ASYNC);
+    // four items
+    PrepareStatement(API_UPD_PLAYER_LOOTED_ITEMS_4, "update characters set item5 = item4, item4 = ?, item3 = ?, item2 = ?, item1 = ? where guid = ?", CONNECTION_ASYNC);
+    // five items
+    PrepareStatement(API_UPD_PLAYER_LOOTED_ITEMS_5, "update characters set item5 = ?, item4 = ?, item3 = ?, item2 = ?, item1 = ? where guid = ?", CONNECTION_ASYNC);
+
 
 }

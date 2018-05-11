@@ -12,6 +12,85 @@ void PlayerAPI::DeletePlayer(uint64 guid)
     APIDatabase.Execute(stmt);
     sLog->outAPI("Deleted entry %u from API database, characters table.", guid);
 }
+
+void PlayerAPI::UpdateLastLootedItems(Player* player)
+{
+    uint8 queryid, index = 0;
+
+    // check how many items should we update?
+    if (player->GetAPILastLootedItem(1) != "0" || player->GetAPILastLootedItem(1) != "")
+        queryid = 1;
+    if (player->GetAPILastLootedItem(2) != "0" || player->GetAPILastLootedItem(2) != "")
+        queryid = 2;
+    if (player->GetAPILastLootedItem(3) != "0" || player->GetAPILastLootedItem(3) != "")
+        queryid = 3;
+    if (player->GetAPILastLootedItem(4) != "0" || player->GetAPILastLootedItem(4) != "")
+        queryid = 4;
+    if (player->GetAPILastLootedItem(5) != "0" || player->GetAPILastLootedItem(5) != "")
+        queryid = 5;
+
+    if (queryid == 0)
+        return;
+
+
+    // begin
+    switch (queryid)
+    {
+        case 5:
+        {
+            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_5);
+            stmt->setString(index++, player->GetAPILastLootedItem(5));
+            stmt->setString(index++, player->GetAPILastLootedItem(4));
+            stmt->setString(index++, player->GetAPILastLootedItem(3));
+            stmt->setString(index++, player->GetAPILastLootedItem(2));
+            stmt->setString(index++, player->GetAPILastLootedItem(1));
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
+            APIDatabase.Execute(stmt);
+            break;
+        }
+        case 4:
+        {
+            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_4);
+            stmt->setString(index++, player->GetAPILastLootedItem(4));
+            stmt->setString(index++, player->GetAPILastLootedItem(3));
+            stmt->setString(index++, player->GetAPILastLootedItem(2));
+            stmt->setString(index++, player->GetAPILastLootedItem(1));
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
+            APIDatabase.Execute(stmt);
+            break;
+        }
+        case 3:
+        {
+            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_3);
+            stmt->setString(index++, player->GetAPILastLootedItem(3));
+            stmt->setString(index++, player->GetAPILastLootedItem(2));
+            stmt->setString(index++, player->GetAPILastLootedItem(1));
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
+            APIDatabase.Execute(stmt);
+            break;
+        }
+        case 2:
+        {
+            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_2); 
+            stmt->setString(index++, player->GetAPILastLootedItem(2));
+            stmt->setString(index++, player->GetAPILastLootedItem(1));
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
+            APIDatabase.Execute(stmt);
+            break;
+        }
+        case 1:
+        {
+            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_1); 
+            stmt->setString(index++, player->GetAPILastLootedItem(1));
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
+            APIDatabase.Execute(stmt);
+            break;
+        } 
+
+        default:
+            break;
+    }
+}
  
 void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
 { 
@@ -77,7 +156,14 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
     // 6 entries for glyphs
     for (uint8 i = 0; i < 6; ++i)
     {
-        if (uint32 glyph = player->GetGlyph(i)) stmt->setUInt32(index++, player->GetGlyph(i));
+                if (uint32 glyphId = player->GetGlyph(i))
+                {
+                    if (GlyphPropertiesEntry const* glyph = sGlyphPropertiesStore.LookupEntry(glyphId))
+                    { 
+
+                        stmt->setUInt32(index++, glyph->SpellId);
+                    }
+                }
         else stmt->setUInt32(index++, 0);
     }
 
@@ -90,9 +176,29 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
 
     // money
     stmt->setUInt32(index++, player->GetMoney());
-    sLog->outString("INDEX IS: %u", index);
+
+
+    // REWRITE ASAP
+    // @emo
+    QueryResult achquery = CharacterDatabase.PQuery("SELECT achievement,date FROM character_achievement WHERE guid = %u ORDER BY date DESC limit 5", player->GetGUIDLow());
+    if (achquery)
+    {
+        do
+        {
+            Field* fldz = achquery->Fetch();
+            if (fldz)
+            {
+                std::string varstr = std::to_string(fldz[0].GetUInt16()) + ":" + std::to_string(fldz[1].GetUInt32());
+
+
+                stmt->setString(index++,varstr);
+            } else stmt->setString(index++, "NULL");
+        } while (achquery->NextRow());
+    } 
+
     APIDatabase.Execute(stmt);
     UpdateInventory(player);
+    UpdateLastLootedItems(player);
     sLog->outAPI("[PlayerAPI] Updated stats for player %s(%u).", player->GetName().c_str(), player->GetGUIDLow());
 } 
 
@@ -106,7 +212,8 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
     EQUIPMENT_SLOT_LEGS         = 6,
     EQUIPMENT_SLOT_FEET         = 7,
     EQUIPMENT_SLOT_WRISTS       = 8,
-    EQUIPMENT_SLOT_HANDS        = 9,
+    EQUIPMENT_SLOT_HANDS   
+    = 9,
     EQUIPMENT_SLOT_FINGER1      = 10,
     EQUIPMENT_SLOT_FINGER2      = 11,
     EQUIPMENT_SLOT_TRINKET1     = 12,

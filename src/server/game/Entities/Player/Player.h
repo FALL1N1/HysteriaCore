@@ -1145,6 +1145,59 @@ class Player : public Unit, public GridObject<Player>
         uint32 api_damageDone;
         uint32 api_healingDone;
         uint32 api_deaths;
+        std::string LootedItem1 = "";
+        std::string LootedItem2 = "";
+        std::string LootedItem3 = "";
+        std::string LootedItem4 = "";
+        std::string LootedItem5 = "";
+
+        std::string GetAPILastLootedItem(uint8 item) {
+            switch (item)
+            {
+                case 1:
+                    return LootedItem1;
+                    break;
+                case 2:
+                    return LootedItem2;
+                    break;
+                case 3:
+                    return LootedItem3;
+                    break;
+                case 4:
+                    return LootedItem4;
+                    break;
+                case 5:
+                    return LootedItem5;
+                    break;
+                default:
+                    return "";
+                    break;
+            };
+        };
+
+        void SetAPILastLootedItem(uint8 item, std::string var)
+        {
+            switch (item)
+            {
+            case 1:
+                LootedItem1 = var;
+                break;
+            case 2:
+                LootedItem2 = var;
+                break;
+            case 3:
+                LootedItem3 = var;
+                break;
+            case 4:
+                LootedItem4 = var;
+                break;
+            case 5:
+                LootedItem5 = var;
+                break;
+            default:
+                break;
+            };
+        }
 
         void SetAPIDamage(uint32 add) { api_damageDone += add; };
         void SetAPIHealing(uint32 add) { api_healingDone += add; };

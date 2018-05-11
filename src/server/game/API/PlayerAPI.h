@@ -6,6 +6,7 @@ class PlayerAPI
     public:
 
         void UpdatePlayer(Player* player, uint16 achPts);
+        void UpdateLastLootedItems(Player* player);
         void DeletePlayer(uint64 guid);
         void UpdateInventory(Player* player); 
 
