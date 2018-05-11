@@ -1,4 +1,5 @@
 #include "PlayerAPI.h"
+#include "ArenaTeamMgr.h"
 #include "Player.h"
 #include "Log.h"
 
@@ -95,7 +96,12 @@ void PlayerAPI::UpdateLastLootedItems(Player* player)
 void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
 { 
     PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_INS_CHAR_STATS);
-    uint8 index = 0;
+    uint8 index = 0;    
+    std::string teamName1, teamName2, teamName3,
+                teamRating1, teamRating2, teamRating3,
+                personalRating1, personalRating2, personalRating3,
+                combined1, combined2, combined3;
+
 
     stmt->setUInt32(index++, player->GetGUIDLow());
     stmt->setUInt32(index++, player->GetMaxHealth());
@@ -143,10 +149,37 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
     stmt->setUInt32(index++, player->GetZoneId());
     stmt->setUInt32(index++, player->GetAreaId());
      
-    // Save Arena Teams (2v2, 3v3, 5v5)
-    stmt->setUInt32(index++, player->GetArenaTeamId(0));
-    stmt->setUInt32(index++, player->GetArenaTeamId(1));
-    stmt->setUInt32(index++, player->GetArenaTeamId(2));
+    // Save Arena Team Data [2v2, 3v3, 5v5]
+    // 2v2
+    if (ArenaTeam* arenaTeam = sArenaTeamMgr->GetArenaTeamById(1))
+    {
+        teamName1 = arenaTeam->GetName();
+        teamRating1 = std::to_string(arenaTeam->GetRating());
+        personalRating1 = std::to_string(player->GetArenaPersonalRating(1));
+        combined1 = teamName1 + ":" + teamRating1 + ":" + personalRating1;
+    }
+
+    // 3v3
+    if (ArenaTeam* arenaTeam = sArenaTeamMgr->GetArenaTeamById(2))
+    {
+        teamName2 = arenaTeam->GetName();
+        teamRating2 = std::to_string(arenaTeam->GetRating());
+        personalRating2 = std::to_string(player->GetArenaPersonalRating(2));
+        combined2 = teamName2 + ":" + teamRating2 + ":" + personalRating2;
+    }
+
+    // 5v5
+    if (ArenaTeam* arenaTeam = sArenaTeamMgr->GetArenaTeamById(3))
+    {
+        teamName3 = arenaTeam->GetName();
+        teamRating3 = std::to_string(arenaTeam->GetRating());
+        personalRating3 = std::to_string(player->GetArenaPersonalRating(3));
+        combined3 = teamName3 + ":" + teamRating3 + ":" + personalRating3;
+    } 
+
+    stmt->setString(index++, combined1);
+    stmt->setString(index++, combined2);
+    stmt->setString(index++, combined3);
 
     // race, class
     stmt->setUInt32(index++, player->getRace());
@@ -194,36 +227,14 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
                 stmt->setString(index++,varstr);
             } else stmt->setString(index++, "NULL");
         } while (achquery->NextRow());
-    } 
+    }  
 
     APIDatabase.Execute(stmt);
+    // after we create/update player entry, update other data 
     UpdateInventory(player);
     UpdateLastLootedItems(player);
     sLog->outAPI("[PlayerAPI] Updated stats for player %s(%u).", player->GetName().c_str(), player->GetGUIDLow());
-} 
-
-/*
-    EQUIPMENT_SLOT_HEAD         = 0,
-    EQUIPMENT_SLOT_NECK         = 1,
-    EQUIPMENT_SLOT_SHOULDERS    = 2,
-    EQUIPMENT_SLOT_BODY         = 3,
-    EQUIPMENT_SLOT_CHEST        = 4,
-    EQUIPMENT_SLOT_WAIST        = 5,
-    EQUIPMENT_SLOT_LEGS         = 6,
-    EQUIPMENT_SLOT_FEET         = 7,
-    EQUIPMENT_SLOT_WRISTS       = 8,
-    EQUIPMENT_SLOT_HANDS   
-    = 9,
-    EQUIPMENT_SLOT_FINGER1      = 10,
-    EQUIPMENT_SLOT_FINGER2      = 11,
-    EQUIPMENT_SLOT_TRINKET1     = 12,
-    EQUIPMENT_SLOT_TRINKET2     = 13,
-    EQUIPMENT_SLOT_BACK         = 14,
-    EQUIPMENT_SLOT_MAINHAND     = 15,
-    EQUIPMENT_SLOT_OFFHAND      = 16,
-    EQUIPMENT_SLOT_RANGED       = 17,
-    EQUIPMENT_SLOT_TABARD       = 18,
-*/
+}  
 
 void PlayerAPI::UpdateInventory(Player* player)
 {
