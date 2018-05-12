@@ -1034,7 +1034,7 @@ public:
 
                 //Not 100% correct, but movement is smooth. Sometimes miner walks faster
                 //than normal, this speed is fast enough to keep up at those times.
-                me->SetSpeed(MOVE_RUN, 1.25f);
+                me->SetSpeed(MOVE_RUN, 1.0f);
 
                 me->GetMotionMaster()->MoveFollow(miner, 1.0f, 0);
                 me->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_IMMUNE_TO_NPC);
@@ -1078,6 +1078,7 @@ public:
         npc_scarlet_minerAI(Creature* creature) : npc_escortAI(creature)
         {
             me->SetReactState(REACT_PASSIVE);
+            me->SetSpeed(MOVE_RUN, 1.0f);
         }
 
         uint32 IntroTimer;
@@ -1338,6 +1339,274 @@ public:
     };
 };
 
+enum MinerController
+{
+    NPC_ME = 6262,
+    NPC_MINER = 6263,
+    NPC_CART = 6264,
+
+    EVENT_SPAWN_MINER = 1,
+};
+
+class npc_miner_controller : public CreatureScript
+{
+public:
+    npc_miner_controller() : CreatureScript("npc_miner_controller") { }
+     
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_miner_controllerAI(creature);
+    }
+
+    struct npc_miner_controllerAI : public NullCreatureAI
+    {
+        npc_miner_controllerAI(Creature* creature) : NullCreatureAI(creature), summons(me) {  }
+
+        EventMap events; 
+        SummonList summons; 
+
+        void Reset()
+        {
+            events.Reset();
+            summons.DespawnAll(); 
+            events.ScheduleEvent(EVENT_SPAWN_MINER, 1000);
+        }
+
+        void JustDied(Unit*)
+        {
+            summons.DespawnAll();
+        }
+
+        void JustSummoned(Creature* summon)
+        {
+            summons.Summon(summon);
+            if (summon->GetEntry() == NPC_MINER)
+            {
+                summon->setActive(true);
+            }
+        }
+
+        void SummonedCreatureDies(Creature* summon, Unit*)
+        {
+            summons.Despawn(summon); 
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            events.Update(diff); 
+
+            switch (events.ExecuteEvent())
+            {
+                case EVENT_SPAWN_MINER:
+                    if (Creature* miner = me->SummonCreature(NPC_MINER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 1))
+                    {  
+                        miner->SetSpeed(MOVE_RUN, 1.0f);
+                        miner->setFaction(35);
+                    }
+                    events.ScheduleEvent(EVENT_SPAWN_MINER, urand(7000, 15000));
+                    break;
+            }
+        }
+    };
+};
+
+
+class npc_passive_scarlet_miner : public CreatureScript
+{
+public:
+    npc_passive_scarlet_miner() : CreatureScript("npc_passive_scarlet_miner") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_passive_scarlet_minerAI(creature);
+    }
+
+    struct npc_passive_scarlet_minerAI : public npc_escortAI
+    {
+        npc_passive_scarlet_minerAI(Creature* creature) : npc_escortAI(creature)
+        {
+            me->SetReactState(REACT_PASSIVE);
+            me->SetSpeed(MOVE_RUN, 1.0f);
+        }
+        bool moved = false;
+        uint8 path = 0;
+        uint64 cartguid = 0;
+
+        void Reset() { }
+
+        void InitWaypoint()
+        {
+            uint8 point = 0;
+            if (me->GetPositionX() > 2420.1f && me->GetPositionX() < 2430.1f)
+            {
+                path = 1;
+                AddWaypoint(point++, 2423.325439f, -5914.020508f, 112.799484f);
+                AddWaypoint(point++, 2417.883057f, -5918.415039f, 111.427643f);
+                AddWaypoint(point++, 2412.828857f, -5921.774414f, 111.336716f);
+                AddWaypoint(point++, 2403.866455f, -5922.794434f, 110.682823f);
+                AddWaypoint(point++, 2398.096924f, -5919.744141f, 110.316841f);
+                AddWaypoint(point++, 2392.370117f, -5915.718750f, 110.258278f);
+                AddWaypoint(point++, 2386.643555f, -5911.693359f, 109.736008f);
+                AddWaypoint(point++, 2380.916748f, -5907.667969f, 108.903923f);
+                AddWaypoint(point++, 2378.053223f, -5905.655273f, 108.485199f);
+                AddWaypoint(point++, 2370.302979f, -5901.958008f, 107.125031f);
+                AddWaypoint(point++, 2359.840576f, -5901.118652f, 105.327423f);
+                AddWaypoint(point++, 2352.845215f, -5900.864746f, 104.133652f);
+                AddWaypoint(point++, 2345.857178f, -5900.461914f, 103.130341f);
+                AddWaypoint(point++, 2338.864990f, -5900.131348f, 101.954178f);
+                AddWaypoint(point++, 2331.871826f, -5899.820801f, 100.057861f);
+                AddWaypoint(point++, 2321.381592f, -5899.366699f, 96.936905f);
+                AddWaypoint(point++, 2314.385498f, -5899.191406f, 95.000725f);
+                AddWaypoint(point++, 2307.227295f, -5900.429688f, 92.628052f);
+                AddWaypoint(point++, 2300.239014f, -5905.069336f, 88.843605f);
+                AddWaypoint(point++, 2296.557129f, -5910.470215f, 86.049248f);
+                AddWaypoint(point++, 2294.248047f, -5918.514160f, 81.620567f);
+                AddWaypoint(point++, 2292.555420f, -5925.306152f, 76.744644f);
+                AddWaypoint(point++, 2290.867432f, -5932.099609f, 71.986504f);
+                AddWaypoint(point++, 2288.066650f, -5942.212891f, 65.403206f);
+                AddWaypoint(point++, 2285.375977f, -5948.666992f, 61.379826f);
+                AddWaypoint(point++, 2280.151123f, -5957.753418f, 55.633339f);
+                AddWaypoint(point++, 2274.613281f, -5963.833496f, 51.508507f);
+                AddWaypoint(point++, 2269.920654f, -5967.414551f, 48.810078f);
+                AddWaypoint(point++, 2260.438965f, -5971.924805f, 43.554932f);
+                AddWaypoint(point++, 2250.969971f, -5976.460938f, 38.152775f);
+                AddWaypoint(point++, 2243.353516f, -5982.323730f, 33.857330f);
+                AddWaypoint(point++, 2237.189697f, -5990.803711f, 29.267315f);
+                AddWaypoint(point++, 2233.673340f, -5996.856445f, 25.187603f);
+                AddWaypoint(point++, 2228.274170f, -6005.861816f, 17.864260f);
+                AddWaypoint(point++, 2222.822510f, -6014.835449f, 11.228409f);
+                AddWaypoint(point++, 2219.232178f, -6020.843750f, 8.992152f);
+                AddWaypoint(point++, 2214.065186f, -6029.983887f, 7.521602f);
+                AddWaypoint(point++, 2207.299561f, -6042.240723f, 6.592027f);
+                AddWaypoint(point++, 2203.896729f, -6049.572754f, 6.294215f);
+                AddWaypoint(point++, 2201.396240f, -6056.110840f, 6.099938f);
+                AddWaypoint(point++, 2195.409912f, -6071.763184f, 4.197136f);
+                AddWaypoint(point++, 2190.401367f, -6084.858887f, 2.813966f);
+                AddWaypoint(point++, 2185.626465f, -6097.901367f, 0.765109f);
+
+                if (urand(0, 1))
+                {
+                    AddWaypoint(point++, 2176.483887f, -6110.407227f, 1.855181f);
+                    AddWaypoint(point++, 2172.516602f, -6146.752441f, 1.074235f);
+                    AddWaypoint(point++, 2138.918457f, -6158.920898f, 1.342926f);
+                    AddWaypoint(point++, 2129.866699f, -6174.107910f, 4.380779f);
+                    AddWaypoint(point++, 2117.709473f, -6193.830078f, 13.3542f);
+                }
+                else
+                {
+                    AddWaypoint(point++, 2184.190186f, -6166.447266f, 0.968877f);
+                    AddWaypoint(point++, 2234.265625f, -6163.741211f, 0.916021f);
+                    AddWaypoint(point++, 2268.071777f, -6158.750977f, 1.822252f);
+                    AddWaypoint(point++, 2270.028320f, -6176.505859f, 6.340538f);
+                    AddWaypoint(point++, 2271.739014f, -6195.401855f, 13.3542f);
+                }
+            } 
+            else 
+            {
+                path = 2;
+                AddWaypoint(point++, 2436.730957f, -5895.164551f, 104.700966f);
+                AddWaypoint(point++, 2429.418701f, -5879.355957f, 104.693939f);
+                AddWaypoint(point++, 2422.927734f, -5871.412598f, 105.293762f);
+                AddWaypoint(point++, 2410.279785f, -5868.038574f, 104.608711f);
+                AddWaypoint(point++, 2390.812012f, -5871.048340f, 104.668571f);
+                AddWaypoint(point++, 2377.639404f, -5875.789551f, 104.774139f);
+                AddWaypoint(point++, 2361.180176f, -5881.714844f, 104.889503f);
+                AddWaypoint(point++, 2347.654297f, -5886.363770f, 104.893944f);
+                AddWaypoint(point++, 2332.878906f, -5890.651855f, 101.368164f);
+                AddWaypoint(point++, 2320.128906f, -5900.077637f, 96.398140f);
+                AddWaypoint(point++, 2305.576660f, -5909.173828f, 88.894203f);
+                AddWaypoint(point++, 2294.840576f, -5921.060059f, 79.923820f);
+                AddWaypoint(point++, 2287.306152f, -5936.833008f, 68.186211f);
+                AddWaypoint(point++, 2281.212402f, -5953.234863f, 57.905910f);
+                AddWaypoint(point++, 2273.823242f, -5968.574219f, 50.057686f);
+                AddWaypoint(point++, 2260.457764f, -5976.860352f, 42.240421f);
+                AddWaypoint(point++, 2244.103271f, -5982.984375f, 33.667950f);
+                AddWaypoint(point++, 2235.197998f, -5991.280762f, 28.713165f);
+                AddWaypoint(point++, 2229.327881f, -6003.983887f, 19.510519f);
+                AddWaypoint(point++, 2221.178223f, -6016.517090f, 10.316488f);
+                AddWaypoint(point++, 2214.886719f, -6029.023438f, 7.629883f);
+                AddWaypoint(point++, 2204.020752f, -6050.981934f, 6.254164f);
+                AddWaypoint(point++, 2198.042236f, -6063.636230f, 5.673378f);
+                AddWaypoint(point++, 2191.932129f, -6080.030762f, 3.150928f);
+                AddWaypoint(point++, 2188.335938f, -6089.895508f, 2.164635f);
+                AddWaypoint(point++, 2185.809082f, -6096.827148f, 0.921909f);
+                if (urand(0, 1))
+                {
+                    AddWaypoint(point++, 2176.483887f, -6110.407227f, 1.855181f);
+                    AddWaypoint(point++, 2172.516602f, -6146.752441f, 1.074235f);
+                    AddWaypoint(point++, 2138.918457f, -6158.920898f, 1.342926f);
+                    AddWaypoint(point++, 2129.866699f, -6174.107910f, 4.380779f);
+                    AddWaypoint(point++, 2117.709473f, -6193.830078f, 13.3542f);
+                }
+                else
+                {
+                    AddWaypoint(point++, 2184.190186f, -6166.447266f, 0.968877f);
+                    AddWaypoint(point++, 2234.265625f, -6163.741211f, 0.916021f);
+                    AddWaypoint(point++, 2268.071777f, -6158.750977f, 1.822252f);
+                    AddWaypoint(point++, 2270.028320f, -6176.505859f, 6.340538f);
+                    AddWaypoint(point++, 2271.739014f, -6195.401855f, 13.3542f);
+                }
+            }
+        }
+
+        void InitMovement()
+        {
+            InitWaypoint();
+            Start(false, false);
+            SetDespawnAtFar(false);
+
+            if (Creature* cart = me->SummonCreature(NPC_CART, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, 165000))
+            {
+                cartguid = cart->GetGUID();
+                cart->SetWalk(false); 
+                cart->GetMotionMaster()->MoveFollow(me, PET_FOLLOW_DIST, M_PI/2);
+                cart->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                cart->setFaction(35);
+                me->SetSpeed(MOVE_RUN, 1.2f);
+                DoCast(cart, SPELL_CART_DRAG);
+                sLog->outString("CART GUID: %u ", cartguid);
+            }
+        }
+
+        void WaypointReached(uint32 waypointId)
+        {
+            switch (waypointId)
+            { 
+                case 31:
+                    if (path == 1)
+                    {
+                        if (Creature* cart = ObjectAccessor::GetCreature(*me, cartguid))
+                            cart->RemoveFromWorld();
+                        me->RemoveFromWorld(); 
+                    }
+                    break;
+                case 48: 
+                    if (path == 2) 
+                    {
+                        if (Creature* cart = ObjectAccessor::GetCreature(*me, cartguid))
+                            cart->RemoveFromWorld();
+                        me->RemoveFromWorld();
+                    }
+                    break;
+            default:
+                break;
+            }
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            if (!moved)
+            {
+                InitMovement();
+                moved = true;
+            }
+
+            npc_escortAI::UpdateAI(diff);
+        }
+    };
+
+};
+
 void AddSC_the_scarlet_enclave_c1()
 {
     // Ours
@@ -1363,4 +1632,7 @@ void AddSC_the_scarlet_enclave_c1()
     new npc_runeforge_trigger();
     new npc_runebladed_sword();
     new npc_citizen_of_havenshire();
+
+    new npc_miner_controller();
+    new npc_passive_scarlet_miner();
 }
