@@ -44,7 +44,9 @@ public:
             { "modify",         SEC_GAMEMASTER,     false, &HandleWpModifyCommand,             ""},
             { "unload",         SEC_GAMEMASTER,     false, &HandleWpUnLoadCommand,             ""},
             { "reload",         SEC_ADMINISTRATOR,  false, &HandleWpReloadCommand,             ""},
-            { "show",           SEC_GAMEMASTER,     false, &HandleWpShowCommand,               ""},
+            { "show",           SEC_GAMEMASTER,     false, &HandleWpShowCommand,               "" },
+            { "file",           SEC_GAMEMASTER,     false, &HandleWpFileCommand,               "" },
+
             // { NULL,             0,                  false, NULL,                               ""}
         };
         static std::vector<ChatCommand> CommandTable =
@@ -54,6 +56,16 @@ public:
         };
         return CommandTable;
     }
+
+    static bool HandleWpFileCommand(ChatHandler* handler, const char* args)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        handler->PSendSysMessage("WAYPOINT ADDED TO Hack.log(temp) >>> [DEV/WP] (%f, %f, %f, %f)", player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetOrientation());
+        sLog->outHack("[DEV/WP] (%f, %f, %f, %f)", player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetOrientation());
+        return true;
+    }
+
     /**
     * Add a waypoint to a creature.
     *
