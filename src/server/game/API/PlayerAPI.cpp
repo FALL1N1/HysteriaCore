@@ -287,144 +287,126 @@ void PlayerAPI::UpdateInventory(Player* player)
                     item1_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item1_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item1_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item1_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item1_entry, item1_enchant, item1_gem_1, item1_gem_2, item1_gem_3);
+                    item1_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_NECK:
                     item2_entry = i->GetEntry();
                     item2_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item2_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item2_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item2_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item2_entry, item2_enchant, item2_gem_1, item2_gem_2, item2_gem_3);
+                    item2_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_SHOULDERS:
                     item3_entry = i->GetEntry();
                     item3_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item3_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item3_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item3_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item3_entry, item3_enchant, item3_gem_1, item3_gem_2, item3_gem_3);
+                    item3_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_BODY:
                     item4_entry = i->GetEntry();
                     item4_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item4_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item4_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item4_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item4_entry, item4_enchant, item4_gem_1, item4_gem_2, item4_gem_3);
+                    item4_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_CHEST:
                     item5_entry = i->GetEntry();
                     item5_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item5_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item5_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item5_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item5_entry, item5_enchant, item5_gem_1, item5_gem_2, item5_gem_3);
+                    item5_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_WAIST:
                     item6_entry = i->GetEntry();
                     item6_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item6_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item6_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item6_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item6_entry, item6_enchant, item6_gem_1, item6_gem_2, item6_gem_3);
+                    item6_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_LEGS:
                     item7_entry = i->GetEntry();
                     item7_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item7_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item7_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item7_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item7_entry, item7_enchant, item7_gem_1, item7_gem_2, item7_gem_3);
+                    item7_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_FEET:
                     item8_entry = i->GetEntry();
                     item8_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item8_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item8_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item8_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item8_entry, item8_enchant, item8_gem_1, item8_gem_2, item8_gem_3);
+                    item8_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_WRISTS:
                     item9_entry = i->GetEntry();
                     item9_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item9_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item9_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item9_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item9_entry, item9_enchant, item9_gem_1, item9_gem_2, item9_gem_3);
+                    item9_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_HANDS:
                     item10_entry = i->GetEntry();
                     item10_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item10_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item10_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item10_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item10_entry, item10_enchant, item10_gem_1, item10_gem_2, item10_gem_3);
+                    item10_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_FINGER1:
                     item11_entry = i->GetEntry();
                     item11_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item11_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item11_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item11_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item11_entry, item11_enchant, item11_gem_1, item11_gem_2, item11_gem_3);
+                    item11_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_FINGER2:
                     item12_entry = i->GetEntry();
                     item12_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item12_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item12_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item12_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item12_entry, item12_enchant, item12_gem_1, item12_gem_2, item12_gem_3);
+                    item12_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_TRINKET1:
                     item13_entry = i->GetEntry();
                     item13_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item13_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item13_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item13_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item13_entry, item13_enchant, item13_gem_1, item13_gem_2, item13_gem_3);
+                    item13_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_TRINKET2:
                     item14_entry = i->GetEntry();
                     item14_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item14_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item14_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item14_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item14_entry, item14_enchant, item14_gem_1, item14_gem_2, item14_gem_3);
+                    item14_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_BACK:
                     item15_entry = i->GetEntry();
                     item15_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item15_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item15_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item15_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[HEAD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item15_entry, item15_enchant, item15_gem_1, item15_gem_2, item15_gem_3);
+                    item15_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_MAINHAND:
                     item16_entry = i->GetEntry();
                     item16_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item16_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item16_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item16_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[MAINHAND] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item16_entry, item16_enchant, item16_gem_1, item16_gem_2, item16_gem_3);
+                    item16_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_OFFHAND:
                     item17_entry = i->GetEntry();
                     item17_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item17_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item17_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item17_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[OFFHAND] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item17_entry, item17_enchant, item17_gem_1, item17_gem_2, item17_gem_3);
+                    item17_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_RANGED:
                     item18_entry = i->GetEntry();
                     item18_enchant = i->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
                     item18_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item18_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
-                    item18_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[RANGED] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item18_entry, item18_enchant, item18_gem_1, item18_gem_2, item18_gem_3);
+                    item18_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3); 
                     break;
                 case EQUIPMENT_SLOT_TABARD:
                     item19_entry = i->GetEntry();
@@ -432,7 +414,6 @@ void PlayerAPI::UpdateInventory(Player* player)
                     item19_gem_1 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT);
                     item19_gem_2 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_2);
                     item19_gem_3 = i->GetEnchantmentId(SOCK_ENCHANTMENT_SLOT_3);
-                    sLog->outString("[TABARD] itemid %u << enchantid %u << gemid1 %u << gemid2 %u << gemid3 %u", item19_entry, item19_enchant, item19_gem_1, item19_gem_2, item19_gem_3);
                     break;
                 default:
                     sLog->outAPI("ERROR WHILE FETCHING ITEM(%u WITH SLOT %u), DEFAULT CASE HIT!", i->GetEntry(), s);
