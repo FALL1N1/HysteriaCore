@@ -13,9 +13,9 @@ void APIDatabaseConnection::DoPrepareStatements()
         "resArcane, blockPct, dodgePct, parryPct, critPct, rangedCritPct, spellCritPct, attackPower, rangedAttackPower, spellPower, "
         "resilience, achievementPoints, name, guildname, guildid, activespec, map, zone, area, lastseen, "
         "2v2, 3v3, 5v5, race, class, gender, glyph1, glyph2, glyph3, glyph4, "
-        "glyph5, glyph6, level, totaltime, leveltime, money, ach1, ach2, ach3, ach4, ach5)"
+        "glyph5, glyph6, level, totaltime, leveltime, money, ach1, ach2, ach3, ach4, ach5, proff, proff1skill, proff2skill, proff3skill, proff4skill, proff5skill)"
         " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), "
-        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
 
     PrepareStatement(API_INS_PLAYER_TALENT, "INSERT INTO characters_talents (guid, spell, specMask) VALUES (?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(API_DEL_PLAYER_TALENT_BY_SPELL, "DELETE FROM characters_talents WHERE guid = ? and spell = ?", CONNECTION_ASYNC);

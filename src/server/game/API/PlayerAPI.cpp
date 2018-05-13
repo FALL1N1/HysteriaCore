@@ -243,7 +243,85 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
                 stmt->setString(index++,varstr);
             } else stmt->setString(index++, "NULL");
         } while (achquery->NextRow());
-    }  
+    }   
+
+
+    // GENERATE PRIMARY PROFESSIONS
+    std::string p, p1, p2 = "";
+    bool sndP = false;
+    uint32 sk1, sk2, sk3, sk4, sk5 = 0;
+
+    if (player->HasSkill(SKILL_ALCHEMY))
+    {
+        if (!sndP) { p1 = "Alchemy"; sndP = true; sk1 = player->GetSkillValue(SKILL_ALCHEMY); }
+        else { p2 = "Alchemy"; sk2 = player->GetSkillValue(SKILL_ALCHEMY); }
+    }
+    if (player->HasSkill(SKILL_BLACKSMITHING))
+    {
+        if (!sndP) { p1 = "Blacksmithing"; sndP = true; sk1 = player->GetSkillValue(SKILL_BLACKSMITHING); }
+        else { p2 = "Blacksmithing"; sk2 = player->GetSkillValue(SKILL_BLACKSMITHING); }
+    }
+    if (player->HasSkill(SKILL_ENCHANTING))
+    {
+        if (!sndP) { p1 = "Enchanting"; sndP = true; sk1 = player->GetSkillValue(SKILL_ENCHANTING); }
+        else { p2 = "Enchanting"; sk2 = player->GetSkillValue(SKILL_ENCHANTING); }
+    }
+    if (player->HasSkill(SKILL_ENGINEERING))
+    {
+        if (!sndP) { p1 = "Engineering"; sndP = true; sk1 = player->GetSkillValue(SKILL_ENGINEERING); }
+        else { p2 = "Engineering"; sk2 = player->GetSkillValue(SKILL_ENGINEERING); }
+    }
+    if (player->HasSkill(SKILL_HERBALISM))
+    {
+        if (!sndP) { p1 = "Herbalism"; sndP = true; sk1 = player->GetSkillValue(SKILL_HERBALISM); }
+        else { p2 = "Herbalism"; sk2 = player->GetSkillValue(SKILL_HERBALISM); }
+    }
+    if (player->HasSkill(SKILL_MINING))
+    {
+        if (!sndP) { p1 = "Mining"; sndP = true; sk1 = player->GetSkillValue(SKILL_MINING); }
+        else { p2 = "Mining"; sk2 = player->GetSkillValue(SKILL_MINING); }
+    }
+    if (player->HasSkill(SKILL_INSCRIPTION))
+    {
+        if (!sndP) { p1 = "Inscription"; sndP = true; sk1 = player->GetSkillValue(SKILL_INSCRIPTION); }
+        else { p2 = "Inscription"; sk2 = player->GetSkillValue(SKILL_INSCRIPTION); }
+    }
+    if (player->HasSkill(SKILL_JEWELCRAFTING))
+    {
+        if (!sndP) { p1 = "Jewelcrafting"; sndP = true; sk1 = player->GetSkillValue(SKILL_JEWELCRAFTING); }
+        else { p2 = "Jewelcrafting"; sk2 = player->GetSkillValue(SKILL_JEWELCRAFTING); }
+    }
+    if (player->HasSkill(SKILL_LEATHERWORKING))
+    {
+        if (!sndP) { p1 = "Leatherworking"; sndP = true; sk1 = player->GetSkillValue(SKILL_LEATHERWORKING); }
+        else { p2 = "Leatherworking"; sk2 = player->GetSkillValue(SKILL_LEATHERWORKING); }
+    }
+    if (player->HasSkill(SKILL_TAILORING))
+    {
+        if (!sndP) { p1 = "Tailoring"; sndP = true; sk1 = player->GetSkillValue(SKILL_TAILORING); }
+        else { p2 = "Tailoring"; sk2 = player->GetSkillValue(SKILL_TAILORING); }
+    }
+
+    // GENERATE SECONDARY PROFESSIONS
+    if (player->HasSkill(SKILL_COOKING))
+        sk3 = player->GetSkillValue(SKILL_COOKING);
+    if (player->HasSkill(SKILL_FISHING))
+        sk4 = player->GetSkillValue(SKILL_FISHING);
+    if (player->HasSkill(SKILL_FIRST_AID))
+        sk5 = player->GetSkillValue(SKILL_FIRST_AID);
+
+    p = p1 + ":" + p2; // final
+
+    // append in db
+    stmt->setString(index++, p);
+    stmt->setUInt32(index++, sk1);
+    stmt->setUInt32(index++, sk2);
+    stmt->setUInt32(index++, sk3);
+    stmt->setUInt32(index++, sk4);
+    stmt->setUInt32(index++, sk5);
+    // professions end
+    ///////////////////////////// 
+
 
     APIDatabase.Execute(stmt);
     // after we create/update player entry, update other data 
