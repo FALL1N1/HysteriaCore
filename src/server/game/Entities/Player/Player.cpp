@@ -14761,7 +14761,7 @@ void Player::SendNewItem(Item* item, uint32 count, bool received, bool created, 
 
 
     sLog->outString("NEW ITEM!! entry: %u", item->GetEntry());
-    std::string generateVar = std::to_string(item->GetEntry()) + ":" + std::to_string(time(0)); 
+    std::string generateVar = std::to_string(item->GetEntry()) + ":" + std::to_string(time(0)) + ":" + std::to_string(item->GetTemplate()->Quality);
     SetAPILastLootedItem(5, GetAPILastLootedItem(4));
     SetAPILastLootedItem(4, GetAPILastLootedItem(3));
     SetAPILastLootedItem(3, GetAPILastLootedItem(2));

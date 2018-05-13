@@ -40,50 +40,65 @@ void PlayerAPI::UpdateLastLootedItems(Player* player)
         case 5:
         {
             PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_5);
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always first
+            stmt->setString(index++, player->GetName()); // always second
+
+            // begin items [5]
             stmt->setString(index++, player->GetAPILastLootedItem(5));
             stmt->setString(index++, player->GetAPILastLootedItem(4));
             stmt->setString(index++, player->GetAPILastLootedItem(3));
             stmt->setString(index++, player->GetAPILastLootedItem(2));
             stmt->setString(index++, player->GetAPILastLootedItem(1));
-            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
             APIDatabase.Execute(stmt);
             break;
         }
         case 4:
         {
             PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_4);
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always first
+            stmt->setString(index++, player->GetName()); // always second
+
+            // begin items [4]
             stmt->setString(index++, player->GetAPILastLootedItem(4));
             stmt->setString(index++, player->GetAPILastLootedItem(3));
             stmt->setString(index++, player->GetAPILastLootedItem(2));
-            stmt->setString(index++, player->GetAPILastLootedItem(1));
-            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
+            stmt->setString(index++, player->GetAPILastLootedItem(1)); 
             APIDatabase.Execute(stmt);
             break;
         }
         case 3:
         {
             PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_3);
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always first
+            stmt->setString(index++, player->GetName()); // always second
+
+            // begin items [3]
             stmt->setString(index++, player->GetAPILastLootedItem(3));
             stmt->setString(index++, player->GetAPILastLootedItem(2));
             stmt->setString(index++, player->GetAPILastLootedItem(1));
-            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
             APIDatabase.Execute(stmt);
             break;
         }
         case 2:
         {
-            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_2); 
+            PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_1);
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always first
+            stmt->setString(index++, player->GetName()); // always second
+
+            // begin items [2]
             stmt->setString(index++, player->GetAPILastLootedItem(2));
             stmt->setString(index++, player->GetAPILastLootedItem(1));
-            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
             APIDatabase.Execute(stmt);
             break;
         }
         case 1:
         {
             PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_UPD_PLAYER_LOOTED_ITEMS_1); 
+            stmt->setUInt32(index++, player->GetGUIDLow()); // always first
+            stmt->setString(index++, player->GetName()); // always second
+
+            // begin items [1]
             stmt->setString(index++, player->GetAPILastLootedItem(1));
-            stmt->setUInt32(index++, player->GetGUIDLow()); // always last
             APIDatabase.Execute(stmt);
             break;
         } 
@@ -213,6 +228,7 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
 
     // REWRITE ASAP
     // @emo
+    std::string varstr;
     QueryResult achquery = CharacterDatabase.PQuery("SELECT achievement,date FROM character_achievement WHERE guid = %u ORDER BY date DESC limit 5", player->GetGUIDLow());
     if (achquery)
     {
@@ -221,7 +237,7 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
             Field* fldz = achquery->Fetch();
             if (fldz)
             {
-                std::string varstr = std::to_string(fldz[0].GetUInt16()) + ":" + std::to_string(fldz[1].GetUInt32());
+                varstr = std::to_string(fldz[0].GetUInt16()) + ":" + std::to_string(fldz[1].GetUInt32());
 
 
                 stmt->setString(index++,varstr);
