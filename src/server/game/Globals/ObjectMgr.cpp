@@ -3205,7 +3205,7 @@ void ObjectMgr::LoadPetLevelInfo()
         {
             if (pInfo[level].health == 0)
             {
-                sLog->outErrorDb("Creature %u has no data for Level %i pet stats data, using data of Level %i.", itr->first, level + 1, level);
+                //sLog->outErrorDb("Creature %u has no data for Level %i pet stats data, using data of Level %i.", itr->first, level + 1, level);
                 pInfo[level] = pInfo[level - 1];
             }
         }
@@ -3704,7 +3704,7 @@ void ObjectMgr::LoadPlayerInfo()
                 // fatal error if no level 1 data
                 if (!info->levelInfo || info->levelInfo[0].stats[0] == 0)
                 {
-                    sLog->outError("Race %i Class %i Level 1 does not have stats data!", race, class_);
+                    //sLog->outError("Race %i Class %i Level 1 does not have stats data!", race, class_);
                     exit(1);
                 }
 
@@ -3713,7 +3713,7 @@ void ObjectMgr::LoadPlayerInfo()
                 {
                     if (info->levelInfo[level].stats[0] == 0)
                     {
-                        sLog->outError("Race %i Class %i Level %i does not have stats data. Using stats data of level %i.", race, class_, level + 1, level);
+                        //sLog->outError("Race %i Class %i Level %i does not have stats data. Using stats data of level %i.", race, class_, level + 1, level);
                         info->levelInfo[level] = info->levelInfo[level - 1];
                     }
                 }
@@ -3755,7 +3755,7 @@ void ObjectMgr::LoadPlayerInfo()
             if (current_level >= sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
             {
                 if (current_level > STRONG_MAX_LEVEL)        // hardcoded level maximum
-                    sLog->outErrorDb("Wrong (> %u) level %u in `player_xp_for_level` table, ignoring.", STRONG_MAX_LEVEL, current_level);
+                    ;// sLog->outErrorDb("Wrong (> %u) level %u in `player_xp_for_level` table, ignoring.", STRONG_MAX_LEVEL, current_level);
                 else
                 {
                     ;//sLog->outDetail("Unused (> MaxPlayerLevel in worldserver.conf) level %u in `player_xp_for_levels` table, ignoring.", current_level);
@@ -3774,7 +3774,7 @@ void ObjectMgr::LoadPlayerInfo()
         {
             if (_playerXPperLevel[level] == 0)
             {
-                sLog->outErrorDb("Level %i does not have XP for level data. Using data of level [%i] + 100.", level + 1, level);
+                //sLog->outErrorDb("Level %i does not have XP for level data. Using data of level [%i] + 100.", level + 1, level);
                 _playerXPperLevel[level] = _playerXPperLevel[level - 1] + 100;
             }
         }

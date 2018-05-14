@@ -221,9 +221,9 @@ int Master::Run()
     if (highPriority)
     {
         if (SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS))
-            sLog->outString("worldserver process priority class set to HIGH");
+            ;// sLog->outString("worldserver process priority class set to HIGH");
         else
-            sLog->outError("Can't set worldserver process priority class.");
+            ;// sLog->outError("Can't set worldserver process priority class.");
     }
     
 #else // Linux
@@ -499,13 +499,6 @@ bool Master::_StartDB()
 
     ///- Clean the database before starting
     ClearOnlineAccounts();
-
-    ///- Insert version info into DB
-//    WorldDatabase.PExecute("UPDATE version SET core_version = '%s', core_revision = '%s'", _FULLVERSION, _HASH);        // One-time query
-
-    sWorld->LoadDBVersion();
-
-    sLog->outString("Using World DB: %s", sWorld->GetDBVersion());
     return true;
 }
 

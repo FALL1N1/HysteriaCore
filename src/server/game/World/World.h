@@ -840,10 +840,6 @@ class World
         void UpdateRealmCharCount(uint32 accid);
 
         LocaleConstant GetAvailableDbcLocale(LocaleConstant locale) const { if (m_availableDbcLocaleMask & (1 << locale)) return locale; else return m_defaultDbcLocale; }
-
-        // used World DB version
-        void LoadDBVersion();
-        char const* GetDBVersion() const { return m_DBVersion.c_str(); }
         void LoadAutobroadcasts();
 
         void UpdateAreaDependentAuras();

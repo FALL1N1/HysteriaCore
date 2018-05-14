@@ -1971,9 +1971,25 @@ void World::SetInitialWorldSettings()
     mgr->LoadChannels();
   
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
-    sLog->outString();
-    sLog->outError("WORLD: World initialized in %u minutes %u seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
-    sLog->outString();
+    sLog->outString("      ________________________________________________________________________________________");
+    sLog->outString("      |                                                                                       |");
+    sLog->outString("      |                       ,,                                                              |");
+    sLog->outString("      | `7MM\"\"\"Yp,          `7MM                       MMM\"\"\"AMV MMM\"\"\"AMV                    |");
+    sLog->outString("      |   MM    Yb            MM                       M'   AMV  M'   AMV                     |");
+    sLog->outString("      |   MM    dP  ,6\"Yb.    MM  `7MMpMMMb.   ,6\"Yb.  '   AMV   '   AMV    ,6\"Yb.  `7Mb,od8  |");
+    sLog->outString("      |   MM\"\"\"bg. 8)   MM    MM    MM    MM  8)   MM     AMV       AMV    8)   MM    MM' \"'  |");
+    sLog->outString("      |   MM    `Y  ,pm9MM    MM    MM    MM   ,pm9MM    AMV   ,   AMV   ,  ,pm9MM    MM      |");
+    sLog->outString("      |   MM    ,9 8M   MM    MM    MM    MM  8M   MM   AMV   ,M  AMV   ,M 8M   MM    MM      |");
+    sLog->outString("      | .JMMmmmd9  `Moo9^Yo..JMML..JMML  JMML.`Moo9^Yo.AMVmmmmMM AMVmmmmMM `Moo9^Yo..JMML.    |");
+    sLog->outString("      |                                                                                       |");
+    sLog->outString("      |_______________________________________________________________________________________|");
+    sLog->outString("                                   Copyright (c) Project Balnazzar 2016-2018       ");
+    sLog->outString("                                           www.balnazzar.com                  ");
+    sLog->outString("                                 _______________________________________      ");
+    sLog->outString("      %s", _FULLVERSION);
+    sLog->outError("World node initialization finished in %u minutes %u seconds, multinode is set to: OFF", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
+    sLog->outString("                                 _______________________________________      ");
+    sLog->outString("World node is live. All ok.");
 
     // possibly enable db logging; avoid massive startup spam by doing it here.
     if (sConfigMgr->GetBoolDefault("EnableLogDB", false))
@@ -2071,7 +2087,7 @@ void World::Update(uint32 diff)
         m_updateTimeSum += diff;
         if (m_updateTimeSum > m_int_configs[CONFIG_INTERVAL_LOG_UPDATE])
         {
-            sLog->outBasic("Average update time diff: %u. Players online: %u.", avgDiffTracker.getAverage(), (uint32)GetActiveSessionCount());
+            //sLog->outBasic("Average update time diff: %u. Players online: %u.", avgDiffTracker.getAverage(), (uint32)GetActiveSessionCount());
             m_updateTimeSum = 0;
         }
     }
@@ -3124,22 +3140,6 @@ void World::UpdateMaxSessionCounters()
 {
     m_maxActiveSessionCount = std::max(m_maxActiveSessionCount, uint32(m_sessions.size()-m_QueuedPlayer.size()));
     m_maxQueuedSessionCount = std::max(m_maxQueuedSessionCount, uint32(m_QueuedPlayer.size()));
-}
-
-void World::LoadDBVersion()
-{
-    QueryResult result = WorldDatabase.Query("SELECT db_version, cache_id FROM version LIMIT 1");
-    if (result)
-    {
-        Field* fields = result->Fetch();
-        m_DBVersion              = fields[0].GetString();
-
-        // will be overwrite by config values if different and non-0
-        m_int_configs[CONFIG_CLIENTCACHE_VERSION] = fields[1].GetUInt32();
-    }
-
-    if (m_DBVersion.empty())
-        m_DBVersion = "Unknown world database.";
 }
 
 void World::UpdateAreaDependentAuras()

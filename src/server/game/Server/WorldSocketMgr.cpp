@@ -242,9 +242,7 @@ WorldSocketMgr::StartReactiveIO (ACE_UINT16 port, const char* address)
 
     m_NetThreadsCount = static_cast<size_t> (num_threads + 1);
 
-    m_NetThreads = new ReactorRunnable[m_NetThreadsCount];
-
-    sLog->outBasic ("Max allowed socket connections %d", ACE::max_handles());
+    m_NetThreads = new ReactorRunnable[m_NetThreadsCount]; 
 
     // -1 means use default
     m_SockOutKBuff = sConfigMgr->GetIntDefault ("Network.OutKBuff", -1);

@@ -16,214 +16,188 @@
  */
 
 #include "ScriptMgr.h"
-#include "InstanceScript.h"
+#include "ScriptedCreature.h"
 #include "azjol_nerub.h"
+#include "SpellScript.h"
 
-#define MAX_ENCOUNTER                   3
-
-/* Azjol Nerub encounters:
-        0 - Krik'thir the Gatewatcher
-        1 - Hadronox
-        2 - Anub'arak
-*/
+DoorData const doorData[] =
+{
+    { GO_KRIKTHIR_DOORS,	DATA_KRIKTHIR_THE_GATEWATCHER_EVENT,	DOOR_TYPE_PASSAGE,		BOUNDARY_NONE },
+    { GO_ANUBARAK_DOORS1,	DATA_ANUBARAK_EVENT,	DOOR_TYPE_ROOM,		BOUNDARY_NONE },
+    { GO_ANUBARAK_DOORS2,	DATA_ANUBARAK_EVENT,	DOOR_TYPE_ROOM,		BOUNDARY_NONE },
+    { GO_ANUBARAK_DOORS3,	DATA_ANUBARAK_EVENT,	DOOR_TYPE_ROOM,		BOUNDARY_NONE },
+    { 0,					0,						DOOR_TYPE_ROOM,     BOUNDARY_NONE }
+};
 
 class instance_azjol_nerub : public InstanceMapScript
 {
+	public:
+		instance_azjol_nerub() : InstanceMapScript("instance_azjol_nerub", 601) { }
+
+		struct instance_azjol_nerub_InstanceScript : public InstanceScript
+		{
+			instance_azjol_nerub_InstanceScript(Map* map) : InstanceScript(map)
+			{
+				SetBossNumber(MAX_ENCOUNTERS);
+				LoadDoorData(doorData);
+				_krikthirGUID = 0;
+				_hadronoxGUID = 0;
+			};
+
+			void OnCreatureCreate(Creature* creature)
+			{
+				switch (creature->GetEntry())
+				{
+					case NPC_KRIKTHIR_THE_GATEWATCHER:
+						_krikthirGUID = creature->GetGUID();
+						break;
+					case NPC_HADRONOX:
+						_hadronoxGUID = creature->GetGUID();
+						break;
+					case NPC_SKITTERING_SWARMER:
+					case NPC_SKITTERING_INFECTIOR:
+						if (Creature* krikthir = instance->GetCreature(_krikthirGUID))
+							krikthir->AI()->JustSummoned(creature);
+						break;
+					case NPC_ANUB_AR_CHAMPION:
+					case NPC_ANUB_AR_NECROMANCER:
+					case NPC_ANUB_AR_CRYPTFIEND:
+						if (Creature* hadronox = instance->GetCreature(_hadronoxGUID))
+							hadronox->AI()->JustSummoned(creature);
+						break;
+
+				}
+			}					
+
+			void OnGameObjectCreate(GameObject* go)
+			{
+				switch (go->GetEntry())
+				{
+					case GO_KRIKTHIR_DOORS:
+					case GO_ANUBARAK_DOORS1:
+					case GO_ANUBARAK_DOORS2:
+					case GO_ANUBARAK_DOORS3:
+                        AddDoor(go, true);
+						break;
+				}
+			}
+			
+			void OnGameObjectRemove(GameObject* go)
+			{
+				switch (go->GetEntry())
+				{
+					case GO_KRIKTHIR_DOORS:
+					case GO_ANUBARAK_DOORS1:
+					case GO_ANUBARAK_DOORS2:
+					case GO_ANUBARAK_DOORS3:
+                        AddDoor(go, false);
+						break;
+				}
+			}
+
+			bool SetBossState(uint32 id, EncounterState state)
+			{
+				return InstanceScript::SetBossState(id, state);
+			}
+
+			std::string GetSaveData()
+			{
+				std::ostringstream saveStream;
+				saveStream << "A N " << GetBossSaveData();
+				return saveStream.str();
+			}
+
+			void Load(const char* in)
+			{
+				if( !in )
+					return;
+
+				char dataHead1, dataHead2;
+				std::istringstream loadStream(in);
+				loadStream >> dataHead1 >> dataHead2;
+				if (dataHead1 == 'A' && dataHead2 == 'N')
+				{
+					for (uint8 i = 0; i < MAX_ENCOUNTERS; ++i)
+					{
+						uint32 tmpState;
+						loadStream >> tmpState;
+						if (tmpState == IN_PROGRESS || tmpState > SPECIAL)
+							tmpState = NOT_STARTED;
+						SetBossState(i, EncounterState(tmpState));
+					}
+				}
+			}
+
+		private:
+			uint64 _krikthirGUID;
+			uint64 _hadronoxGUID;
+		};
+
+		InstanceScript* GetInstanceScript(InstanceMap *map) const
+		{
+			return new instance_azjol_nerub_InstanceScript(map);
+		}
+};
+
+class spell_azjol_nerub_fixate : public SpellScriptLoader
+{
     public:
-        instance_azjol_nerub() : InstanceMapScript("instance_azjol_nerub", 601) { }
+        spell_azjol_nerub_fixate() : SpellScriptLoader("spell_azjol_nerub_fixate") { }
 
-        struct instance_azjol_nerub_InstanceScript : public InstanceScript
+        class spell_azjol_nerub_fixate_SpellScript : public SpellScript
         {
-            instance_azjol_nerub_InstanceScript(Map* map) : InstanceScript(map) {}
+            PrepareSpellScript(spell_azjol_nerub_fixate_SpellScript);
 
-            uint64 uiKrikthir;
-            uint64 uiHadronox;
-            uint64 uiAnubarak;
-            uint64 uiWatcherGashra;
-            uint64 uiWatcherSilthik;
-            uint64 uiWatcherNarjil;
-            uint64 frontDoorTriggerAGUID;
-            uint64 frontDoorTriggerBGUID; // Closer to tunnel
-            uint64 uiAnubarakDoor[3];
-
-            uint64 uiKrikthirDoor;
-
-            uint32 auiEncounter[MAX_ENCOUNTER];
-
-            void Initialize()
+            void HandleScriptEffect(SpellEffIndex effIndex)
             {
-                memset(&auiEncounter, 0, sizeof(auiEncounter));
-                memset(&uiAnubarakDoor, 0, sizeof(uiAnubarakDoor));
-
-                uiKrikthir = 0;
-                uiHadronox = 0;
-                uiAnubarak = 0;
-                uiWatcherGashra = 0;
-                uiWatcherSilthik = 0;
-                uiWatcherNarjil = 0;
-                                frontDoorTriggerAGUID = 0;
-                frontDoorTriggerBGUID = 0;
-                uiKrikthirDoor = 0;
+				PreventHitDefaultEffect(effIndex);
+				if (Unit* target = GetHitUnit())
+					target->CastSpell(GetCaster(), GetEffectValue(), true);
             }
 
-            bool IsEncounterInProgress() const
+            void Register()
             {
-                for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
-                    if (auiEncounter[i] == IN_PROGRESS)
-                        return true;
-
-                return false;
-            }
-
-            void OnCreatureCreate(Creature* creature)
-            {
-                switch (creature->GetEntry())
-                {
-                    case 28684: uiKrikthir = creature->GetGUID(); break;
-                    case 28921: uiHadronox = creature->GetGUID(); break;
-                    case 29120: uiAnubarak = creature->GetGUID(); break;
-                    case 28730: uiWatcherGashra = creature->GetGUID(); break;
-                    case 28731: uiWatcherSilthik = creature->GetGUID(); break;
-                    case 28729: uiWatcherNarjil = creature->GetGUID(); break;
-                    case NPC_WORLD_TRIGGER_LARGE_AOI:
-                        if (creature->GetPositionX() < 500.0f)
-                            frontDoorTriggerAGUID = creature->GetGUID();
-                        else
-                            frontDoorTriggerBGUID = creature->GetGUID();
-                        break;
-                }
-            }
-
-            void OnGameObjectCreate(GameObject* go)
-            {
-                switch (go->GetEntry())
-                {
-                    case 192395:
-                        uiKrikthirDoor = go->GetGUID();
-                        if (auiEncounter[0] == DONE)
-                            HandleGameObject(0, true, go);
-                        break;
-                    case 192396:
-                        uiAnubarakDoor[0] = go->GetGUID();
-                        break;
-                    case 192397:
-                        uiAnubarakDoor[1] = go->GetGUID();
-                        break;
-                    case 192398:
-                        uiAnubarakDoor[2] = go->GetGUID();
-                        break;
-                }
-            }
-
-            uint64 GetData64(uint32 identifier) const
-            {
-                switch (identifier)
-                {
-                    case DATA_KRIKTHIR_THE_GATEWATCHER: return uiKrikthir;
-                    case DATA_HADRONOX: return uiHadronox;
-                    case DATA_ANUBARAK: return uiAnubarak;
-                    case DATA_WATCHER_GASHRA: return uiWatcherGashra;
-                    case DATA_WATCHER_SILTHIK: return uiWatcherSilthik;
-                    case DATA_WATCHER_NARJIL: return uiWatcherNarjil;
-                    case DATA_FRONT_DOOR_TRIGGER_A_GUID: return frontDoorTriggerAGUID;
-                    case DATA_FRONT_DOOR_TRIGGER_B_GUID: return frontDoorTriggerBGUID;
-                }
-
-                return 0;
-            }
-
-            void SetData(uint32 type, uint32 data)
-            {
-                switch (type)
-                {
-                    case DATA_KRIKTHIR_THE_GATEWATCHER_EVENT:
-                        auiEncounter[0] = data;
-                        if (data == DONE)
-                            HandleGameObject(uiKrikthirDoor, true);
-                        break;
-                    case DATA_HADRONOX_EVENT:
-                        auiEncounter[1] = data;
-                        break;
-                    case DATA_ANUBARAK_EVENT:
-                        auiEncounter[2] = data;
-                        if (data == IN_PROGRESS)
-                            for (uint8 i = 0; i < 3; ++i)
-                                HandleGameObject(uiAnubarakDoor[i], false);
-                        else if (data == NOT_STARTED || data == DONE)
-                            for (uint8 i = 0; i < 3; ++i)
-                                HandleGameObject(uiAnubarakDoor[i], true);
-                        break;
-                }
-
-                if (data == DONE)
-                {
-                    SaveToDB();
-                }
-            }
-
-            uint32 GetData(uint32 type) const
-            {
-                switch (type)
-                {
-                    case DATA_KRIKTHIR_THE_GATEWATCHER_EVENT: return auiEncounter[0];
-                    case DATA_HADRONOX_EVENT: return auiEncounter[1];
-                    case DATA_ANUBARAK_EVENT: return auiEncounter[2];
-                }
-
-                return 0;
-            }
-
-            std::string GetSaveData()
-            {
-                OUT_SAVE_INST_DATA;
-
-                std::ostringstream saveStream;
-                saveStream << "A N " << auiEncounter[0] << ' ' << auiEncounter[1] << ' '
-                    << auiEncounter[2];
-
-                OUT_SAVE_INST_DATA_COMPLETE;
-                return saveStream.str();
-            }
-
-            void Load(const char* in)
-            {
-                if (!in)
-                {
-                    OUT_LOAD_INST_DATA_FAIL;
-                    return;
-                }
-
-                OUT_LOAD_INST_DATA(in);
-
-                char dataHead1, dataHead2;
-                uint16 data0, data1, data2;
-
-                std::istringstream loadStream(in);
-                loadStream >> dataHead1 >> dataHead2 >> data0 >> data1 >> data2;
-
-                if (dataHead1 == 'A' && dataHead2 == 'N')
-                {
-                    auiEncounter[0] = data0;
-                    auiEncounter[1] = data1;
-                    auiEncounter[2] = data2;
-
-                    for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
-                        if (auiEncounter[i] == IN_PROGRESS)
-                            auiEncounter[i] = NOT_STARTED;
-
-                } else OUT_LOAD_INST_DATA_FAIL;
-
-                OUT_LOAD_INST_DATA_COMPLETE;
+                OnEffectHitTarget += SpellEffectFn(spell_azjol_nerub_fixate_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
             }
         };
 
-        InstanceScript* GetInstanceScript(InstanceMap* map) const
+        SpellScript* GetSpellScript() const
         {
-            return new instance_azjol_nerub_InstanceScript(map);
+            return new spell_azjol_nerub_fixate_SpellScript();
         }
+};
+
+class spell_azjol_nerub_web_wrap : public SpellScriptLoader
+{
+	public:
+		spell_azjol_nerub_web_wrap() : SpellScriptLoader("spell_azjol_nerub_web_wrap") { }
+
+		class spell_azjol_nerub_web_wrap_AuraScript : public AuraScript
+		{
+			PrepareAuraScript(spell_azjol_nerub_web_wrap_AuraScript);
+
+			void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+			{
+				Unit* target = GetTarget();
+				if (!target->HasAura(SPELL_WEB_WRAP_TRIGGER))
+					target->CastSpell(target, SPELL_WEB_WRAP_TRIGGER, true);
+			}
+
+			void Register()
+			{
+				OnEffectRemove += AuraEffectRemoveFn(spell_azjol_nerub_web_wrap_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_MOD_ROOT, AURA_EFFECT_HANDLE_REAL);
+			}
+		};
+
+		AuraScript* GetAuraScript() const
+		{
+			return new spell_azjol_nerub_web_wrap_AuraScript();
+		}
 };
 
 void AddSC_instance_azjol_nerub()
 {
-    new instance_azjol_nerub;
+   new instance_azjol_nerub();
+   new spell_azjol_nerub_fixate();
+   new spell_azjol_nerub_web_wrap();
 }

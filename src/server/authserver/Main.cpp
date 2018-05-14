@@ -123,10 +123,10 @@ extern int main(int argc, char** argv)
     sLog->outString("      | .JMMmmmd9  `Moo9^Yo..JMML..JMML  JMML.`Moo9^Yo.AMVmmmmMM AMVmmmmMM `Moo9^Yo..JMML.    |");
     sLog->outString("      |                                                                                       |");
     sLog->outString("      |_______________________________________________________________________________________|");
-    sLog->outString("                                   Copyright (c) Project Balnazzar 2017       ");
-    sLog->outString("                                           www.balnazzar.org                  ");
+    sLog->outString("                                   Copyright (c) Project Balnazzar 2016-2018       ");
+    sLog->outString("                                           www.balnazzar.com                  ");
     sLog->outString("                                 _______________________________________      ");
-    sLog->outString("                     %s", _FULLVERSION);
+    sLog->outString("      %s", _FULLVERSION);
     sLog->outString("");
     sLog->outString("");
     sLog->outString("");

@@ -1944,7 +1944,7 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond)
                         sLog->outErrorDb("ObjectEntryGuid condition has useless data in value3 (%u)!", cond->ConditionValue3);
                     break;
                 default:
-                    sLog->outErrorDb("ObjectEntryGuid condition has wrong typeid set (%u), skipped", cond->ConditionValue1);
+                    // sLog->outErrorDb("ObjectEntryGuid condition has wrong typeid set (%u), skipped", cond->ConditionValue1);
                     return false;
             }
             break;

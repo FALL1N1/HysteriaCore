@@ -93,8 +93,7 @@ void WorldRunnable::run()
 }
 
 void AuctionListingRunnable::run()
-{
-    sLog->outString("Starting up Auction House Listing thread...");
+{ 
     while (!World::IsStopped())
     {
         if (AsyncAuctionListingMgr::IsAuctionListingAllowed())

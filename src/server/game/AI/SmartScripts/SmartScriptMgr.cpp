@@ -143,7 +143,7 @@ void SmartAIMgr::LoadSmartAIFromDB()
                 {
                     if (!sObjectMgr->GetCreatureTemplate((uint32)temp.entryOrGuid))
                     {
-                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature entry (%u) does not exist, skipped loading.", uint32(temp.entryOrGuid));
+                        //sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: Creature entry (%u) does not exist, skipped loading.", uint32(temp.entryOrGuid));
                         continue;
                     }
                     break;
@@ -152,7 +152,7 @@ void SmartAIMgr::LoadSmartAIFromDB()
                 {
                     if (!sObjectMgr->GetGameObjectTemplate((uint32)temp.entryOrGuid))
                     {
-                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject entry (%u) does not exist, skipped loading.", uint32(temp.entryOrGuid));
+                        //sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: GameObject entry (%u) does not exist, skipped loading.", uint32(temp.entryOrGuid));
                         continue;
                     }
                     break;
@@ -161,7 +161,7 @@ void SmartAIMgr::LoadSmartAIFromDB()
                 {
                     if (!sAreaTriggerStore.LookupEntry((uint32)temp.entryOrGuid))
                     {
-                        sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: AreaTrigger entry (%u) does not exist, skipped loading.", uint32(temp.entryOrGuid));
+                        //sLog->outErrorDb("SmartAIMgr::LoadSmartAIFromDB: AreaTrigger entry (%u) does not exist, skipped loading.", uint32(temp.entryOrGuid));
                         continue;
                     }
                     break;
@@ -413,7 +413,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(e.event.spellHit.spell);
                     if (!spellInfo)
                     {
-                        sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses non-existent Spell entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.spellHit.spell);
+                        //sLog->outErrorDb("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses non-existent Spell entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.spellHit.spell);
                         return false;
                     }
                     if (e.event.spellHit.school && (e.event.spellHit.school & spellInfo->SchoolMask) != spellInfo->SchoolMask)
@@ -475,7 +475,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             case SMART_EVENT_VICTIM_CASTING:
                 if (e.event.targetCasting.spellId > 0 && !sSpellMgr->GetSpellInfo(e.event.targetCasting.spellId))
                 {
-                    sLog->outError("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses non-existent Spell entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.spellHit.spell);
+                    //sLog->outError("SmartAIMgr: Entry %d SourceType %u Event %u Action %u uses non-existent Spell entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.spellHit.spell);
                     return false;
                 }
 
