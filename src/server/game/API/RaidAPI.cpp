@@ -4,6 +4,9 @@ RaidAPI::RaidAPI() { }
 
 void RaidAPI::StartLogging(InstanceMap* map, Creature* boss)
 { 
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
+
     if (!map)
         return;
 
@@ -18,6 +21,9 @@ void RaidAPI::StartLogging(InstanceMap* map, Creature* boss)
 
 void RaidAPI::ResetLogging(InstanceMap* map, Creature* boss)
 {
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
+
     startLoggingTime = 0;
     finishLoggingTime = 0;
 
@@ -31,6 +37,8 @@ void RaidAPI::ResetLogging(InstanceMap* map, Creature* boss)
  
 void RaidAPI::FinishLogging(InstanceMap* map, Creature* boss)
 {  
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
 
     /* generate unique raid id */
     QueryResult result = APIDatabase.Query("select max(fightEntry) from pve_fight");

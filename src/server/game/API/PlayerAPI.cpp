@@ -7,6 +7,9 @@ PlayerAPI::PlayerAPI() { }
 
 void PlayerAPI::DeletePlayer(uint64 guid)
 {
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
+
     PreparedStatement* stmt = stmt = APIDatabase.GetPreparedStatement(API_DEL_CHAR_STATS);
     stmt->setUInt32(0, guid);
 
@@ -16,6 +19,9 @@ void PlayerAPI::DeletePlayer(uint64 guid)
 
 void PlayerAPI::UpdateLastLootedItems(Player* player)
 {
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
+
     uint8 queryid, index = 0;
 
     // check how many items should we update?
@@ -110,6 +116,9 @@ void PlayerAPI::UpdateLastLootedItems(Player* player)
  
 void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
 { 
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
+
     PreparedStatement* stmt = APIDatabase.GetPreparedStatement(API_INS_CHAR_STATS);
     uint8 index = 0;    
     std::string teamName1, teamName2, teamName3,
@@ -332,6 +341,9 @@ void PlayerAPI::UpdatePlayer(Player* player, uint16 achPts)
 
 void PlayerAPI::UpdateInventory(Player* player)
 {
+    if (!sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+        return;
+
     uint32 
     item1_entry, item1_enchant, item1_gem_1, item1_gem_2, item1_gem_3,
     item2_entry, item2_enchant, item2_gem_1, item2_gem_2, item2_gem_3,

@@ -4792,7 +4792,7 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     if (accountId == 0)
         updateRealmChars = false;
 
-    if (sWorld->getBoolConfig(CONFIG_API_LOGGING_ENABLED))
+    if (sWorld->getBoolConfig(CONFIG_API_LOGGING_ENABLED) && sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
         sPlayerAPI->DeletePlayer(playerguid);
 
     uint32 charDelete_method = sWorld->getIntConfig(CONFIG_CHARDELETE_METHOD);
@@ -19515,7 +19515,7 @@ void Player::SaveToDB(bool create, bool logout)
     if (m_session->isLogingOut() || !sWorld->getBoolConfig(CONFIG_STATS_SAVE_ONLY_ON_LOGOUT))
         _SaveStats(trans);
 
-    if (m_session->isLogingOut() && sWorld->getBoolConfig(CONFIG_API_LOGGING_ENABLED))
+    if (m_session->isLogingOut() && sWorld->getBoolConfig(CONFIG_API_LOGGING_ENABLED) && sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
         sPlayerAPI->UpdatePlayer(this, m_achievementMgr->CalculateAchievementPoints());
 
     _SaveTransmogItems();

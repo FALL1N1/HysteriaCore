@@ -89,8 +89,6 @@ LogsDir = ""
 
 #
 #Is the API Database and overall logging enabled?
-#
-
 APIDatabase.Enabled = 0
 
 LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
@@ -112,8 +110,7 @@ APIDatabaseInfo       = "127.0.0.1;3306;trinity;trinity;balnazzar_api"
 LoginDatabase.WorkerThreads     = 1
 WorldDatabase.WorkerThreads     = 1
 CharacterDatabase.WorkerThreads = 1
-APIDatabase.WorkerThreads = 1
-APIDatabase.Enabled = 1
+APIDatabase.WorkerThreads = 2
 
 #
 #    LoginDatabase.SynchThreads
@@ -127,7 +124,7 @@ APIDatabase.Enabled = 1
 LoginDatabase.SynchThreads     = 1
 WorldDatabase.SynchThreads     = 1
 CharacterDatabase.SynchThreads = 2
-APIDatabase.SynchThreads = 1
+APIDatabase.SynchThreads = 3
 
 #
 #    MaxPingTime
@@ -267,7 +264,7 @@ PlayerSaveInterval = 900000
 #        Default:     0  - (Disabled, Do not save character stats)
 #                     1+ - (Enabled, Level beyond which character stats are saved)
 
-PlayerSave.Stats.MinLevel = 0
+PlayerSave.Stats.MinLevel = 1
 
 #
 #    PlayerSave.Stats.SaveOnlyOnLogout
@@ -356,7 +353,7 @@ LogDB.Opt.ClearTime = 1209600
 #        Default:     0   - (Disabled)
 #                     10+ - (Enabled, Recommended 10+)
 
-MaxCoreStuckTime = 60
+MaxCoreStuckTime = 10
 
 #
 #    AddonChannel
@@ -517,7 +514,7 @@ CharLogFile = "Char.log"
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-CharLogTimestamp = 1
+CharLogTimestamp = 0
 
 #
 #    CharLogDump
@@ -643,7 +640,7 @@ SQLDriverQueryLogging = 0
 #        Example:     "13 11 9 5" - (Enabled)
 #        Default:     ""          - (Disabled)
 
-LogColors = "13 11 9 5"
+LogColors = ""
 
 #
 #    EnableLogDB
@@ -809,7 +806,7 @@ ChatLogs.BattleGround = 0
 #                     16 - (FFA_PVP, Free for all pvp mode like arena PvP in all zones except rest
 #                          activated places and sanctuaries)
 
-GameType = 0
+GameType = 1
 
 #
 #    RealmZone
@@ -844,7 +841,7 @@ GameType = 0
 #                     28 - (QA Server     - any language)
 #                     29 - (CN9           - basic-Latin at create, any at login)
 
-RealmZone = 1
+RealmZone = 8
 
 #
 #    StrictPlayerNames
@@ -1392,7 +1389,7 @@ Event.Announce = 0
 #        Default:     1 - (Enabled)
 #                     0 - (Disabled)
 
-BeepAtStart = 1
+BeepAtStart = 0
 
 #
 #    Motd
@@ -1485,12 +1482,12 @@ AccountInstancesPerHour = 5
 
 #
 #   BirthdayTime
-#        Description: Set to date of project's birth in UNIX time. By default the date when SunwellCore was started (Thu Oct 2, 2008)
-#        Default:     1222964635
+#        Description: Set to date of project's birth in UNIX time. By default the date when TrinityCore was started
+#        Default:     0
 #
 #
 
-BirthdayTime = 1222964635
+BirthdayTime = 0
 
 #
 #   CurrentBuild
@@ -1576,8 +1573,9 @@ Warden.ClientCheckFailAction = 2
 #                     0     - (Permanent ban)
 
 Warden.BanDuration = 259200
+
 #
-# PASSIVE AND ACTIVE ANTICHEAT SETTINGS
+# BALNAZZAR'S CUSTOM PASSIVE AND ACTIVE ANTICHEAT SETTINGS
 #
 #    Anticheat.skipgmlvl
 #		 Description: Enable Passive and Active anticheat for certain account levels
@@ -1601,9 +1599,9 @@ Anticheat.skipgmlvl = 1
 #        SPEED_HACK_DETECTION            = 32
 #        CLIMB_HACK_DETECTION            = 64
 #
-#        Default:     0
+#        Default:     127 (ALL)
 
-MovementChecker.EnableMask = 0
+MovementChecker.EnableMask = 127
 
 #
 # PASSIVE ANTICHEAT SETTINGS
@@ -1668,10 +1666,10 @@ Anticheat.AnnounceAction = 1
 #
 #    Anticheat.BanDuration
 #        Description: Time (in seconds) an account will be banned if Anticheat.Action = 2
-#        Default:     86400 - (24 hours)
+#        Default:     3600 - (1 hour)
 #                     0     - (Permanent ban)
 
-Anticheat.BanDuration = 86400
+Anticheat.BanDuration = 3600
 
 #
 ###################################################################################################
@@ -1958,7 +1956,7 @@ ListenRange.Yell = 300
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-ChatFakeMessagePreventing = 0
+ChatFakeMessagePreventing = 1
 
 #
 #    ChatStrictLinkChecking.Severity
@@ -1971,7 +1969,7 @@ ChatFakeMessagePreventing = 0
 #                         work correctly, please assure that you have extracted locale DBCs of
 #                         every language specific client playing on this server)
 
-ChatStrictLinkChecking.Severity = 0
+ChatStrictLinkChecking.Severity = 3
 
 #
 #    ChatStrictLinkChecking.Kick
@@ -2019,7 +2017,7 @@ Channel.RestrictedLfg = 1
 #        Default:     0 - (Disabled, Join with announcement)
 #                     1 - (Enabled, Join without announcement)
 
-Channel.SilentlyGMJoin = 0
+Channel.SilentlyGMJoin = 1
 
 #
 #    ChatLevelReq.Channel
@@ -2145,7 +2143,7 @@ GM.LogTrade = 1
 #        Description: GM character starting level.
 #        Default:     1
 
-GM.StartLevel = 80
+GM.StartLevel = 1
 
 #
 #    GM.AllowInvite
@@ -2291,10 +2289,10 @@ Rate.Skill.Discovery = 1
 #                     1 - (Rate.Drop.Item.Referenced)
 #                     1 - (Rate.Drop.Money)
 
-Rate.Drop.Item.Poor             = 0.3
-Rate.Drop.Item.Normal           = 0.3
-Rate.Drop.Item.Uncommon         = 0.3
-Rate.Drop.Item.Rare             = 0.3
+Rate.Drop.Item.Poor             = 1
+Rate.Drop.Item.Normal           = 1
+Rate.Drop.Item.Uncommon         = 1
+Rate.Drop.Item.Rare             = 1
 Rate.Drop.Item.Epic             = 1
 Rate.Drop.Item.Legendary        = 1
 Rate.Drop.Item.Artifact         = 1
@@ -2905,7 +2903,7 @@ SOAP.Port = 7878
 #                     1 - (Unlink the character from account and free up the name, Appears as
 #                         deleted ingame)
 
-CharDelete.Method = 0
+CharDelete.Method = 1
 
 #
 #    CharDelete.MinLevel
@@ -2918,10 +2916,10 @@ CharDelete.MinLevel = 0
 #
 #    CharDelete.KeepDays
 #        Description: Time (in days) before unlinked characters will be removed from the database.
-#        Default:     30 - (Enabled)
+#        Default:     14 - (Enabled, two weeks)
 #                     0  - (Disabled, Don't delete any characters)
 
-CharDelete.KeepDays = 30
+CharDelete.KeepDays = 14
 
 #
 ###################################################################################################
@@ -3083,58 +3081,6 @@ LevelReq.Auction = 1
 #        Default:     1
 
 LevelReq.Mail = 1
-
-# ACTIVE ANTICHEAT SETTINGS
-#
-#    MovementChecker.EnableMask
-#		 Description: Mask of which detections are enabled
-#
-#        FLY_HACK_DETECTION              = 1
-#        TELE_HACK_DETECTION             = 2
-#        JUMP_HACK_DETECTION             = 4
-#        HOVER_HACK_DETECTION            = 8
-#        WATERWALK_HACK_DETECTION        = 16
-#        SPEED_HACK_DETECTION            = 32
-#        CLIMB_HACK_DETECTION            = 64
-#     
-#        All:         127
-#        Default:     0
-
-MovementChecker.EnableMask = 127
-
-#
-#     Anticheat.Enable
-#        Description: Enables or disables the Anticheat System functionality
-#        Default:     1 - (Enabled)
-#                     0 - (Disabled)
-
-Anticheat.Enable = 1
-
-#     Anticheat.ReportsForIngameWarnings
-#        Description: How many reports the player must have to notify to GameMasters ingame when he generates a new report.
-#        Default:     70
-
-Anticheat.ReportsForIngameWarnings = 70
-
-#     Anticheat.DetectionsEnabled
-#        Description: It represents which detections are enabled.
-#
-#        SPEED_HACK_DETECTION            = 1
-#        FLY_HACK_DETECTION              = 2
-#        WALK_WATER_HACK_DETECTION       = 4
-#        JUMP_HACK_DETECTION             = 8
-#        TELEPORT_PLANE_HACK_DETECTION   = 16
-#        CLIMB_HACK_DETECTION            = 32
-#
-#        Default:     31
-
-Anticheat.DetectionsEnabled = 31
-
-#     Anticheat.MaxReportsForDailyReport
-#        Description: How many reports must the player have to make a report that it is in DB for a day (not only during the player's session).
-#        Default:     70
-
-Anticheat.MaxReportsForDailyReport = 70
 
 #
 #     PlayerDump.DisallowPaths
@@ -3571,16 +3517,16 @@ AuctionHouseBot.Class.RandomStackRatio.Glyph = 0
 
 #
 ###################################################################################################
-#######################################   DYNAMIC RESPAWN   #######################################
+################################# BALNAZZAR DYNAMIC RESPAWN   #####################################
 ###################################################################################################
-#       This system is used to decrease respawn times of many factors, tune wisely.
-###
+#       This system is used to decrease respawn times of many factors so tune wisely.
+#
 
 #    Pooling.Enabled
 #        Description: Enables the dynamic respawn system.
 #        Default:     1 - true
 
-Pooling.Enabled = 1
+Pooling.Enabled = 0
 
 #    Pooling.PlayersToDecrease
 #        Description: Required player amount in area to decrease spawn time for creatures.
@@ -3620,7 +3566,7 @@ Pooling.GameObjectMaxMinRespawn  = 15
 
 ###################################################################################################
 #
-#   Global switch for custom scripts (are they enabled or not?) 
+#   Global switch for all of the custom scripts (are they enabled or not?) 
 #           Default: 0 (disabled)
 #
 

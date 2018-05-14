@@ -923,21 +923,24 @@ void Battleground::EndBattleground(TeamId winnerTeamId)
                 stmt->setInt16(10, (int16)loserChange);
                 stmt->setUInt32(11, currOnline);
 
-                apistmt->setUInt32(0, fightId);
-                apistmt->setUInt8(1, m_ArenaType);
-                apistmt->setUInt32(2, ((GetStartTime() <= startDelay ? 0 : GetStartTime() - startDelay) / 1000));
-                apistmt->setUInt32(3, winnerArenaTeam->GetId());
-                apistmt->setUInt32(4, loserArenaTeam->GetId());
-                apistmt->setUInt16(5, (uint16)winnerTeamRating);
-                apistmt->setUInt16(6, (uint16)winnerMatchmakerRating);
-                apistmt->setInt16(7, (int16)winnerChange);
-                apistmt->setUInt16(8, (uint16)loserTeamRating);
-                apistmt->setUInt16(9, (uint16)loserMatchmakerRating);
-                apistmt->setInt16(10, (int16)loserChange);
-                apistmt->setUInt32(11, currOnline);
-
+                if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                {
+                    apistmt->setUInt32(0, fightId);
+                    apistmt->setUInt8(1, m_ArenaType);
+                    apistmt->setUInt32(2, ((GetStartTime() <= startDelay ? 0 : GetStartTime() - startDelay) / 1000));
+                    apistmt->setUInt32(3, winnerArenaTeam->GetId());
+                    apistmt->setUInt32(4, loserArenaTeam->GetId());
+                    apistmt->setUInt16(5, (uint16)winnerTeamRating);
+                    apistmt->setUInt16(6, (uint16)winnerMatchmakerRating);
+                    apistmt->setInt16(7, (int16)winnerChange);
+                    apistmt->setUInt16(8, (uint16)loserTeamRating);
+                    apistmt->setUInt16(9, (uint16)loserMatchmakerRating);
+                    apistmt->setInt16(10, (int16)loserChange);
+                    apistmt->setUInt32(11, currOnline);
+                }
                 trans->Append(stmt);
-                apitrans->Append(stmt);
+                if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                    apitrans->Append(stmt);
 
                 uint8 memberId = 0;
                 for (Battleground::ArenaLogEntryDataMap::const_iterator itr = ArenaLogEntries.begin(); itr != ArenaLogEntries.end(); ++itr)
@@ -957,23 +960,25 @@ void Battleground::EndBattleground(TeamId winnerTeamId)
                     stmt->setUInt32(9, itr->second.KillingBlows);
                     trans->Append(stmt);
 
-                    apistmt = APIDatabase.GetPreparedStatement(API_INS_ARENA_MEMBERSTATS);
-                    apistmt->setUInt32(0, fightId);
-                    apistmt->setUInt8(1, memberId);
-                    apistmt->setString(2, itr->second.Name);
-                    apistmt->setUInt32(3, itr->second.Guid);
-                    apistmt->setUInt32(4, itr->second.ArenaTeamId);
-                    apistmt->setUInt32(5, itr->second.Acc);
-                    apistmt->setString(6, itr->second.IP);
-                    apistmt->setUInt32(7, itr->second.DamageDone);
-                    apistmt->setUInt32(8, itr->second.HealingDone);
-                    apistmt->setUInt32(9, itr->second.KillingBlows);
-                    apitrans->Append(apistmt);
-
+                    if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                    {
+                        apistmt = APIDatabase.GetPreparedStatement(API_INS_ARENA_MEMBERSTATS);
+                        apistmt->setUInt32(0, fightId);
+                        apistmt->setUInt8(1, memberId);
+                        apistmt->setString(2, itr->second.Name);
+                        apistmt->setUInt32(3, itr->second.Guid);
+                        apistmt->setUInt32(4, itr->second.ArenaTeamId);
+                        apistmt->setUInt32(5, itr->second.Acc);
+                        apistmt->setString(6, itr->second.IP);
+                        apistmt->setUInt32(7, itr->second.DamageDone);
+                        apistmt->setUInt32(8, itr->second.HealingDone);
+                        apistmt->setUInt32(9, itr->second.KillingBlows);
+                        apitrans->Append(apistmt);
+                    }
 
                 }
-
-                APIDatabase.CommitTransaction(apitrans);
+                if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                    APIDatabase.CommitTransaction(apitrans);
                 CharacterDatabase.CommitTransaction(trans);
             }
             // Deduct 16 points from each teams arena-rating if there are no winners after 45+2 minutes
@@ -1020,21 +1025,22 @@ void Battleground::EndBattleground(TeamId winnerTeamId)
                 stmt->setUInt32(11, currOnline);
                 trans->Append(stmt);
 
-
-                apistmt->setUInt32(0, fightId);
-                apistmt->setUInt8(1, m_ArenaType);
-                apistmt->setUInt32(2, ((GetStartTime() <= startDelay ? 0 : GetStartTime() - startDelay) / 1000));
-                apistmt->setUInt32(3, winnerArenaTeam->GetId());
-                apistmt->setUInt32(4, loserArenaTeam->GetId());
-                apistmt->setUInt16(5, (uint16)winnerTeamRating);
-                apistmt->setUInt16(6, (uint16)winnerMatchmakerRating);
-                apistmt->setInt16(7, (int16)winnerChange);
-                apistmt->setUInt16(8, (uint16)loserTeamRating);
-                apistmt->setUInt16(9, (uint16)loserMatchmakerRating);
-                apistmt->setInt16(10, (int16)loserChange);
-                apistmt->setUInt32(11, currOnline);
-                apitrans->Append(apistmt);
-
+                if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                {
+                    apistmt->setUInt32(0, fightId);
+                    apistmt->setUInt8(1, m_ArenaType);
+                    apistmt->setUInt32(2, ((GetStartTime() <= startDelay ? 0 : GetStartTime() - startDelay) / 1000));
+                    apistmt->setUInt32(3, winnerArenaTeam->GetId());
+                    apistmt->setUInt32(4, loserArenaTeam->GetId());
+                    apistmt->setUInt16(5, (uint16)winnerTeamRating);
+                    apistmt->setUInt16(6, (uint16)winnerMatchmakerRating);
+                    apistmt->setInt16(7, (int16)winnerChange);
+                    apistmt->setUInt16(8, (uint16)loserTeamRating);
+                    apistmt->setUInt16(9, (uint16)loserMatchmakerRating);
+                    apistmt->setInt16(10, (int16)loserChange);
+                    apistmt->setUInt32(11, currOnline);
+                    apitrans->Append(apistmt);
+                }
 
                 uint8 memberId = 0;
                 for (Battleground::ArenaLogEntryDataMap::const_iterator itr = ArenaLogEntries.begin(); itr != ArenaLogEntries.end(); ++itr)
@@ -1054,24 +1060,25 @@ void Battleground::EndBattleground(TeamId winnerTeamId)
                     stmt->setUInt32(9, itr->second.KillingBlows);
                     trans->Append(stmt);
 
-
-                    apistmt = APIDatabase.GetPreparedStatement(API_INS_ARENA_MEMBERSTATS);
-                    apistmt->setUInt32(0, fightId);
-                    apistmt->setUInt8(1, memberId);
-                    apistmt->setString(2, itr->second.Name);
-                    apistmt->setUInt32(3, itr->second.Guid);
-                    apistmt->setUInt32(4, itr->second.ArenaTeamId);
-                    apistmt->setUInt32(5, itr->second.Acc);
-                    apistmt->setString(6, itr->second.IP);
-                    apistmt->setUInt32(7, itr->second.DamageDone);
-                    apistmt->setUInt32(8, itr->second.HealingDone);
-                    apistmt->setUInt32(9, itr->second.KillingBlows);
-                    apitrans->Append(apistmt);
-
+                    if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                    {
+                        apistmt = APIDatabase.GetPreparedStatement(API_INS_ARENA_MEMBERSTATS);
+                        apistmt->setUInt32(0, fightId);
+                        apistmt->setUInt8(1, memberId);
+                        apistmt->setString(2, itr->second.Name);
+                        apistmt->setUInt32(3, itr->second.Guid);
+                        apistmt->setUInt32(4, itr->second.ArenaTeamId);
+                        apistmt->setUInt32(5, itr->second.Acc);
+                        apistmt->setString(6, itr->second.IP);
+                        apistmt->setUInt32(7, itr->second.DamageDone);
+                        apistmt->setUInt32(8, itr->second.HealingDone);
+                        apistmt->setUInt32(9, itr->second.KillingBlows);
+                        apitrans->Append(apistmt);
+                    }
 
                 }
-
-                APIDatabase.CommitTransaction(apitrans);
+                if (sWorld->getBoolConfig(CONFIG_API_DB_ENABLED))
+                    APIDatabase.CommitTransaction(apitrans);
                 CharacterDatabase.CommitTransaction(trans);
             }
         }
