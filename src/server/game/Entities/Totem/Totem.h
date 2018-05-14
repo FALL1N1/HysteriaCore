@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_TOTEM_H
-#define SUNWELLCORE_TOTEM_H
+#ifndef BALNAZZAR_TOTEM_H
+#define BALNAZZAR_TOTEM_H
 
 #include "TemporarySummon.h"
 

@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_PET_DEFINES_H
-#define SUNWELLCORE_PET_DEFINES_H
+#ifndef BALNAZZAR_PET_DEFINES_H
+#define BALNAZZAR_PET_DEFINES_H
 
 enum PetType
 {

@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_ITEM_H
-#define SUNWELLCORE_ITEM_H
+#ifndef BALNAZZAR_ITEM_H
+#define BALNAZZAR_ITEM_H
 
 #include "Common.h"
 #include "Object.h"

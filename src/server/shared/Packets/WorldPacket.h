@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_WORLDPACKET_H
-#define SUNWELLCORE_WORLDPACKET_H
+#ifndef BALNAZZAR_WORLDPACKET_H
+#define BALNAZZAR_WORLDPACKET_H
 
 #include "Common.h"
 #include "ByteBuffer.h"

@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_DYNAMICOBJECT_H
-#define SUNWELLCORE_DYNAMICOBJECT_H
+#ifndef BALNAZZAR_DYNAMICOBJECT_H
+#define BALNAZZAR_DYNAMICOBJECT_H
 
 #include "Object.h"
 

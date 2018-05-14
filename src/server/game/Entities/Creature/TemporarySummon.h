@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_TEMPSUMMON_H
-#define SUNWELLCORE_TEMPSUMMON_H
+#ifndef BALNAZZAR_TEMPSUMMON_H
+#define BALNAZZAR_TEMPSUMMON_H
 
 #include "Creature.h"
 

@@ -15,8 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_CHATLINK_H
-#define SUNWELLCORE_CHATLINK_H
+#ifndef BALNAZZAR_CHATLINK_H
+#define BALNAZZAR_CHATLINK_H
 
 #include "SharedDefines.h"
 #include <sstream>

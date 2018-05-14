@@ -13,8 +13,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_GUILD_H
-#define SUNWELLCORE_GUILD_H
+#ifndef BALNAZZAR_GUILD_H
+#define BALNAZZAR_GUILD_H
 
 #include "World.h"
 #include "Item.h"

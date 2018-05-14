@@ -16,8 +16,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SUNWELLCORE_ERRORS_H
-#define SUNWELLCORE_ERRORS_H
+#ifndef BALNAZZAR_ERRORS_H
+#define BALNAZZAR_ERRORS_H
 
 #include "Define.h"
 
