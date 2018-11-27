@@ -222,14 +222,25 @@ void AuthSocket::OnClose(void)
 // Read the packet from the client
 void AuthSocket::OnRead()
 {
-    #define MAX_AUTH_LOGON_CHALLENGES_IN_A_ROW 35
+    #define MAX_AUTH_LOGON_CHALLENGES_IN_A_ROW 3
     uint32 challengesInARow = 0;
     uint8 _cmd;
     while (1)
     {
         if (!socket().recv_soft((char *)&_cmd, 1))
             return;
-
+        
+        if (_cmd == 16) // realmlist packet
+        {
+            ++challengesInARow;
+            if (challengesInARow == MAX_AUTH_LOGON_CHALLENGES_IN_A_ROW)
+            {
+                sLog->outString("Got %u AUTH_LOGON_CHALLENGE in a row from '%s', possible ongoing DoS", challengesInARow, socket().getRemoteAddress().c_str());
+                socket().shutdown();
+                return;
+			}
+        }
+	
         if (_cmd == AUTH_LOGON_CHALLENGE)
         {
             ++challengesInARow;
